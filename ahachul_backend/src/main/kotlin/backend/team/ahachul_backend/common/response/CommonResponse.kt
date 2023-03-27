@@ -21,5 +21,21 @@ data class CommonResponse<T>(
                     result = result
             )
         }
+
+        fun fail(): CommonResponse<Unit> {
+            return CommonResponse(
+                    code = ResponseCode.INTERNAL_SERVER_ERROR.code,
+                    message = ResponseCode.INTERNAL_SERVER_ERROR.message,
+                    result = null
+            )
+        }
+
+        fun fail(errorCode: ResponseCode): CommonResponse<Unit> {
+            return CommonResponse(
+                    code = errorCode.code,
+                    message = errorCode.message,
+                    result = null
+            )
+        }
     }
 }
