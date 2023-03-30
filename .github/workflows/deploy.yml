@@ -33,7 +33,7 @@ jobs:
         shell: bash
 
       - name: Build with Gradle
-        run: cd ./ahachul_backend && ./gradlew clean build
+        run: cd ./ahachul_backend && SPRING_PROFILES_ACTIVE=dev ./gradlew clean build
         shell: bash
 
       - name: Configure AWS credentials
