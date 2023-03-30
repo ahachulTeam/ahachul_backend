@@ -10,7 +10,6 @@ env:
   ECR_REGISTRY: ${{ secrets.AWS_ECR_REGISTRY }}
   ECR_REPOSITORY: ahachul
   AWS_REGION: ap-northeast-2
-  IMAGE_TAG: latest
 
 
 jobs:
@@ -38,7 +37,7 @@ jobs:
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: $AWS_REGION
+          aws-region: ${{ env.AWS_REGION }}
 
       - name: Login to Amazon ECR   # private repository
         id: login-ecr
@@ -47,9 +46,9 @@ jobs:
       - name: Build, tag, and push image to Amazon ECR
         id: build-image
         run: |
-          docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
-          docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
-          echo "success push to ecr: name=image::$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG"
+          docker build -t ${{ env.ECR_REGISTRY }}/${{ env.ECR_REPOSITORY }}:latest .
+          docker push ${{ env.ECR_REGISTRY }}/${{ env.ECR_REPOSITORY }}:latest
+          echo "success push to ecr: name=image::${{ env.ECR_REGISTRY }}/${{ env.ECR_REPOSITORY }}:latest"
 
   deploy:
     needs: build
@@ -60,7 +59,7 @@ jobs:
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: $AWS_REGION
+          aws-region: ${{ env.AWS_REGION }}
 
       - name: Login to Amazon ECR
         id: login-ecr
@@ -68,6 +67,6 @@ jobs:
 
       - name: Pull Image and docker run
         run: |
-          docker pull $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
-          docker stop $ECR_REPOSITORY && docker rm $ECR_REPOSITORY && docker rmi $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
-          docker run -d -p 8080:8080 --name $ECR_REPOSITORY --restart always $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+          docker pull ${{ env.ECR_REGISTRY }}/${{ env.ECR_REPOSITORY }}:latest
+          docker stop ${{ env.ECR_REPOSITORY }} && docker rm ${{ env.ECR_REPOSITORY }} && docker rmi ${{ env.ECR_REGISTRY }}/${{ env.ECR_REPOSITORY }}:latest
+          docker run -d -p 8080:8080 --name ${{ env.ECR_REPOSITORY }} --restart always ${{ env.ECR_REGISTRY }}/${{ env.ECR_REPOSITORY }}:latest
