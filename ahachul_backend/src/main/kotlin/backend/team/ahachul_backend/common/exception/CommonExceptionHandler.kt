@@ -30,36 +30,36 @@ class CommonExceptionHandler {
                 code = e.code,
                 stackTrace = e.stackTrace.contentToString()
         )
-        return ResponseEntity(CommonResponse.fail(e.code), HttpStatus.BAD_REQUEST)
+        return ResponseEntity(CommonResponse.fail(e.code), e.code.httpStatus)
     }
 
     @ExceptionHandler(AdapterException::class)
-    fun commonException(e: AdapterException): ResponseEntity<CommonResponse<Unit>> {
+    fun adapterException(e: AdapterException): ResponseEntity<CommonResponse<Unit>> {
         logger.error(
                 message = e.message,
                 code = e.code,
                 stackTrace = e.stackTrace.contentToString()
         )
-        return ResponseEntity(CommonResponse.fail(e.code), HttpStatus.BAD_REQUEST)
+        return ResponseEntity(CommonResponse.fail(e.code), e.code.httpStatus)
     }
 
     @ExceptionHandler(PortException::class)
-    fun commonException(e: PortException): ResponseEntity<CommonResponse<Unit>> {
+    fun portException(e: PortException): ResponseEntity<CommonResponse<Unit>> {
         logger.error(
                 message = e.message,
                 code = e.code,
                 stackTrace = e.stackTrace.contentToString()
         )
-        return ResponseEntity(CommonResponse.fail(e.code), HttpStatus.BAD_REQUEST)
+        return ResponseEntity(CommonResponse.fail(e.code), e.code.httpStatus)
     }
 
     @ExceptionHandler(DomainException::class)
-    fun commonException(e: DomainException): ResponseEntity<CommonResponse<Unit>> {
+    fun domainException(e: DomainException): ResponseEntity<CommonResponse<Unit>> {
         logger.error(
                 message = e.message,
                 code = e.code,
                 stackTrace = e.stackTrace.contentToString()
         )
-        return ResponseEntity(CommonResponse.fail(e.code), HttpStatus.BAD_REQUEST)
+        return ResponseEntity(CommonResponse.fail(e.code), e.code.httpStatus)
     }
 }
