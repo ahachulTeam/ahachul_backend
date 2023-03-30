@@ -39,3 +39,7 @@ out/
 ### Custom ###
 logs/*
 error_logs/*
+
+### yml ###
+src/main/resources/application-dev.yml
+src/main/resources/application-local.yml

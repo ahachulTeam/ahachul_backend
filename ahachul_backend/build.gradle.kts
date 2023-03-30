@@ -87,3 +87,14 @@ tasks {
         dependsOn(asciidoctor)
     }
 }
+
+tasks.register<Copy>("copySecret") {
+    from("./ahachul_secret") {
+        include("*.yml")
+    }
+    into("./src/main/resources")
+}
+
+tasks.named("compileJava") {
+    dependsOn("copySecret")
+}
