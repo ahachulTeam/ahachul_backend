@@ -26,11 +26,11 @@ jobs:
           java-version: 17
 
       - name: Grant execute permission for gradlew
-        run: chmod +x gradlew
+        run: chmod +x ahachul_backend/gradlew
         shell: bash
 
       - name: Build with Gradle
-        run: ./gradlew clean build -x test
+        run: cd ./ahachul_backend && ./gradlew clean build -x test
         shell: bash
 
       - name: Configure AWS credentials
