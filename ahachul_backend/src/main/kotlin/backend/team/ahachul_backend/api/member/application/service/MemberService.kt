@@ -1,4 +1,8 @@
 package backend.team.ahachul_backend.api.member.application.service
 
-class MemberService {
+import backend.team.ahachul_backend.api.member.application.port.`in`.MemberUserCase
+import org.springframework.stereotype.Service
+
+@Service
+class MemberService: MemberUserCase {
 }
