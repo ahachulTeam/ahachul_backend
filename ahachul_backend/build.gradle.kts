@@ -42,8 +42,16 @@ dependencies {
     // https://mvnrepository.com/artifact/org.springframework.restdocs/spring-restdocs-mockmvc/3.0.0
     testImplementation("org.springframework.restdocs:spring-restdocs-mockmvc")
 
+    // https://mvnrepository.com/artifact/org.junit.jupiter/junit-jupiter-api/5.9.2
+    testImplementation("org.junit.jupiter:junit-jupiter-api:5.9.2")
+
     // https://docs.spring.io/spring-restdocs/docs/current/reference/htmlsingle/
     asciidoctorExt("org.springframework.restdocs:spring-restdocs-asciidoctor")
+
+    // https://mvnrepository.com/artifact/io.jsonwebtoken/jjwt-impl/0.11.5
+    implementation("io.jsonwebtoken:jjwt-api:0.11.5")
+    implementation("io.jsonwebtoken:jjwt-impl:0.11.5")
+    implementation("io.jsonwebtoken:jjwt-jackson:0.11.5")
 
     implementation("org.jetbrains.kotlin:kotlin-reflect")
     runtimeOnly("com.mysql:mysql-connector-j")
