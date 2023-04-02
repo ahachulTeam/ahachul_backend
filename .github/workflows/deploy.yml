@@ -4,7 +4,6 @@ on:
   push:
     branches:
       - develop
-      - feature/9
 
 env:
   ECR_REGISTRY: ${{ secrets.AWS_ECR_REGISTRY }}
@@ -32,7 +31,7 @@ jobs:
         shell: bash
 
       - name: Build with Gradle
-        run: cd ./ahachul_backend && ./gradlew clean build -x test
+        run: cd ./ahachul_backend && SPRING_PROFILES_ACTIVE=dev ./gradlew clean build
         shell: bash
 
       - name: Configure AWS credentials
