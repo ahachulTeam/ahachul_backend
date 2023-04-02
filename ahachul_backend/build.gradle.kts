@@ -4,9 +4,21 @@ plugins {
     id("org.springframework.boot") version "3.0.4"
     id("io.spring.dependency-management") version "1.1.0"
     id("org.asciidoctor.jvm.convert") version "3.3.2"
+    id("org.jetbrains.kotlin.plugin.noarg") version "1.7.22"
+    id("org.jetbrains.kotlin.plugin.allopen") version "1.7.22"
     kotlin("jvm") version "1.7.22"
     kotlin("plugin.spring") version "1.7.22"
     kotlin("plugin.jpa") version "1.7.22"
+}
+
+noArg {
+    annotation("jakarta.persistence.Entity")
+}
+
+allOpen {
+    annotation("jakarta.persistence.Entity")
+    annotation("jakarta.persistence.MappedSuperclass")
+    annotation("javax.persistence.Embeddable")
 }
 
 group = "backend.team"
