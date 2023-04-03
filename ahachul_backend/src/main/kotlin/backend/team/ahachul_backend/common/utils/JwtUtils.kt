@@ -17,13 +17,23 @@ import javax.crypto.SecretKey
 class JwtUtils(
         private val jwtProperties: JwtProperties
 ) {
-
     fun createToken(sub: String, sec: Long): String {
         return Jwts.builder()
                 .setSubject(sub)
                 .setIssuedAt(Date.from(LocalDateTime.now().atZone(ZoneId.of("Asia/Seoul")).toInstant()))
                 .setExpiration(Date.from(LocalDateTime.now().plusSeconds(sec).atZone(ZoneId.of("Asia/Seoul")).toInstant()))
                 .signWith(getKey(jwtProperties.secretKey), SignatureAlgorithm.HS256)
+                .compact()
+    }
+
+    fun createToken(sub: String, iss: String, aud: String, sec: Long, algorithm: SignatureAlgorithm): String {
+        return Jwts.builder()
+                .setSubject(sub)
+                .setIssuer(iss)
+                .setAudience(aud)
+                .setIssuedAt(Date.from(LocalDateTime.now().atZone(ZoneId.of("Asia/Seoul")).toInstant()))
+                .setExpiration(Date.from(LocalDateTime.now().plusSeconds(sec).atZone(ZoneId.of("Asia/Seoul")).toInstant()))
+                .signWith(getKey(jwtProperties.secretKey), algorithm)
                 .compact()
     }
 

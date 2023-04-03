@@ -7,14 +7,14 @@ import org.jetbrains.annotations.NotNull
 class LoginMemberDto {
     data class Request(
             @NotNull
-            val providerCode: String,
+            val providerType: ProviderType,
             @NotNull
-            val providerType: ProviderType
+            val providerCode: String
     ) {
         fun toCommand(): LoginMemberCommand {
             return LoginMemberCommand(
-                    providerCode = providerCode,
-                    providerType = providerType
+                    providerType = providerType,
+                    providerCode = providerCode
             )
         }
     }
@@ -22,8 +22,8 @@ class LoginMemberDto {
     data class Response(
             val nickname: String,
             val accessToken: String,
-            val accessTokenExpiresIn: String,
+            val accessTokenExpiresIn: Long,
             val refreshToken: String,
-            val refreshTokenExpiresIn: String,
+            val refreshTokenExpiresIn: Long,
     )
 }

@@ -22,14 +22,14 @@ class MemberService(
             val userInfo = kakaoLogin(command.providerCode)
             LoginMemberDto.Response(
                     nickname = userInfo.nickname,
-                    accessToken = jwtUtils.createToken(userInfo.sub, jwtProperties.accessTokenExpireTime.toLong()),
+                    accessToken = jwtUtils.createToken(userInfo.sub, jwtProperties.accessTokenExpireTime),
                     accessTokenExpiresIn = jwtProperties.accessTokenExpireTime,
-                    refreshToken = jwtUtils.createToken(userInfo.sub, jwtProperties.refreshTokenExpireTime.toLong()),
+                    refreshToken = jwtUtils.createToken(userInfo.sub, jwtProperties.refreshTokenExpireTime),
                     refreshTokenExpiresIn = jwtProperties.refreshTokenExpireTime
             )
         }
         
-        return LoginMemberDto.Response("", "", "", "", "")
+        return LoginMemberDto.Response("", "", 0, "", 0)
     }
 
     private fun kakaoLogin(provideCode: String): KakaoUserInfoDto {
