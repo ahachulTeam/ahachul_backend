@@ -25,7 +25,7 @@ class AppleMemberClientImpl(
 ): AppleMemberClient {
     override fun verifyIdentityToken(identityToken: String, authCode: String): Boolean {
         if (validateIdentityToken(identityToken)) {
-            throw CommonException(ResponseCode.INVALID_ID_TOKEN)
+            throw CommonException(ResponseCode.INVALID_APPLE_ID_TOKEN)
         }
         return true
     }

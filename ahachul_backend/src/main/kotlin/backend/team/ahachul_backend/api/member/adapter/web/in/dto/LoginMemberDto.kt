@@ -20,7 +20,7 @@ class LoginMemberDto {
     }
 
     data class Response(
-            val nickname: String,
+            val memberId: String,
             val accessToken: String,
             val accessTokenExpiresIn: Long,
             val refreshToken: String,

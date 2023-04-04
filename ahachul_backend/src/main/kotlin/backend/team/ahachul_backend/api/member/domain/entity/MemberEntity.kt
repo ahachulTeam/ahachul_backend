@@ -1,5 +1,6 @@
 package backend.team.ahachul_backend.api.member.domain.entity
 
+import backend.team.ahachul_backend.api.member.domain.Member
 import backend.team.ahachul_backend.api.member.domain.model.GenderType
 import backend.team.ahachul_backend.api.member.domain.model.ProviderType
 import backend.team.ahachul_backend.api.member.domain.model.UserStatus
@@ -11,23 +12,24 @@ class MemberEntity(
         @Id
         @GeneratedValue(strategy = GenerationType.IDENTITY)
         @Column(name = "member_id")
-        private val id: Long,
+        val id: Long? = null,
 
-        private val nickname: String,
+        val nickname: String?,
 
-        private val providerUserId: String,
+        val providerUserId: String,
 
         @Enumerated(EnumType.STRING)
-        private val provider: ProviderType,
+        val provider: ProviderType,
 
-        private val email: String,
+        val email: String?,
 
         @Enumerated(EnumType.ORDINAL)
-        private val gender: GenderType,
+        val gender: GenderType?,
 
-        private val age: String,
+        val age: String?, // TODO age -> ageRange
 
         @Enumerated(EnumType.STRING)
-        private val status: UserStatus
+        val status: UserStatus
 ): BaseEntity() {
+
 }

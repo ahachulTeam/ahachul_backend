@@ -1,13 +1,13 @@
 package backend.team.ahachul_backend.common.dto
 
-import com.fasterxml.jackson.annotation.JsonCreator
+import com.fasterxml.jackson.annotation.JsonProperty
 
-data class KakaoAccessTokenDto @JsonCreator constructor(
-        val accessToken: String,
-        val tokenType: String,
-        val expiresIn: Int,
-        val refreshToken: String,
-        val refreshTokenExpiresIn: Int
+data class KakaoAccessTokenDto (
+        @JsonProperty("access_token") val accessToken: String,
+        @JsonProperty("token_type") val tokenType: String,
+        @JsonProperty("expires_in") val expiresIn: Int,
+        @JsonProperty("refresh_token") val refreshToken: String,
+        @JsonProperty("refresh_token_expires_in") val refreshTokenExpiresIn: Int
 ) {
 
 }
