@@ -4,6 +4,7 @@ import backend.team.ahachul_backend.api.member.adapter.web.`in`.dto.LoginMemberD
 import backend.team.ahachul_backend.api.member.application.port.`in`.MemberUserCase
 import backend.team.ahachul_backend.api.member.application.port.`in`.command.LoginMemberCommand
 import backend.team.ahachul_backend.api.member.domain.model.ProviderType
+import backend.team.ahachul_backend.common.client.AppleMemberClient
 import backend.team.ahachul_backend.common.client.KakaoMemberClient
 import backend.team.ahachul_backend.common.dto.KakaoUserInfoDto
 import backend.team.ahachul_backend.common.properties.JwtProperties
@@ -13,6 +14,7 @@ import org.springframework.stereotype.Service
 @Service
 class MemberService(
         private val kakaoMemberClient: KakaoMemberClient,
+        private val appleMemberClient: AppleMemberClient,
         private val jwtUtils: JwtUtils,
         private val jwtProperties: JwtProperties
 ): MemberUserCase {
@@ -28,7 +30,6 @@ class MemberService(
                     refreshTokenExpiresIn = jwtProperties.refreshTokenExpireTime
             )
         }
-        
         return LoginMemberDto.Response("", "", 0, "", 0)
     }
 

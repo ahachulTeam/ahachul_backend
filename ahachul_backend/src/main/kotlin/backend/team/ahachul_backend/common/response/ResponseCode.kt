@@ -9,5 +9,6 @@ enum class ResponseCode(
 ) {
     SUCCESS("100", "SUCCESS", HttpStatus.OK),
     BAD_REQUEST("101", "BAD_REQUEST", HttpStatus.BAD_REQUEST),
-    INTERNAL_SERVER_ERROR("102", "INTERNAL_SERVER_ERROR", HttpStatus.BAD_REQUEST)
+    INTERNAL_SERVER_ERROR("102", "INTERNAL_SERVER_ERROR", HttpStatus.BAD_REQUEST),
+    INVALID_ID_TOKEN("103", "유효하지 않은 ID 토큰입니다.", HttpStatus.BAD_REQUEST)
 }

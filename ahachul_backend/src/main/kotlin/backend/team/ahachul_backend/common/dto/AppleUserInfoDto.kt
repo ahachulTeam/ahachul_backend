@@ -1,4 +1,7 @@
 package backend.team.ahachul_backend.common.dto
 
-class AppleUserInfoDto {
-}
+data class AppleUserInfoDto(
+    val sub: String,
+    val email: String,
+    val name: String
+)
