@@ -62,4 +62,14 @@ class CommonExceptionHandler {
         )
         return ResponseEntity(CommonResponse.fail(e.code), e.code.httpStatus)
     }
+
+    @ExceptionHandler(BusinessException::class)
+    fun domainException(e: BusinessException): ResponseEntity<CommonResponse<Unit>> {
+        logger.error(
+                message = e.message,
+                code = e.code,
+                stackTrace = e.stackTrace.contentToString()
+        )
+        return ResponseEntity(CommonResponse.fail(e.code), e.code.httpStatus)
+    }
 }
