@@ -9,6 +9,7 @@ data class KakaoMemberInfoDto(
 
     data class KakaoAccount(
             @JsonProperty("profile") val profile: Profile?,
+            @JsonProperty("email") val email: String?,
             @JsonProperty("age_range") val ageRange: String?,
             @JsonProperty("gender") val gender: String?
     )

@@ -4,8 +4,7 @@ import backend.team.ahachul_backend.api.member.adapter.web.`in`.dto.LoginMemberD
 import backend.team.ahachul_backend.api.member.application.port.`in`.OAuthUseCase
 import backend.team.ahachul_backend.api.member.application.port.`in`.command.LoginMemberCommand
 import backend.team.ahachul_backend.api.member.application.port.out.MemberWriter
-import backend.team.ahachul_backend.api.member.domain.Member
-import backend.team.ahachul_backend.api.member.domain.mapper.MemberDomainMapper
+import backend.team.ahachul_backend.api.member.domain.entity.MemberEntity
 import backend.team.ahachul_backend.api.member.domain.model.ProviderType
 import backend.team.ahachul_backend.common.client.GoogleMemberClient
 import backend.team.ahachul_backend.common.client.KakaoMemberClient
@@ -29,7 +28,7 @@ class OAuthService(
         when (command.providerType) {
             ProviderType.KAKAO -> {
                 val userInfo = getKakaoMemberInfo(command.providerCode)
-                memberId = memberWriter.save(MemberDomainMapper.toEntity(Member.of(command, userInfo))).toString()
+                memberId = memberWriter.save(MemberEntity.of(command, userInfo)).toString()
             }
             ProviderType.GOOGLE -> {
 //                val userInfo = getGoogleMemberInfo(command.providerCode)
