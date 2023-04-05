@@ -7,7 +7,9 @@ import backend.team.ahachul_backend.api.member.application.port.out.MemberWriter
 import backend.team.ahachul_backend.api.member.domain.Member
 import backend.team.ahachul_backend.api.member.domain.mapper.MemberDomainMapper
 import backend.team.ahachul_backend.api.member.domain.model.ProviderType
+import backend.team.ahachul_backend.common.client.GoogleMemberClient
 import backend.team.ahachul_backend.common.client.KakaoMemberClient
+import backend.team.ahachul_backend.common.dto.GoogleUserInfoDto
 import backend.team.ahachul_backend.common.dto.KakaoMemberInfoDto
 import backend.team.ahachul_backend.common.properties.JwtProperties
 import backend.team.ahachul_backend.common.utils.JwtUtils
@@ -17,6 +19,7 @@ import org.springframework.stereotype.Service
 class OAuthService(
         private val memberWriter: MemberWriter,
         private val kakaoMemberClient: KakaoMemberClient,
+        private val googleMemberClient: GoogleMemberClient,
         private val jwtUtils: JwtUtils,
         private val jwtProperties: JwtProperties
 ): OAuthUseCase {
@@ -28,16 +31,23 @@ class OAuthService(
                 val userInfo = getKakaoMemberInfo(command.providerCode)
                 memberId = memberWriter.save(MemberDomainMapper.toEntity(Member.of(command, userInfo))).toString()
             }
-            ProviderType.APPLE -> {
-                // TODO
+            ProviderType.GOOGLE -> {
+//                val userInfo = getGoogleMemberInfo(command.providerCode)
+//                memberId = memberWriter.save(MemberDomainMapper.toEntity(Member.of(command, userInfo))).toString()
             }
         }
         return makeLoginResponse(memberId)
     }
 
+
     private fun getKakaoMemberInfo(provideCode: String): KakaoMemberInfoDto {
         val accessToken = kakaoMemberClient.getAccessTokenByCode(provideCode)
         return kakaoMemberClient.getMemberInfoByAccessToken(accessToken)
+    }
+
+    private fun getGoogleMemberInfo(provideCode: String): GoogleUserInfoDto? {
+        val accessToken = googleMemberClient.getAccessTokenByCode(provideCode)
+        return googleMemberClient.getMemberInfoByAccessToken(accessToken!!)
     }
 
     private fun makeLoginResponse(memberId: String): LoginMemberDto.Response {

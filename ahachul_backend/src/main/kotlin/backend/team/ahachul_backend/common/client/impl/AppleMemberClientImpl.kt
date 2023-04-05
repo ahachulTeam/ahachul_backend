@@ -19,10 +19,11 @@ import java.util.*
 @Component
 class AppleMemberClientImpl(
         private val restTemplate: RestTemplate,
-        private val objectMapper: ObjectMapper,
         private val jwtUtils: JwtUtils,
-        private val logger: Logger
 ): AppleMemberClient {
+    val logger: Logger = Logger(javaClass)
+    val objectMapper: ObjectMapper = ObjectMapper()
+
     override fun verifyIdentityToken(identityToken: String, authCode: String): Boolean {
         if (validateIdentityToken(identityToken)) {
             throw CommonException(ResponseCode.INVALID_APPLE_ID_TOKEN)

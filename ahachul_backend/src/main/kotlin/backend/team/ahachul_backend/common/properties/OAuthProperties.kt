@@ -12,6 +12,7 @@ class OAuthProperties(
 
     data class Client(
             val clientId: String,
+            val clientSecret: String?,
             val redirectUri: String
     )
 

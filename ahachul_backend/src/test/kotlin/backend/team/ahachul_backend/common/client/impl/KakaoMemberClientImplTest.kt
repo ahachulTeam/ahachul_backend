@@ -1,7 +1,6 @@
 package backend.team.ahachul_backend.common.client.impl
 
 import backend.team.ahachul_backend.common.client.KakaoMemberClient
-import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
@@ -11,7 +10,6 @@ import org.springframework.boot.test.context.SpringBootTest
 class KakaoMemberClientImplTest(
         @Autowired val kakaoMemberClient: KakaoMemberClient
 ) {
-
     @Test
     @DisplayName("엑세스토큰_발급")
     fun 엑세스토큰_발급() {
