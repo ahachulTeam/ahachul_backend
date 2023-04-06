@@ -17,22 +17,22 @@ class MemberEntity(
         @Column(name = "member_id")
         val id: Long? = null,
 
-        val nickname: String?,
+        var nickname: String?,
 
         val providerUserId: String,
 
         @Enumerated(EnumType.STRING)
         val provider: ProviderType,
 
-        val email: String?,
+        var email: String?,
 
         @Enumerated(EnumType.ORDINAL)
-        val gender: GenderType?,
+        var gender: GenderType?,
 
-        val ageRange: String?,
+        var ageRange: String?,
 
         @Enumerated(EnumType.STRING)
-        val status: MemberStatus
+        var status: MemberStatus
 ): BaseEntity() {
 
         companion object {
@@ -59,5 +59,17 @@ class MemberEntity(
                                 status = MemberStatus.ACTIVE
                         )
                 }
+        }
+
+        fun changeNickname(nickname: String) {
+                this.nickname = nickname
+        }
+
+        fun changeGender(gender: GenderType) {
+                this.gender = gender
+        }
+
+        fun changeAgeRange(ageRange: String) {
+                this.ageRange = ageRange
         }
 }
