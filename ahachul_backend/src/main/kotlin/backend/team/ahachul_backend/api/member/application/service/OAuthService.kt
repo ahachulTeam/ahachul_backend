@@ -1,7 +1,9 @@
 package backend.team.ahachul_backend.api.member.application.service
 
+import backend.team.ahachul_backend.api.member.adapter.web.`in`.dto.GetTokenDto
 import backend.team.ahachul_backend.api.member.adapter.web.`in`.dto.LoginMemberDto
 import backend.team.ahachul_backend.api.member.application.port.`in`.OAuthUseCase
+import backend.team.ahachul_backend.api.member.application.port.`in`.command.GetTokenCommand
 import backend.team.ahachul_backend.api.member.application.port.`in`.command.LoginMemberCommand
 import backend.team.ahachul_backend.api.member.application.port.out.MemberWriter
 import backend.team.ahachul_backend.api.member.domain.entity.MemberEntity
@@ -14,6 +16,7 @@ import backend.team.ahachul_backend.common.properties.JwtProperties
 import backend.team.ahachul_backend.common.utils.JwtUtils
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import java.util.*
 
 @Service
 @Transactional(readOnly=true)
@@ -24,6 +27,10 @@ class OAuthService(
         private val jwtUtils: JwtUtils,
         private val jwtProperties: JwtProperties
 ): OAuthUseCase {
+
+    companion object {
+        const val sevenDaysInMillis = 7 * 24 * 60 * 60 * 1000
+    }
 
     @Transactional
     override fun login(command: LoginMemberCommand): LoginMemberDto.Response {
@@ -40,7 +47,6 @@ class OAuthService(
         }
         return makeLoginResponse(memberId)
     }
-
 
     private fun getKakaoMemberInfo(provideCode: String): KakaoMemberInfoDto {
         val accessToken = kakaoMemberClient.getAccessTokenByCode(provideCode)
@@ -59,6 +65,23 @@ class OAuthService(
                 accessTokenExpiresIn = jwtProperties.accessTokenExpireTime,
                 refreshToken = jwtUtils.createToken(memberId, jwtProperties.refreshTokenExpireTime),
                 refreshTokenExpiresIn = jwtProperties.refreshTokenExpireTime
+        )
+    }
+
+    override fun getToken(command: GetTokenCommand): GetTokenDto.Response {
+        val refreshToken = jwtUtils.verify(command.refreshToken)
+
+        if (refreshToken.body.expiration.after(Date(System.currentTimeMillis() - sevenDaysInMillis))) {
+            return GetTokenDto.Response (
+                    accessToken = jwtUtils.createToken(refreshToken.body.subject, jwtProperties.accessTokenExpireTime),
+                    accessTokenExpiresIn = jwtProperties.accessTokenExpireTime,
+                    refreshToken = jwtUtils.createToken(refreshToken.body.subject, jwtProperties.refreshTokenExpireTime),
+                    refreshTokenExpiresIn = jwtProperties.refreshTokenExpireTime
+            )
+        }
+        return GetTokenDto.Response (
+            accessToken = jwtUtils.createToken(refreshToken.body.subject, jwtProperties.accessTokenExpireTime),
+            accessTokenExpiresIn = jwtProperties.accessTokenExpireTime
         )
     }
 }
