@@ -19,6 +19,10 @@ class Logger(private val clazz: Class<*>) {
         logger.warn { printLog(message, code, stackTrace) }
     }
 
+    fun error(message: String?) {
+        logger.error { message }
+    }
+
     fun error(message: String?, code: ResponseCode, stackTrace: String) {
         logger.error { printLog(message, code, stackTrace) }
     }

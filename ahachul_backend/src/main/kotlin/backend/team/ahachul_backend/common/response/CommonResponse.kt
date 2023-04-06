@@ -1,9 +1,9 @@
 package backend.team.ahachul_backend.common.response
 
 class CommonResponse<T> private constructor(
-        private val code: String,
-        private val message: String,
-        private val result: T?
+        val code: String,
+        val message: String,
+        val result: T?
 ) {
 
     companion object {
