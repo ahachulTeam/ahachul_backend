@@ -13,8 +13,10 @@ import backend.team.ahachul_backend.common.dto.KakaoMemberInfoDto
 import backend.team.ahachul_backend.common.properties.JwtProperties
 import backend.team.ahachul_backend.common.utils.JwtUtils
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
 
 @Service
+@Transactional(readOnly=true)
 class OAuthService(
         private val memberWriter: MemberWriter,
         private val kakaoMemberClient: KakaoMemberClient,
@@ -23,16 +25,17 @@ class OAuthService(
         private val jwtProperties: JwtProperties
 ): OAuthUseCase {
 
+    @Transactional
     override fun login(command: LoginMemberCommand): LoginMemberDto.Response {
         var memberId = ""
-        when (command.providerType) {
+        memberId = when (command.providerType) {
             ProviderType.KAKAO -> {
                 val userInfo = getKakaoMemberInfo(command.providerCode)
-                memberId = memberWriter.save(MemberEntity.of(command, userInfo)).toString()
+                memberWriter.save(MemberEntity.ofKakao(command, userInfo)).toString()
             }
             ProviderType.GOOGLE -> {
-//                val userInfo = getGoogleMemberInfo(command.providerCode)
-//                memberId = memberWriter.save(MemberDomainMapper.toEntity(Member.of(command, userInfo))).toString()
+                val userInfo = getGoogleMemberInfo(command.providerCode)
+                memberWriter.save(MemberEntity.ofGoogle(command, userInfo!!)).toString()
             }
         }
         return makeLoginResponse(memberId)

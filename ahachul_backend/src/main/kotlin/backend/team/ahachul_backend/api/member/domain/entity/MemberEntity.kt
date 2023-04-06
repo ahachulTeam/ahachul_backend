@@ -4,6 +4,7 @@ import backend.team.ahachul_backend.api.member.application.port.`in`.command.Log
 import backend.team.ahachul_backend.api.member.domain.model.GenderType
 import backend.team.ahachul_backend.api.member.domain.model.ProviderType
 import backend.team.ahachul_backend.api.member.domain.model.UserStatus
+import backend.team.ahachul_backend.common.dto.GoogleUserInfoDto
 import backend.team.ahachul_backend.common.dto.KakaoMemberInfoDto
 import backend.team.ahachul_backend.common.entity.BaseEntity
 import jakarta.persistence.*
@@ -27,21 +28,33 @@ class MemberEntity(
         @Enumerated(EnumType.ORDINAL)
         val gender: GenderType?,
 
-        val age: String?, // TODO age -> ageRange
+        val ageRange: String?,
 
         @Enumerated(EnumType.STRING)
         val status: UserStatus
 ): BaseEntity() {
 
         companion object {
-                fun of(command: LoginMemberCommand, userInfo: KakaoMemberInfoDto): MemberEntity {
+                fun ofKakao(command: LoginMemberCommand, userInfo: KakaoMemberInfoDto): MemberEntity {
                         return MemberEntity(
                                 nickname = userInfo.kakaoAccount.profile?.nickname,
                                 providerUserId = userInfo.id,
                                 provider = command.providerType,
                                 email = userInfo.kakaoAccount.email,
                                 gender = userInfo.kakaoAccount.gender?.let { GenderType.of(it) },
-                                age = userInfo.kakaoAccount.ageRange?.let { it.split("~")[0] },
+                                ageRange = userInfo.kakaoAccount.ageRange?.let { it.split("~")[0] },
+                                status = UserStatus.ACTIVE
+                        )
+                }
+
+                fun ofGoogle(command: LoginMemberCommand, userInfo: GoogleUserInfoDto): MemberEntity {
+                        return MemberEntity(
+                                nickname = userInfo.name,
+                                providerUserId = userInfo.id,
+                                provider = command.providerType,
+                                email = userInfo.email,
+                                gender = null,
+                                ageRange = null,
                                 status = UserStatus.ACTIVE
                         )
                 }
