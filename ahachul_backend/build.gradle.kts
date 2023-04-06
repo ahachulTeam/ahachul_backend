@@ -56,6 +56,9 @@ dependencies {
     // https://mvnrepository.com/artifact/org.springframework/spring-webflux
     implementation("org.springframework:spring-webflux:6.0.7")
 
+    // https://mvnrepository.com/artifact/com.h2database/h2
+    runtimeOnly("com.h2database:h2:2.1.214")
+
     implementation("org.jetbrains.kotlin:kotlin-reflect")
     runtimeOnly("com.mysql:mysql-connector-j")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
