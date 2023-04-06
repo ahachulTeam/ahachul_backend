@@ -10,6 +10,7 @@ import org.springframework.http.*
 import org.springframework.stereotype.Component
 import org.springframework.util.LinkedMultiValueMap
 import org.springframework.web.client.RestTemplate
+import java.util.*
 
 @Component
 class GoogleMemberClientImpl(
@@ -17,7 +18,7 @@ class GoogleMemberClientImpl(
     private val oAuthProperties: OAuthProperties
 ): GoogleMemberClient {
     companion object {
-        val PROVIDER = ProviderType.GOOGLE.name
+        val PROVIDER = ProviderType.GOOGLE.toString().lowercase(Locale.getDefault())
     }
 
     private val client :OAuthProperties.Client =  oAuthProperties.client[PROVIDER]!!
