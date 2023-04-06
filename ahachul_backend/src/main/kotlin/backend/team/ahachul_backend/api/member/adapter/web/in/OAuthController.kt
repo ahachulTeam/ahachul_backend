@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RestController
 
 @RestController
 class OAuthController(
-        private val OAuthUseCase: OAuthUseCase
+        private val OAuthUseCase: OAuthUseCase,
 ) {
 
     @GetMapping("/v1/oauth/{provider}/redirect-url")
