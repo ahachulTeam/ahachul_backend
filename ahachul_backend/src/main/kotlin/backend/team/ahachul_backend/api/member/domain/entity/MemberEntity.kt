@@ -3,7 +3,7 @@ package backend.team.ahachul_backend.api.member.domain.entity
 import backend.team.ahachul_backend.api.member.application.port.`in`.command.LoginMemberCommand
 import backend.team.ahachul_backend.api.member.domain.model.GenderType
 import backend.team.ahachul_backend.api.member.domain.model.ProviderType
-import backend.team.ahachul_backend.api.member.domain.model.UserStatus
+import backend.team.ahachul_backend.api.member.domain.model.MemberStatus
 import backend.team.ahachul_backend.common.dto.KakaoMemberInfoDto
 import backend.team.ahachul_backend.common.entity.BaseEntity
 import jakarta.persistence.*
@@ -27,10 +27,10 @@ class MemberEntity(
         @Enumerated(EnumType.ORDINAL)
         val gender: GenderType?,
 
-        val age: String?, // TODO age -> ageRange
+        val ageRange: String?,
 
         @Enumerated(EnumType.STRING)
-        val status: UserStatus
+        val status: MemberStatus
 ): BaseEntity() {
 
         companion object {
@@ -41,8 +41,8 @@ class MemberEntity(
                                 provider = command.providerType,
                                 email = userInfo.kakaoAccount.email,
                                 gender = userInfo.kakaoAccount.gender?.let { GenderType.of(it) },
-                                age = userInfo.kakaoAccount.ageRange?.let { it.split("~")[0] },
-                                status = UserStatus.ACTIVE
+                                ageRange = userInfo.kakaoAccount.ageRange?.let { it.split("~")[0] },
+                                status = MemberStatus.ACTIVE
                         )
                 }
         }
