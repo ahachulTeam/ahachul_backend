@@ -1,6 +1,5 @@
 package backend.team.ahachul_backend.common.interceptor
 
-import backend.team.ahachul_backend.api.member.application.port.out.MemberReader
 import backend.team.ahachul_backend.common.annotation.Authentication
 import backend.team.ahachul_backend.common.exception.CommonException
 import backend.team.ahachul_backend.common.response.ResponseCode
@@ -18,7 +17,6 @@ import org.springframework.web.servlet.HandlerInterceptor
 
 @Component
 class AuthenticationInterceptor(
-        private val memberReader: MemberReader,
         private val jwtUtils: JwtUtils
 ): HandlerInterceptor {
 
@@ -30,10 +28,7 @@ class AuthenticationInterceptor(
             val jwtToken = request.getHeader("Authorization")
             val verifiedJwtToken = jwtUtils.verify(jwtToken)
 
-            val member = memberReader.getMember(verifiedJwtToken.body.subject.toLong())
-
-            RequestUtils.setAttribute("memberId", member.id!!)
-            RequestUtils.setAttribute("nickname", member.nickname!!)
+            RequestUtils.setAttribute("memberId", verifiedJwtToken.body.subject)
 
         } catch (e: Exception) {
             when (e) {

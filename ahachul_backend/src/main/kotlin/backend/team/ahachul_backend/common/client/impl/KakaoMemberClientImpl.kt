@@ -29,12 +29,11 @@ class KakaoMemberClientImpl(
             contentType = MediaType.APPLICATION_FORM_URLENCODED
         }
 
-        val params = linkedMapOf(
-                "grant_type" to "authorization_code",
-                "client_id" to oAuthProperties.client["kakao"]!!.clientId,
-                "redirect_uri" to oAuthProperties.client["kakao"]!!.redirectUri,
-                "code" to code
-        )
+        val params = LinkedMultiValueMap<String, String>()
+        params.add("grant_type", "authorization_code")
+        params.add("client_id", oAuthProperties.client["kakao"]!!.clientId)
+        params.add("redirect_uri", oAuthProperties.client["kakao"]!!.redirectUri)
+        params.add("code", code)
 
         val request = HttpEntity(params, headers)
         val url = oAuthProperties.provider["kakao"]!!.tokenUri
