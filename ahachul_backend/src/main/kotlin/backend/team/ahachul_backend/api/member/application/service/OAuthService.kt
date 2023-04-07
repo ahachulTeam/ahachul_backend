@@ -50,7 +50,7 @@ class OAuthService(
             }
             ProviderType.GOOGLE -> {
                 val userInfo = getGoogleMemberInfo(command.providerCode)
-                val member = memberReader.findMember(userInfo!!.id)
+                val member = memberReader.findMember(userInfo.id)
                 member?.id?.toString() ?: memberWriter.save(MemberEntity.ofGoogle(command, userInfo)).toString()
             }
         }
@@ -62,9 +62,9 @@ class OAuthService(
         return kakaoMemberClient.getMemberInfoByAccessToken(accessToken)
     }
 
-    private fun getGoogleMemberInfo(provideCode: String): GoogleUserInfoDto? {
+    private fun getGoogleMemberInfo(provideCode: String): GoogleUserInfoDto {
         val accessToken = googleMemberClient.getAccessTokenByCode(provideCode)
-        return googleMemberClient.getMemberInfoByAccessToken(accessToken!!)
+        return googleMemberClient.getMemberInfoByAccessToken(accessToken)
     }
 
     private fun makeLoginResponse(memberId: String): LoginMemberDto.Response {

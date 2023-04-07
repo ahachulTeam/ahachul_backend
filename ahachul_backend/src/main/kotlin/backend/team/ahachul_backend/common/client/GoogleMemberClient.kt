@@ -4,7 +4,7 @@ import backend.team.ahachul_backend.common.dto.GoogleUserInfoDto
 
 interface GoogleMemberClient {
 
-    fun getAccessTokenByCode(code: String): String?
+    fun getAccessTokenByCode(code: String): String
 
-    fun getMemberInfoByAccessToken(accessToken: String): GoogleUserInfoDto?
+    fun getMemberInfoByAccessToken(accessToken: String): GoogleUserInfoDto
 }
