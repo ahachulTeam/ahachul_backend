@@ -13,10 +13,14 @@ class OAuthProperties(
     data class Client(
             val clientId: String,
             val clientSecret: String?,
-            val redirectUri: String
+            val redirectUri: String,
+            val scope: String?,
+            val responseType: String,
+            val accessType: String?
     )
 
     data class Provider(
+            val loginUri: String,
             val tokenUri: String,
             val userInfoUri: String
     )
