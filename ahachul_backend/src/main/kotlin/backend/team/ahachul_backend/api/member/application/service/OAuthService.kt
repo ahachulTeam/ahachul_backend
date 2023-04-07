@@ -3,6 +3,7 @@ package backend.team.ahachul_backend.api.member.application.service
 import backend.team.ahachul_backend.api.member.adapter.web.`in`.dto.LoginMemberDto
 import backend.team.ahachul_backend.api.member.application.port.`in`.OAuthUseCase
 import backend.team.ahachul_backend.api.member.application.port.`in`.command.LoginMemberCommand
+import backend.team.ahachul_backend.api.member.application.port.out.MemberReader
 import backend.team.ahachul_backend.api.member.application.port.out.MemberWriter
 import backend.team.ahachul_backend.api.member.domain.entity.MemberEntity
 import backend.team.ahachul_backend.api.member.domain.model.ProviderType
@@ -19,6 +20,7 @@ import org.springframework.transaction.annotation.Transactional
 @Transactional(readOnly=true)
 class OAuthService(
         private val memberWriter: MemberWriter,
+        private val memberReader: MemberReader,
         private val kakaoMemberClient: KakaoMemberClient,
         private val googleMemberClient: GoogleMemberClient,
         private val jwtUtils: JwtUtils,
@@ -27,15 +29,17 @@ class OAuthService(
 
     @Transactional
     override fun login(command: LoginMemberCommand): LoginMemberDto.Response {
-        var memberId = ""
-        memberId = when (command.providerType) {
+        val memberId = when (command.providerType) {
             ProviderType.KAKAO -> {
                 val userInfo = getKakaoMemberInfo(command.providerCode)
-                memberWriter.save(MemberEntity.ofKakao(command, userInfo)).toString()
+                val member = memberReader.findMember(userInfo.id)
+                member?.id?.toString() ?: memberWriter.save(MemberEntity.ofKakao(command, userInfo)).toString()
+
             }
             ProviderType.GOOGLE -> {
                 val userInfo = getGoogleMemberInfo(command.providerCode)
-                memberWriter.save(MemberEntity.ofGoogle(command, userInfo!!)).toString()
+                val member = memberReader.findMember(userInfo!!.id)
+                member?.id?.toString() ?: memberWriter.save(MemberEntity.ofGoogle(command, userInfo)).toString()
             }
         }
         return makeLoginResponse(memberId)

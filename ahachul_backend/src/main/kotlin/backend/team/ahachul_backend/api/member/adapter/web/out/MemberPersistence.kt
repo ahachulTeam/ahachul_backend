@@ -16,8 +16,12 @@ class MemberPersistence(
         return memberRepository.save(memberEntity).id
     }
 
-    override fun getMember(memberId: Long): MemberEntity{
+    override fun getMember(memberId: Long): MemberEntity {
         return memberRepository.findById(memberId)
                 .orElseThrow { throw AdapterException(ResponseCode.INVALID_DOMAIN) }
+    }
+
+    override fun findMember(providerUserId: String): MemberEntity? {
+        return memberRepository.findByProviderUserId(providerUserId)
     }
 }
