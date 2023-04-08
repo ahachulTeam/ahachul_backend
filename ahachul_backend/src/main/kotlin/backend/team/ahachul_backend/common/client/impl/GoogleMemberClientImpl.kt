@@ -37,7 +37,7 @@ class GoogleMemberClientImpl(
         if (response.statusCode == HttpStatus.OK) {
             return objectMapper.readValue(response.body, GoogleAccessTokenDto::class.java).accessToken
         }
-        throw CommonException(ResponseCode.INVALID_AUTHORIZATION_CODE)
+        throw CommonException(ResponseCode.INVALID_OAUTH_AUTHORIZATION_CODE)
     }
 
     private fun getHttpBodyParams(code: String): LinkedMultiValueMap<String, String?>{
@@ -60,6 +60,6 @@ class GoogleMemberClientImpl(
         if (response.statusCode == HttpStatus.OK) {
             return objectMapper.readValue(response.body, GoogleUserInfoDto::class.java)
         }
-        throw CommonException(ResponseCode.INVALID_ID_TOKEN)
+        throw CommonException(ResponseCode.INVALID_OAUTH_ACCESS_TOKEN)
     }
 }
