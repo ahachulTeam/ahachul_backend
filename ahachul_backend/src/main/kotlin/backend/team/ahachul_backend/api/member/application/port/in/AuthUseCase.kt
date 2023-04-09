@@ -7,7 +7,7 @@ import backend.team.ahachul_backend.api.member.application.port.`in`.command.Get
 import backend.team.ahachul_backend.api.member.application.port.`in`.command.GetTokenCommand
 import backend.team.ahachul_backend.api.member.application.port.`in`.command.LoginMemberCommand
 
-interface OAuthUseCase {
+interface AuthUseCase {
 
     fun login(command: LoginMemberCommand): LoginMemberDto.Response
 

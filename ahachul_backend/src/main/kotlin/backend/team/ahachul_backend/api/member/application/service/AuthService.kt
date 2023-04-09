@@ -3,7 +3,7 @@ package backend.team.ahachul_backend.api.member.application.service
 import backend.team.ahachul_backend.api.member.adapter.web.`in`.dto.GetRedirectUrlDto
 import backend.team.ahachul_backend.api.member.adapter.web.`in`.dto.GetTokenDto
 import backend.team.ahachul_backend.api.member.adapter.web.`in`.dto.LoginMemberDto
-import backend.team.ahachul_backend.api.member.application.port.`in`.OAuthUseCase
+import backend.team.ahachul_backend.api.member.application.port.`in`.AuthUseCase
 import backend.team.ahachul_backend.api.member.application.port.`in`.command.GetRedirectUrlCommand
 import backend.team.ahachul_backend.api.member.application.port.`in`.command.GetTokenCommand
 import backend.team.ahachul_backend.api.member.application.port.`in`.command.LoginMemberCommand
@@ -25,7 +25,7 @@ import java.util.*
 
 @Service
 @Transactional(readOnly=true)
-class OAuthService(
+class AuthService(
         private val memberWriter: MemberWriter,
         private val memberReader: MemberReader,
         private val kakaoMemberClient: KakaoMemberClient,
@@ -33,7 +33,7 @@ class OAuthService(
         private val jwtUtils: JwtUtils,
         private val jwtProperties: JwtProperties,
         private val oAuthProperties: OAuthProperties,
-): OAuthUseCase {
+): AuthUseCase {
 
     companion object {
         const val sevenDaysInMillis = 7 * 24 * 60 * 60 * 1000
