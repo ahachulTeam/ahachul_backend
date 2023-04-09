@@ -21,6 +21,7 @@ class LoginMemberDto {
 
     data class Response(
             val memberId: String,
+            val isNeedAdditionalUserInfo: Boolean,
             val accessToken: String,
             val accessTokenExpiresIn: Long,
             val refreshToken: String,

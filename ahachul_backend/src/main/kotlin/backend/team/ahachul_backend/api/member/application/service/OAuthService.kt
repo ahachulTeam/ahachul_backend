@@ -41,20 +41,19 @@ class OAuthService(
 
     @Transactional
     override fun login(command: LoginMemberCommand): LoginMemberDto.Response {
-        val memberId = when (command.providerType) {
+        val member = when (command.providerType) {
             ProviderType.KAKAO -> {
                 val userInfo = getKakaoMemberInfo(command.providerCode)
                 val member = memberReader.findMember(userInfo.id)
-                member?.id?.toString() ?: memberWriter.save(MemberEntity.ofKakao(command, userInfo)).toString()
-
+                member ?: memberWriter.save(MemberEntity.ofKakao(command, userInfo))
             }
             ProviderType.GOOGLE -> {
                 val userInfo = getGoogleMemberInfo(command.providerCode)
                 val member = memberReader.findMember(userInfo.id)
-                member?.id?.toString() ?: memberWriter.save(MemberEntity.ofGoogle(command, userInfo)).toString()
+                member ?: memberWriter.save(MemberEntity.ofGoogle(command, userInfo))
             }
         }
-        return makeLoginResponse(memberId)
+        return makeLoginResponse(member.id.toString(), member.isNeedAdditionalUserInfo())
     }
 
     private fun getKakaoMemberInfo(provideCode: String): KakaoMemberInfoDto {
@@ -67,9 +66,10 @@ class OAuthService(
         return googleMemberClient.getMemberInfoByAccessToken(accessToken)
     }
 
-    private fun makeLoginResponse(memberId: String): LoginMemberDto.Response {
+    private fun makeLoginResponse(memberId: String, isNeedAdditionalUserInfo: Boolean): LoginMemberDto.Response {
         return LoginMemberDto.Response(
                 memberId = memberId,
+                isNeedAdditionalUserInfo = isNeedAdditionalUserInfo,
                 accessToken = jwtUtils.createToken(memberId, jwtProperties.accessTokenExpireTime),
                 accessTokenExpiresIn = jwtProperties.accessTokenExpireTime,
                 refreshToken = jwtUtils.createToken(memberId, jwtProperties.refreshTokenExpireTime),

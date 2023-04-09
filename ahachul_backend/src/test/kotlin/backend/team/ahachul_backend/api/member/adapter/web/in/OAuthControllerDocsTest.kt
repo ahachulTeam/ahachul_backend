@@ -82,6 +82,7 @@ class OAuthControllerDocsTest(
         // given
         val response = LoginMemberDto.Response(
                 memberId = 1.toString(),
+                isNeedAdditionalUserInfo = true,
                 accessToken = "accessToken",
                 accessTokenExpiresIn = 3600,
                 refreshToken = "refreshToken",
@@ -117,6 +118,7 @@ class OAuthControllerDocsTest(
                                 fieldWithPath("code").type(JsonFieldType.STRING).description("상태 코드"),
                                 fieldWithPath("message").type(JsonFieldType.STRING).description("상태 메시지"),
                                 fieldWithPath("result.memberId").type(JsonFieldType.STRING).description("사용자 Identification Key"),
+                                fieldWithPath("result.isNeedAdditionalUserInfo").type(JsonFieldType.BOOLEAN).description("사용자 추가 정보 입력 여부"),
                                 fieldWithPath("result.accessToken").type(JsonFieldType.STRING).description("엑세스 토큰. 만료 기간 : 1시간"),
                                 fieldWithPath("result.accessTokenExpiresIn").type(JsonFieldType.NUMBER).description("엑세스 토큰 만료 기간"),
                                 fieldWithPath("result.refreshToken").type(JsonFieldType.STRING).description("리프레쉬 토큰. 만료 기간 : 30일"),

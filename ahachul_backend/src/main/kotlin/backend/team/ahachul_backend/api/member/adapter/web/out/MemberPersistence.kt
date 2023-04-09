@@ -12,8 +12,8 @@ class MemberPersistence(
         private val memberRepository: MemberRepository
 ): MemberReader, MemberWriter {
 
-    override fun save(memberEntity: MemberEntity): Long? {
-        return memberRepository.save(memberEntity).id
+    override fun save(memberEntity: MemberEntity): MemberEntity {
+        return memberRepository.save(memberEntity)
     }
 
     override fun getMember(memberId: Long): MemberEntity {

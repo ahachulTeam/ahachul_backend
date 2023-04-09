@@ -4,5 +4,5 @@ import backend.team.ahachul_backend.api.member.domain.entity.MemberEntity
 
 interface MemberWriter {
 
-    fun save(memberEntity: MemberEntity): Long?
+    fun save(memberEntity: MemberEntity): MemberEntity
 }
