@@ -35,9 +35,9 @@ class OAuthController(
     }
 
     @PostMapping("/v1/oauth/token/refresh")
-    fun getToken(@RequestBody request: GetTokenDto.Request): GetTokenDto.Response {
+    fun getToken(@RequestBody request: GetTokenDto.Request): CommonResponse<GetTokenDto.Response> {
         try {
-            return oAuthUseCase.getToken(request.toCommand())
+            return CommonResponse.success(oAuthUseCase.getToken(request.toCommand()))
         } catch (e: Exception) {
             throw when (e) {
                 is SignatureException, is UnsupportedJwtException, is IllegalArgumentException, is MalformedJwtException -> CommonException(ResponseCode.INVALID_REFRESH_TOKEN)
