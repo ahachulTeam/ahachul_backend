@@ -67,7 +67,7 @@ class OAuthControllerDocsTest(
                         preprocessRequest(prettyPrint()),
                         preprocessResponse(prettyPrint()),
                         queryParameters(
-                                parameterWithName("providerType").description("플랫폼 타입 EX) KAKAO, GOOGLE")
+                                parameterWithName("providerType").description("플랫폼 타입. EX) KAKAO, GOOGLE")
                         ),
                         responseFields(
                                 fieldWithPath("code").type(JsonFieldType.STRING).description("상태 코드"),
@@ -110,7 +110,7 @@ class OAuthControllerDocsTest(
                         preprocessRequest(prettyPrint()),
                         preprocessResponse(prettyPrint()),
                         requestFields(
-                                fieldWithPath("providerType").type(ProviderType::class).description("플랫폼 타입 EX) KAKAO, GOOGLE"),
+                                fieldWithPath("providerType").type("ProviderType").description("플랫폼 타입. EX) KAKAO, GOOGLE"),
                                 fieldWithPath("providerCode").type(JsonFieldType.STRING).description("인가 코드")
                         ),
                         responseFields(

@@ -1,11 +1,3 @@
-= REST API
-:toc: left
-:toc-title: Contents
-:toclevels: 3
-:source-highlighter: highlightjs
-
-== Member
-
 === /oauth
 
 ==== 리다이렉트 조회 API
@@ -40,8 +32,6 @@ include::{snippets}/get-token/request-fields.adoc[]
 include::{snippets}/get-token/http-response.adoc[]
 .Response Fields
 include::{snippets}/get-token/response-fields.adoc[]
-
-=== /members
 
 ==== 사용자 조회 API
 

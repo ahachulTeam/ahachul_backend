@@ -69,7 +69,7 @@ class MemberControllerDocsTest(
 
         // then
         result.andExpect(status().isOk)
-                .andDo(document("get-members",
+                .andDo(document("get-member",
                         preprocessRequest(Preprocessors.prettyPrint()),
                         preprocessResponse(Preprocessors.prettyPrint()),
                         requestHeaders(
@@ -81,7 +81,7 @@ class MemberControllerDocsTest(
                                 fieldWithPath("result.memberId").type(JsonFieldType.NUMBER).description("사용자 Identification Key"),
                                 fieldWithPath("result.nickname").type(JsonFieldType.STRING).description("사용자 닉네임"),
                                 fieldWithPath("result.email").type(JsonFieldType.STRING).description("사용자 이메일"),
-                                fieldWithPath("result.gender").type("GenderType").description("사용자 성별"),
+                                fieldWithPath("result.gender").type("GenderType").description("사용자 성별. EX) MALE, FEMALE"),
                                 fieldWithPath("result.ageRange").type(JsonFieldType.STRING).description("사용자 연령대"),
                         ))
                 )
@@ -132,7 +132,7 @@ class MemberControllerDocsTest(
                                 fieldWithPath("code").type(JsonFieldType.STRING).description("상태 코드"),
                                 fieldWithPath("message").type(JsonFieldType.STRING).description("상태 메시지"),
                                 fieldWithPath("result.nickname").type(JsonFieldType.STRING).description("사용자 닉네임"),
-                                fieldWithPath("result.gender").type("GenderType").description("사용자 성별"),
+                                fieldWithPath("result.gender").type("GenderType").description("사용자 성별. EX) MALE, FEMALE"),
                                 fieldWithPath("result.ageRange").type(JsonFieldType.STRING).description("사용자 연령대"),
                         ))
                 )
