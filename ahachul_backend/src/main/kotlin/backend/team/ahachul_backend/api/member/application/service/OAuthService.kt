@@ -50,7 +50,7 @@ class OAuthService(
             }
             ProviderType.GOOGLE -> {
                 val userInfo = getGoogleMemberInfo(command.providerCode)
-                val member = memberReader.findMember(userInfo!!.id)
+                val member = memberReader.findMember(userInfo.id)
                 member?.id?.toString() ?: memberWriter.save(MemberEntity.ofGoogle(command, userInfo)).toString()
             }
         }
@@ -62,9 +62,9 @@ class OAuthService(
         return kakaoMemberClient.getMemberInfoByAccessToken(accessToken)
     }
 
-    private fun getGoogleMemberInfo(provideCode: String): GoogleUserInfoDto? {
+    private fun getGoogleMemberInfo(provideCode: String): GoogleUserInfoDto {
         val accessToken = googleMemberClient.getAccessTokenByCode(provideCode)
-        return googleMemberClient.getMemberInfoByAccessToken(accessToken!!)
+        return googleMemberClient.getMemberInfoByAccessToken(accessToken)
     }
 
     private fun makeLoginResponse(memberId: String): LoginMemberDto.Response {
@@ -96,22 +96,23 @@ class OAuthService(
 
     override fun getRedirectUrl(command: GetRedirectUrlCommand): GetRedirectUrlDto.Response {
         val providerTypeStr = command.providerType.toString().lowercase()
-        val client = oAuthProperties.client[providerTypeStr]
+        val client = oAuthProperties.client[providerTypeStr]!!
+        val provider = oAuthProperties.provider[providerTypeStr]!!
 
         return GetRedirectUrlDto.Response(
             when (command.providerType) {
-                ProviderType.KAKAO -> UriComponentsBuilder.fromUriString("https://kauth.kakao.com/oauth/authorize")
-                        .queryParam("client_id", client!!.clientId)
+                ProviderType.KAKAO -> UriComponentsBuilder.fromUriString(provider.loginUri)
+                        .queryParam("client_id", client.clientId)
                         .queryParam("redirect_uri", client.redirectUri)
-                        .queryParam("response_type", "code")
+                        .queryParam("response_type", client.responseType)
                         .build()
                         .toString()
-                ProviderType.GOOGLE -> UriComponentsBuilder.fromUriString("https://accounts.google.com/o/oauth2/v2/auth")
-                        .queryParam("client_id", client!!.clientId)
+                ProviderType.GOOGLE -> UriComponentsBuilder.fromUriString(provider.loginUri)
+                        .queryParam("client_id", client.clientId)
                         .queryParam("redirect_uri", client.redirectUri)
-                        .queryParam("access_type", "offline")
-                        .queryParam("response_type", "code")
-                        .queryParam("scope", "https://www.googleapis.com/auth/userinfo.email https://www.googleapis.com/auth/userinfo.profile")
+                        .queryParam("access_type", client.accessType)
+                        .queryParam("response_type", client.responseType)
+                        .queryParam("scope", client.scope)
                         .build()
                         .toString()
         })

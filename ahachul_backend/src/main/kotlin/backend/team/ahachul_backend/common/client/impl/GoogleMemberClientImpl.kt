@@ -4,7 +4,9 @@ import backend.team.ahachul_backend.api.member.domain.model.ProviderType
 import backend.team.ahachul_backend.common.client.GoogleMemberClient
 import backend.team.ahachul_backend.common.dto.GoogleAccessTokenDto
 import backend.team.ahachul_backend.common.dto.GoogleUserInfoDto
+import backend.team.ahachul_backend.common.exception.CommonException
 import backend.team.ahachul_backend.common.properties.OAuthProperties
+import backend.team.ahachul_backend.common.response.ResponseCode
 import com.fasterxml.jackson.databind.ObjectMapper
 import org.springframework.http.*
 import org.springframework.stereotype.Component
@@ -25,7 +27,7 @@ class GoogleMemberClientImpl(
     private val provider :OAuthProperties.Provider =  oAuthProperties.provider[PROVIDER]!!
     val objectMapper: ObjectMapper = ObjectMapper()
 
-    override fun getAccessTokenByCode(code: String): String? {
+    override fun getAccessTokenByCode(code: String): String {
         val headers = HttpHeaders().apply {
             contentType = MediaType.APPLICATION_FORM_URLENCODED
         }
@@ -35,7 +37,7 @@ class GoogleMemberClientImpl(
         if (response.statusCode == HttpStatus.OK) {
             return objectMapper.readValue(response.body, GoogleAccessTokenDto::class.java).accessToken
         }
-        return null
+        throw CommonException(ResponseCode.INVALID_OAUTH_AUTHORIZATION_CODE)
     }
 
     private fun getHttpBodyParams(code: String): LinkedMultiValueMap<String, String?>{
@@ -48,7 +50,7 @@ class GoogleMemberClientImpl(
         return params
     }
 
-    override fun getMemberInfoByAccessToken(accessToken: String): GoogleUserInfoDto? {
+    override fun getMemberInfoByAccessToken(accessToken: String): GoogleUserInfoDto {
         val headers = HttpHeaders().apply {
             setBearerAuth(accessToken)
         }
@@ -57,7 +59,7 @@ class GoogleMemberClientImpl(
 
         if (response.statusCode == HttpStatus.OK) {
             return objectMapper.readValue(response.body, GoogleUserInfoDto::class.java)
-         }
-        return null
+        }
+        throw CommonException(ResponseCode.INVALID_OAUTH_ACCESS_TOKEN)
     }
 }
