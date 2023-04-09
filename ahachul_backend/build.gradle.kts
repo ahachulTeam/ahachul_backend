@@ -104,7 +104,7 @@ tasks {
         }
 
         sources {
-            include("**/index.adoc")
+            include("**/*.adoc")
         }
         dependsOn(test)
     }

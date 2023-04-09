@@ -1,0 +1,25 @@
+=== /members
+
+==== 사용자 조회 API
+
+.Request
+include::{snippets}/get-member/http-request.adoc[]
+.Headers
+include::{snippets}/get-member/request-headers.adoc[]
+.Response
+include::{snippets}/get-member/http-response.adoc[]
+.Response Fields
+include::{snippets}/get-member/response-fields.adoc[]
+
+==== 사용자 정보 수정 API
+
+.Request
+include::{snippets}/update-member/http-request.adoc[]
+.Request Headers
+include::{snippets}/update-member/request-headers.adoc[]
+.Request Fields
+include::{snippets}/update-member/request-fields.adoc[]
+.Response
+include::{snippets}/update-member/http-response.adoc[]
+.Response Fields
+include::{snippets}/update-member/response-fields.adoc[]
