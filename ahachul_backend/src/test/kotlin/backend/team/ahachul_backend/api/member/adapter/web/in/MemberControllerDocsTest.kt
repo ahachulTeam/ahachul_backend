@@ -63,7 +63,7 @@ class MemberControllerDocsTest(
         // when
         val result = mockMvc.perform(
                 get("/v1/members")
-                        .header("Authorization", "Access Token")
+                        .header("Authorization", "<Access Token>")
                         .accept(MediaType.APPLICATION_JSON)
         )
 
@@ -108,7 +108,7 @@ class MemberControllerDocsTest(
         // when
         val result = mockMvc.perform(
                 patch("/v1/members")
-                        .header("Authorization", "Access Token")
+                        .header("Authorization", "<Access Token>")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request))
                         .accept(MediaType.APPLICATION_JSON)
@@ -124,7 +124,7 @@ class MemberControllerDocsTest(
                         ),
                         requestFields(
                                 fieldWithPath("nickname").type(JsonFieldType.STRING).description("사용자 닉네임"),
-                                fieldWithPath("gender").type("GenderType").description("사용자 성별"),
+                                fieldWithPath("gender").type("GenderType").description("사용자 성별. EX) MALE, FEMALE"),
                                 fieldWithPath("ageRange").type(JsonFieldType.STRING).description("사용자 연령대"),
 
                         ),

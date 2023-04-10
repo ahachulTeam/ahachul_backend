@@ -30,7 +30,9 @@ include::{snippets}/login/http-response.adoc[]
 .Response Fields
 include::{snippets}/login/response-fields.adoc[]
 
-==== 엑세스 토큰 재발급 API
+==== 토큰 재발급 API
+
+- 리프레쉬 토큰 만료 기간이 7일보다 적게 남았을 경우 리프레쉬 토큰 또한 재발급
 
 .Request
 include::{snippets}/get-token/http-request.adoc[]
