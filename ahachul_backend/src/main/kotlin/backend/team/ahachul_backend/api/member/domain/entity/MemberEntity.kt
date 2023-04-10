@@ -72,4 +72,8 @@ class MemberEntity(
         fun changeAgeRange(ageRange: String) {
                 this.ageRange = ageRange
         }
+
+        fun isNeedAdditionalUserInfo(): Boolean {
+                return nickname == null || gender == null || ageRange == null
+        }
 }

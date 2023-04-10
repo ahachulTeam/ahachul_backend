@@ -3,7 +3,7 @@ package backend.team.ahachul_backend.api.member.adapter.web.`in`
 import backend.team.ahachul_backend.api.member.adapter.web.`in`.dto.GetRedirectUrlDto
 import backend.team.ahachul_backend.api.member.adapter.web.`in`.dto.GetTokenDto
 import backend.team.ahachul_backend.api.member.adapter.web.`in`.dto.LoginMemberDto
-import backend.team.ahachul_backend.api.member.application.port.`in`.OAuthUseCase
+import backend.team.ahachul_backend.api.member.application.port.`in`.AuthUseCase
 import backend.team.ahachul_backend.api.member.domain.model.ProviderType
 import backend.team.ahachul_backend.common.interceptor.AuthenticationInterceptor
 import com.fasterxml.jackson.databind.ObjectMapper
@@ -28,14 +28,14 @@ import org.springframework.restdocs.request.RequestDocumentation.*
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 
-@WebMvcTest(OAuthController::class)
+@WebMvcTest(AuthController::class)
 @AutoConfigureRestDocs
-class OAuthControllerDocsTest(
+class AuthControllerDocsTest(
         @Autowired val mockMvc: MockMvc,
         @Autowired val objectMapper: ObjectMapper,
 ) {
 
-    @MockBean lateinit var oAuthUseCase: OAuthUseCase
+    @MockBean lateinit var authUseCase: AuthUseCase
     @MockBean lateinit var authenticationInterceptor: AuthenticationInterceptor
     @MockBean lateinit var jpaMetamodelMappingContext: JpaMetamodelMappingContext
 
@@ -51,12 +51,12 @@ class OAuthControllerDocsTest(
                 redirectUrl = "redirectUrl"
         )
 
-        given(oAuthUseCase.getRedirectUrl(any()))
+        given(authUseCase.getRedirectUrl(any()))
                 .willReturn(response)
 
         // when
         val result = mockMvc.perform(
-                get("/v1/oauth/redirect-url")
+                get("/v1/auth/redirect-url")
                         .param("providerType", ProviderType.KAKAO.toString())
                         .accept(MediaType.APPLICATION_JSON)
         )
@@ -82,13 +82,14 @@ class OAuthControllerDocsTest(
         // given
         val response = LoginMemberDto.Response(
                 memberId = 1.toString(),
+                isNeedAdditionalUserInfo = true,
                 accessToken = "accessToken",
                 accessTokenExpiresIn = 3600,
                 refreshToken = "refreshToken",
                 refreshTokenExpiresIn = 259200
         )
 
-        given(oAuthUseCase.login(any()))
+        given(authUseCase.login(any()))
                 .willReturn(response)
 
         val request = LoginMemberDto.Request(
@@ -98,7 +99,7 @@ class OAuthControllerDocsTest(
 
         // when
         val result = mockMvc.perform(
-                post("/v1/oauth/login")
+                post("/v1/auth/login")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request))
                         .accept(MediaType.APPLICATION_JSON)
@@ -117,6 +118,7 @@ class OAuthControllerDocsTest(
                                 fieldWithPath("code").type(JsonFieldType.STRING).description("상태 코드"),
                                 fieldWithPath("message").type(JsonFieldType.STRING).description("상태 메시지"),
                                 fieldWithPath("result.memberId").type(JsonFieldType.STRING).description("사용자 Identification Key"),
+                                fieldWithPath("result.isNeedAdditionalUserInfo").type(JsonFieldType.BOOLEAN).description("사용자 추가 정보 입력 여부"),
                                 fieldWithPath("result.accessToken").type(JsonFieldType.STRING).description("엑세스 토큰. 만료 기간 : 1시간"),
                                 fieldWithPath("result.accessTokenExpiresIn").type(JsonFieldType.NUMBER).description("엑세스 토큰 만료 기간"),
                                 fieldWithPath("result.refreshToken").type(JsonFieldType.STRING).description("리프레쉬 토큰. 만료 기간 : 30일"),
@@ -135,7 +137,7 @@ class OAuthControllerDocsTest(
                 refreshTokenExpiresIn = 259200
         )
 
-        given(oAuthUseCase.getToken(any()))
+        given(authUseCase.getToken(any()))
                 .willReturn(response)
 
         val request = GetTokenDto.Request(
@@ -144,7 +146,7 @@ class OAuthControllerDocsTest(
 
         // when
         val result = mockMvc.perform(
-                post("/v1/oauth/token/refresh")
+                post("/v1/auth/token/refresh")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request))
                         .accept(MediaType.APPLICATION_JSON)
