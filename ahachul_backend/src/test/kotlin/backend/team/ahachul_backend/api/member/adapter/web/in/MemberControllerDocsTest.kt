@@ -79,10 +79,10 @@ class MemberControllerDocsTest(
                                 fieldWithPath("code").type(JsonFieldType.STRING).description("상태 코드"),
                                 fieldWithPath("message").type(JsonFieldType.STRING).description("상태 메시지"),
                                 fieldWithPath("result.memberId").type(JsonFieldType.NUMBER).description("사용자 Identification Key"),
-                                fieldWithPath("result.nickname").type(JsonFieldType.STRING).description("사용자 닉네임"),
-                                fieldWithPath("result.email").type(JsonFieldType.STRING).description("사용자 이메일"),
-                                fieldWithPath("result.gender").type("GenderType").description("사용자 성별. EX) MALE, FEMALE"),
-                                fieldWithPath("result.ageRange").type(JsonFieldType.STRING).description("사용자 연령대"),
+                                fieldWithPath("result.nickname").type(JsonFieldType.STRING).description("사용자 닉네임").optional(),
+                                fieldWithPath("result.email").type(JsonFieldType.STRING).description("사용자 이메일").optional(),
+                                fieldWithPath("result.gender").type("GenderType").description("사용자 성별. EX) MALE, FEMALE").optional(),
+                                fieldWithPath("result.ageRange").type(JsonFieldType.STRING).description("사용자 연령대").optional(),
                         ))
                 )
     }
