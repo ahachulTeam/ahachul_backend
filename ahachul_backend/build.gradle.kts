@@ -96,13 +96,6 @@ tasks {
 
         inputs.dir(snippetsDir)
 
-        doLast {
-            copy {
-                from("build/docs/asciidoc")
-                into("src/main/resources/static/docs")
-            }
-        }
-
         sources {
             include("**/*.adoc")
         }
@@ -111,6 +104,14 @@ tasks {
 
     build {
         dependsOn(asciidoctor)
+    }
+}
+
+tasks.register<Copy>("copyDocument") {
+    dependsOn(":build")
+    copy {
+        from("build/docs/asciidoc")
+        into("src/main/resources/static/docs")
     }
 }
 
