@@ -3,7 +3,7 @@ package backend.team.ahachul_backend.api.member.adapter.web.`in`
 import backend.team.ahachul_backend.api.member.adapter.web.`in`.dto.GetRedirectUrlDto
 import backend.team.ahachul_backend.api.member.adapter.web.`in`.dto.GetTokenDto
 import backend.team.ahachul_backend.api.member.adapter.web.`in`.dto.LoginMemberDto
-import backend.team.ahachul_backend.api.member.application.port.`in`.OAuthUseCase
+import backend.team.ahachul_backend.api.member.application.port.`in`.AuthUseCase
 import backend.team.ahachul_backend.api.member.application.port.`in`.command.GetRedirectUrlCommand
 import backend.team.ahachul_backend.api.member.domain.model.ProviderType
 import backend.team.ahachul_backend.common.exception.CommonException
@@ -20,24 +20,24 @@ import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
 
 @RestController
-class OAuthController(
-        private val oAuthUseCase: OAuthUseCase,
+class AuthController(
+        private val authUseCase: AuthUseCase,
 ) {
 
-    @GetMapping("/v1/oauth/redirect-url")
+    @GetMapping("/v1/auth/redirect-url")
     fun getRedirectUrl(@RequestParam providerType: ProviderType): CommonResponse<GetRedirectUrlDto.Response> {
-        return CommonResponse.success(oAuthUseCase.getRedirectUrl(GetRedirectUrlCommand(providerType)))
+        return CommonResponse.success(authUseCase.getRedirectUrl(GetRedirectUrlCommand(providerType)))
     }
 
-    @PostMapping("/v1/oauth/login")
+    @PostMapping("/v1/auth/login")
     fun login(@RequestBody request: LoginMemberDto.Request): CommonResponse<LoginMemberDto.Response> {
-        return CommonResponse.success(oAuthUseCase.login(request.toCommand()))
+        return CommonResponse.success(authUseCase.login(request.toCommand()))
     }
 
-    @PostMapping("/v1/oauth/token/refresh")
+    @PostMapping("/v1/auth/token/refresh")
     fun getToken(@RequestBody request: GetTokenDto.Request): CommonResponse<GetTokenDto.Response> {
         try {
-            return CommonResponse.success(oAuthUseCase.getToken(request.toCommand()))
+            return CommonResponse.success(authUseCase.getToken(request.toCommand()))
         } catch (e: Exception) {
             throw when (e) {
                 is SignatureException, is UnsupportedJwtException, is IllegalArgumentException, is MalformedJwtException -> CommonException(ResponseCode.INVALID_REFRESH_TOKEN)
