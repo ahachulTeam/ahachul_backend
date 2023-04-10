@@ -75,42 +75,27 @@ tasks.withType<Test> {
     useJUnitPlatform()
 }
 
+val snippetsDir by extra {
+    file("build/generated-snippets")
+}
+
 tasks {
-    val snippetsDir = file("build/generated-snippets")
-
-    test {
-        outputs.dir(snippetsDir)
-        useJUnitPlatform()
-    }
-
     asciidoctor {
-        configurations(asciidoctorExt.name)
-
-        doFirst {
-            delete("src/main/resources/static/docs")
-        }
-
-        forkOptions {
-            jvmArgs("--add-opens", "java.base/sun.nio.ch=ALL-UNNAMED", "--add-opens", "java.base/java.io=ALL-UNNAMED")
-        }
-
-        inputs.dir(snippetsDir)
-
-        doLast {
-            copy {
-                from("build/docs/asciidoc")
-                into("src/main/resources/static/docs")
-            }
-        }
-
-        sources {
-            include("**/*.adoc")
-        }
         dependsOn(test)
+        configurations("asciidoctorExt")
+        baseDirFollowsSourceFile()
+        inputs.dir(snippetsDir)
     }
-
-    build {
+    register<Copy>("copyDocument") {
         dependsOn(asciidoctor)
+        from(file("build/docs/asciidoc"))
+        into(file("src/main/resources/static/docs"))
+    }
+    bootJar {
+        dependsOn("copyDocument")
+        from(asciidoctor.get().outputDir) {
+            into("BOOT-INF/classes/static/docs")
+        }
     }
 }
 
