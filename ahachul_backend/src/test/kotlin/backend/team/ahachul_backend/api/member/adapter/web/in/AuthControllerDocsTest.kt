@@ -165,8 +165,8 @@ class AuthControllerDocsTest(
                                 fieldWithPath("message").type(JsonFieldType.STRING).description("상태 메시지"),
                                 fieldWithPath("result.accessToken").type(JsonFieldType.STRING).description("엑세스 토큰. 만료 기간 : 1시간"),
                                 fieldWithPath("result.accessTokenExpiresIn").type(JsonFieldType.NUMBER).description("엑세스 토큰 만료 기간"),
-                                fieldWithPath("result.refreshToken").type(JsonFieldType.STRING).description("리프레쉬 토큰. 만료 기간 : 30일"),
-                                fieldWithPath("result.refreshTokenExpiresIn").type(JsonFieldType.NUMBER).description("리프레쉬 토큰 만료 기간"),
+                                fieldWithPath("result.refreshToken").type(JsonFieldType.STRING).description("리프레쉬 토큰. 만료 기간 : 30일").optional(),
+                                fieldWithPath("result.refreshTokenExpiresIn").type(JsonFieldType.NUMBER).description("리프레쉬 토큰 만료 기간").optional(),
                         )),
                 )
     }
