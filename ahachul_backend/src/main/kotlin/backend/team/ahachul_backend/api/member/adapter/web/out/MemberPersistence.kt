@@ -24,4 +24,8 @@ class MemberPersistence(
     override fun findMember(providerUserId: String): MemberEntity? {
         return memberRepository.findByProviderUserId(providerUserId)
     }
+
+    override fun existMember(nickname: String): Boolean {
+        return memberRepository.existsByNickname(nickname)
+    }
 }

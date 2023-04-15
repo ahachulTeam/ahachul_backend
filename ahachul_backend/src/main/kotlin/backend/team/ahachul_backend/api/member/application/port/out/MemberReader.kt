@@ -7,4 +7,6 @@ interface MemberReader {
     fun getMember(memberId: Long): MemberEntity
 
     fun findMember(providerUserId: String): MemberEntity?
+
+    fun existMember(nickname: String): Boolean
 }

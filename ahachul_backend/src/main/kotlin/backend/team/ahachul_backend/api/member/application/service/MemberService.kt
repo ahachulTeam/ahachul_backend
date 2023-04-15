@@ -1,8 +1,10 @@
 package backend.team.ahachul_backend.api.member.application.service
 
+import backend.team.ahachul_backend.api.member.adapter.web.`in`.dto.CheckNicknameDto
 import backend.team.ahachul_backend.api.member.adapter.web.`in`.dto.GetMemberDto
 import backend.team.ahachul_backend.api.member.adapter.web.`in`.dto.UpdateMemberDto
 import backend.team.ahachul_backend.api.member.application.port.`in`.MemberUseCase
+import backend.team.ahachul_backend.api.member.application.port.`in`.command.CheckNicknameCommand
 import backend.team.ahachul_backend.api.member.application.port.`in`.command.UpdateMemberCommand
 import backend.team.ahachul_backend.api.member.application.port.out.MemberReader
 import backend.team.ahachul_backend.common.utils.RequestUtils
@@ -21,15 +23,21 @@ class MemberService(
     }
 
     @Transactional
-    override fun updateMember(updateMemberCommand: UpdateMemberCommand): UpdateMemberDto.Response {
+    override fun updateMember(command: UpdateMemberCommand): UpdateMemberDto.Response {
         val member = memberReader.getMember(RequestUtils.getAttribute("memberId").toLong())
-        member.changeNickname(updateMemberCommand.nickname)
-        member.changeGender(updateMemberCommand.gender)
-        member.changeAgeRange(updateMemberCommand.ageRange)
+        member.changeNickname(command.nickname)
+        member.changeGender(command.gender)
+        member.changeAgeRange(command.ageRange)
         return UpdateMemberDto.Response.of(
                 nickname = member.nickname!!,
                 gender = member.gender!!,
                 ageRange = member.ageRange!!
+        )
+    }
+
+    override fun checkNickname(command: CheckNicknameCommand): CheckNicknameDto.Response {
+        return CheckNicknameDto.Response.of(
+            available = !memberReader.existMember(command.nickname)
         )
     }
 }

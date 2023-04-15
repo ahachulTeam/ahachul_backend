@@ -2,6 +2,7 @@ package backend.team.ahachul_backend.api.member.application.service
 
 import backend.team.ahachul_backend.api.member.adapter.web.out.MemberRepository
 import backend.team.ahachul_backend.api.member.application.port.`in`.MemberUseCase
+import backend.team.ahachul_backend.api.member.application.port.`in`.command.CheckNicknameCommand
 import backend.team.ahachul_backend.api.member.application.port.`in`.command.UpdateMemberCommand
 import backend.team.ahachul_backend.api.member.domain.entity.MemberEntity
 import backend.team.ahachul_backend.api.member.domain.model.GenderType
@@ -70,5 +71,25 @@ class MemberServiceTest(
         assertThat(result.nickname).isEqualTo("afterNickname")
         assertThat(result.gender).isEqualTo(GenderType.FEMALE)
         assertThat(result.ageRange).isEqualTo("30")
+    }
+
+    @Test
+    @DisplayName("사용자 닉네임 사용 가능 여부 체크")
+    fun 사용자_닉네임_사용가능_여부_체크() {
+        // given
+        val availableCommand = CheckNicknameCommand(
+            nickname = "nickname2"
+        )
+        val unavailableCommand = CheckNicknameCommand(
+            nickname = "nickname"
+        )
+
+        // when
+        val availableResult = memberUseCase.checkNickname(availableCommand)
+        val unavailableResult = memberUseCase.checkNickname(unavailableCommand)
+
+        // then
+        assertThat(availableResult.available).isEqualTo(true)
+        assertThat(unavailableResult.available).isEqualTo(false)
     }
 }
