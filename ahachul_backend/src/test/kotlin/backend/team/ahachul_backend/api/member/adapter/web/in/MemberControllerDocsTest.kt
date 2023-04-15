@@ -82,7 +82,7 @@ class MemberControllerDocsTest(
                                 fieldWithPath("result.nickname").type(JsonFieldType.STRING).description("사용자 닉네임").optional(),
                                 fieldWithPath("result.email").type(JsonFieldType.STRING).description("사용자 이메일").optional(),
                                 fieldWithPath("result.gender").type("GenderType").description("사용자 성별. EX) MALE, FEMALE").optional(),
-                                fieldWithPath("result.ageRange").type(JsonFieldType.STRING).description("사용자 연령대").optional(),
+                                fieldWithPath("result.ageRange").type(JsonFieldType.STRING).description("사용자 연령대 EX) 1, 10, 20, 30 ...").optional(),
                         ))
                 )
     }
@@ -125,7 +125,7 @@ class MemberControllerDocsTest(
                         requestFields(
                                 fieldWithPath("nickname").type(JsonFieldType.STRING).description("사용자 닉네임").optional(),
                                 fieldWithPath("gender").type("GenderType").description("사용자 성별. EX) MALE, FEMALE").optional(),
-                                fieldWithPath("ageRange").type(JsonFieldType.STRING).description("사용자 연령대").optional(),
+                                fieldWithPath("ageRange").type(JsonFieldType.STRING).description("사용자 연령대 EX) 1, 10, 20, 30 ...").optional(),
 
                         ),
                         responseFields(
@@ -133,7 +133,7 @@ class MemberControllerDocsTest(
                                 fieldWithPath("message").type(JsonFieldType.STRING).description("상태 메시지"),
                                 fieldWithPath("result.nickname").type(JsonFieldType.STRING).description("사용자 닉네임"),
                                 fieldWithPath("result.gender").type("GenderType").description("사용자 성별. EX) MALE, FEMALE"),
-                                fieldWithPath("result.ageRange").type(JsonFieldType.STRING).description("사용자 연령대"),
+                                fieldWithPath("result.ageRange").type(JsonFieldType.STRING).description("사용자 연령대 EX) 1, 10, 20, 30 ..."),
                         ))
                 )
     }

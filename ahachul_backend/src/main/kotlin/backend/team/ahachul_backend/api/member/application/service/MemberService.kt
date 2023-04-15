@@ -25,9 +25,9 @@ class MemberService(
     @Transactional
     override fun updateMember(command: UpdateMemberCommand): UpdateMemberDto.Response {
         val member = memberReader.getMember(RequestUtils.getAttribute("memberId").toLong())
-        member.changeNickname(command.nickname)
-        member.changeGender(command.gender)
-        member.changeAgeRange(command.ageRange)
+        command.nickname?.let { member.changeNickname(it) }
+        command.gender?.let { member.changeGender(it) }
+        command.ageRange?.let { member.changeAgeRange(it) }
         return UpdateMemberDto.Response.of(
                 nickname = member.nickname!!,
                 gender = member.gender!!,
