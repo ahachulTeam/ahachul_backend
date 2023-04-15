@@ -123,9 +123,9 @@ class MemberControllerDocsTest(
                                 headerWithName("Authorization").description("엑세스 토큰")
                         ),
                         requestFields(
-                                fieldWithPath("nickname").type(JsonFieldType.STRING).description("사용자 닉네임"),
-                                fieldWithPath("gender").type("GenderType").description("사용자 성별. EX) MALE, FEMALE"),
-                                fieldWithPath("ageRange").type(JsonFieldType.STRING).description("사용자 연령대"),
+                                fieldWithPath("nickname").type(JsonFieldType.STRING).description("사용자 닉네임").optional(),
+                                fieldWithPath("gender").type("GenderType").description("사용자 성별. EX) MALE, FEMALE").optional(),
+                                fieldWithPath("ageRange").type(JsonFieldType.STRING).description("사용자 연령대").optional(),
 
                         ),
                         responseFields(
