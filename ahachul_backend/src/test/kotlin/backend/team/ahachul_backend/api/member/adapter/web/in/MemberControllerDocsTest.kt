@@ -1,5 +1,6 @@
 package backend.team.ahachul_backend.api.member.adapter.web.`in`
 
+import backend.team.ahachul_backend.api.member.adapter.web.`in`.dto.CheckNicknameDto
 import backend.team.ahachul_backend.api.member.adapter.web.`in`.dto.GetMemberDto
 import backend.team.ahachul_backend.api.member.adapter.web.`in`.dto.UpdateMemberDto
 import backend.team.ahachul_backend.api.member.application.port.`in`.MemberUseCase
@@ -20,8 +21,7 @@ import org.springframework.http.MediaType
 import org.springframework.restdocs.headers.HeaderDocumentation.headerWithName
 import org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders
 import org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document
-import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get
-import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.patch
+import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.*
 import org.springframework.restdocs.operation.preprocess.Preprocessors
 import org.springframework.restdocs.operation.preprocess.Preprocessors.preprocessRequest
 import org.springframework.restdocs.operation.preprocess.Preprocessors.preprocessResponse
@@ -82,7 +82,7 @@ class MemberControllerDocsTest(
                                 fieldWithPath("result.nickname").type(JsonFieldType.STRING).description("사용자 닉네임").optional(),
                                 fieldWithPath("result.email").type(JsonFieldType.STRING).description("사용자 이메일").optional(),
                                 fieldWithPath("result.gender").type("GenderType").description("사용자 성별. EX) MALE, FEMALE").optional(),
-                                fieldWithPath("result.ageRange").type(JsonFieldType.STRING).description("사용자 연령대").optional(),
+                                fieldWithPath("result.ageRange").type(JsonFieldType.STRING).description("사용자 연령대 EX) 1, 10, 20, 30 ...").optional(),
                         ))
                 )
     }
@@ -123,9 +123,9 @@ class MemberControllerDocsTest(
                                 headerWithName("Authorization").description("엑세스 토큰")
                         ),
                         requestFields(
-                                fieldWithPath("nickname").type(JsonFieldType.STRING).description("사용자 닉네임"),
-                                fieldWithPath("gender").type("GenderType").description("사용자 성별. EX) MALE, FEMALE"),
-                                fieldWithPath("ageRange").type(JsonFieldType.STRING).description("사용자 연령대"),
+                                fieldWithPath("nickname").type(JsonFieldType.STRING).description("사용자 닉네임").optional(),
+                                fieldWithPath("gender").type("GenderType").description("사용자 성별. EX) MALE, FEMALE").optional(),
+                                fieldWithPath("ageRange").type(JsonFieldType.STRING).description("사용자 연령대 EX) 1, 10, 20, 30 ...").optional(),
 
                         ),
                         responseFields(
@@ -133,9 +133,47 @@ class MemberControllerDocsTest(
                                 fieldWithPath("message").type(JsonFieldType.STRING).description("상태 메시지"),
                                 fieldWithPath("result.nickname").type(JsonFieldType.STRING).description("사용자 닉네임"),
                                 fieldWithPath("result.gender").type("GenderType").description("사용자 성별. EX) MALE, FEMALE"),
-                                fieldWithPath("result.ageRange").type(JsonFieldType.STRING).description("사용자 연령대"),
+                                fieldWithPath("result.ageRange").type(JsonFieldType.STRING).description("사용자 연령대 EX) 1, 10, 20, 30 ..."),
                         ))
                 )
+    }
+
+    @Test
+    fun checkNicknameTest() {
+        // given
+        val response = CheckNicknameDto.Response(
+            available = true
+        )
+
+        given(memberUseCase.checkNickname(any()))
+            .willReturn(response)
+
+        val request = CheckNicknameDto.Request(
+            nickname = "nickname"
+        )
+
+        // when
+        val result = mockMvc.perform(
+            post("/v1/members/check-nickname")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(request))
+                .accept(MediaType.APPLICATION_JSON)
+        )
+
+        // then
+        result.andExpect(status().isOk)
+            .andDo(document("check-nickname",
+                preprocessRequest(Preprocessors.prettyPrint()),
+                preprocessResponse(Preprocessors.prettyPrint()),
+                requestFields(
+                    fieldWithPath("nickname").type(JsonFieldType.STRING).description("사용자 닉네임"),
+                    ),
+                responseFields(
+                    fieldWithPath("code").type(JsonFieldType.STRING).description("상태 코드"),
+                    fieldWithPath("message").type(JsonFieldType.STRING).description("상태 메시지"),
+                    fieldWithPath("result.available").type(JsonFieldType.BOOLEAN).description("닉네임 사용 가능 여부"),
+                ))
+            )
     }
 
     private fun <T> any(): T {
