@@ -80,6 +80,17 @@ include::{snippets}/update-member/http-response.adoc[]
 .Response Fields
 include::{snippets}/update-member/response-fields.adoc[]
 
+==== 사용자 닉네임 중복 체크
+
+.Request
+include::{snippets}/check-nickname/http-request.adoc[]
+.Request Fields
+include::{snippets}/check-nickname/request-fields.adoc[]
+.Response
+include::{snippets}/check-nickname/http-response.adoc[]
+.Response Fields
+include::{snippets}/check-nickname/response-fields.adoc[]
+
 === 에러 코드
 
 |===
