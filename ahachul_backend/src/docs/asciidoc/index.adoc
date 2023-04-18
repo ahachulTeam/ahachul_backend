@@ -103,3 +103,58 @@ include::{snippets}/check-nickname/response-fields.adoc[]
 |205|유효하지 않은 권한 코드입니다.|401
 |206|유효하지 않은 액세스 토큰입니다.|401
 |===
+
+== Community
+
+=== /community-posts
+
+==== 커뮤니티 게시글 조회 API
+
+.Request
+include::{snippets}/search-community-posts/http-request.adoc[]
+.Query Parameteres
+include::{snippets}/search-community-posts/query-parameters.adoc[]
+.Response
+include::{snippets}/search-community-posts/http-response.adoc[]
+.Response Fields
+include::{snippets}/search-community-posts/response-fields.adoc[]
+
+==== 커뮤니티 게시글 상세 조회 API
+
+.Request
+include::{snippets}/get-community-post/http-request.adoc[]
+.Path Parameters
+include::{snippets}/get-community-post/path-parameters.adoc[]
+.Response
+include::{snippets}/get-community-post/http-response.adoc[]
+.Response Fields
+include::{snippets}/get-community-post/response-fields.adoc[]
+
+==== 커뮤니티 게시글 생성 API
+
+.Request
+include::{snippets}/create-community-post/http-request.adoc[]
+.Response
+include::{snippets}/create-community-post/http-response.adoc[]
+.Response Fields
+include::{snippets}/create-community-post/response-fields.adoc[]
+
+==== 커뮤니티 게시글 업데이트 API
+
+.Request
+include::{snippets}/update-community-post/http-request.adoc[]
+.Response
+include::{snippets}/update-community-post/http-response.adoc[]
+.Response Fields
+include::{snippets}/update-community-post/response-fields.adoc[]
+
+==== 커뮤니티 게시글 삭제 API
+
+.Request
+include::{snippets}/delete-community-post/http-request.adoc[]
+.Path Parameters
+include::{snippets}/delete-community-post/path-parameters.adoc[]
+.Response
+include::{snippets}/delete-community-post/http-response.adoc[]
+.Response Fields
+include::{snippets}/delete-community-post/response-fields.adoc[]
