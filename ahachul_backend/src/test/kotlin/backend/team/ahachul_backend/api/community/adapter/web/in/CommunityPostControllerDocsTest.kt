@@ -16,6 +16,8 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest
 import org.springframework.boot.test.mock.mockito.MockBean
 import org.springframework.data.jpa.mapping.JpaMetamodelMappingContext
 import org.springframework.http.MediaType
+import org.springframework.restdocs.headers.HeaderDocumentation.headerWithName
+import org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders
 import org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document
 import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.*
 import org.springframework.restdocs.operation.preprocess.Preprocessors.*
@@ -24,6 +26,7 @@ import org.springframework.restdocs.payload.PayloadDocumentation.*
 import org.springframework.restdocs.request.RequestDocumentation.*
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
+import java.time.LocalDateTime
 
 @WebMvcTest(CommunityPostController::class)
 @AutoConfigureRestDocs
@@ -52,7 +55,9 @@ class CommunityPostControllerDocsTest(
                     CommunityCategoryType.ISSUE,
                     0,
                     0,
-                    "METROPOLITAN"
+                    "METROPOLITAN",
+                    LocalDateTime.now(),
+                    "작성자"
                 )
             )
         )
@@ -98,6 +103,8 @@ class CommunityPostControllerDocsTest(
                     fieldWithPath("result.posts[0].views").type(JsonFieldType.NUMBER).description("조회수"),
                     fieldWithPath("result.posts[0].likes").type(JsonFieldType.NUMBER).description("좋아요 수"),
                     fieldWithPath("result.posts[0].region").type(JsonFieldType.STRING).description("지역"),
+                    fieldWithPath("result.posts[0].createdAt").type("LocalDateTime").description("작성일자"),
+                    fieldWithPath("result.posts[0].createdBy").type(JsonFieldType.STRING).description("작성자"),
                 )
             ))
     }
@@ -112,7 +119,9 @@ class CommunityPostControllerDocsTest(
             CommunityCategoryType.ISSUE,
             0,
             0,
-            "METROPOLITAN"
+            "METROPOLITAN",
+            LocalDateTime.now(),
+            "작성자"
         )
 
         given(communityPostUseCase.getCommunityPost())
@@ -142,6 +151,8 @@ class CommunityPostControllerDocsTest(
                     fieldWithPath("result.views").type(JsonFieldType.NUMBER).description("조회수"),
                     fieldWithPath("result.likes").type(JsonFieldType.NUMBER).description("좋아요 수"),
                     fieldWithPath("result.region").type(JsonFieldType.STRING).description("지역"),
+                    fieldWithPath("result.createdAt").type("LocalDateTime").description("작성일자"),
+                    fieldWithPath("result.createdBy").type(JsonFieldType.STRING).description("작성자"),
                 )
             ))
     }
@@ -169,6 +180,7 @@ class CommunityPostControllerDocsTest(
         // when
         val result = mockMvc.perform(
             post("/v1/community/posts")
+                .header("Authorization", "<Access Token>")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(request))
                 .accept(MediaType.APPLICATION_JSON)
@@ -179,6 +191,9 @@ class CommunityPostControllerDocsTest(
             .andDo(document("create-community-post",
                 preprocessRequest(prettyPrint()),
                 preprocessResponse(prettyPrint()),
+                requestHeaders(
+                    headerWithName("Authorization").description("엑세스 토큰")
+                ),
                 requestFields(
                     fieldWithPath("title").description("생성할 제목").optional(),
                     fieldWithPath("content").description("생성할 내용").optional(),
@@ -218,6 +233,7 @@ class CommunityPostControllerDocsTest(
         // when
         val result = mockMvc.perform(
             patch("/v1/community/posts/{postId}", 1)
+                .header("Authorization", "<Access Token>")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(request))
                 .accept(MediaType.APPLICATION_JSON)
@@ -228,6 +244,9 @@ class CommunityPostControllerDocsTest(
             .andDo(document("update-community-post",
                 preprocessRequest(prettyPrint()),
                 preprocessResponse(prettyPrint()),
+                requestHeaders(
+                    headerWithName("Authorization").description("엑세스 토큰")
+                ),
                 pathParameters(
                     parameterWithName("postId").description("게시물 아이디")
                 ),
@@ -260,6 +279,7 @@ class CommunityPostControllerDocsTest(
         // when
         val result = mockMvc.perform(
             delete("/v1/community/posts/{postId}", 1)
+                .header("Authorization", "<Access Token>")
                 .accept(MediaType.APPLICATION_JSON)
         )
 
@@ -268,6 +288,9 @@ class CommunityPostControllerDocsTest(
             .andDo(document("delete-community-post",
                 preprocessRequest(prettyPrint()),
                 preprocessResponse(prettyPrint()),
+                requestHeaders(
+                    headerWithName("Authorization").description("엑세스 토큰")
+                ),
                 pathParameters(
                     parameterWithName("postId").description("삭제할 게시물 아이디")
                 ),

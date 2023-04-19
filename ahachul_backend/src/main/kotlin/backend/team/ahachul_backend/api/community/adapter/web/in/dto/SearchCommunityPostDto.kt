@@ -1,6 +1,7 @@
 package backend.team.ahachul_backend.api.community.adapter.web.`in`.dto
 
 import backend.team.ahachul_backend.api.community.domain.model.CommunityCategoryType
+import java.time.LocalDateTime
 
 class SearchCommunityPostDto {
 
@@ -22,6 +23,8 @@ class SearchCommunityPostDto {
         val categoryType: CommunityCategoryType,
         val views: Int,
         val likes: Int,
-        val region: String
+        val region: String,
+        val createdAt: LocalDateTime,
+        val createdBy: String
     )
 }

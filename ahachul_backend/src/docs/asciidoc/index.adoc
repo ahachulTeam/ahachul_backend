@@ -60,7 +60,7 @@ include::{snippets}/get-token/response-fields.adoc[]
 
 .Request
 include::{snippets}/get-member/http-request.adoc[]
-.Headers
+.Request Headers
 include::{snippets}/get-member/request-headers.adoc[]
 .Response
 include::{snippets}/get-member/http-response.adoc[]
@@ -112,7 +112,7 @@ include::{snippets}/check-nickname/response-fields.adoc[]
 
 .Request
 include::{snippets}/search-community-posts/http-request.adoc[]
-.Query Parameteres
+.Query Parameters
 include::{snippets}/search-community-posts/query-parameters.adoc[]
 .Response
 include::{snippets}/search-community-posts/http-response.adoc[]
@@ -134,6 +134,10 @@ include::{snippets}/get-community-post/response-fields.adoc[]
 
 .Request
 include::{snippets}/create-community-post/http-request.adoc[]
+.Request Headers
+include::{snippets}/create-community-post/request-headers.adoc[]
+.Request Fields
+include::{snippets}/create-community-post/request-fields.adoc[]
 .Response
 include::{snippets}/create-community-post/http-response.adoc[]
 .Response Fields
@@ -143,6 +147,10 @@ include::{snippets}/create-community-post/response-fields.adoc[]
 
 .Request
 include::{snippets}/update-community-post/http-request.adoc[]
+.Request Headers
+include::{snippets}/update-community-post/request-headers.adoc[]
+.Request Fields
+include::{snippets}/update-community-post/request-fields.adoc[]
 .Response
 include::{snippets}/update-community-post/http-response.adoc[]
 .Response Fields
@@ -152,6 +160,8 @@ include::{snippets}/update-community-post/response-fields.adoc[]
 
 .Request
 include::{snippets}/delete-community-post/http-request.adoc[]
+.Request Headers
+include::{snippets}/delete-community-post/request-headers.adoc[]
 .Path Parameters
 include::{snippets}/delete-community-post/path-parameters.adoc[]
 .Response
@@ -165,7 +175,7 @@ include::{snippets}/delete-community-post/response-fields.adoc[]
 
 .Request
 include::{snippets}/get-community-comments/http-request.adoc[]
-.Query Parameteres
+.Query Parameters
 include::{snippets}/get-community-comments/query-parameters.adoc[]
 .Response
 include::{snippets}/get-community-comments/http-response.adoc[]
@@ -176,6 +186,8 @@ include::{snippets}/get-community-comments/response-fields.adoc[]
 
 .Request
 include::{snippets}/create-community-comment/http-request.adoc[]
+.Request Headers
+include::{snippets}/create-community-comment/request-headers.adoc[]
 .Request Fields
 include::{snippets}/create-community-comment/request-fields.adoc[]
 .Response
@@ -187,6 +199,8 @@ include::{snippets}/create-community-comment/response-fields.adoc[]
 
 .Request
 include::{snippets}/update-community-comment/http-request.adoc[]
+.Request Headers
+include::{snippets}/update-community-comment/request-headers.adoc[]
 .Path Parameters
 include::{snippets}/update-community-comment/path-parameters.adoc[]
 .Response
@@ -198,6 +212,8 @@ include::{snippets}/update-community-comment/response-fields.adoc[]
 
 .Request
 include::{snippets}/delete-community-comment/http-request.adoc[]
+.Request Headers
+include::{snippets}/delete-community-comment/request-headers.adoc[]
 .Path Parameters
 include::{snippets}/delete-community-comment/path-parameters.adoc[]
 .Response

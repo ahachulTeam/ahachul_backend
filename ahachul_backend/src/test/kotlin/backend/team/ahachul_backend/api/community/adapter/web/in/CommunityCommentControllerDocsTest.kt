@@ -18,6 +18,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest
 import org.springframework.boot.test.mock.mockito.MockBean
 import org.springframework.data.jpa.mapping.JpaMetamodelMappingContext
 import org.springframework.http.MediaType
+import org.springframework.restdocs.headers.HeaderDocumentation.*
 import org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document
 import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.*
 import org.springframework.restdocs.operation.preprocess.Preprocessors.*
@@ -28,6 +29,7 @@ import org.springframework.restdocs.request.RequestDocumentation.parameterWithNa
 import org.springframework.restdocs.request.RequestDocumentation.queryParameters
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
+import java.time.LocalDateTime
 
 @WebMvcTest(CommunityCommentController::class)
 @AutoConfigureRestDocs
@@ -53,7 +55,9 @@ class CommunityCommentControllerDocsTest(
                 GetCommunityCommentsDto.CommunityComment(
                     id = 2,
                     upperCommentId = 1,
-                    content = "내용"
+                    content = "내용",
+                    LocalDateTime.now(),
+                    "작성자"
                 )
             )
         )
@@ -82,6 +86,8 @@ class CommunityCommentControllerDocsTest(
                     PayloadDocumentation.fieldWithPath("result.comments[0].id").type(JsonFieldType.NUMBER).description("코멘트 아이디"),
                     PayloadDocumentation.fieldWithPath("result.comments[0].upperCommentId").type(JsonFieldType.NUMBER).description("상위 코멘트 아이디").optional(),
                     PayloadDocumentation.fieldWithPath("result.comments[0].content").type(JsonFieldType.STRING).description("코멘트 내용"),
+                    PayloadDocumentation.fieldWithPath("result.comments[0].createdAt").type("LocalDateTime").description("작성일자"),
+                    PayloadDocumentation.fieldWithPath("result.comments[0].createdBy").type(JsonFieldType.STRING).description("작성자"),
                 )
             ))
     }
@@ -107,6 +113,7 @@ class CommunityCommentControllerDocsTest(
         // when
         val result = mockMvc.perform(
             post("/v1/community/comments")
+                .header("Authorization", "<Access Token>")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(request))
                 .accept(MediaType.APPLICATION_JSON)
@@ -117,6 +124,9 @@ class CommunityCommentControllerDocsTest(
             .andDo(document("create-community-comment",
                 preprocessRequest(prettyPrint()),
                 preprocessResponse(prettyPrint()),
+                requestHeaders(
+                    headerWithName("Authorization").description("엑세스 토큰")
+                ),
                 PayloadDocumentation.requestFields(
                     PayloadDocumentation.fieldWithPath("postId").description("코멘트 생성할 게시글 아이디"),
                     PayloadDocumentation.fieldWithPath("upperCommentId").description("상위 코멘트 아이디").optional(),
@@ -150,6 +160,7 @@ class CommunityCommentControllerDocsTest(
         // when
         val result = mockMvc.perform(
             patch("/v1/community/comments/{commentId}", 1)
+                .header("Authorization", "<Access Token>")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(request))
                 .accept(MediaType.APPLICATION_JSON)
@@ -160,6 +171,9 @@ class CommunityCommentControllerDocsTest(
             .andDo(document("update-community-comment",
                 preprocessRequest(prettyPrint()),
                 preprocessResponse(prettyPrint()),
+                requestHeaders(
+                    headerWithName("Authorization").description("엑세스 토큰")
+                ),
                 RequestDocumentation.pathParameters(
                     parameterWithName("commentId").description("변경할 코멘트 아이디")
                 ),
@@ -188,6 +202,7 @@ class CommunityCommentControllerDocsTest(
         // when
         val result = mockMvc.perform(
             delete("/v1/community/comments/{commentId}", 1)
+                .header("Authorization", "<Access Token>")
                 .accept(MediaType.APPLICATION_JSON)
         )
 
@@ -196,6 +211,9 @@ class CommunityCommentControllerDocsTest(
             .andDo(document("delete-community-comment",
                 preprocessRequest(prettyPrint()),
                 preprocessResponse(prettyPrint()),
+                requestHeaders(
+                    headerWithName("Authorization").description("엑세스 토큰")
+                ),
                 RequestDocumentation.pathParameters(
                     parameterWithName("commentId").description("삭제할 코멘트 아이디")
                 ),
