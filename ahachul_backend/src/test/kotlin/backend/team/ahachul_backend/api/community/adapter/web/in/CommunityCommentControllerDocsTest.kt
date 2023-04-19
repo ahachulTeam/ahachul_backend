@@ -63,7 +63,7 @@ class CommunityCommentControllerDocsTest(
 
         // when
         val result = mockMvc.perform(
-            get("/v1/community-comments")
+            get("/v1/community/comments")
                 .param("postId", "1")
                 .accept(MediaType.APPLICATION_JSON)
         )
@@ -106,7 +106,7 @@ class CommunityCommentControllerDocsTest(
 
         // when
         val result = mockMvc.perform(
-            post("/v1/community-comments")
+            post("/v1/community/comments")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(request))
                 .accept(MediaType.APPLICATION_JSON)
@@ -149,7 +149,7 @@ class CommunityCommentControllerDocsTest(
 
         // when
         val result = mockMvc.perform(
-            patch("/v1/community-comments/{commentId}", 1)
+            patch("/v1/community/comments/{commentId}", 1)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(request))
                 .accept(MediaType.APPLICATION_JSON)
@@ -187,7 +187,7 @@ class CommunityCommentControllerDocsTest(
 
         // when
         val result = mockMvc.perform(
-            delete("/v1/community-comments/{commentId}", 1)
+            delete("/v1/community/comments/{commentId}", 1)
                 .accept(MediaType.APPLICATION_JSON)
         )
 

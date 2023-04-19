@@ -106,7 +106,7 @@ include::{snippets}/check-nickname/response-fields.adoc[]
 
 == Community
 
-=== /community-posts
+=== /community/posts
 
 ==== 커뮤니티 게시글 조회 API
 
@@ -159,7 +159,7 @@ include::{snippets}/delete-community-post/http-response.adoc[]
 .Response Fields
 include::{snippets}/delete-community-post/response-fields.adoc[]
 
-=== /community-comments
+=== /community/comments
 
 ==== 커뮤니티 코멘트 조회 API
 

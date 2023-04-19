@@ -14,25 +14,25 @@ class CommunityCommentController(
     private val communityCommentUseCase: CommunityCommentUseCase
 ) {
 
-    @GetMapping("/v1/community-comments")
+    @GetMapping("/v1/community/comments")
     fun getCommunityComments(@RequestParam postId: Long): CommonResponse<GetCommunityCommentsDto.Response> {
         return CommonResponse.success(communityCommentUseCase.getCommunityComments())
     }
 
     @Authentication
-    @PostMapping("/v1/community-comments")
+    @PostMapping("/v1/community/comments")
     fun createCommunityComment(@RequestBody request: CreateCommunityCommentDto.Request): CommonResponse<CreateCommunityCommentDto.Response> {
         return CommonResponse.success(communityCommentUseCase.createCommunityComment())
     }
 
     @Authentication
-    @PatchMapping("/v1/community-comments/{commentId}")
+    @PatchMapping("/v1/community/comments/{commentId}")
     fun updateCommunityComment(@PathVariable commentId: Long, @RequestBody request: UpdateCommunityCommentDto.Request): CommonResponse<UpdateCommunityCommentDto.Response> {
         return CommonResponse.success(communityCommentUseCase.updateCommunityComment())
     }
 
     @Authentication
-    @DeleteMapping("/v1/community-comments/{commentId}")
+    @DeleteMapping("/v1/community/comments/{commentId}")
     fun deleteCommunityComment(@PathVariable commentId: Long): CommonResponse<DeleteCommunityCommentDto.Response> {
         return CommonResponse.success(communityCommentUseCase.deleteCommunityComment())
     }
