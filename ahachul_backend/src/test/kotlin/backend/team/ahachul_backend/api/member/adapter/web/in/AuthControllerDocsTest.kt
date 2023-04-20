@@ -51,8 +51,7 @@ class AuthControllerDocsTest: CommonDocsConfig() {
                                 parameterWithName("providerType").description("플랫폼 타입. EX) KAKAO, GOOGLE")
                         ),
                         responseFields(
-                                fieldWithPath("code").type(JsonFieldType.STRING).description("상태 코드"),
-                                fieldWithPath("message").type(JsonFieldType.STRING).description("상태 메시지"),
+                            *commonResponseFields(),
                                 fieldWithPath("result.redirectUrl").type(JsonFieldType.STRING).description("리다이렉트 URL")
                         ))
                 )
@@ -96,8 +95,7 @@ class AuthControllerDocsTest: CommonDocsConfig() {
                                 fieldWithPath("providerCode").type(JsonFieldType.STRING).description("인가 코드")
                         ),
                         responseFields(
-                                fieldWithPath("code").type(JsonFieldType.STRING).description("상태 코드"),
-                                fieldWithPath("message").type(JsonFieldType.STRING).description("상태 메시지"),
+                            *commonResponseFields(),
                                 fieldWithPath("result.memberId").type(JsonFieldType.STRING).description("사용자 Identification Key"),
                                 fieldWithPath("result.isNeedAdditionalUserInfo").type(JsonFieldType.BOOLEAN).description("사용자 추가 정보 입력 여부"),
                                 fieldWithPath("result.accessToken").type(JsonFieldType.STRING).description("엑세스 토큰. 만료 기간 : 1시간"),
@@ -142,8 +140,7 @@ class AuthControllerDocsTest: CommonDocsConfig() {
                                 fieldWithPath("refreshToken").type(JsonFieldType.STRING).description("리프레쉬 토큰"),
                         ),
                         responseFields(
-                                fieldWithPath("code").type(JsonFieldType.STRING).description("상태 코드"),
-                                fieldWithPath("message").type(JsonFieldType.STRING).description("상태 메시지"),
+                            *commonResponseFields(),
                                 fieldWithPath("result.accessToken").type(JsonFieldType.STRING).description("엑세스 토큰. 만료 기간 : 1시간"),
                                 fieldWithPath("result.accessTokenExpiresIn").type(JsonFieldType.NUMBER).description("엑세스 토큰 만료 기간"),
                                 fieldWithPath("result.refreshToken").type(JsonFieldType.STRING).description("리프레쉬 토큰. 만료 기간 : 30일").optional(),

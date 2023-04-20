@@ -55,8 +55,7 @@ class MemberControllerDocsTest: CommonDocsConfig() {
                             headerWithName("Authorization").description("엑세스 토큰")
                         ),
                         responseFields(
-                                fieldWithPath("code").type(JsonFieldType.STRING).description("상태 코드"),
-                                fieldWithPath("message").type(JsonFieldType.STRING).description("상태 메시지"),
+                            *commonResponseFields(),
                                 fieldWithPath("result.memberId").type(JsonFieldType.NUMBER).description("사용자 Identification Key"),
                                 fieldWithPath("result.nickname").type(JsonFieldType.STRING).description("사용자 닉네임").optional(),
                                 fieldWithPath("result.email").type(JsonFieldType.STRING).description("사용자 이메일").optional(),
@@ -108,8 +107,7 @@ class MemberControllerDocsTest: CommonDocsConfig() {
 
                         ),
                         responseFields(
-                                fieldWithPath("code").type(JsonFieldType.STRING).description("상태 코드"),
-                                fieldWithPath("message").type(JsonFieldType.STRING).description("상태 메시지"),
+                            *commonResponseFields(),
                                 fieldWithPath("result.nickname").type(JsonFieldType.STRING).description("사용자 닉네임"),
                                 fieldWithPath("result.gender").type("GenderType").description("사용자 성별. EX) MALE, FEMALE"),
                                 fieldWithPath("result.ageRange").type(JsonFieldType.STRING).description("사용자 연령대 EX) 1, 10, 20, 30 ..."),
@@ -148,8 +146,7 @@ class MemberControllerDocsTest: CommonDocsConfig() {
                     fieldWithPath("nickname").type(JsonFieldType.STRING).description("사용자 닉네임"),
                     ),
                 responseFields(
-                    fieldWithPath("code").type(JsonFieldType.STRING).description("상태 코드"),
-                    fieldWithPath("message").type(JsonFieldType.STRING).description("상태 메시지"),
+                    *commonResponseFields(),
                     fieldWithPath("result.available").type(JsonFieldType.BOOLEAN).description("닉네임 사용 가능 여부"),
                 ))
             )

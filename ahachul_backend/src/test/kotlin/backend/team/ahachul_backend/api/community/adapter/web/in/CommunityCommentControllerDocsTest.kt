@@ -63,8 +63,7 @@ class CommunityCommentControllerDocsTest: CommonDocsConfig() {
                     parameterWithName("postId").description("코멘트 조회할 게시글 아이디")
                 ),
                 PayloadDocumentation.responseFields(
-                    PayloadDocumentation.fieldWithPath("code").type(JsonFieldType.STRING).description("상태 코드"),
-                    PayloadDocumentation.fieldWithPath("message").type(JsonFieldType.STRING).description("상태 메시지"),
+                    *commonResponseFields(),
                     PayloadDocumentation.fieldWithPath("result.comments[0].id").type(JsonFieldType.NUMBER).description("코멘트 아이디"),
                     PayloadDocumentation.fieldWithPath("result.comments[0].upperCommentId").type(JsonFieldType.NUMBER).description("상위 코멘트 아이디").optional(),
                     PayloadDocumentation.fieldWithPath("result.comments[0].content").type(JsonFieldType.STRING).description("코멘트 내용"),
@@ -115,8 +114,7 @@ class CommunityCommentControllerDocsTest: CommonDocsConfig() {
                     PayloadDocumentation.fieldWithPath("content").description("생성할 내용")
                 ),
                 PayloadDocumentation.responseFields(
-                    PayloadDocumentation.fieldWithPath("code").type(JsonFieldType.STRING).description("상태 코드"),
-                    PayloadDocumentation.fieldWithPath("message").type(JsonFieldType.STRING).description("상태 메시지"),
+                    *commonResponseFields(),
                     PayloadDocumentation.fieldWithPath("result.id").type(JsonFieldType.NUMBER).description("생성된 코멘트 아이디"),
                     PayloadDocumentation.fieldWithPath("result.upperCommentId").type(JsonFieldType.NUMBER).description("연결된 상위 코멘트 아이디").optional(),
                     PayloadDocumentation.fieldWithPath("result.content").type(JsonFieldType.STRING).description("생성된 내용"),
@@ -163,8 +161,7 @@ class CommunityCommentControllerDocsTest: CommonDocsConfig() {
                     PayloadDocumentation.fieldWithPath("content").description("변경할 내용"),
                 ),
                 PayloadDocumentation.responseFields(
-                    PayloadDocumentation.fieldWithPath("code").type(JsonFieldType.STRING).description("상태 코드"),
-                    PayloadDocumentation.fieldWithPath("message").type(JsonFieldType.STRING).description("상태 메시지"),
+                    *commonResponseFields(),
                     PayloadDocumentation.fieldWithPath("result.id").type(JsonFieldType.NUMBER).description("변경된 코멘트 아이디"),
                     PayloadDocumentation.fieldWithPath("result.content").type(JsonFieldType.STRING).description("변경된 내용"),
                 )
@@ -200,8 +197,7 @@ class CommunityCommentControllerDocsTest: CommonDocsConfig() {
                     parameterWithName("commentId").description("삭제할 코멘트 아이디")
                 ),
                 PayloadDocumentation.responseFields(
-                    PayloadDocumentation.fieldWithPath("code").type(JsonFieldType.STRING).description("상태 코드"),
-                    PayloadDocumentation.fieldWithPath("message").type(JsonFieldType.STRING).description("상태 메시지"),
+                    *commonResponseFields(),
                     PayloadDocumentation.fieldWithPath("result.id").type(JsonFieldType.NUMBER).description("삭제된 코멘트 아이디"),
                 )
             ))

@@ -14,6 +14,9 @@ import org.springframework.restdocs.operation.preprocess.OperationResponsePrepro
 import org.springframework.restdocs.operation.preprocess.Preprocessors
 import org.springframework.restdocs.operation.preprocess.Preprocessors.preprocessRequest
 import org.springframework.restdocs.operation.preprocess.Preprocessors.preprocessResponse
+import org.springframework.restdocs.payload.FieldDescriptor
+import org.springframework.restdocs.payload.JsonFieldType
+import org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath
 import org.springframework.test.web.servlet.MockMvc
 
 @AutoConfigureRestDocs
@@ -28,6 +31,13 @@ abstract class CommonDocsConfig {
     @BeforeEach
     fun setup() {
         BDDMockito.given(authenticationInterceptor.preHandle(any(), any(), any())).willReturn(true)
+    }
+
+    protected fun commonResponseFields(): Array<FieldDescriptor> {
+        return arrayOf(
+            fieldWithPath("code").type(JsonFieldType.STRING).description("상태 코드"),
+            fieldWithPath("message").type(JsonFieldType.STRING).description("상태 메시지")
+        )
     }
 
     protected fun getDocsRequest(): OperationRequestPreprocessor {

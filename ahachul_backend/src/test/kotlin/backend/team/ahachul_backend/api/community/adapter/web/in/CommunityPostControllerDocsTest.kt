@@ -77,8 +77,7 @@ class CommunityPostControllerDocsTest: CommonDocsConfig() {
                     parameterWithName("sort").description("정렬 조건. (likes|createdAt|views),(asc|desc)"),
                 ),
                 responseFields(
-                    fieldWithPath("code").type(JsonFieldType.STRING).description("상태 코드"),
-                    fieldWithPath("message").type(JsonFieldType.STRING).description("상태 메시지"),
+                    *commonResponseFields(),
                     fieldWithPath("result.posts[0].id").type(JsonFieldType.NUMBER).description("게시글 아이디"),
                     fieldWithPath("result.posts[0].title").type(JsonFieldType.STRING).description("게시글 제목"),
                     fieldWithPath("result.posts[0].categoryType").type("CategoryType").description("카테고리 타입. EX) FREE, INSIGHT, ISSUE, HUMOR"),
@@ -124,8 +123,7 @@ class CommunityPostControllerDocsTest: CommonDocsConfig() {
                     parameterWithName("postId").description("게시물 아이디")
                 ),
                 responseFields(
-                    fieldWithPath("code").type(JsonFieldType.STRING).description("상태 코드"),
-                    fieldWithPath("message").type(JsonFieldType.STRING).description("상태 메시지"),
+                    *commonResponseFields(),
                     fieldWithPath("result.id").type(JsonFieldType.NUMBER).description("게시글 아이디"),
                     fieldWithPath("result.title").type(JsonFieldType.STRING).description("게시글 제목"),
                     fieldWithPath("result.content").type(JsonFieldType.STRING).description("게시글 내용"),
@@ -182,8 +180,7 @@ class CommunityPostControllerDocsTest: CommonDocsConfig() {
                     fieldWithPath("categoryType").description("카테고리 타입. EX) FREE, INSIGHT, ISSUE, HUMOR").optional()
                 ),
                 responseFields(
-                    fieldWithPath("code").type(JsonFieldType.STRING).description("상태 코드"),
-                    fieldWithPath("message").type(JsonFieldType.STRING).description("상태 메시지"),
+                    *commonResponseFields(),
                     fieldWithPath("result.id").type(JsonFieldType.NUMBER).description("생성된 게시글 아이디"),
                     fieldWithPath("result.title").type(JsonFieldType.STRING).description("생성된 게시글 제목"),
                     fieldWithPath("result.content").type(JsonFieldType.STRING).description("생성된 게시글 내용"),
@@ -238,8 +235,7 @@ class CommunityPostControllerDocsTest: CommonDocsConfig() {
                     fieldWithPath("categoryType").description("변경할 카테고리 타입. EX) FREE, INSIGHT, ISSUE, HUMOR"),
                 ),
                 responseFields(
-                    fieldWithPath("code").type(JsonFieldType.STRING).description("상태 코드"),
-                    fieldWithPath("message").type(JsonFieldType.STRING).description("상태 메시지"),
+                    *commonResponseFields(),
                     fieldWithPath("result.id").type(JsonFieldType.NUMBER).description("게시글 아이디"),
                     fieldWithPath("result.title").type(JsonFieldType.STRING).description("변경된 게시글 제목"),
                     fieldWithPath("result.content").type(JsonFieldType.STRING).description("변경된 게시글 내용"),
@@ -277,8 +273,7 @@ class CommunityPostControllerDocsTest: CommonDocsConfig() {
                     parameterWithName("postId").description("삭제할 게시물 아이디")
                 ),
                 responseFields(
-                    fieldWithPath("code").type(JsonFieldType.STRING).description("상태 코드"),
-                    fieldWithPath("message").type(JsonFieldType.STRING).description("상태 메시지"),
+                    *commonResponseFields(),
                     fieldWithPath("result.id").type(JsonFieldType.NUMBER).description("삭제된 게시글 아이디"),
                 )
             ))
