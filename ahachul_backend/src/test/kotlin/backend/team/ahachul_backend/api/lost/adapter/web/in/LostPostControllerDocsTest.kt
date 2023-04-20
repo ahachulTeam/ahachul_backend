@@ -1,8 +1,7 @@
-package backend.team.ahachul_backend.api.member.adapter.web.`in`
+package backend.team.ahachul_backend.api.lost.adapter.web.`in`
 
-import backend.team.ahachul_backend.api.lost.adapter.web.`in`.LostController
-import backend.team.ahachul_backend.api.lost.adapter.web.`in`.dto.PostLostDto
-import backend.team.ahachul_backend.api.lost.adapter.web.`in`.dto.UpdateLostDto
+import backend.team.ahachul_backend.api.lost.adapter.web.`in`.dto.CreateLostPostDto
+import backend.team.ahachul_backend.api.lost.adapter.web.`in`.dto.UpdateLostPostDto
 import com.fasterxml.jackson.databind.ObjectMapper
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
@@ -20,9 +19,9 @@ import org.springframework.restdocs.request.RequestDocumentation.*
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 
-@WebMvcTest(LostController::class)
+@WebMvcTest(LostPostController::class)
 @AutoConfigureRestDocs
-class LostControllerDocsTest(
+class LostPostControllerDocsTest(
     @Autowired val mockMvc: MockMvc,
     @Autowired val objectMapper: ObjectMapper
 ){
@@ -95,7 +94,7 @@ class LostControllerDocsTest(
     @Test
     fun postLost() {
         // give
-        val request = PostLostDto.Request(
+        val request = CreateLostPostDto.Request(
             title = "title",
             content = "content",
             lostLine = "1",
@@ -137,7 +136,7 @@ class LostControllerDocsTest(
     @Test
     fun updateLost() {
         // give
-        val request = UpdateLostDto.Request(
+        val request = UpdateLostPostDto.Request(
             title = "title",
             content = "content",
             lostLine = "1",
