@@ -5,18 +5,12 @@ import backend.team.ahachul_backend.api.community.adapter.web.`in`.dto.DeleteCom
 import backend.team.ahachul_backend.api.community.adapter.web.`in`.dto.GetCommunityCommentsDto
 import backend.team.ahachul_backend.api.community.adapter.web.`in`.dto.UpdateCommunityCommentDto
 import backend.team.ahachul_backend.api.community.application.port.`in`.CommunityCommentUseCase
-import backend.team.ahachul_backend.common.interceptor.AuthenticationInterceptor
-import com.fasterxml.jackson.databind.ObjectMapper
+import backend.team.ahachul_backend.config.controller.CommonDocsConfig
 import org.junit.jupiter.api.Assertions.*
-import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.mockito.BDDMockito.given
-import org.mockito.Mockito
-import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest
 import org.springframework.boot.test.mock.mockito.MockBean
-import org.springframework.data.jpa.mapping.JpaMetamodelMappingContext
 import org.springframework.http.MediaType
 import org.springframework.restdocs.headers.HeaderDocumentation.*
 import org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document
@@ -27,25 +21,13 @@ import org.springframework.restdocs.payload.PayloadDocumentation
 import org.springframework.restdocs.request.RequestDocumentation
 import org.springframework.restdocs.request.RequestDocumentation.parameterWithName
 import org.springframework.restdocs.request.RequestDocumentation.queryParameters
-import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 import java.time.LocalDateTime
 
 @WebMvcTest(CommunityCommentController::class)
-@AutoConfigureRestDocs
-class CommunityCommentControllerDocsTest(
-    @Autowired val mockMvc: MockMvc,
-    @Autowired val objectMapper: ObjectMapper,
-) {
+class CommunityCommentControllerDocsTest: CommonDocsConfig() {
 
     @MockBean lateinit var communityCommentUseCase: CommunityCommentUseCase
-    @MockBean lateinit var authenticationInterceptor: AuthenticationInterceptor
-    @MockBean lateinit var jpaMetamodelMappingContext: JpaMetamodelMappingContext
-
-    @BeforeEach
-    fun setup() {
-        given(authenticationInterceptor.preHandle(any(), any(), any())).willReturn(true)
-    }
 
     @Test
     fun getCommunityCommentsTest() {
@@ -75,8 +57,8 @@ class CommunityCommentControllerDocsTest(
         // then
         result.andExpect(status().isOk)
             .andDo(document("get-community-comments",
-                preprocessRequest(prettyPrint()),
-                preprocessResponse(prettyPrint()),
+                getDocsRequest(),
+                getDocsResponse(),
                 queryParameters(
                     parameterWithName("postId").description("코멘트 조회할 게시글 아이디")
                 ),
@@ -122,8 +104,8 @@ class CommunityCommentControllerDocsTest(
         // then
         result.andExpect(status().isOk)
             .andDo(document("create-community-comment",
-                preprocessRequest(prettyPrint()),
-                preprocessResponse(prettyPrint()),
+                getDocsRequest(),
+                getDocsResponse(),
                 requestHeaders(
                     headerWithName("Authorization").description("엑세스 토큰")
                 ),
@@ -169,8 +151,8 @@ class CommunityCommentControllerDocsTest(
         // then
         result.andExpect(status().isOk)
             .andDo(document("update-community-comment",
-                preprocessRequest(prettyPrint()),
-                preprocessResponse(prettyPrint()),
+                getDocsRequest(),
+                getDocsResponse(),
                 requestHeaders(
                     headerWithName("Authorization").description("엑세스 토큰")
                 ),
@@ -209,8 +191,8 @@ class CommunityCommentControllerDocsTest(
         // then
         result.andExpect(status().isOk)
             .andDo(document("delete-community-comment",
-                preprocessRequest(prettyPrint()),
-                preprocessResponse(prettyPrint()),
+                getDocsRequest(),
+                getDocsResponse(),
                 requestHeaders(
                     headerWithName("Authorization").description("엑세스 토큰")
                 ),
@@ -223,10 +205,5 @@ class CommunityCommentControllerDocsTest(
                     PayloadDocumentation.fieldWithPath("result.id").type(JsonFieldType.NUMBER).description("삭제된 코멘트 아이디"),
                 )
             ))
-    }
-
-    private fun <T> any(): T {
-        Mockito.any<T>()
-        return null as T
     }
 }

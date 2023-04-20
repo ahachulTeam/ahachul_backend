@@ -5,18 +5,12 @@ import backend.team.ahachul_backend.api.member.adapter.web.`in`.dto.GetTokenDto
 import backend.team.ahachul_backend.api.member.adapter.web.`in`.dto.LoginMemberDto
 import backend.team.ahachul_backend.api.member.application.port.`in`.AuthUseCase
 import backend.team.ahachul_backend.api.member.domain.model.ProviderType
-import backend.team.ahachul_backend.common.interceptor.AuthenticationInterceptor
-import com.fasterxml.jackson.databind.ObjectMapper
+import backend.team.ahachul_backend.config.controller.CommonDocsConfig
 import org.junit.jupiter.api.Assertions.*
-import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.mockito.BDDMockito.given
-import org.mockito.Mockito
-import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest
 import org.springframework.boot.test.mock.mockito.MockBean
-import org.springframework.data.jpa.mapping.JpaMetamodelMappingContext
 import org.springframework.http.MediaType
 import org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document
 import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get
@@ -25,25 +19,12 @@ import org.springframework.restdocs.operation.preprocess.Preprocessors.*
 import org.springframework.restdocs.payload.JsonFieldType
 import org.springframework.restdocs.payload.PayloadDocumentation.*
 import org.springframework.restdocs.request.RequestDocumentation.*
-import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 
 @WebMvcTest(AuthController::class)
-@AutoConfigureRestDocs
-class AuthControllerDocsTest(
-        @Autowired val mockMvc: MockMvc,
-        @Autowired val objectMapper: ObjectMapper,
-) {
+class AuthControllerDocsTest: CommonDocsConfig() {
 
     @MockBean lateinit var authUseCase: AuthUseCase
-    @MockBean lateinit var authenticationInterceptor: AuthenticationInterceptor
-    @MockBean lateinit var jpaMetamodelMappingContext: JpaMetamodelMappingContext
-
-    @BeforeEach
-    fun setup() {
-        given(authenticationInterceptor.preHandle(any(), any(), any())).willReturn(true)
-    }
-
     @Test
     fun getRedirectUrlTest() {
         // given
@@ -64,8 +45,8 @@ class AuthControllerDocsTest(
         // then
         result.andExpect(status().isOk)
                 .andDo(document("get-redirect-url",
-                        preprocessRequest(prettyPrint()),
-                        preprocessResponse(prettyPrint()),
+                    getDocsRequest(),
+                    getDocsResponse(),
                         queryParameters(
                                 parameterWithName("providerType").description("플랫폼 타입. EX) KAKAO, GOOGLE")
                         ),
@@ -108,8 +89,8 @@ class AuthControllerDocsTest(
         // then
         result.andExpect(status().isOk)
                 .andDo(document("login",
-                        preprocessRequest(prettyPrint()),
-                        preprocessResponse(prettyPrint()),
+                    getDocsRequest(),
+                    getDocsResponse(),
                         requestFields(
                                 fieldWithPath("providerType").type("ProviderType").description("플랫폼 타입. EX) KAKAO, GOOGLE"),
                                 fieldWithPath("providerCode").type(JsonFieldType.STRING).description("인가 코드")
@@ -155,8 +136,8 @@ class AuthControllerDocsTest(
         // then
         result.andExpect(status().isOk)
                 .andDo(document("get-token",
-                        preprocessRequest(prettyPrint()),
-                        preprocessResponse(prettyPrint()),
+                    getDocsRequest(),
+                    getDocsResponse(),
                         requestFields(
                                 fieldWithPath("refreshToken").type(JsonFieldType.STRING).description("리프레쉬 토큰"),
                         ),
@@ -169,10 +150,5 @@ class AuthControllerDocsTest(
                                 fieldWithPath("result.refreshTokenExpiresIn").type(JsonFieldType.NUMBER).description("리프레쉬 토큰 만료 기간").optional(),
                         )),
                 )
-    }
-
-    private fun <T> any(): T {
-        Mockito.any<T>()
-        return null as T
     }
 }

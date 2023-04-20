@@ -5,46 +5,25 @@ import backend.team.ahachul_backend.api.member.adapter.web.`in`.dto.GetMemberDto
 import backend.team.ahachul_backend.api.member.adapter.web.`in`.dto.UpdateMemberDto
 import backend.team.ahachul_backend.api.member.application.port.`in`.MemberUseCase
 import backend.team.ahachul_backend.api.member.domain.model.GenderType
-import backend.team.ahachul_backend.common.interceptor.AuthenticationInterceptor
-import com.fasterxml.jackson.databind.ObjectMapper
+import backend.team.ahachul_backend.config.controller.CommonDocsConfig
 import org.junit.jupiter.api.Assertions.*
-import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.mockito.BDDMockito.given
-import org.mockito.Mockito
-import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest
 import org.springframework.boot.test.mock.mockito.MockBean
-import org.springframework.data.jpa.mapping.JpaMetamodelMappingContext
 import org.springframework.http.MediaType
 import org.springframework.restdocs.headers.HeaderDocumentation.headerWithName
 import org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders
 import org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document
 import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.*
-import org.springframework.restdocs.operation.preprocess.Preprocessors
-import org.springframework.restdocs.operation.preprocess.Preprocessors.preprocessRequest
-import org.springframework.restdocs.operation.preprocess.Preprocessors.preprocessResponse
 import org.springframework.restdocs.payload.JsonFieldType
 import org.springframework.restdocs.payload.PayloadDocumentation.*
-import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 
 @WebMvcTest(MemberController::class)
-@AutoConfigureRestDocs
-class MemberControllerDocsTest(
-        @Autowired val mockMvc: MockMvc,
-        @Autowired val objectMapper: ObjectMapper
-) {
+class MemberControllerDocsTest: CommonDocsConfig() {
 
     @MockBean lateinit var memberUseCase: MemberUseCase
-    @MockBean lateinit var authenticationInterceptor: AuthenticationInterceptor
-    @MockBean lateinit var jpaMetamodelMappingContext: JpaMetamodelMappingContext
-
-    @BeforeEach
-    fun setup() {
-        given(authenticationInterceptor.preHandle(any(), any(), any())).willReturn(true)
-    }
 
     @Test
     fun getMemberTest() {
@@ -70,8 +49,8 @@ class MemberControllerDocsTest(
         // then
         result.andExpect(status().isOk)
                 .andDo(document("get-member",
-                        preprocessRequest(Preprocessors.prettyPrint()),
-                        preprocessResponse(Preprocessors.prettyPrint()),
+                    getDocsRequest(),
+                    getDocsResponse(),
                         requestHeaders(
                             headerWithName("Authorization").description("엑세스 토큰")
                         ),
@@ -117,8 +96,8 @@ class MemberControllerDocsTest(
         // then
         result.andExpect(status().isOk)
                 .andDo(document("update-member",
-                        preprocessRequest(Preprocessors.prettyPrint()),
-                        preprocessResponse(Preprocessors.prettyPrint()),
+                    getDocsRequest(),
+                    getDocsResponse(),
                         requestHeaders(
                                 headerWithName("Authorization").description("엑세스 토큰")
                         ),
@@ -163,8 +142,8 @@ class MemberControllerDocsTest(
         // then
         result.andExpect(status().isOk)
             .andDo(document("check-nickname",
-                preprocessRequest(Preprocessors.prettyPrint()),
-                preprocessResponse(Preprocessors.prettyPrint()),
+                getDocsRequest(),
+                getDocsResponse(),
                 requestFields(
                     fieldWithPath("nickname").type(JsonFieldType.STRING).description("사용자 닉네임"),
                     ),
@@ -175,10 +154,4 @@ class MemberControllerDocsTest(
                 ))
             )
     }
-
-    private fun <T> any(): T {
-        Mockito.any<T>()
-        return null as T
-    }
-
 }

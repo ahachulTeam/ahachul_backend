@@ -3,18 +3,12 @@ package backend.team.ahachul_backend.api.community.adapter.web.`in`
 import backend.team.ahachul_backend.api.community.adapter.web.`in`.dto.*
 import backend.team.ahachul_backend.api.community.application.port.`in`.CommunityPostUseCase
 import backend.team.ahachul_backend.api.community.domain.model.CommunityCategoryType
-import backend.team.ahachul_backend.common.interceptor.AuthenticationInterceptor
-import com.fasterxml.jackson.databind.ObjectMapper
+import backend.team.ahachul_backend.config.controller.CommonDocsConfig
 import org.junit.jupiter.api.Assertions.*
-import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.mockito.BDDMockito.given
-import org.mockito.Mockito
-import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest
 import org.springframework.boot.test.mock.mockito.MockBean
-import org.springframework.data.jpa.mapping.JpaMetamodelMappingContext
 import org.springframework.http.MediaType
 import org.springframework.restdocs.headers.HeaderDocumentation.headerWithName
 import org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders
@@ -24,25 +18,13 @@ import org.springframework.restdocs.operation.preprocess.Preprocessors.*
 import org.springframework.restdocs.payload.JsonFieldType
 import org.springframework.restdocs.payload.PayloadDocumentation.*
 import org.springframework.restdocs.request.RequestDocumentation.*
-import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 import java.time.LocalDateTime
 
 @WebMvcTest(CommunityPostController::class)
-@AutoConfigureRestDocs
-class CommunityPostControllerDocsTest(
-    @Autowired val mockMvc: MockMvc,
-    @Autowired val objectMapper: ObjectMapper,
-) {
+class CommunityPostControllerDocsTest: CommonDocsConfig() {
 
     @MockBean lateinit var communityPostUseCase: CommunityPostUseCase
-    @MockBean lateinit var authenticationInterceptor: AuthenticationInterceptor
-    @MockBean lateinit var jpaMetamodelMappingContext: JpaMetamodelMappingContext
-
-    @BeforeEach
-    fun setup() {
-        given(authenticationInterceptor.preHandle(any(), any(), any())).willReturn(true)
-    }
 
     @Test
     fun searchCommunityPostsTest() {
@@ -82,8 +64,8 @@ class CommunityPostControllerDocsTest(
         // then
         result.andExpect(status().isOk)
             .andDo(document("search-community-posts",
-                preprocessRequest(prettyPrint()),
-                preprocessResponse(prettyPrint()),
+                getDocsRequest(),
+                getDocsResponse(),
                 queryParameters(
                     parameterWithName("categoryType").description("카테고리 타입. EX) FREE, INSIGHT, ISSUE, HUMOR").optional(),
                     parameterWithName("subwayLine").description("1호선").optional(),
@@ -136,8 +118,8 @@ class CommunityPostControllerDocsTest(
         // then
         result.andExpect(status().isOk)
             .andDo(document("get-community-post",
-                preprocessRequest(prettyPrint()),
-                preprocessResponse(prettyPrint()),
+                getDocsRequest(),
+                getDocsResponse(),
                 pathParameters(
                     parameterWithName("postId").description("게시물 아이디")
                 ),
@@ -189,8 +171,8 @@ class CommunityPostControllerDocsTest(
         // then
         result.andExpect(status().isOk)
             .andDo(document("create-community-post",
-                preprocessRequest(prettyPrint()),
-                preprocessResponse(prettyPrint()),
+                getDocsRequest(),
+                getDocsResponse(),
                 requestHeaders(
                     headerWithName("Authorization").description("엑세스 토큰")
                 ),
@@ -242,8 +224,8 @@ class CommunityPostControllerDocsTest(
         // then
         result.andExpect(status().isOk)
             .andDo(document("update-community-post",
-                preprocessRequest(prettyPrint()),
-                preprocessResponse(prettyPrint()),
+                getDocsRequest(),
+                getDocsResponse(),
                 requestHeaders(
                     headerWithName("Authorization").description("엑세스 토큰")
                 ),
@@ -286,8 +268,8 @@ class CommunityPostControllerDocsTest(
         // then
         result.andExpect(status().isOk)
             .andDo(document("delete-community-post",
-                preprocessRequest(prettyPrint()),
-                preprocessResponse(prettyPrint()),
+                getDocsRequest(),
+                getDocsResponse(),
                 requestHeaders(
                     headerWithName("Authorization").description("엑세스 토큰")
                 ),
@@ -300,10 +282,5 @@ class CommunityPostControllerDocsTest(
                     fieldWithPath("result.id").type(JsonFieldType.NUMBER).description("삭제된 게시글 아이디"),
                 )
             ))
-    }
-
-    private fun <T> any(): T {
-        Mockito.any<T>()
-        return null as T
     }
 }
