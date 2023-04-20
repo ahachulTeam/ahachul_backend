@@ -14,7 +14,6 @@ import jakarta.servlet.http.HttpServletResponse
 import org.springframework.stereotype.Component
 import org.springframework.web.method.HandlerMethod
 import org.springframework.web.servlet.HandlerInterceptor
-import org.springframework.web.servlet.resource.ResourceHttpRequestHandler
 
 @Component
 class AuthenticationInterceptor(
@@ -22,10 +21,8 @@ class AuthenticationInterceptor(
 ): HandlerInterceptor {
 
     override fun preHandle(request: HttpServletRequest, response: HttpServletResponse, handler: Any): Boolean {
-        if (handler is ResourceHttpRequestHandler) return true
-
-        val handlerMethod = handler as HandlerMethod
-        handlerMethod.getMethodAnnotation(Authentication::class.java) ?: return true
+        if (handler !is HandlerMethod) return true
+        handler.getMethodAnnotation(Authentication::class.java) ?: return true
 
         try {
             val jwtToken = request.getHeader("Authorization")
