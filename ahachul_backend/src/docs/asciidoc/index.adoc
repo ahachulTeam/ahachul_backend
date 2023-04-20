@@ -1,4 +1,4 @@
-= AH! Hachul REST API
+= AH! Hachul REST
 :toc: left
 :toc-title: Contents
 :toclevels: 3
@@ -19,7 +19,7 @@
 
 === /oauth
 
-==== 리다이렉트 조회 API
+==== 리다이렉트 조회
 
 .Request
 include::{snippets}/get-redirect-url/http-request.adoc[]
@@ -30,7 +30,7 @@ include::{snippets}/get-redirect-url/http-response.adoc[]
 .Response Fields
 include::{snippets}/get-redirect-url/response-fields.adoc[]
 
-==== 로그인 API
+==== 로그인
 
 .Request
 include::{snippets}/login/http-request.adoc[]
@@ -41,7 +41,7 @@ include::{snippets}/login/http-response.adoc[]
 .Response Fields
 include::{snippets}/login/response-fields.adoc[]
 
-==== 토큰 재발급 API
+==== 토큰 재발급
 
 - 리프레쉬 토큰 만료 기간이 7일보다 적게 남았을 경우 리프레쉬 토큰 또한 재발급
 
@@ -56,7 +56,7 @@ include::{snippets}/get-token/response-fields.adoc[]
 
 === /members
 
-==== 사용자 조회 API
+==== 사용자 조회
 
 .Request
 include::{snippets}/get-member/http-request.adoc[]
@@ -67,7 +67,7 @@ include::{snippets}/get-member/http-response.adoc[]
 .Response Fields
 include::{snippets}/get-member/response-fields.adoc[]
 
-==== 사용자 정보 수정 API
+==== 사용자 정보 수정
 
 .Request
 include::{snippets}/update-member/http-request.adoc[]
@@ -108,7 +108,7 @@ include::{snippets}/check-nickname/response-fields.adoc[]
 
 === /community/posts
 
-==== 커뮤니티 게시글 조회 API
+==== 게시글 조회
 
 .Request
 include::{snippets}/search-community-posts/http-request.adoc[]
@@ -119,7 +119,7 @@ include::{snippets}/search-community-posts/http-response.adoc[]
 .Response Fields
 include::{snippets}/search-community-posts/response-fields.adoc[]
 
-==== 커뮤니티 게시글 상세 조회 API
+==== 게시글 상세 조회
 
 .Request
 include::{snippets}/get-community-post/http-request.adoc[]
@@ -130,7 +130,7 @@ include::{snippets}/get-community-post/http-response.adoc[]
 .Response Fields
 include::{snippets}/get-community-post/response-fields.adoc[]
 
-==== 커뮤니티 게시글 생성 API
+==== 게시글 생성
 
 .Request
 include::{snippets}/create-community-post/http-request.adoc[]
@@ -143,7 +143,7 @@ include::{snippets}/create-community-post/http-response.adoc[]
 .Response Fields
 include::{snippets}/create-community-post/response-fields.adoc[]
 
-==== 커뮤니티 게시글 업데이트 API
+==== 게시글 업데이트
 
 .Request
 include::{snippets}/update-community-post/http-request.adoc[]
@@ -156,7 +156,7 @@ include::{snippets}/update-community-post/http-response.adoc[]
 .Response Fields
 include::{snippets}/update-community-post/response-fields.adoc[]
 
-==== 커뮤니티 게시글 삭제 API
+==== 게시글 삭제
 
 .Request
 include::{snippets}/delete-community-post/http-request.adoc[]
@@ -171,7 +171,7 @@ include::{snippets}/delete-community-post/response-fields.adoc[]
 
 === /community/comments
 
-==== 커뮤니티 코멘트 조회 API
+==== 코멘트 조회
 
 .Request
 include::{snippets}/get-community-comments/http-request.adoc[]
@@ -182,7 +182,7 @@ include::{snippets}/get-community-comments/http-response.adoc[]
 .Response Fields
 include::{snippets}/get-community-comments/response-fields.adoc[]
 
-==== 커뮤니티 코멘트 생성 API
+==== 코멘트 생성
 
 .Request
 include::{snippets}/create-community-comment/http-request.adoc[]
@@ -195,7 +195,7 @@ include::{snippets}/create-community-comment/http-response.adoc[]
 .Response Fields
 include::{snippets}/create-community-comment/response-fields.adoc[]
 
-==== 커뮤니티 코멘트 업데이트 API
+==== 코멘트 업데이트
 
 .Request
 include::{snippets}/update-community-comment/http-request.adoc[]
@@ -208,7 +208,7 @@ include::{snippets}/update-community-comment/http-response.adoc[]
 .Response Fields
 include::{snippets}/update-community-comment/response-fields.adoc[]
 
-==== 커뮤니티 코멘트 삭제 API
+==== 코멘트 삭제
 
 .Request
 include::{snippets}/delete-community-comment/http-request.adoc[]
