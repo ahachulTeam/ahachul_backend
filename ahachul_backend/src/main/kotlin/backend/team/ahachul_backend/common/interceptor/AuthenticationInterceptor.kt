@@ -22,8 +22,10 @@ class AuthenticationInterceptor(
 ): HandlerInterceptor {
 
     override fun preHandle(request: HttpServletRequest, response: HttpServletResponse, handler: Any): Boolean {
-        if (handler !is HandlerMethod) return true
-        handler.getMethodAnnotation(Authentication::class.java) ?: return true
+        if (handler is ResourceHttpRequestHandler) return true
+
+        val handlerMethod = handler as HandlerMethod
+        handlerMethod.getMethodAnnotation(Authentication::class.java) ?: return true
 
         try {
             val jwtToken = request.getHeader("Authorization")
