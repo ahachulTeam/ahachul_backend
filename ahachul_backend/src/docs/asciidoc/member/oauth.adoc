@@ -1,6 +1,6 @@
 === /oauth
 
-==== 리다이렉트 조회 API
+==== 리다이렉트 조회
 
 .Request
 include::{snippets}/get-redirect-url/http-request.adoc[]
@@ -11,7 +11,7 @@ include::{snippets}/get-redirect-url/http-response.adoc[]
 .Response Fields
 include::{snippets}/get-redirect-url/response-fields.adoc[]
 
-==== 로그인 API
+==== 로그인
 
 .Request
 include::{snippets}/login/http-request.adoc[]
@@ -22,7 +22,9 @@ include::{snippets}/login/http-response.adoc[]
 .Response Fields
 include::{snippets}/login/response-fields.adoc[]
 
-==== 엑세스 토큰 재발급 API
+==== 토큰 재발급
+
+- 리프레쉬 토큰 만료 기간이 7일보다 적게 남았을 경우 리프레쉬 토큰 또한 재발급
 
 .Request
 include::{snippets}/get-token/http-request.adoc[]
@@ -32,27 +34,3 @@ include::{snippets}/get-token/request-fields.adoc[]
 include::{snippets}/get-token/http-response.adoc[]
 .Response Fields
 include::{snippets}/get-token/response-fields.adoc[]
-
-==== 사용자 조회 API
-
-.Request
-include::{snippets}/get-member/http-request.adoc[]
-.Headers
-include::{snippets}/get-member/request-headers.adoc[]
-.Response
-include::{snippets}/get-member/http-response.adoc[]
-.Response Fields
-include::{snippets}/get-member/response-fields.adoc[]
-
-==== 사용자 정보 수정 API
-
-.Request
-include::{snippets}/update-member/http-request.adoc[]
-.Request Headers
-include::{snippets}/update-member/request-headers.adoc[]
-.Request Fields
-include::{snippets}/update-member/request-fields.adoc[]
-.Response
-include::{snippets}/update-member/http-response.adoc[]
-.Response Fields
-include::{snippets}/update-member/response-fields.adoc[]
