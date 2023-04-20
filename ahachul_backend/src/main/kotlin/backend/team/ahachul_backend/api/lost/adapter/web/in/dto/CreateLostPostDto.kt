@@ -2,7 +2,7 @@ package backend.team.ahachul_backend.api.lost.adapter.web.`in`.dto
 
 import org.jetbrains.annotations.NotNull
 
-class PostLostDto{
+class CreateLostPostDto{
     data class Request(
         @NotNull var title: String = "",
         @NotNull var content: String = "",

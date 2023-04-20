@@ -2,7 +2,7 @@ package backend.team.ahachul_backend.api.lost.adapter.web.`in`.dto
 
 import backend.team.ahachul_backend.api.lost.domain.model.LostStatus
 
-class GetLostDto {
+class GetLostPostDto {
     data class AllResponse(
         var lostList: MutableList<Response> = ArrayList()
     )

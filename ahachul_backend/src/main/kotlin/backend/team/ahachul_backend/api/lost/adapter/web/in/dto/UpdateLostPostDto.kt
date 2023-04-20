@@ -2,7 +2,7 @@ package backend.team.ahachul_backend.api.lost.adapter.web.`in`.dto
 
 import backend.team.ahachul_backend.api.lost.domain.model.LostStatus
 
-class UpdateLostDto {
+class UpdateLostPostDto {
     data class Request(
         var title: String = "",
         var content: String = "",
