@@ -22,11 +22,15 @@ import org.springframework.test.web.servlet.MockMvc
 @AutoConfigureRestDocs
 abstract class CommonDocsConfig {
 
-    @Autowired lateinit var mockMvc: MockMvc
-    @Autowired lateinit var objectMapper: ObjectMapper
+    @Autowired
+    lateinit var mockMvc: MockMvc
+    @Autowired
+    lateinit var objectMapper: ObjectMapper
 
-    @MockBean lateinit var authenticationInterceptor: AuthenticationInterceptor
-    @MockBean lateinit var jpaMetamodelMappingContext: JpaMetamodelMappingContext
+    @MockBean
+    lateinit var authenticationInterceptor: AuthenticationInterceptor
+    @MockBean
+    lateinit var jpaMetamodelMappingContext: JpaMetamodelMappingContext
 
     @BeforeEach
     fun setup() {

@@ -21,98 +21,105 @@ import org.springframework.restdocs.payload.PayloadDocumentation.*
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 
 @WebMvcTest(MemberController::class)
-class MemberControllerDocsTest: CommonDocsConfig() {
+class MemberControllerDocsTest : CommonDocsConfig() {
 
-    @MockBean lateinit var memberUseCase: MemberUseCase
+    @MockBean
+    lateinit var memberUseCase: MemberUseCase
 
     @Test
     fun getMemberTest() {
         // given
         val response = GetMemberDto.Response(
-                memberId = 1,
-                nickname = "nickname",
-                email = "email",
-                gender = GenderType.MALE,
-                ageRange = "20"
+            memberId = 1,
+            nickname = "nickname",
+            email = "email",
+            gender = GenderType.MALE,
+            ageRange = "20"
         )
 
         given(memberUseCase.getMember())
-                .willReturn(response)
+            .willReturn(response)
 
         // when
         val result = mockMvc.perform(
-                get("/v1/members")
-                        .header("Authorization", "<Access Token>")
-                        .accept(MediaType.APPLICATION_JSON)
+            get("/v1/members")
+                .header("Authorization", "<Access Token>")
+                .accept(MediaType.APPLICATION_JSON)
         )
 
         // then
         result.andExpect(status().isOk)
-                .andDo(document("get-member",
+            .andDo(
+                document(
+                    "get-member",
                     getDocsRequest(),
                     getDocsResponse(),
-                        requestHeaders(
-                            headerWithName("Authorization").description("엑세스 토큰")
-                        ),
-                        responseFields(
-                            *commonResponseFields(),
-                                fieldWithPath("result.memberId").type(JsonFieldType.NUMBER).description("사용자 Identification Key"),
-                                fieldWithPath("result.nickname").type(JsonFieldType.STRING).description("사용자 닉네임").optional(),
-                                fieldWithPath("result.email").type(JsonFieldType.STRING).description("사용자 이메일").optional(),
-                                fieldWithPath("result.gender").type("GenderType").description("사용자 성별. EX) MALE, FEMALE").optional(),
-                                fieldWithPath("result.ageRange").type(JsonFieldType.STRING).description("사용자 연령대 EX) 1, 10, 20, 30 ...").optional(),
-                        ))
+                    requestHeaders(
+                        headerWithName("Authorization").description("엑세스 토큰")
+                    ),
+                    responseFields(
+                        *commonResponseFields(),
+                        fieldWithPath("result.memberId").type(JsonFieldType.NUMBER).description("사용자 Identification Key"),
+                        fieldWithPath("result.nickname").type(JsonFieldType.STRING).description("사용자 닉네임").optional(),
+                        fieldWithPath("result.email").type(JsonFieldType.STRING).description("사용자 이메일").optional(),
+                        fieldWithPath("result.gender").type("GenderType").description("사용자 성별. EX) MALE, FEMALE").optional(),
+                        fieldWithPath("result.ageRange").type(JsonFieldType.STRING).description("사용자 연령대 EX) 1, 10, 20, 30 ...").optional(),
+                    )
                 )
+            )
     }
 
     @Test
     fun updateMemberTest() {
         // given
         val response = UpdateMemberDto.Response(
-                nickname = "nickname",
-                gender = GenderType.MALE,
-                ageRange = "20"
+            nickname = "nickname",
+            gender = GenderType.MALE,
+            ageRange = "20"
         )
 
         given(memberUseCase.updateMember(any()))
-                .willReturn(response)
+            .willReturn(response)
 
         val request = UpdateMemberDto.Request(
-                nickname = "nickname",
-                gender = GenderType.MALE,
-                ageRange = "20"
+            nickname = "nickname",
+            gender = GenderType.MALE,
+            ageRange = "20"
         )
 
         // when
         val result = mockMvc.perform(
-                patch("/v1/members")
-                        .header("Authorization", "<Access Token>")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(request))
-                        .accept(MediaType.APPLICATION_JSON)
+            patch("/v1/members")
+                .header("Authorization", "<Access Token>")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(request))
+                .accept(MediaType.APPLICATION_JSON)
         )
 
         // then
         result.andExpect(status().isOk)
-                .andDo(document("update-member",
+            .andDo(
+                document(
+                    "update-member",
                     getDocsRequest(),
                     getDocsResponse(),
-                        requestHeaders(
-                                headerWithName("Authorization").description("엑세스 토큰")
-                        ),
-                        requestFields(
-                                fieldWithPath("nickname").type(JsonFieldType.STRING).description("사용자 닉네임").optional(),
-                                fieldWithPath("gender").type("GenderType").description("사용자 성별. EX) MALE, FEMALE").optional(),
-                                fieldWithPath("ageRange").type(JsonFieldType.STRING).description("사용자 연령대 EX) 1, 10, 20, 30 ...").optional(),
+                    requestHeaders(
+                        headerWithName("Authorization").description("엑세스 토큰")
+                    ),
+                    requestFields(
+                        fieldWithPath("nickname").type(JsonFieldType.STRING).description("사용자 닉네임").optional(),
+                        fieldWithPath("gender").type("GenderType").description("사용자 성별. EX) MALE, FEMALE").optional(),
+                        fieldWithPath("ageRange").type(JsonFieldType.STRING).description("사용자 연령대 EX) 1, 10, 20, 30 ...").optional(),
 
                         ),
-                        responseFields(
-                            *commonResponseFields(),
-                                fieldWithPath("result.nickname").type(JsonFieldType.STRING).description("사용자 닉네임"),
-                                fieldWithPath("result.gender").type("GenderType").description("사용자 성별. EX) MALE, FEMALE"),
-                                fieldWithPath("result.ageRange").type(JsonFieldType.STRING).description("사용자 연령대 EX) 1, 10, 20, 30 ..."),
-                        ))
+                    responseFields(
+                        *commonResponseFields(),
+                        fieldWithPath("result.nickname").type(JsonFieldType.STRING).description("사용자 닉네임"),
+                        fieldWithPath("result.gender").type("GenderType").description("사용자 성별. EX) MALE, FEMALE"),
+                        fieldWithPath("result.ageRange").type(JsonFieldType.STRING).description("사용자 연령대 EX) 1, 10, 20, 30 ..."),
+                    )
                 )
+            )
     }
 
     @Test
@@ -139,16 +146,19 @@ class MemberControllerDocsTest: CommonDocsConfig() {
 
         // then
         result.andExpect(status().isOk)
-            .andDo(document("check-nickname",
-                getDocsRequest(),
-                getDocsResponse(),
-                requestFields(
-                    fieldWithPath("nickname").type(JsonFieldType.STRING).description("사용자 닉네임"),
+            .andDo(
+                document(
+                    "check-nickname",
+                    getDocsRequest(),
+                    getDocsResponse(),
+                    requestFields(
+                        fieldWithPath("nickname").type(JsonFieldType.STRING).description("사용자 닉네임"),
                     ),
-                responseFields(
-                    *commonResponseFields(),
-                    fieldWithPath("result.available").type(JsonFieldType.BOOLEAN).description("닉네임 사용 가능 여부"),
-                ))
+                    responseFields(
+                        *commonResponseFields(),
+                        fieldWithPath("result.available").type(JsonFieldType.BOOLEAN).description("닉네임 사용 가능 여부"),
+                    )
+                )
             )
     }
 }

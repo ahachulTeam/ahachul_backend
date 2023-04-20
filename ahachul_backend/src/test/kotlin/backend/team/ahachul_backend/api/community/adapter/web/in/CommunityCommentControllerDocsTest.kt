@@ -25,9 +25,10 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 import java.time.LocalDateTime
 
 @WebMvcTest(CommunityCommentController::class)
-class CommunityCommentControllerDocsTest: CommonDocsConfig() {
+class CommunityCommentControllerDocsTest : CommonDocsConfig() {
 
-    @MockBean lateinit var communityCommentUseCase: CommunityCommentUseCase
+    @MockBean
+    lateinit var communityCommentUseCase: CommunityCommentUseCase
 
     @Test
     fun getCommunityCommentsTest() {
@@ -56,21 +57,24 @@ class CommunityCommentControllerDocsTest: CommonDocsConfig() {
 
         // then
         result.andExpect(status().isOk)
-            .andDo(document("get-community-comments",
-                getDocsRequest(),
-                getDocsResponse(),
-                queryParameters(
-                    parameterWithName("postId").description("코멘트 조회할 게시글 아이디")
-                ),
-                PayloadDocumentation.responseFields(
-                    *commonResponseFields(),
-                    PayloadDocumentation.fieldWithPath("result.comments[0].id").type(JsonFieldType.NUMBER).description("코멘트 아이디"),
-                    PayloadDocumentation.fieldWithPath("result.comments[0].upperCommentId").type(JsonFieldType.NUMBER).description("상위 코멘트 아이디").optional(),
-                    PayloadDocumentation.fieldWithPath("result.comments[0].content").type(JsonFieldType.STRING).description("코멘트 내용"),
-                    PayloadDocumentation.fieldWithPath("result.comments[0].createdAt").type("LocalDateTime").description("작성일자"),
-                    PayloadDocumentation.fieldWithPath("result.comments[0].createdBy").type(JsonFieldType.STRING).description("작성자"),
+            .andDo(
+                document(
+                    "get-community-comments",
+                    getDocsRequest(),
+                    getDocsResponse(),
+                    queryParameters(
+                        parameterWithName("postId").description("코멘트 조회할 게시글 아이디")
+                    ),
+                    PayloadDocumentation.responseFields(
+                        *commonResponseFields(),
+                        PayloadDocumentation.fieldWithPath("result.comments[0].id").type(JsonFieldType.NUMBER).description("코멘트 아이디"),
+                        PayloadDocumentation.fieldWithPath("result.comments[0].upperCommentId").type(JsonFieldType.NUMBER).description("상위 코멘트 아이디").optional(),
+                        PayloadDocumentation.fieldWithPath("result.comments[0].content").type(JsonFieldType.STRING).description("코멘트 내용"),
+                        PayloadDocumentation.fieldWithPath("result.comments[0].createdAt").type("LocalDateTime").description("작성일자"),
+                        PayloadDocumentation.fieldWithPath("result.comments[0].createdBy").type(JsonFieldType.STRING).description("작성자"),
+                    )
                 )
-            ))
+            )
     }
 
     @Test
@@ -102,24 +106,27 @@ class CommunityCommentControllerDocsTest: CommonDocsConfig() {
 
         // then
         result.andExpect(status().isOk)
-            .andDo(document("create-community-comment",
-                getDocsRequest(),
-                getDocsResponse(),
-                requestHeaders(
-                    headerWithName("Authorization").description("엑세스 토큰")
-                ),
-                PayloadDocumentation.requestFields(
-                    PayloadDocumentation.fieldWithPath("postId").description("코멘트 생성할 게시글 아이디"),
-                    PayloadDocumentation.fieldWithPath("upperCommentId").description("상위 코멘트 아이디").optional(),
-                    PayloadDocumentation.fieldWithPath("content").description("생성할 내용")
-                ),
-                PayloadDocumentation.responseFields(
-                    *commonResponseFields(),
-                    PayloadDocumentation.fieldWithPath("result.id").type(JsonFieldType.NUMBER).description("생성된 코멘트 아이디"),
-                    PayloadDocumentation.fieldWithPath("result.upperCommentId").type(JsonFieldType.NUMBER).description("연결된 상위 코멘트 아이디").optional(),
-                    PayloadDocumentation.fieldWithPath("result.content").type(JsonFieldType.STRING).description("생성된 내용"),
+            .andDo(
+                document(
+                    "create-community-comment",
+                    getDocsRequest(),
+                    getDocsResponse(),
+                    requestHeaders(
+                        headerWithName("Authorization").description("엑세스 토큰")
+                    ),
+                    PayloadDocumentation.requestFields(
+                        PayloadDocumentation.fieldWithPath("postId").description("코멘트 생성할 게시글 아이디"),
+                        PayloadDocumentation.fieldWithPath("upperCommentId").description("상위 코멘트 아이디").optional(),
+                        PayloadDocumentation.fieldWithPath("content").description("생성할 내용")
+                    ),
+                    PayloadDocumentation.responseFields(
+                        *commonResponseFields(),
+                        PayloadDocumentation.fieldWithPath("result.id").type(JsonFieldType.NUMBER).description("생성된 코멘트 아이디"),
+                        PayloadDocumentation.fieldWithPath("result.upperCommentId").type(JsonFieldType.NUMBER).description("연결된 상위 코멘트 아이디").optional(),
+                        PayloadDocumentation.fieldWithPath("result.content").type(JsonFieldType.STRING).description("생성된 내용"),
+                    )
                 )
-            ))
+            )
     }
 
     @Test
@@ -148,24 +155,27 @@ class CommunityCommentControllerDocsTest: CommonDocsConfig() {
 
         // then
         result.andExpect(status().isOk)
-            .andDo(document("update-community-comment",
-                getDocsRequest(),
-                getDocsResponse(),
-                requestHeaders(
-                    headerWithName("Authorization").description("엑세스 토큰")
-                ),
-                RequestDocumentation.pathParameters(
-                    parameterWithName("commentId").description("변경할 코멘트 아이디")
-                ),
-                PayloadDocumentation.requestFields(
-                    PayloadDocumentation.fieldWithPath("content").description("변경할 내용"),
-                ),
-                PayloadDocumentation.responseFields(
-                    *commonResponseFields(),
-                    PayloadDocumentation.fieldWithPath("result.id").type(JsonFieldType.NUMBER).description("변경된 코멘트 아이디"),
-                    PayloadDocumentation.fieldWithPath("result.content").type(JsonFieldType.STRING).description("변경된 내용"),
+            .andDo(
+                document(
+                    "update-community-comment",
+                    getDocsRequest(),
+                    getDocsResponse(),
+                    requestHeaders(
+                        headerWithName("Authorization").description("엑세스 토큰")
+                    ),
+                    RequestDocumentation.pathParameters(
+                        parameterWithName("commentId").description("변경할 코멘트 아이디")
+                    ),
+                    PayloadDocumentation.requestFields(
+                        PayloadDocumentation.fieldWithPath("content").description("변경할 내용"),
+                    ),
+                    PayloadDocumentation.responseFields(
+                        *commonResponseFields(),
+                        PayloadDocumentation.fieldWithPath("result.id").type(JsonFieldType.NUMBER).description("변경된 코멘트 아이디"),
+                        PayloadDocumentation.fieldWithPath("result.content").type(JsonFieldType.STRING).description("변경된 내용"),
+                    )
                 )
-            ))
+            )
     }
 
     @Test
@@ -187,19 +197,22 @@ class CommunityCommentControllerDocsTest: CommonDocsConfig() {
 
         // then
         result.andExpect(status().isOk)
-            .andDo(document("delete-community-comment",
-                getDocsRequest(),
-                getDocsResponse(),
-                requestHeaders(
-                    headerWithName("Authorization").description("엑세스 토큰")
-                ),
-                RequestDocumentation.pathParameters(
-                    parameterWithName("commentId").description("삭제할 코멘트 아이디")
-                ),
-                PayloadDocumentation.responseFields(
-                    *commonResponseFields(),
-                    PayloadDocumentation.fieldWithPath("result.id").type(JsonFieldType.NUMBER).description("삭제된 코멘트 아이디"),
+            .andDo(
+                document(
+                    "delete-community-comment",
+                    getDocsRequest(),
+                    getDocsResponse(),
+                    requestHeaders(
+                        headerWithName("Authorization").description("엑세스 토큰")
+                    ),
+                    RequestDocumentation.pathParameters(
+                        parameterWithName("commentId").description("삭제할 코멘트 아이디")
+                    ),
+                    PayloadDocumentation.responseFields(
+                        *commonResponseFields(),
+                        PayloadDocumentation.fieldWithPath("result.id").type(JsonFieldType.NUMBER).description("삭제된 코멘트 아이디"),
+                    )
                 )
-            ))
+            )
     }
 }
