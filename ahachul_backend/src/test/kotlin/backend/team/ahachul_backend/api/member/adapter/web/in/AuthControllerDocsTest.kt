@@ -81,7 +81,7 @@ class AuthControllerDocsTest(
     fun loginTest() {
         // given
         val response = LoginMemberDto.Response(
-                memberId = 1.toString(),
+                memberId = "1",
                 isNeedAdditionalUserInfo = true,
                 accessToken = "accessToken",
                 accessTokenExpiresIn = 3600,

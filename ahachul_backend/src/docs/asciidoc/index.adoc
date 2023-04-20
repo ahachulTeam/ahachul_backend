@@ -60,7 +60,7 @@ include::{snippets}/get-token/response-fields.adoc[]
 
 .Request
 include::{snippets}/get-member/http-request.adoc[]
-.Headers
+.Request Headers
 include::{snippets}/get-member/request-headers.adoc[]
 .Response
 include::{snippets}/get-member/http-response.adoc[]
@@ -103,3 +103,121 @@ include::{snippets}/check-nickname/response-fields.adoc[]
 |205|유효하지 않은 권한 코드입니다.|401
 |206|유효하지 않은 액세스 토큰입니다.|401
 |===
+
+== Community
+
+=== /community/posts
+
+==== 커뮤니티 게시글 조회 API
+
+.Request
+include::{snippets}/search-community-posts/http-request.adoc[]
+.Query Parameters
+include::{snippets}/search-community-posts/query-parameters.adoc[]
+.Response
+include::{snippets}/search-community-posts/http-response.adoc[]
+.Response Fields
+include::{snippets}/search-community-posts/response-fields.adoc[]
+
+==== 커뮤니티 게시글 상세 조회 API
+
+.Request
+include::{snippets}/get-community-post/http-request.adoc[]
+.Path Parameters
+include::{snippets}/get-community-post/path-parameters.adoc[]
+.Response
+include::{snippets}/get-community-post/http-response.adoc[]
+.Response Fields
+include::{snippets}/get-community-post/response-fields.adoc[]
+
+==== 커뮤니티 게시글 생성 API
+
+.Request
+include::{snippets}/create-community-post/http-request.adoc[]
+.Request Headers
+include::{snippets}/create-community-post/request-headers.adoc[]
+.Request Fields
+include::{snippets}/create-community-post/request-fields.adoc[]
+.Response
+include::{snippets}/create-community-post/http-response.adoc[]
+.Response Fields
+include::{snippets}/create-community-post/response-fields.adoc[]
+
+==== 커뮤니티 게시글 업데이트 API
+
+.Request
+include::{snippets}/update-community-post/http-request.adoc[]
+.Request Headers
+include::{snippets}/update-community-post/request-headers.adoc[]
+.Request Fields
+include::{snippets}/update-community-post/request-fields.adoc[]
+.Response
+include::{snippets}/update-community-post/http-response.adoc[]
+.Response Fields
+include::{snippets}/update-community-post/response-fields.adoc[]
+
+==== 커뮤니티 게시글 삭제 API
+
+.Request
+include::{snippets}/delete-community-post/http-request.adoc[]
+.Request Headers
+include::{snippets}/delete-community-post/request-headers.adoc[]
+.Path Parameters
+include::{snippets}/delete-community-post/path-parameters.adoc[]
+.Response
+include::{snippets}/delete-community-post/http-response.adoc[]
+.Response Fields
+include::{snippets}/delete-community-post/response-fields.adoc[]
+
+=== /community/comments
+
+==== 커뮤니티 코멘트 조회 API
+
+.Request
+include::{snippets}/get-community-comments/http-request.adoc[]
+.Query Parameters
+include::{snippets}/get-community-comments/query-parameters.adoc[]
+.Response
+include::{snippets}/get-community-comments/http-response.adoc[]
+.Response Fields
+include::{snippets}/get-community-comments/response-fields.adoc[]
+
+==== 커뮤니티 코멘트 생성 API
+
+.Request
+include::{snippets}/create-community-comment/http-request.adoc[]
+.Request Headers
+include::{snippets}/create-community-comment/request-headers.adoc[]
+.Request Fields
+include::{snippets}/create-community-comment/request-fields.adoc[]
+.Response
+include::{snippets}/create-community-comment/http-response.adoc[]
+.Response Fields
+include::{snippets}/create-community-comment/response-fields.adoc[]
+
+==== 커뮤니티 코멘트 업데이트 API
+
+.Request
+include::{snippets}/update-community-comment/http-request.adoc[]
+.Request Headers
+include::{snippets}/update-community-comment/request-headers.adoc[]
+.Path Parameters
+include::{snippets}/update-community-comment/path-parameters.adoc[]
+.Response
+include::{snippets}/update-community-comment/http-response.adoc[]
+.Response Fields
+include::{snippets}/update-community-comment/response-fields.adoc[]
+
+==== 커뮤니티 코멘트 삭제 API
+
+.Request
+include::{snippets}/delete-community-comment/http-request.adoc[]
+.Request Headers
+include::{snippets}/delete-community-comment/request-headers.adoc[]
+.Path Parameters
+include::{snippets}/delete-community-comment/path-parameters.adoc[]
+.Response
+include::{snippets}/delete-community-comment/http-response.adoc[]
+.Response Fields
+include::{snippets}/delete-community-comment/response-fields.adoc[]
+
