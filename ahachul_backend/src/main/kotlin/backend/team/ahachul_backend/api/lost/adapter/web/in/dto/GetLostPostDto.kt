@@ -3,8 +3,9 @@ package backend.team.ahachul_backend.api.lost.adapter.web.`in`.dto
 import backend.team.ahachul_backend.api.lost.domain.model.LostStatus
 
 class GetLostPostDto {
+
     data class AllResponse(
-        var lostList: MutableList<Response> = ArrayList()
+        var lostList: List<Response> = mutableListOf()
     )
 
     data class Response(
@@ -17,6 +18,6 @@ class GetLostPostDto {
         var chats: Int = 0,
         var imgUrls: List<String> = ArrayList(),
         var storage: String? = "",
-        var storage_number: String? = ""
+        var storageNumber: String? = ""
     )
 }
