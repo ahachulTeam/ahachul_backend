@@ -20,13 +20,22 @@ class AuthenticationInterceptor(
         private val jwtUtils: JwtUtils
 ): HandlerInterceptor {
 
+    companion object {
+        const val AUTH_PREFIX = "Bearer "
+    }
+
     override fun preHandle(request: HttpServletRequest, response: HttpServletResponse, handler: Any): Boolean {
         if (handler !is HandlerMethod) return true
         handler.getMethodAnnotation(Authentication::class.java) ?: return true
 
         try {
             val jwtToken = request.getHeader("Authorization")
-            val verifiedJwtToken = jwtUtils.verify(jwtToken)
+
+            if (!jwtToken.startsWith(AUTH_PREFIX)) throw UnsupportedJwtException("not supported jwt")
+
+            val jwtTokenExcludePrefix = jwtToken.substring(AUTH_PREFIX.length)
+
+            val verifiedJwtToken = jwtUtils.verify(jwtTokenExcludePrefix)
 
             RequestUtils.setAttribute("memberId", verifiedJwtToken.body.subject)
 
