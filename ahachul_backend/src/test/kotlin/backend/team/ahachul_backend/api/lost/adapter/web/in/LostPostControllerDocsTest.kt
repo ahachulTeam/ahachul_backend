@@ -146,7 +146,7 @@ class LostPostControllerDocsTest: CommonDocsConfig() {
         // when
         val result = mockMvc.perform(
             post("/v1/lost/posts")
-                .header("Authorization", "<Access Token>")
+                .header("Authorization", "Bearer <Access Token>")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(request))
                 .accept(MediaType.APPLICATION_JSON)
@@ -193,7 +193,7 @@ class LostPostControllerDocsTest: CommonDocsConfig() {
         // when
         val result = mockMvc.perform(
             patch("/v1/lost/posts/{lostId}", 1)
-                .header("Authorization", "<Access Token>")
+                .header("Authorization", "Bearer <Access Token>")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(request))
                 .accept(MediaType.APPLICATION_JSON)
@@ -234,7 +234,7 @@ class LostPostControllerDocsTest: CommonDocsConfig() {
         // when
         val result = mockMvc.perform(
             delete("/v1/lost/posts/{lostId}", 1)
-                .header("Authorization", "<Access Token>")
+                .header("Authorization", "Bearer <Access Token>")
                 .accept(MediaType.APPLICATION_JSON)
         )
 
