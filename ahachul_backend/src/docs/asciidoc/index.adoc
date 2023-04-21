@@ -28,3 +28,7 @@ include::member/error.adoc[]
 include::community/posts.adoc[]
 
 include::community/comments.adoc[]
+
+== lost
+
+include::lost/posts.adoc[]
