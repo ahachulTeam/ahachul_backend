@@ -43,7 +43,7 @@ class MemberControllerDocsTest : CommonDocsConfig() {
         // when
         val result = mockMvc.perform(
             get("/v1/members")
-                .header("Authorization", "<Access Token>")
+                .header("Authorization", "Bearer <Access Token>")
                 .accept(MediaType.APPLICATION_JSON)
         )
 
@@ -90,7 +90,7 @@ class MemberControllerDocsTest : CommonDocsConfig() {
         // when
         val result = mockMvc.perform(
             patch("/v1/members")
-                .header("Authorization", "<Access Token>")
+                .header("Authorization", "Bearer <Access Token>")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(request))
                 .accept(MediaType.APPLICATION_JSON)

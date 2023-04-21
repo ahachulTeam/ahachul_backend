@@ -165,7 +165,7 @@ class CommunityPostControllerDocsTest : CommonDocsConfig() {
         // when
         val result = mockMvc.perform(
             post("/v1/community/posts")
-                .header("Authorization", "<Access Token>")
+                .header("Authorization", "Bearer <Access Token>")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(request))
                 .accept(MediaType.APPLICATION_JSON)
@@ -220,7 +220,7 @@ class CommunityPostControllerDocsTest : CommonDocsConfig() {
         // when
         val result = mockMvc.perform(
             patch("/v1/community/posts/{postId}", 1)
-                .header("Authorization", "<Access Token>")
+                .header("Authorization", "Bearer <Access Token>")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(request))
                 .accept(MediaType.APPLICATION_JSON)
@@ -268,7 +268,7 @@ class CommunityPostControllerDocsTest : CommonDocsConfig() {
         // when
         val result = mockMvc.perform(
             delete("/v1/community/posts/{postId}", 1)
-                .header("Authorization", "<Access Token>")
+                .header("Authorization", "Bearer <Access Token>")
                 .accept(MediaType.APPLICATION_JSON)
         )
 
