@@ -29,6 +29,7 @@ import org.springframework.restdocs.payload.PayloadDocumentation.*
 import org.springframework.restdocs.request.RequestDocumentation.*
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
+import org.springframework.web.bind.annotation.RequestParam
 
 @WebMvcTest(LostPostController::class)
 @AutoConfigureRestDocs
@@ -39,7 +40,7 @@ class LostPostControllerDocsTest(
 
     @MockBean lateinit var lostPostUseCase: LostPostUseCase
     @MockBean lateinit var authenticationInterceptor:AuthenticationInterceptor
-    @MockBean lateinit var  jpaMetamodelMappingContext: JpaMetamodelMappingContext
+    @MockBean lateinit var jpaMetamodelMappingContext: JpaMetamodelMappingContext
 
     @BeforeEach
     fun setup() {
@@ -129,7 +130,9 @@ class LostPostControllerDocsTest(
                 Preprocessors.preprocessRequest(Preprocessors.prettyPrint()),
                 Preprocessors.preprocessResponse(Preprocessors.prettyPrint()),
                 queryParameters(
-                    parameterWithName("type").description("유실물 타입 : 유실(LOST) / 습득(ACQUIRE)"),
+                    parameterWithName("type").description("유실물 타입 : LOST(유실) / ACQUIRE(습득)"),
+                    parameterWithName("line").description("유실물 호선").optional(),
+                    parameterWithName("origin").description("유실물 출처 : EXTERNAL(Lost112) / INTERNAL(앱 내부)").optional(),
                     parameterWithName("page").description("현재 페이지"),
                     parameterWithName("size").description("페이지 노출 데이터 수"),
                     parameterWithName("sort").description("정렬 조건. (createdAt|comments),(asc|desc)"),
@@ -187,7 +190,7 @@ class LostPostControllerDocsTest(
                         fieldWithPath("content").type(JsonFieldType.STRING).description("유실물 내용"),
                         fieldWithPath("lostLine").type(JsonFieldType.NUMBER).description("유실 호선 EX) 1호선 / 수인분당선"),
                         fieldWithPath("imgUrls").type(JsonFieldType.ARRAY).description("유실물 이미지 리스트").optional(),
-                        fieldWithPath("lostType").type(JsonFieldType.ARRAY).description("유실물 타입 : 유실(LOST) / 습득(ACQUIRE)"),
+                        fieldWithPath("lostType").type(JsonFieldType.ARRAY).description("유실물 타입 : LOST(유실) / ACQUIRE(습득)"),
                     ),
                     responseFields(
                         fieldWithPath("code").type(JsonFieldType.STRING).description("상태 코드"),
