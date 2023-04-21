@@ -29,7 +29,6 @@ import org.springframework.restdocs.payload.PayloadDocumentation.*
 import org.springframework.restdocs.request.RequestDocumentation.*
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
-import org.springframework.web.bind.annotation.RequestParam
 
 @WebMvcTest(LostPostController::class)
 @AutoConfigureRestDocs
@@ -135,7 +134,6 @@ class LostPostControllerDocsTest(
                     parameterWithName("origin").description("유실물 출처 : EXTERNAL(Lost112) / INTERNAL(앱 내부)").optional(),
                     parameterWithName("page").description("현재 페이지"),
                     parameterWithName("size").description("페이지 노출 데이터 수"),
-                    parameterWithName("sort").description("정렬 조건. (createdAt|comments),(asc|desc)"),
                 ),
                 responseFields(
                     fieldWithPath("code").type(JsonFieldType.STRING).description("상태 코드"),
