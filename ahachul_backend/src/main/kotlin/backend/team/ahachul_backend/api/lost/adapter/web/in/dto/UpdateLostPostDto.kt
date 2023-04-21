@@ -5,19 +5,14 @@ import backend.team.ahachul_backend.api.lost.domain.model.LostStatus
 class UpdateLostPostDto {
 
     data class Request(
-        var title: String = "",
-        var content: String = "",
-        var imgUrls: List<String> = ArrayList(),
-        var lostLine: String = "",
-        var status: LostStatus = LostStatus.PROGRESS
+        val title: String?,
+        val content: String?,
+        val imgUrls: List<String>?,
+        val lostLine: String?,
+        val status: LostStatus?
     )
 
     data class Response(
-        var id: Long = 0,
-        var title: String = "",
-        var content: String = "",
-        var lostLine: String = "",
-        var imgUrls: List<String> = ArrayList(),
-        var status: LostStatus = LostStatus.PROGRESS
+        val id: Long
     )
 }

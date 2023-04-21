@@ -6,6 +6,7 @@ import backend.team.ahachul_backend.api.lost.adapter.web.`in`.dto.GetLostPostDto
 import backend.team.ahachul_backend.api.lost.adapter.web.`in`.dto.UpdateLostPostDto
 import backend.team.ahachul_backend.api.lost.application.port.`in`.LostPostUseCase
 import backend.team.ahachul_backend.api.lost.domain.model.LostStatus
+import backend.team.ahachul_backend.api.lost.domain.model.LostType
 import backend.team.ahachul_backend.common.interceptor.AuthenticationInterceptor
 import com.fasterxml.jackson.databind.ObjectMapper
 import org.junit.jupiter.api.BeforeEach
@@ -53,10 +54,10 @@ class LostPostControllerDocsTest(
             writer = "writer",
             date = "2023/01/23",
             lostLine = "1호선",
-            status = LostStatus.PROGRESS,
             chats = 1,
+            status = LostStatus.PROGRESS,
             imgUrls = listOf(),
-            storage = "1호선",
+            storage = "우리집",
             storageNumber = "02-2222-3333"
         )
 
@@ -66,7 +67,6 @@ class LostPostControllerDocsTest(
         // when
         val result = mockMvc.perform(
             get("/v1/posts/lost/{lostId}", 1)
-                .header("Authorization", "<Access Token>")
                 .accept(MediaType.APPLICATION_JSON)
         )
 
@@ -75,23 +75,22 @@ class LostPostControllerDocsTest(
             .andDo(document("get-lost",
                 Preprocessors.preprocessRequest(Preprocessors.prettyPrint()),
                 Preprocessors.preprocessResponse(Preprocessors.prettyPrint()),
-                requestHeaders(
-                    headerWithName("Authorization").description("엑세스 토큰")
-                ),
                 pathParameters(
                     parameterWithName("lostId").description("유실물 아이디")
                 ),
                 responseFields(
-                    fieldWithPath("title").type(JsonFieldType.NUMBER).description("유실물 제목"),
-                    fieldWithPath("content").type(JsonFieldType.NUMBER).description("유실물 내용"),
-                    fieldWithPath("writer").type(JsonFieldType.NUMBER).description("유실물 작성자 닉네임"),
-                    fieldWithPath("date").type(JsonFieldType.NUMBER).description("유실물 작성 날짜"),
-                    fieldWithPath("lostLine").type(JsonFieldType.NUMBER).description("유실 호선"),
-                    fieldWithPath("chats").type(JsonFieldType.NUMBER).description("유실물 쪽지 개수"),
-                    fieldWithPath("imgUrls").type(JsonFieldType.NUMBER).description("유실물 이미지 리스트"),
-                    fieldWithPath("status").type(JsonFieldType.STRING).description("유실물 찾기 완료 여부 : PROGRESS / COMPLETE"),
-                    fieldWithPath("storage" ).type(JsonFieldType.STRING).description("보관 장소 : Lost112 데이터").optional(),
-                    fieldWithPath("storageNumber").type(JsonFieldType.STRING).description("보관 장소 전화번호 : Lost112 데이터").optional()
+                    fieldWithPath("code").type(JsonFieldType.STRING).description("상태 코드"),
+                    fieldWithPath("message").type(JsonFieldType.STRING).description("상태 메시지"),
+                    fieldWithPath("result.title").type(JsonFieldType.NUMBER).description("유실물 제목"),
+                    fieldWithPath("result.content").type(JsonFieldType.NUMBER).description("유실물 내용"),
+                    fieldWithPath("result.writer").type(JsonFieldType.NUMBER).description("유실물 작성자 닉네임"),
+                    fieldWithPath("result.date").type(JsonFieldType.NUMBER).description("유실물 작성 날짜"),
+                    fieldWithPath("result.lostLine").type(JsonFieldType.NUMBER).description("유실 호선"),
+                    fieldWithPath("result.chats").type(JsonFieldType.NUMBER).description("유실물 쪽지 개수"),
+                    fieldWithPath("result.imgUrls").type(JsonFieldType.NUMBER).description("유실물 이미지 리스트"),
+                    fieldWithPath("result.status").type(JsonFieldType.STRING).description("유실물 찾기 완료 여부 : PROGRESS / COMPLETE"),
+                    fieldWithPath("result.storage" ).type(JsonFieldType.STRING).description("보관 장소 : Lost112 데이터"),
+                    fieldWithPath("result.storageNumber").type(JsonFieldType.STRING).description("보관 장소 전화번호 : Lost112 데이터")
                 )
             ))
     }
@@ -106,8 +105,8 @@ class LostPostControllerDocsTest(
                     writer = "writer",
                     date = "2023/01/23",
                     lostLine = "1호선",
-                    status = LostStatus.PROGRESS,
                     chats = 1,
+                    status = LostStatus.PROGRESS,
                     imgUrls = listOf(),
                     storage = "1호선",
                     storageNumber = "02-2222-3333"
@@ -121,7 +120,6 @@ class LostPostControllerDocsTest(
         // when
         val result = mockMvc.perform(
             get("/v1/posts/lost")
-                .header("Authorization", "<Access Token>")
                 .accept(MediaType.APPLICATION_JSON)
         )
 
@@ -130,21 +128,23 @@ class LostPostControllerDocsTest(
             .andDo(document("get-all-lost",
                 Preprocessors.preprocessRequest(Preprocessors.prettyPrint()),
                 Preprocessors.preprocessResponse(Preprocessors.prettyPrint()),
-                requestHeaders(
-                    headerWithName("Authorization").description("엑세스 토큰")
-                ),
                 queryParameters(
-                    parameterWithName("type").description("유실물 타입 : 유실(LOST) / 습득(ACQUIRE)")
+                    parameterWithName("type").description("유실물 타입 : 유실(LOST) / 습득(ACQUIRE)"),
+                    parameterWithName("page").description("현재 페이지"),
+                    parameterWithName("size").description("페이지 노출 데이터 수"),
+                    parameterWithName("sort").description("정렬 조건. (createdAt|comments),(asc|desc)"),
                 ),
                 responseFields(
-                    fieldWithPath("lostList[].title").type(JsonFieldType.NUMBER).description("유실물 제목"),
-                    fieldWithPath("lostList[].content").type(JsonFieldType.NUMBER).description("유실물 내용"),
-                    fieldWithPath("lostList[].writer").type(JsonFieldType.NUMBER).description("유실물 작성자 닉네임"),
-                    fieldWithPath("lostList[].date").type(JsonFieldType.NUMBER).description("유실물 작성 날짜"),
-                    fieldWithPath("lostList[].lostLine").type(JsonFieldType.NUMBER).description("유실 호선"),
-                    fieldWithPath("lostList[].chats").type(JsonFieldType.NUMBER).description("유실물 쪽지 개수"),
-                    fieldWithPath("lostList[].imgUrl").type(JsonFieldType.NUMBER).description("유실물 이미지(썸네일)"),
-                    fieldWithPath("lostList[].status").type(JsonFieldType.STRING).description("유실물 찾기 완료 여부 : PROGRESS / COMPLETE"),
+                    fieldWithPath("code").type(JsonFieldType.STRING).description("상태 코드"),
+                    fieldWithPath("message").type(JsonFieldType.STRING).description("상태 메시지"),
+                    fieldWithPath("result.lostList[].title").type(JsonFieldType.NUMBER).description("유실물 제목"),
+                    fieldWithPath("result.lostList[].content").type(JsonFieldType.NUMBER).description("유실물 내용"),
+                    fieldWithPath("result.lostList[].writer").type(JsonFieldType.NUMBER).description("유실물 작성자 닉네임"),
+                    fieldWithPath("result.lostList[].date").type(JsonFieldType.NUMBER).description("유실물 작성 날짜"),
+                    fieldWithPath("result.lostList[].lostLine").type(JsonFieldType.NUMBER).description("유실 호선"),
+                    fieldWithPath("result.lostList[].chats").type(JsonFieldType.NUMBER).description("유실물 쪽지 개수"),
+                    fieldWithPath("result.lostList[].imgUrl").type(JsonFieldType.NUMBER).description("유실물 이미지(썸네일)"),
+                    fieldWithPath("result.lostList[].status").type(JsonFieldType.STRING).description("유실물 찾기 완료 여부 : PROGRESS / COMPLETE"),
                 )
             ))
     }
@@ -161,6 +161,7 @@ class LostPostControllerDocsTest(
             title = "title",
             content = "content",
             lostLine = "1",
+            lostType = LostType.LOST,
             imgUrls = arrayListOf("url1", "url2")
         )
 
@@ -181,18 +182,17 @@ class LostPostControllerDocsTest(
                     requestHeaders(
                         headerWithName("Authorization").description("엑세스 토큰")
                     ),
-                    queryParameters(
-                        parameterWithName("type").description("유실물 타입 : ACQUIRE(습득물) / LOST(유실물)")
-                    ),
                     requestFields(
                         fieldWithPath("title").type(JsonFieldType.STRING).description("유실물 제목"),
                         fieldWithPath("content").type(JsonFieldType.STRING).description("유실물 내용"),
                         fieldWithPath("lostLine").type(JsonFieldType.NUMBER).description("유실 호선 EX) 1호선 / 수인분당선"),
-                        fieldWithPath("imgUrls").type(JsonFieldType.ARRAY).description("유실물 이미지 리스트"),
+                        fieldWithPath("imgUrls").type(JsonFieldType.ARRAY).description("유실물 이미지 리스트").optional(),
                         fieldWithPath("lostType").type(JsonFieldType.ARRAY).description("유실물 타입 : 유실(LOST) / 습득(ACQUIRE)"),
                     ),
                     responseFields(
-                        fieldWithPath("id").type(JsonFieldType.NUMBER).description("저장한 유실물 아이디"),
+                        fieldWithPath("code").type(JsonFieldType.STRING).description("상태 코드"),
+                        fieldWithPath("message").type(JsonFieldType.STRING).description("상태 메시지"),
+                        fieldWithPath("result.id").type(JsonFieldType.NUMBER).description("저장한 유실물 아이디"),
                     )
                 ))
     }
@@ -234,13 +234,15 @@ class LostPostControllerDocsTest(
                     parameterWithName("lostId").description("유실물 아이디")
                 ),
                 requestFields(
-                    fieldWithPath("title").type(JsonFieldType.STRING).description("유실물 제목"),
-                    fieldWithPath("content").type(JsonFieldType.STRING).description("유실물 내용"),
-                    fieldWithPath("imgUrls").type(JsonFieldType.ARRAY).description("유실물 이미지 리스트"),
-                    fieldWithPath("status").type(JsonFieldType.STRING).description("유실물 찾기 완료 상태 : PROGRESS / COMPLETE"),
+                    fieldWithPath("title").type(JsonFieldType.STRING).description("유실물 제목").optional(),
+                    fieldWithPath("content").type(JsonFieldType.STRING).description("유실물 내용").optional(),
+                    fieldWithPath("imgUrls").type(JsonFieldType.ARRAY).description("유실물 이미지 리스트").optional(),
+                    fieldWithPath("status").type(JsonFieldType.STRING).description("유실물 찾기 완료 상태 : PROGRESS / COMPLETE").optional(),
                 ),
                 responseFields(
-                    fieldWithPath("id").type(JsonFieldType.NUMBER).description("수정한 유실물 아이디"),
+                    fieldWithPath("code").type(JsonFieldType.STRING).description("상태 코드"),
+                    fieldWithPath("message").type(JsonFieldType.STRING).description("상태 메시지"),
+                    fieldWithPath("result.id").type(JsonFieldType.NUMBER).description("수정한 유실물 아이디"),
                 )
             ))
     }
@@ -271,7 +273,9 @@ class LostPostControllerDocsTest(
                     headerWithName("Authorization").description("엑세스 토큰")
                 ),
                 responseFields(
-                    fieldWithPath("id").type(JsonFieldType.NUMBER).description("삭제한 유실물 아이디"),
+                    fieldWithPath("code").type(JsonFieldType.STRING).description("상태 코드"),
+                    fieldWithPath("message").type(JsonFieldType.STRING).description("상태 메시지"),
+                    fieldWithPath("result.id").type(JsonFieldType.NUMBER).description("삭제한 유실물 아이디"),
                 )
             ))
     }

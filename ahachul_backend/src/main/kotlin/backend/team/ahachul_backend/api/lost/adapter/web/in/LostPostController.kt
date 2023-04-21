@@ -6,7 +6,9 @@ import backend.team.ahachul_backend.api.lost.adapter.web.`in`.dto.GetLostPostDto
 import backend.team.ahachul_backend.api.lost.adapter.web.`in`.dto.UpdateLostPostDto
 import backend.team.ahachul_backend.api.lost.application.port.`in`.LostPostUseCase
 import backend.team.ahachul_backend.api.lost.domain.model.LostType
+import backend.team.ahachul_backend.common.annotation.Authentication
 import backend.team.ahachul_backend.common.response.CommonResponse
+import org.springframework.data.domain.Pageable
 import org.springframework.web.bind.annotation.*
 
 
@@ -21,21 +23,27 @@ class LostPostController(
     }
 
     @GetMapping("/v1/posts/lost")
-    fun getAllLostPost(@RequestParam("type", required = false) type: LostType): CommonResponse<GetLostPostDto.AllResponse> {
+    fun getAllLostPost(
+        pageable: Pageable,
+        @RequestParam("type", required = false) type: LostType,
+    ): CommonResponse<GetLostPostDto.AllResponse> {
         return CommonResponse.success(lostPostService.getAllLostPost())
     }
 
+    @Authentication
     @PostMapping("/v1/posts/lost")
     fun createLostPost(@RequestBody request: CreateLostPostDto.Request): CommonResponse<CreateLostPostDto.Response> {
         return CommonResponse.success(lostPostService.createLostPost())
     }
 
+    @Authentication
     @PatchMapping("/v1/posts/lost/{lostId}")
     fun updateLostPost(@PathVariable("lostId") lostId: Long,
                        @RequestBody request: UpdateLostPostDto.Request): CommonResponse<UpdateLostPostDto.Response> {
         return CommonResponse.success(lostPostService.updateLostPost())
     }
 
+    @Authentication
     @DeleteMapping("/v1/posts/lost/{lostId}")
     fun deleteLostPost(@PathVariable("lostId") lostId: Long): CommonResponse<DeleteLostPostDto.Response> {
         return CommonResponse.success(lostPostService.deleteLostPost())
