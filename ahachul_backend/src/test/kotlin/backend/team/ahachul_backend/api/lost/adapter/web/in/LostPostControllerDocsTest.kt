@@ -108,20 +108,20 @@ class LostPostControllerDocsTest: CommonDocsConfig() {
                 queryParameters(
                     parameterWithName("type").description("유실물 타입 : LOST(유실) / ACQUIRE(습득)"),
                     parameterWithName("line").description("유실물 호선").optional(),
-                    parameterWithName("origin").description("유실물 출처 : EXTERNAL(Lost112) / INTERNAL(앱 내부)").optional(),
+                    parameterWithName("origin").description("유실물 출처 : LOST112 / APP").optional(),
                     parameterWithName("page").description("현재 페이지"),
                     parameterWithName("size").description("페이지 노출 데이터 수"),
                 ),
                 responseFields(
                     *commonResponseFields(),
-                    fieldWithPath("result.lostList[].title").type(JsonFieldType.NUMBER).description("유실물 제목"),
-                    fieldWithPath("result.lostList[].content").type(JsonFieldType.NUMBER).description("유실물 내용"),
-                    fieldWithPath("result.lostList[].writer").type(JsonFieldType.NUMBER).description("유실물 작성자 닉네임"),
-                    fieldWithPath("result.lostList[].date").type(JsonFieldType.NUMBER).description("유실물 작성 날짜"),
-                    fieldWithPath("result.lostList[].lostLine").type(JsonFieldType.NUMBER).description("유실 호선"),
-                    fieldWithPath("result.lostList[].chats").type(JsonFieldType.NUMBER).description("유실물 쪽지 개수"),
-                    fieldWithPath("result.lostList[].imgUrl").type(JsonFieldType.NUMBER).description("유실물 이미지(썸네일)"),
-                    fieldWithPath("result.lostList[].status").type(JsonFieldType.STRING).description("유실물 찾기 완료 여부 : PROGRESS / COMPLETE"),
+                    fieldWithPath("result.posts[].title").type(JsonFieldType.NUMBER).description("유실물 제목"),
+                    fieldWithPath("result.posts[].content").type(JsonFieldType.NUMBER).description("유실물 내용"),
+                    fieldWithPath("result.posts[].writer").type(JsonFieldType.NUMBER).description("유실물 작성자 닉네임"),
+                    fieldWithPath("result.posts[].date").type(JsonFieldType.NUMBER).description("유실물 작성 날짜"),
+                    fieldWithPath("result.posts[].lostLine").type(JsonFieldType.NUMBER).description("유실 호선"),
+                    fieldWithPath("result.posts[].chats").type(JsonFieldType.NUMBER).description("유실물 쪽지 개수"),
+                    fieldWithPath("result.posts[].imgUrl").type(JsonFieldType.NUMBER).description("유실물 이미지(썸네일)"),
+                    fieldWithPath("result.posts[].status").type(JsonFieldType.STRING).description("유실물 찾기 완료 여부 : PROGRESS / COMPLETE"),
                 )
             ))
     }

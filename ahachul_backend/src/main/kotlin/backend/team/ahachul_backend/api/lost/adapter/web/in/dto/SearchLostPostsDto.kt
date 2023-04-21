@@ -5,7 +5,7 @@ import backend.team.ahachul_backend.api.lost.domain.model.LostStatus
 class SearchLostPostsDto {
 
     data class Response(
-        val lostList: List<SearchLost>
+        val posts: List<SearchLost>
     )
 
     data class SearchLost(
