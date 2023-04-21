@@ -3,6 +3,7 @@ package backend.team.ahachul_backend.api.lost.adapter.web.`in`.dto
 import backend.team.ahachul_backend.api.lost.domain.model.LostStatus
 
 class GetLostPostDto {
+
     data class AllResponse(
         val lostList: List<Response>
     )
