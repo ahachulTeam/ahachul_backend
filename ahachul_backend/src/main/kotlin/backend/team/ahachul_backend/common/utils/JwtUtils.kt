@@ -21,8 +21,8 @@ class JwtUtils(
     fun createToken(sub: String, sec: Long): String {
         return Jwts.builder()
                 .setSubject(sub)
-                .setIssuedAt(Date.from(LocalDateTime.now().atZone(ZoneId.of("Asia/Seoul")).toInstant()))
-                .setExpiration(Date.from(LocalDateTime.now().plusSeconds(sec).atZone(ZoneId.of("Asia/Seoul")).toInstant()))
+                .setIssuedAt(Date.from(LocalDateTime.now().atZone(ZoneId.of("UTC")).toInstant()))
+                .setExpiration(Date.from(LocalDateTime.now().plusSeconds(sec).atZone(ZoneId.of("UTC")).toInstant()))
                 .signWith(getKey(jwtProperties.secretKey), SignatureAlgorithm.HS256)
                 .compact()
     }
@@ -32,8 +32,8 @@ class JwtUtils(
                 .setSubject(sub)
                 .setIssuer(iss)
                 .setAudience(aud)
-                .setIssuedAt(Date.from(LocalDateTime.now().atZone(ZoneId.of("Asia/Seoul")).toInstant()))
-                .setExpiration(Date.from(LocalDateTime.now().plusSeconds(sec).atZone(ZoneId.of("Asia/Seoul")).toInstant()))
+                .setIssuedAt(Date.from(LocalDateTime.now().atZone(ZoneId.of("UTC")).toInstant()))
+                .setExpiration(Date.from(LocalDateTime.now().plusSeconds(sec).atZone(ZoneId.of("UTC")).toInstant()))
                 .signWith(secretKey, alg)
                 .compact()
     }
