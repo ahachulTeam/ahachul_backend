@@ -6,14 +6,14 @@ import org.jetbrains.annotations.NotNull
 class CreateLostPostDto{
 
     data class Request(
-        @NotNull var title: String = "",
-        @NotNull var content: String = "",
-        @NotNull var lostLine: String = "",
-        var imgUrls: List<String> = ArrayList(),
-        var lostType: LostType = LostType.LOST
+        @NotNull val title: String,
+        @NotNull val content: String,
+        @NotNull val lostLine: String,
+        @NotNull val lostType: LostType,
+        val imgUrls: List<String>?
     )
 
     data class Response(
-        var id: Long = 0
+        val id: Long
     )
 }
