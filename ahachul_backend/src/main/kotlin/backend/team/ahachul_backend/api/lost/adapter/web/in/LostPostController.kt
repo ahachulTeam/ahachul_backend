@@ -15,12 +15,12 @@ class LostPostController(
     private val lostPostService: LostPostUseCase
 ) {
 
-    @GetMapping("/v1/losts/posts/{lostId}")
+    @GetMapping("/v1/lost/posts/{lostId}")
     fun getLostPost(@PathVariable("lostId") lostId: Long): CommonResponse<GetLostPostDto.Response> {
         return CommonResponse.success(lostPostService.getLostPost())
     }
 
-    @GetMapping("/v1/losts/posts")
+    @GetMapping("/v1/lost/posts")
     fun searchLostPosts(
         pageable: Pageable,
         @RequestParam(value = "type") type: LostType,
@@ -31,20 +31,20 @@ class LostPostController(
     }
 
     @Authentication
-    @PostMapping("/v1/losts/posts")
+    @PostMapping("/v1/lost/posts")
     fun createLostPost(@RequestBody request: CreateLostPostDto.Request): CommonResponse<CreateLostPostDto.Response> {
         return CommonResponse.success(lostPostService.createLostPost())
     }
 
     @Authentication
-    @PatchMapping("/v1/losts/posts/{lostId}")
+    @PatchMapping("/v1/lost/posts/{lostId}")
     fun updateLostPost(@PathVariable("lostId") lostId: Long,
                        @RequestBody request: UpdateLostPostDto.Request): CommonResponse<UpdateLostPostDto.Response> {
         return CommonResponse.success(lostPostService.updateLostPost())
     }
 
     @Authentication
-    @DeleteMapping("/v1/losts/posts/{lostId}")
+    @DeleteMapping("/v1/lost/posts/{lostId}")
     fun deleteLostPost(@PathVariable("lostId") lostId: Long): CommonResponse<DeleteLostPostDto.Response> {
         return CommonResponse.success(lostPostService.deleteLostPost())
     }
