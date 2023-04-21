@@ -1,53 +1,32 @@
 package backend.team.ahachul_backend.api.lost.adapter.web.`in`
 
-import backend.team.ahachul_backend.api.lost.adapter.web.`in`.dto.CreateLostPostDto
-import backend.team.ahachul_backend.api.lost.adapter.web.`in`.dto.DeleteLostPostDto
-import backend.team.ahachul_backend.api.lost.adapter.web.`in`.dto.GetLostPostDto
-import backend.team.ahachul_backend.api.lost.adapter.web.`in`.dto.UpdateLostPostDto
+import backend.team.ahachul_backend.api.lost.adapter.web.`in`.dto.*
 import backend.team.ahachul_backend.api.lost.application.port.`in`.LostPostUseCase
 import backend.team.ahachul_backend.api.lost.domain.model.LostStatus
 import backend.team.ahachul_backend.api.lost.domain.model.LostType
-import backend.team.ahachul_backend.common.interceptor.AuthenticationInterceptor
-import com.fasterxml.jackson.databind.ObjectMapper
-import org.junit.jupiter.api.BeforeEach
+import backend.team.ahachul_backend.config.controller.CommonDocsConfig
 import org.junit.jupiter.api.Test
 import org.mockito.BDDMockito.given
-import org.mockito.Mockito
-import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest
 import org.springframework.boot.test.mock.mockito.MockBean
-import org.springframework.data.jpa.mapping.JpaMetamodelMappingContext
 import org.springframework.http.MediaType
 import org.springframework.restdocs.headers.HeaderDocumentation.headerWithName
 import org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders
 import org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document
 import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.*
-import org.springframework.restdocs.operation.preprocess.Preprocessors
 import org.springframework.restdocs.payload.JsonFieldType
 import org.springframework.restdocs.payload.PayloadDocumentation.*
 import org.springframework.restdocs.request.RequestDocumentation.*
-import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 
 @WebMvcTest(LostPostController::class)
-@AutoConfigureRestDocs
-class LostPostControllerDocsTest(
-    @Autowired val mockMvc: MockMvc,
-    @Autowired val objectMapper: ObjectMapper
-){
+class LostPostControllerDocsTest: CommonDocsConfig() {
 
     @MockBean lateinit var lostPostUseCase: LostPostUseCase
-    @MockBean lateinit var authenticationInterceptor:AuthenticationInterceptor
-    @MockBean lateinit var jpaMetamodelMappingContext: JpaMetamodelMappingContext
-
-    @BeforeEach
-    fun setup() {
-        given(authenticationInterceptor.preHandle(any(), any(), any())).willReturn(true)
-    }
 
     @Test
     fun getLostPost() {
+        // given
         val response = GetLostPostDto.Response(
             title = "title",
             content = "content",
@@ -72,15 +51,14 @@ class LostPostControllerDocsTest(
 
         // then
         result.andExpect(status().isOk)
-            .andDo(document("get-lost",
-                Preprocessors.preprocessRequest(Preprocessors.prettyPrint()),
-                Preprocessors.preprocessResponse(Preprocessors.prettyPrint()),
+            .andDo(document("get-lost-post",
+                getDocsRequest(),
+                getDocsResponse(),
                 pathParameters(
                     parameterWithName("lostId").description("유실물 아이디")
                 ),
                 responseFields(
-                    fieldWithPath("code").type(JsonFieldType.STRING).description("상태 코드"),
-                    fieldWithPath("message").type(JsonFieldType.STRING).description("상태 메시지"),
+                    *commonResponseFields(),
                     fieldWithPath("result.title").type(JsonFieldType.NUMBER).description("유실물 제목"),
                     fieldWithPath("result.content").type(JsonFieldType.NUMBER).description("유실물 내용"),
                     fieldWithPath("result.writer").type(JsonFieldType.NUMBER).description("유실물 작성자 닉네임"),
@@ -96,10 +74,11 @@ class LostPostControllerDocsTest(
     }
 
     @Test
-    fun getAllLostPost() {
-        val response = GetLostPostDto.AllResponse(
+    fun searchLostPosts() {
+        // given
+        val response = SearchLostPostsDto.Response(
             listOf(
-                GetLostPostDto.Response(
+                SearchLostPostsDto.SearchLost(
                     title = "title",
                     content = "content",
                     writer = "writer",
@@ -107,14 +86,12 @@ class LostPostControllerDocsTest(
                     lostLine = "1호선",
                     chats = 1,
                     status = LostStatus.PROGRESS,
-                    imgUrls = listOf(),
-                    storage = "1호선",
-                    storageNumber = "02-2222-3333"
+                    imgUrl = "img"
                 )
             )
         )
 
-        given(lostPostUseCase.getAllLostPost())
+        given(lostPostUseCase.searchLostPosts())
             .willReturn(response)
 
         // when
@@ -125,9 +102,9 @@ class LostPostControllerDocsTest(
 
         // then
         result.andExpect(status().isOk)
-            .andDo(document("get-all-lost",
-                Preprocessors.preprocessRequest(Preprocessors.prettyPrint()),
-                Preprocessors.preprocessResponse(Preprocessors.prettyPrint()),
+            .andDo(document("search-lost-posts",
+                getDocsRequest(),
+                getDocsResponse(),
                 queryParameters(
                     parameterWithName("type").description("유실물 타입 : LOST(유실) / ACQUIRE(습득)"),
                     parameterWithName("line").description("유실물 호선").optional(),
@@ -136,8 +113,7 @@ class LostPostControllerDocsTest(
                     parameterWithName("size").description("페이지 노출 데이터 수"),
                 ),
                 responseFields(
-                    fieldWithPath("code").type(JsonFieldType.STRING).description("상태 코드"),
-                    fieldWithPath("message").type(JsonFieldType.STRING).description("상태 메시지"),
+                    *commonResponseFields(),
                     fieldWithPath("result.lostList[].title").type(JsonFieldType.NUMBER).description("유실물 제목"),
                     fieldWithPath("result.lostList[].content").type(JsonFieldType.NUMBER).description("유실물 내용"),
                     fieldWithPath("result.lostList[].writer").type(JsonFieldType.NUMBER).description("유실물 작성자 닉네임"),
@@ -152,6 +128,7 @@ class LostPostControllerDocsTest(
 
     @Test
     fun createLostPost() {
+        // given
         val response = CreateLostPostDto.Response(id = 1)
 
         given(lostPostUseCase.createLostPost())
@@ -177,9 +154,9 @@ class LostPostControllerDocsTest(
 
         // then
         result.andExpect(status().isOk)
-                .andDo(document("post-lost",
-                    Preprocessors.preprocessRequest(Preprocessors.prettyPrint()),
-                    Preprocessors.preprocessResponse(Preprocessors.prettyPrint()),
+                .andDo(document("create-lost-post",
+                    getDocsRequest(),
+                    getDocsResponse(),
                     requestHeaders(
                         headerWithName("Authorization").description("엑세스 토큰")
                     ),
@@ -191,8 +168,7 @@ class LostPostControllerDocsTest(
                         fieldWithPath("lostType").type(JsonFieldType.ARRAY).description("유실물 타입 : LOST(유실) / ACQUIRE(습득)"),
                     ),
                     responseFields(
-                        fieldWithPath("code").type(JsonFieldType.STRING).description("상태 코드"),
-                        fieldWithPath("message").type(JsonFieldType.STRING).description("상태 메시지"),
+                        *commonResponseFields(),
                         fieldWithPath("result.id").type(JsonFieldType.NUMBER).description("저장한 유실물 아이디"),
                     )
                 ))
@@ -200,12 +176,12 @@ class LostPostControllerDocsTest(
 
     @Test
     fun updateLostPost() {
+        // given
         val response = UpdateLostPostDto.Response(id = 1)
 
         given(lostPostUseCase.updateLostPost())
             .willReturn(response)
 
-        // give
         val request = UpdateLostPostDto.Request(
             title = "title",
             content = "content",
@@ -225,9 +201,9 @@ class LostPostControllerDocsTest(
 
         // then
         result.andExpect(status().isOk)
-            .andDo(document("update-lost",
-                Preprocessors.preprocessRequest(Preprocessors.prettyPrint()),
-                Preprocessors.preprocessResponse(Preprocessors.prettyPrint()),
+            .andDo(document("update-lost-post",
+                getDocsRequest(),
+                getDocsResponse(),
                 requestHeaders(
                     headerWithName("Authorization").description("엑세스 토큰")
                 ),
@@ -241,8 +217,7 @@ class LostPostControllerDocsTest(
                     fieldWithPath("status").type(JsonFieldType.STRING).description("유실물 찾기 완료 상태 : PROGRESS / COMPLETE").optional(),
                 ),
                 responseFields(
-                    fieldWithPath("code").type(JsonFieldType.STRING).description("상태 코드"),
-                    fieldWithPath("message").type(JsonFieldType.STRING).description("상태 메시지"),
+                    *commonResponseFields(),
                     fieldWithPath("result.id").type(JsonFieldType.NUMBER).description("수정한 유실물 아이디"),
                 )
             ))
@@ -250,6 +225,7 @@ class LostPostControllerDocsTest(
 
     @Test
     fun deleteLostPost() {
+        // given
         val response = DeleteLostPostDto.Response(id = 1)
 
         given(lostPostUseCase.deleteLostPost())
@@ -264,9 +240,9 @@ class LostPostControllerDocsTest(
 
         // then
         result.andExpect(status().isOk)
-            .andDo(document("delete-lost",
-                Preprocessors.preprocessRequest(Preprocessors.prettyPrint()),
-                Preprocessors.preprocessResponse(Preprocessors.prettyPrint()),
+            .andDo(document("delete-lost-post",
+                getDocsRequest(),
+                getDocsResponse(),
                 pathParameters(
                     parameterWithName("lostId").description("유실물 아이디")
                 ),
@@ -274,15 +250,9 @@ class LostPostControllerDocsTest(
                     headerWithName("Authorization").description("엑세스 토큰")
                 ),
                 responseFields(
-                    fieldWithPath("code").type(JsonFieldType.STRING).description("상태 코드"),
-                    fieldWithPath("message").type(JsonFieldType.STRING).description("상태 메시지"),
+                    *commonResponseFields(),
                     fieldWithPath("result.id").type(JsonFieldType.NUMBER).description("삭제한 유실물 아이디"),
                 )
             ))
-    }
-
-    private fun <T> any(): T {
-        Mockito.any<T>()
-        return null as T
     }
 }

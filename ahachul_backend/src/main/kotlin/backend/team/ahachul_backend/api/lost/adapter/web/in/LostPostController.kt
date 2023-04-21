@@ -1,9 +1,6 @@
 package backend.team.ahachul_backend.api.lost.adapter.web.`in`
 
-import backend.team.ahachul_backend.api.lost.adapter.web.`in`.dto.CreateLostPostDto
-import backend.team.ahachul_backend.api.lost.adapter.web.`in`.dto.DeleteLostPostDto
-import backend.team.ahachul_backend.api.lost.adapter.web.`in`.dto.GetLostPostDto
-import backend.team.ahachul_backend.api.lost.adapter.web.`in`.dto.UpdateLostPostDto
+import backend.team.ahachul_backend.api.lost.adapter.web.`in`.dto.*
 import backend.team.ahachul_backend.api.lost.application.port.`in`.LostPostUseCase
 import backend.team.ahachul_backend.api.lost.domain.model.LostOrigin
 import backend.team.ahachul_backend.api.lost.domain.model.LostType
@@ -24,13 +21,13 @@ class LostPostController(
     }
 
     @GetMapping("/v1/posts/lost")
-    fun getAllLostPost(
+    fun searchLostPosts(
         pageable: Pageable,
         @RequestParam(value = "type") type: LostType,
         @RequestParam(value = "line", required = false) line: String,
         @RequestParam(value = "origin", required = false) origin: LostOrigin,
-    ): CommonResponse<GetLostPostDto.AllResponse> {
-        return CommonResponse.success(lostPostService.getAllLostPost())
+    ): CommonResponse<SearchLostPostsDto.Response> {
+        return CommonResponse.success(lostPostService.searchLostPosts())
     }
 
     @Authentication

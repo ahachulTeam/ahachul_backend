@@ -1,9 +1,6 @@
 package backend.team.ahachul_backend.api.lost.application.service
 
-import backend.team.ahachul_backend.api.lost.adapter.web.`in`.dto.CreateLostPostDto
-import backend.team.ahachul_backend.api.lost.adapter.web.`in`.dto.DeleteLostPostDto
-import backend.team.ahachul_backend.api.lost.adapter.web.`in`.dto.GetLostPostDto
-import backend.team.ahachul_backend.api.lost.adapter.web.`in`.dto.UpdateLostPostDto
+import backend.team.ahachul_backend.api.lost.adapter.web.`in`.dto.*
 import backend.team.ahachul_backend.api.lost.application.port.`in`.LostPostUseCase
 import org.springframework.stereotype.Service
 
@@ -14,7 +11,7 @@ class LostPostService: LostPostUseCase {
         TODO("Not yet implemented")
     }
 
-    override fun getAllLostPost(): GetLostPostDto.AllResponse {
+    override fun searchLostPosts(): SearchLostPostsDto.Response {
         TODO("Not yet implemented")
     }
 

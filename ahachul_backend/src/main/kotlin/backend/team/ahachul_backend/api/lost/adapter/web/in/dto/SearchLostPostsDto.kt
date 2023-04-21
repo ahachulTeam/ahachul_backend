@@ -2,9 +2,13 @@ package backend.team.ahachul_backend.api.lost.adapter.web.`in`.dto
 
 import backend.team.ahachul_backend.api.lost.domain.model.LostStatus
 
-class GetLostPostDto {
+class SearchLostPostsDto {
 
     data class Response(
+        val lostList: List<SearchLost>
+    )
+
+    data class SearchLost(
         val title: String,
         val content: String,
         val writer: String,
@@ -12,8 +16,6 @@ class GetLostPostDto {
         val lostLine: String,
         val chats: Int,
         val status: LostStatus,
-        val imgUrls: List<String>,
-        val storage: String,
-        val storageNumber: String
+        val imgUrl: String
     )
 }
