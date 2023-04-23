@@ -46,7 +46,7 @@ class MemberServiceTest(
         val result = memberUseCase.getMember()
 
         // then
-        assertThat(result.memberId).isEqualTo(RequestUtils.getAttribute("memberId").toLong())
+        assertThat(result.memberId).isEqualTo(RequestUtils.getAttribute("memberId")!!.toLong())
         assertThat(result.email).isEqualTo("email")
         assertThat(result.gender).isEqualTo(GenderType.MALE)
         assertThat(result.ageRange).isEqualTo("20")
