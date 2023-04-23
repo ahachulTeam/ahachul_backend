@@ -11,10 +11,12 @@ class RequestUtils {
                     ?.setAttribute(key, value, RequestAttributes.SCOPE_REQUEST)
         }
 
-        fun getAttribute(key: String): String {
-            return RequestContextHolder.getRequestAttributes()
-                    ?.getAttribute(key, RequestAttributes.SCOPE_REQUEST)
-                    .toString()
+        fun getAttribute(key: String): String? {
+            val attributes = RequestContextHolder.getRequestAttributes()
+            if (attributes != null) {
+                return attributes.getAttribute(key, RequestAttributes.SCOPE_REQUEST).toString()
+            }
+            return null
         }
     }
 }
