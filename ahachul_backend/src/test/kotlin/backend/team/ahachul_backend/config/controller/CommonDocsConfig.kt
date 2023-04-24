@@ -8,7 +8,6 @@ import org.mockito.Mockito
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs
 import org.springframework.boot.test.mock.mockito.MockBean
-import org.springframework.data.jpa.mapping.JpaMetamodelMappingContext
 import org.springframework.restdocs.operation.preprocess.OperationRequestPreprocessor
 import org.springframework.restdocs.operation.preprocess.OperationResponsePreprocessor
 import org.springframework.restdocs.operation.preprocess.Preprocessors
@@ -29,8 +28,6 @@ abstract class CommonDocsConfig {
 
     @MockBean
     lateinit var authenticationInterceptor: AuthenticationInterceptor
-    @MockBean
-    lateinit var jpaMetamodelMappingContext: JpaMetamodelMappingContext
 
     @BeforeEach
     fun setup() {
