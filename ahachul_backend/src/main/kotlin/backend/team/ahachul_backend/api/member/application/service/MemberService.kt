@@ -18,13 +18,13 @@ class MemberService(
 ) : MemberUseCase {
 
     override fun getMember(): GetMemberDto.Response {
-        val member = memberReader.getMember(RequestUtils.getAttribute("memberId").toLong())
+        val member = memberReader.getMember(RequestUtils.getAttribute("memberId")!!.toLong())
         return GetMemberDto.Response.of(member)
     }
 
     @Transactional
     override fun updateMember(command: UpdateMemberCommand): UpdateMemberDto.Response {
-        val member = memberReader.getMember(RequestUtils.getAttribute("memberId").toLong())
+        val member = memberReader.getMember(RequestUtils.getAttribute("memberId")!!.toLong())
         command.nickname?.let { member.changeNickname(it) }
         command.gender?.let { member.changeGender(it) }
         command.ageRange?.let { member.changeAgeRange(it) }
