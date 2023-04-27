@@ -1,4 +1,4 @@
-=== /lost/posts
+=== /lost-posts
 
 ==== 유실물 조회 (미구현)
 

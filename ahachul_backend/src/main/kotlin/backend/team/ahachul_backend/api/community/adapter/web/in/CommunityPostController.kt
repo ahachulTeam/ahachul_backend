@@ -18,7 +18,7 @@ class CommunityPostController(
     private val communityPostUseCase: CommunityPostUseCase
 ) {
 
-    @GetMapping("/v1/community/posts")
+    @GetMapping("/v1/community-posts")
     fun searchCommunityPosts(
         pageable: Pageable,
         searchCommunityPostDto: SearchCommunityPostDto.Request
@@ -26,25 +26,25 @@ class CommunityPostController(
         return CommonResponse.success(communityPostUseCase.searchCommunityPosts())
     }
 
-    @GetMapping("/v1/community/posts/{postId}")
+    @GetMapping("/v1/community-posts/{postId}")
     fun getCommunityPost(@PathVariable postId: Long): CommonResponse<GetCommunityPostDto.Response> {
         return CommonResponse.success(communityPostUseCase.getCommunityPost())
     }
 
     @Authentication
-    @PostMapping("/v1/community/posts")
+    @PostMapping("/v1/community-posts")
     fun createCommunityPost(@RequestBody request: CreateCommunityPostDto.Request): CommonResponse<CreateCommunityPostDto.Response> {
         return CommonResponse.success(communityPostUseCase.createCommunityPost())
     }
 
     @Authentication
-    @PatchMapping("/v1/community/posts/{postId}")
+    @PatchMapping("/v1/community-posts/{postId}")
     fun updateCommunityPost(@PathVariable postId: Long, @RequestBody request: UpdateCommunityPostDto.Request): CommonResponse<UpdateCommunityPostDto.Response> {
         return CommonResponse.success(communityPostUseCase.updateCommunityPost())
     }
 
     @Authentication
-    @DeleteMapping("/v1/community/posts/{postId}")
+    @DeleteMapping("/v1/community-posts/{postId}")
     fun deleteCommunityPost(@PathVariable postId: Long): CommonResponse<DeleteCommunityPostDto.Response> {
         return CommonResponse.success(communityPostUseCase.deleteCommunityPost())
     }
