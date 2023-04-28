@@ -48,7 +48,7 @@ class CommunityPostControllerDocsTest : CommonDocsConfig() {
 
         // when
         val result = mockMvc.perform(
-            get("/v1/community/posts")
+            get("/v1/community-posts")
                 .param("categoryType", "ISSUE")
                 .param("subwayLine", "1호선")
                 .param("title", "제목")
@@ -112,7 +112,7 @@ class CommunityPostControllerDocsTest : CommonDocsConfig() {
 
         // when
         val result = mockMvc.perform(
-            get("/v1/community/posts/{postId}", 1)
+            get("/v1/community-posts/{postId}", 1)
                 .accept(MediaType.APPLICATION_JSON)
         )
 
@@ -164,7 +164,7 @@ class CommunityPostControllerDocsTest : CommonDocsConfig() {
 
         // when
         val result = mockMvc.perform(
-            post("/v1/community/posts")
+            post("/v1/community-posts")
                 .header("Authorization", "Bearer <Access Token>")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(request))
@@ -219,7 +219,7 @@ class CommunityPostControllerDocsTest : CommonDocsConfig() {
 
         // when
         val result = mockMvc.perform(
-            patch("/v1/community/posts/{postId}", 1)
+            patch("/v1/community-posts/{postId}", 1)
                 .header("Authorization", "Bearer <Access Token>")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(request))
@@ -267,7 +267,7 @@ class CommunityPostControllerDocsTest : CommonDocsConfig() {
 
         // when
         val result = mockMvc.perform(
-            delete("/v1/community/posts/{postId}", 1)
+            delete("/v1/community-posts/{postId}", 1)
                 .header("Authorization", "Bearer <Access Token>")
                 .accept(MediaType.APPLICATION_JSON)
         )

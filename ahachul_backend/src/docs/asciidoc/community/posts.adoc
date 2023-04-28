@@ -1,4 +1,4 @@
-=== /community/posts
+=== /community-posts
 
 ==== 게시글 조회 (미구현)
 

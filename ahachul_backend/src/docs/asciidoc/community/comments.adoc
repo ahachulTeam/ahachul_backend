@@ -1,4 +1,4 @@
-=== /community/comments
+=== /community-comments
 
 ==== 코멘트 조회 (미구현)
 
