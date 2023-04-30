@@ -4,6 +4,7 @@ import backend.team.ahachul_backend.api.community.adapter.web.`in`.dto.posts.Cre
 import backend.team.ahachul_backend.api.community.adapter.web.`in`.dto.posts.UpdateCommunityPostCommand
 import backend.team.ahachul_backend.api.community.domain.model.CommunityCategoryType
 import backend.team.ahachul_backend.common.entity.BaseEntity
+import backend.team.ahachul_backend.common.model.CommunityPostType
 import backend.team.ahachul_backend.common.model.RegionType
 import jakarta.persistence.*
 
@@ -21,6 +22,8 @@ class CommunityPostEntity(
     var categoryType: CommunityCategoryType,
 
     var views: Int = 0,
+
+    var status: CommunityPostType = CommunityPostType.CREATED,
 
     @Enumerated(EnumType.STRING)
     var regionType: RegionType = RegionType.METROPOLITAN
@@ -41,5 +44,9 @@ class CommunityPostEntity(
         title = command.title
         content = command.content
         categoryType = command.categoryType
+    }
+
+    fun delete() {
+        status = CommunityPostType.DELETED
     }
 }

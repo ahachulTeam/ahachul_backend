@@ -41,7 +41,10 @@ class CommunityPostService(
     }
 
     override fun deleteCommunityPost(command: DeleteCommunityPostCommand): DeleteCommunityPostDto.Response {
-        TODO("Not yet implemented")
+        val memberId = RequestUtils.getAttribute("memberId")!!
+        val entity = communityPostReader.getCommunityPost(command.id)
+        entity.checkMe(memberId)
+        entity.delete()
+        return DeleteCommunityPostDto.Response(entity.id!!)
     }
-
 }
