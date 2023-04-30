@@ -1,6 +1,7 @@
 package backend.team.ahachul_backend.api.community.domain.entity
 
 import backend.team.ahachul_backend.api.community.adapter.web.`in`.dto.posts.CreateCommunityPostCommand
+import backend.team.ahachul_backend.api.community.adapter.web.`in`.dto.posts.UpdateCommunityPostCommand
 import backend.team.ahachul_backend.api.community.domain.model.CommunityCategoryType
 import backend.team.ahachul_backend.common.entity.BaseEntity
 import backend.team.ahachul_backend.common.model.RegionType
@@ -34,5 +35,11 @@ class CommunityPostEntity(
                 categoryType = command.categoryType,
             )
         }
+    }
+
+    fun update(command: UpdateCommunityPostCommand) {
+        title = command.title
+        content = command.content
+        categoryType = command.categoryType
     }
 }
