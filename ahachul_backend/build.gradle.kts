@@ -101,11 +101,20 @@ tasks {
 
 tasks.register<Copy>("copySecret") {
     from("./ahachul_secret") {
-        include("*.yml")
+        exclude("application.yml")
     }
     into("./src/main/resources")
 }
 
+tasks.register<Copy>("copyTestSecret") {
+    from("./ahachul_secret") {
+        exclude("application-dev.yml")
+        exclude("application-local.yml")
+    }
+    into("./src/test/resources")
+}
+
 tasks.named("compileJava") {
     dependsOn("copySecret")
+    dependsOn("copyTestSecret")
 }
