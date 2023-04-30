@@ -40,6 +40,7 @@ class CommunityPostService(
         return UpdateCommunityPostDto.Response.from(entity)
     }
 
+    @Transactional
     override fun deleteCommunityPost(command: DeleteCommunityPostCommand): DeleteCommunityPostDto.Response {
         val memberId = RequestUtils.getAttribute("memberId")!!
         val entity = communityPostReader.getCommunityPost(command.id)
