@@ -22,7 +22,7 @@ include::{snippets}/get-community-post/http-response.adoc[]
 .Response Fields
 include::{snippets}/get-community-post/response-fields.adoc[]
 
-==== 게시글 생성 (미구현)
+==== 게시글 생성
 
 .Request
 include::{snippets}/create-community-post/http-request.adoc[]
@@ -35,7 +35,7 @@ include::{snippets}/create-community-post/http-response.adoc[]
 .Response Fields
 include::{snippets}/create-community-post/response-fields.adoc[]
 
-==== 게시글 업데이트 (미구현)
+==== 게시글 업데이트
 
 .Request
 include::{snippets}/update-community-post/http-request.adoc[]
@@ -48,7 +48,7 @@ include::{snippets}/update-community-post/http-response.adoc[]
 .Response Fields
 include::{snippets}/update-community-post/response-fields.adoc[]
 
-==== 게시글 삭제 (미구현)
+==== 게시글 삭제
 
 .Request
 include::{snippets}/delete-community-post/http-request.adoc[]
