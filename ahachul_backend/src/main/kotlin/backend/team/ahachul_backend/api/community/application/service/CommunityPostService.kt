@@ -1,6 +1,6 @@
 package backend.team.ahachul_backend.api.community.application.service
 
-import backend.team.ahachul_backend.api.community.adapter.web.`in`.dto.*
+import backend.team.ahachul_backend.api.community.adapter.web.`in`.dto.posts.*
 import backend.team.ahachul_backend.api.community.application.port.`in`.CommunityPostUseCase
 import org.springframework.stereotype.Service
 
@@ -11,19 +11,20 @@ class CommunityPostService: CommunityPostUseCase {
         TODO("Not yet implemented")
     }
 
-    override fun getCommunityPost(): GetCommunityPostDto.Response {
+    override fun getCommunityPost(command: GetCommunityPostCommand): GetCommunityPostDto.Response {
         TODO("Not yet implemented")
     }
 
-    override fun createCommunityPost(): CreateCommunityPostDto.Response {
+    override fun createCommunityPost(command: CreateCommunityPostCommand): CreateCommunityPostDto.Response {
         TODO("Not yet implemented")
     }
 
-    override fun updateCommunityPost(): UpdateCommunityPostDto.Response {
+    override fun updateCommunityPost(command: UpdateCommunityPostCommand): UpdateCommunityPostDto.Response {
         TODO("Not yet implemented")
     }
 
-    override fun deleteCommunityPost(): DeleteCommunityPostDto.Response {
+    override fun deleteCommunityPost(command: DeleteCommunityPostCommand): DeleteCommunityPostDto.Response {
         TODO("Not yet implemented")
     }
+
 }
