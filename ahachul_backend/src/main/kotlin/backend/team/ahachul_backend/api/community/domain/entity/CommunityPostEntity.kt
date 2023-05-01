@@ -3,6 +3,7 @@ package backend.team.ahachul_backend.api.community.domain.entity
 import backend.team.ahachul_backend.api.community.adapter.web.`in`.dto.posts.CreateCommunityPostCommand
 import backend.team.ahachul_backend.api.community.adapter.web.`in`.dto.posts.UpdateCommunityPostCommand
 import backend.team.ahachul_backend.api.community.domain.model.CommunityCategoryType
+import backend.team.ahachul_backend.api.member.domain.entity.MemberEntity
 import backend.team.ahachul_backend.common.entity.BaseEntity
 import backend.team.ahachul_backend.common.model.CommunityPostType
 import backend.team.ahachul_backend.common.model.RegionType
@@ -26,16 +27,20 @@ class CommunityPostEntity(
     var status: CommunityPostType = CommunityPostType.CREATED,
 
     @Enumerated(EnumType.STRING)
-    var regionType: RegionType = RegionType.METROPOLITAN
+    var regionType: RegionType = RegionType.METROPOLITAN,
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    var member: MemberEntity? = null,
 
 ): BaseEntity() {
 
     companion object {
-        fun from(command: CreateCommunityPostCommand): CommunityPostEntity {
+        fun of(command: CreateCommunityPostCommand, memberEntity: MemberEntity): CommunityPostEntity {
             return CommunityPostEntity(
                 title = command.title,
                 content = command.content,
                 categoryType = command.categoryType,
+                member = memberEntity
             )
         }
     }

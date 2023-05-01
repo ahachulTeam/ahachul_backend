@@ -6,6 +6,11 @@ import backend.team.ahachul_backend.api.community.adapter.web.`in`.dto.posts.Upd
 import backend.team.ahachul_backend.api.community.adapter.web.out.CommunityPostRepository
 import backend.team.ahachul_backend.api.community.application.port.`in`.CommunityPostUseCase
 import backend.team.ahachul_backend.api.community.domain.model.CommunityCategoryType
+import backend.team.ahachul_backend.api.member.adapter.web.out.MemberRepository
+import backend.team.ahachul_backend.api.member.domain.entity.MemberEntity
+import backend.team.ahachul_backend.api.member.domain.model.GenderType
+import backend.team.ahachul_backend.api.member.domain.model.MemberStatus
+import backend.team.ahachul_backend.api.member.domain.model.ProviderType
 import backend.team.ahachul_backend.common.exception.CommonException
 import backend.team.ahachul_backend.common.model.CommunityPostType
 import backend.team.ahachul_backend.common.model.RegionType
@@ -23,13 +28,27 @@ import org.springframework.boot.test.context.SpringBootTest
 @SpringBootTest
 @Transactional
 class CommunityPostServiceTest(
-    @Autowired val customerPostRepository: CommunityPostRepository,
-    @Autowired val customerUseCase: CommunityPostUseCase
+    @Autowired val communityPostRepository: CommunityPostRepository,
+    @Autowired val communityPostUseCase: CommunityPostUseCase,
+    @Autowired val memberRepository: MemberRepository,
 ) {
+
+    var member: MemberEntity? = null
 
     @BeforeEach
     fun setup() {
-        RequestUtils.setAttribute("memberId", 1L)
+        member = memberRepository.save(
+            MemberEntity(
+            nickname = "nickname",
+            provider = ProviderType.KAKAO,
+            providerUserId = "providerUserId",
+            email = "email",
+            gender = GenderType.MALE,
+            ageRange = "20",
+            status = MemberStatus.ACTIVE
+            )
+        )
+        member!!.id?.let { RequestUtils.setAttribute("memberId", it) }
     }
 
     @Test
@@ -43,7 +62,7 @@ class CommunityPostServiceTest(
         )
 
         // when
-        val result = customerUseCase.createCommunityPost(command)
+        val result = communityPostUseCase.createCommunityPost(command)
 
         // then
         assertThat(result.id).isNotNull()
@@ -51,6 +70,10 @@ class CommunityPostServiceTest(
         assertThat(result.content).isEqualTo("내용")
         assertThat(result.categoryType).isEqualTo(CommunityCategoryType.FREE)
         assertThat(result.region).isEqualTo(RegionType.METROPOLITAN)
+
+        val communityPost = communityPostRepository.findById(result.id!!).get()
+
+        assertThat(communityPost.member!!.id).isEqualTo(member!!.id)
     }
 
     @Test
@@ -62,7 +85,7 @@ class CommunityPostServiceTest(
             content = "내용",
             categoryType = CommunityCategoryType.FREE
         )
-        val (postId, _, _, _, _) = customerUseCase.createCommunityPost(createCommand)
+        val (postId, _, _, _, _) = communityPostUseCase.createCommunityPost(createCommand)
 
         val updateCommand = UpdateCommunityPostCommand(
             id = postId!!,
@@ -72,7 +95,7 @@ class CommunityPostServiceTest(
         )
 
         // when
-        val result = customerUseCase.updateCommunityPost(updateCommand)
+        val result = communityPostUseCase.updateCommunityPost(updateCommand)
 
         // then
         assertThat(result.id).isEqualTo(postId)
@@ -90,7 +113,7 @@ class CommunityPostServiceTest(
             content = "내용",
             categoryType = CommunityCategoryType.FREE
         )
-        val (postId, _, _, _, _) = customerUseCase.createCommunityPost(createCommand)
+        val (postId, _, _, _, _) = communityPostUseCase.createCommunityPost(createCommand)
 
         RequestUtils.setAttribute("memberId", 2)
 
@@ -103,7 +126,7 @@ class CommunityPostServiceTest(
 
         // when, then
         assertThatThrownBy {
-            customerUseCase.updateCommunityPost(updateCommand)
+            communityPostUseCase.updateCommunityPost(updateCommand)
         }
             .isExactlyInstanceOf(CommonException::class.java)
             .hasMessage("권한이 없습니다.")
@@ -118,15 +141,15 @@ class CommunityPostServiceTest(
             content = "내용",
             categoryType = CommunityCategoryType.FREE
         )
-        val (postId, _, _, _, _) = customerUseCase.createCommunityPost(createCommand)
+        val (postId, _, _, _, _) = communityPostUseCase.createCommunityPost(createCommand)
 
         val deleteCommand = DeleteCommunityPostCommand(postId!!)
 
         // when, then
-        val result = customerPostRepository.findById(postId).get()
+        val result = communityPostRepository.findById(postId).get()
 
         assertThat(result.status).isEqualTo(CommunityPostType.CREATED)
-        customerUseCase.deleteCommunityPost(deleteCommand)
+        communityPostUseCase.deleteCommunityPost(deleteCommand)
         assertThat(result.status).isEqualTo(CommunityPostType.DELETED)
     }
 }

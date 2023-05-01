@@ -5,8 +5,8 @@ import backend.team.ahachul_backend.api.community.application.port.`in`.Communit
 import backend.team.ahachul_backend.api.community.application.port.out.CommunityPostReader
 import backend.team.ahachul_backend.api.community.application.port.out.CommunityPostWriter
 import backend.team.ahachul_backend.api.community.domain.entity.CommunityPostEntity
+import backend.team.ahachul_backend.api.member.application.port.out.MemberReader
 import backend.team.ahachul_backend.common.utils.RequestUtils
-import org.apache.catalina.util.RequestUtil
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
@@ -14,7 +14,8 @@ import org.springframework.transaction.annotation.Transactional
 @Transactional(readOnly = true)
 class CommunityPostService(
     private val communityPostWriter: CommunityPostWriter,
-    private val communityPostReader: CommunityPostReader
+    private val communityPostReader: CommunityPostReader,
+    private val memberReader: MemberReader,
 ): CommunityPostUseCase {
 
     override fun searchCommunityPosts(): SearchCommunityPostDto.Response {
@@ -27,7 +28,8 @@ class CommunityPostService(
 
     @Transactional
     override fun createCommunityPost(command: CreateCommunityPostCommand): CreateCommunityPostDto.Response {
-        val entity = communityPostWriter.save(CommunityPostEntity.from(command))
+        val memberId = RequestUtils.getAttribute("memberId")!!
+        val entity = communityPostWriter.save(CommunityPostEntity.of(command, memberReader.getMember(memberId.toLong())))
         return CreateCommunityPostDto.Response.from(entity)
     }
 
