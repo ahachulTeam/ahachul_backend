@@ -79,14 +79,14 @@ class CommunityPostControllerDocsTest : CommonDocsConfig() {
                     ),
                     responseFields(
                         *commonResponseFields(),
-                        fieldWithPath("result.posts[0].id").type(JsonFieldType.NUMBER).description("게시글 아이디"),
-                        fieldWithPath("result.posts[0].title").type(JsonFieldType.STRING).description("게시글 제목"),
-                        fieldWithPath("result.posts[0].categoryType").type("CategoryType").description("카테고리 타입").attributes(getFormatAttribute("FREE, INSIGHT, ISSUE, HUMOR")),
-                        fieldWithPath("result.posts[0].views").type(JsonFieldType.NUMBER).description("조회수"),
-                        fieldWithPath("result.posts[0].likes").type(JsonFieldType.NUMBER).description("좋아요 수"),
-                        fieldWithPath("result.posts[0].region").type(JsonFieldType.STRING).description("지역"),
-                        fieldWithPath("result.posts[0].createdAt").type("LocalDateTime").description("작성일자"),
-                        fieldWithPath("result.posts[0].createdBy").type(JsonFieldType.STRING).description("작성자"),
+                        fieldWithPath("result.posts[].id").type(JsonFieldType.NUMBER).description("게시글 아이디"),
+                        fieldWithPath("result.posts[].title").type(JsonFieldType.STRING).description("게시글 제목"),
+                        fieldWithPath("result.posts[].categoryType").type("CategoryType").description("카테고리 타입").attributes(getFormatAttribute("FREE, INSIGHT, ISSUE, HUMOR")),
+                        fieldWithPath("result.posts[].views").type(JsonFieldType.NUMBER).description("조회수"),
+                        fieldWithPath("result.posts[].likes").type(JsonFieldType.NUMBER).description("좋아요 수"),
+                        fieldWithPath("result.posts[].region").type(JsonFieldType.STRING).description("지역"),
+                        fieldWithPath("result.posts[].createdAt").type("LocalDateTime").description("작성일자"),
+                        fieldWithPath("result.posts[].createdBy").type(JsonFieldType.STRING).description("작성자"),
                     )
                 )
             )
