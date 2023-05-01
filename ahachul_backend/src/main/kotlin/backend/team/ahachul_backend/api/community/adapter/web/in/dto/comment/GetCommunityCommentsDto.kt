@@ -1,4 +1,4 @@
-package backend.team.ahachul_backend.api.community.adapter.web.`in`.dto
+package backend.team.ahachul_backend.api.community.adapter.web.`in`.dto.comment
 
 import java.time.LocalDateTime
 

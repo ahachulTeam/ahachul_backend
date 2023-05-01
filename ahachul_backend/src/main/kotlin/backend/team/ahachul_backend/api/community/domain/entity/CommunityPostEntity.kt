@@ -1,11 +1,11 @@
 package backend.team.ahachul_backend.api.community.domain.entity
 
-import backend.team.ahachul_backend.api.community.adapter.web.`in`.dto.posts.CreateCommunityPostCommand
-import backend.team.ahachul_backend.api.community.adapter.web.`in`.dto.posts.UpdateCommunityPostCommand
+import backend.team.ahachul_backend.api.community.adapter.web.`in`.dto.post.CreateCommunityPostCommand
+import backend.team.ahachul_backend.api.community.adapter.web.`in`.dto.post.UpdateCommunityPostCommand
 import backend.team.ahachul_backend.api.community.domain.model.CommunityCategoryType
 import backend.team.ahachul_backend.api.member.domain.entity.MemberEntity
 import backend.team.ahachul_backend.common.entity.BaseEntity
-import backend.team.ahachul_backend.common.model.CommunityPostType
+import backend.team.ahachul_backend.api.community.domain.model.CommunityPostType
 import backend.team.ahachul_backend.common.model.RegionType
 import jakarta.persistence.*
 
@@ -32,7 +32,7 @@ class CommunityPostEntity(
     @ManyToOne(fetch = FetchType.LAZY)
     var member: MemberEntity? = null,
 
-): BaseEntity() {
+    ): BaseEntity() {
 
     companion object {
         fun of(command: CreateCommunityPostCommand, memberEntity: MemberEntity): CommunityPostEntity {

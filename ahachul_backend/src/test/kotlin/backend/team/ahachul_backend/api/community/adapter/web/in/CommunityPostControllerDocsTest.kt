@@ -1,7 +1,7 @@
 package backend.team.ahachul_backend.api.community.adapter.web.`in`
 
 import backend.team.ahachul_backend.api.community.adapter.web.`in`.dto.*
-import backend.team.ahachul_backend.api.community.adapter.web.`in`.dto.posts.*
+import backend.team.ahachul_backend.api.community.adapter.web.`in`.dto.post.*
 import backend.team.ahachul_backend.api.community.application.port.`in`.CommunityPostUseCase
 import backend.team.ahachul_backend.api.community.domain.model.CommunityCategoryType
 import backend.team.ahachul_backend.common.model.RegionType

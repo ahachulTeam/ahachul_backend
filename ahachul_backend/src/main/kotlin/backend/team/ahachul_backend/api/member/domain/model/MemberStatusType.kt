@@ -1,5 +1,5 @@
 package backend.team.ahachul_backend.api.member.domain.model
 
-enum class MemberStatus {
+enum class MemberStatusType {
     ACTIVE, SUSPENDED, DELETE
 }

@@ -4,7 +4,7 @@ import backend.team.ahachul_backend.api.member.application.port.`in`.command.Log
 import backend.team.ahachul_backend.api.member.domain.model.GenderType
 import backend.team.ahachul_backend.api.member.domain.model.ProviderType
 
-import backend.team.ahachul_backend.api.member.domain.model.MemberStatus
+import backend.team.ahachul_backend.api.member.domain.model.MemberStatusType
 import backend.team.ahachul_backend.common.dto.GoogleUserInfoDto
 import backend.team.ahachul_backend.common.dto.KakaoMemberInfoDto
 import backend.team.ahachul_backend.common.entity.BaseEntity
@@ -32,7 +32,7 @@ class MemberEntity(
         var ageRange: String?,
 
         @Enumerated(EnumType.STRING)
-        var status: MemberStatus
+        var status: MemberStatusType
 ): BaseEntity() {
 
         companion object {
@@ -44,7 +44,7 @@ class MemberEntity(
                                 email = userInfo.kakaoAccount.email,
                                 gender = userInfo.kakaoAccount.gender?.let { GenderType.of(it) },
                                 ageRange = userInfo.kakaoAccount.ageRange?.let { it.split("~")[0] },
-                                status = MemberStatus.ACTIVE
+                                status = MemberStatusType.ACTIVE
                         )
                 }
 
@@ -56,7 +56,7 @@ class MemberEntity(
                                 email = userInfo.email,
                                 gender = null,
                                 ageRange = null,
-                                status = MemberStatus.ACTIVE
+                                status = MemberStatusType.ACTIVE
                         )
                 }
         }
