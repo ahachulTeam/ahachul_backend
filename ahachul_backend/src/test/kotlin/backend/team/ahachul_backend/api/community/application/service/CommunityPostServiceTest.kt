@@ -48,7 +48,7 @@ class CommunityPostServiceTest(
             status = MemberStatus.ACTIVE
             )
         )
-        member!!.id?.let { RequestUtils.setAttribute("memberId", it) }
+        member!!.id.let { RequestUtils.setAttribute("memberId", it) }
     }
 
     @Test
@@ -71,7 +71,7 @@ class CommunityPostServiceTest(
         assertThat(result.categoryType).isEqualTo(CommunityCategoryType.FREE)
         assertThat(result.region).isEqualTo(RegionType.METROPOLITAN)
 
-        val communityPost = communityPostRepository.findById(result.id!!).get()
+        val communityPost = communityPostRepository.findById(result.id).get()
 
         assertThat(communityPost.member!!.id).isEqualTo(member!!.id)
     }
@@ -88,7 +88,7 @@ class CommunityPostServiceTest(
         val (postId, _, _, _, _) = communityPostUseCase.createCommunityPost(createCommand)
 
         val updateCommand = UpdateCommunityPostCommand(
-            id = postId!!,
+            id = postId,
             "수정된 제목",
             "수정된 내용",
             CommunityCategoryType.HUMOR
@@ -118,7 +118,7 @@ class CommunityPostServiceTest(
         RequestUtils.setAttribute("memberId", 2)
 
         val updateCommand = UpdateCommunityPostCommand(
-            id = postId!!,
+            id = postId,
             "수정된 제목",
             "수정된 내용",
             CommunityCategoryType.HUMOR
@@ -143,7 +143,7 @@ class CommunityPostServiceTest(
         )
         val (postId, _, _, _, _) = communityPostUseCase.createCommunityPost(createCommand)
 
-        val deleteCommand = DeleteCommunityPostCommand(postId!!)
+        val deleteCommand = DeleteCommunityPostCommand(postId)
 
         // when, then
         val result = communityPostRepository.findById(postId).get()

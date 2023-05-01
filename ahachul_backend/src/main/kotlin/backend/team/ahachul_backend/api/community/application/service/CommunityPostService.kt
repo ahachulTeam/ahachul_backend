@@ -48,6 +48,6 @@ class CommunityPostService(
         val entity = communityPostReader.getCommunityPost(command.id)
         entity.checkMe(memberId)
         entity.delete()
-        return DeleteCommunityPostDto.Response(entity.id!!)
+        return DeleteCommunityPostDto.Response(entity.id)
     }
 }

@@ -21,7 +21,7 @@ class CreateCommunityPostDto {
     }
 
     data class Response(
-        val id: Long?,
+        val id: Long,
         val title: String,
         val content: String,
         val categoryType: CommunityCategoryType,
