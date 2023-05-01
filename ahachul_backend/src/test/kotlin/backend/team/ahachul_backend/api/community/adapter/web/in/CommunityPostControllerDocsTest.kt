@@ -1,8 +1,10 @@
 package backend.team.ahachul_backend.api.community.adapter.web.`in`
 
 import backend.team.ahachul_backend.api.community.adapter.web.`in`.dto.*
+import backend.team.ahachul_backend.api.community.adapter.web.`in`.dto.posts.*
 import backend.team.ahachul_backend.api.community.application.port.`in`.CommunityPostUseCase
 import backend.team.ahachul_backend.api.community.domain.model.CommunityCategoryType
+import backend.team.ahachul_backend.common.model.RegionType
 import backend.team.ahachul_backend.config.controller.CommonDocsConfig
 import org.junit.jupiter.api.Test
 import org.mockito.BDDMockito.given
@@ -107,7 +109,7 @@ class CommunityPostControllerDocsTest : CommonDocsConfig() {
             "작성자"
         )
 
-        given(communityPostUseCase.getCommunityPost())
+        given(communityPostUseCase.getCommunityPost(any()))
             .willReturn(response)
 
         // when
@@ -150,10 +152,10 @@ class CommunityPostControllerDocsTest : CommonDocsConfig() {
             title = "생성된 제목",
             content = "생성된 내용",
             categoryType = CommunityCategoryType.ISSUE,
-            region = "METROPOLITAN"
+            region = RegionType.METROPOLITAN
         )
 
-        given(communityPostUseCase.createCommunityPost())
+        given(communityPostUseCase.createCommunityPost(any()))
             .willReturn(response)
 
         val request = CreateCommunityPostDto.Request(
@@ -182,9 +184,9 @@ class CommunityPostControllerDocsTest : CommonDocsConfig() {
                         headerWithName("Authorization").description("엑세스 토큰")
                     ),
                     requestFields(
-                        fieldWithPath("title").description("생성할 제목").optional(),
-                        fieldWithPath("content").description("생성할 내용").optional(),
-                        fieldWithPath("categoryType").description("카테고리 타입. EX) FREE, INSIGHT, ISSUE, HUMOR").optional()
+                        fieldWithPath("title").description("생성할 제목"),
+                        fieldWithPath("content").description("생성할 내용"),
+                        fieldWithPath("categoryType").description("카테고리 타입. EX) FREE, INSIGHT, ISSUE, HUMOR")
                     ),
                     responseFields(
                         *commonResponseFields(),
@@ -208,7 +210,7 @@ class CommunityPostControllerDocsTest : CommonDocsConfig() {
             categoryType = CommunityCategoryType.ISSUE
         )
 
-        given(communityPostUseCase.updateCommunityPost())
+        given(communityPostUseCase.updateCommunityPost(any()))
             .willReturn(response)
 
         val request = UpdateCommunityPostDto.Request(
@@ -262,7 +264,7 @@ class CommunityPostControllerDocsTest : CommonDocsConfig() {
             id = 1
         )
 
-        given(communityPostUseCase.deleteCommunityPost())
+        given(communityPostUseCase.deleteCommunityPost(any()))
             .willReturn(response)
 
         // when
