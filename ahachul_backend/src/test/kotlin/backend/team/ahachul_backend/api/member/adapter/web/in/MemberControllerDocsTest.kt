@@ -62,8 +62,8 @@ class MemberControllerDocsTest : CommonDocsConfig() {
                         fieldWithPath("result.memberId").type(JsonFieldType.NUMBER).description("사용자 Identification Key"),
                         fieldWithPath("result.nickname").type(JsonFieldType.STRING).description("사용자 닉네임").optional(),
                         fieldWithPath("result.email").type(JsonFieldType.STRING).description("사용자 이메일").optional(),
-                        fieldWithPath("result.gender").type("GenderType").description("사용자 성별. EX) MALE, FEMALE").optional(),
-                        fieldWithPath("result.ageRange").type(JsonFieldType.STRING).description("사용자 연령대 EX) 1, 10, 20, 30 ...").optional(),
+                        fieldWithPath("result.gender").type("GenderType").description("사용자 성별").attributes(getFormatAttribute("MALE, FEMALE")).optional(),
+                        fieldWithPath("result.ageRange").type(JsonFieldType.STRING).description("사용자 연령대").attributes(getFormatAttribute("1 : 1세 이상 10세 미만 ${getNewLine()} 10 : 10세 이상 20세 미만 ${getNewLine()} 20 : 20세 이상 30세 미만 ${getNewLine()} ...")).optional(),
                     )
                 )
             )
@@ -96,6 +96,7 @@ class MemberControllerDocsTest : CommonDocsConfig() {
                 .accept(MediaType.APPLICATION_JSON)
         )
 
+
         // then
         result.andExpect(status().isOk)
             .andDo(
@@ -108,15 +109,15 @@ class MemberControllerDocsTest : CommonDocsConfig() {
                     ),
                     requestFields(
                         fieldWithPath("nickname").type(JsonFieldType.STRING).description("사용자 닉네임").optional(),
-                        fieldWithPath("gender").type("GenderType").description("사용자 성별. EX) MALE, FEMALE").optional(),
-                        fieldWithPath("ageRange").type(JsonFieldType.STRING).description("사용자 연령대 EX) 1, 10, 20, 30 ...").optional(),
+                        fieldWithPath("gender").type("GenderType").description("사용자 성별").attributes(getFormatAttribute("MALE, FEMALE")).optional(),
+                        fieldWithPath("ageRange").type(JsonFieldType.STRING).description("사용자 연령대").attributes(getFormatAttribute("1 : 1세 이상 10세 미만 ${getNewLine()} 10 : 10세 이상 20세 미만 ${getNewLine()} 20 : 20세 이상 30세 미만 ${getNewLine()} ...")).optional(),
 
                         ),
                     responseFields(
                         *commonResponseFields(),
                         fieldWithPath("result.nickname").type(JsonFieldType.STRING).description("사용자 닉네임"),
-                        fieldWithPath("result.gender").type("GenderType").description("사용자 성별. EX) MALE, FEMALE"),
-                        fieldWithPath("result.ageRange").type(JsonFieldType.STRING).description("사용자 연령대 EX) 1, 10, 20, 30 ..."),
+                        fieldWithPath("result.gender").type("GenderType").description("사용자 성별").attributes(getFormatAttribute("MALE, FEMALE")),
+                        fieldWithPath("result.ageRange").type(JsonFieldType.STRING).description("사용자 연령대").attributes(getFormatAttribute("1 : 1세 이상 10세 미만 ${getNewLine()} 10 : 10세 이상 20세 미만 ${getNewLine()} 20 : 20세 이상 30세 미만 ${getNewLine()} ...")),
                     )
                 )
             )
