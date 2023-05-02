@@ -8,7 +8,7 @@ class FileEntity(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "file_id")
-    val id: Long? = null,
+    val id: Long = 0,
 
     var fileName: String,
 

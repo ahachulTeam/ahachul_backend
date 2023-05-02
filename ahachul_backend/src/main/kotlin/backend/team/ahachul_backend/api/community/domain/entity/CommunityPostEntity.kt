@@ -14,7 +14,7 @@ class CommunityPostEntity(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "community_post_id")
-    val id: Long? = null,
+    val id: Long = 0,
 
     var title: String,
 
