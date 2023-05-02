@@ -1,5 +1,6 @@
 package backend.team.ahachul_backend.api.community.domain.entity
 
+import backend.team.ahachul_backend.api.community.adapter.web.`in`.dto.comment.CreateCommunityCommentCommand
 import backend.team.ahachul_backend.common.entity.BaseEntity
 import jakarta.persistence.*
 
@@ -18,4 +19,15 @@ class CommunityCommentEntity(
     @ManyToOne(fetch = FetchType.LAZY)
     var communityPost: CommunityPostEntity,
 ): BaseEntity() {
+
+    companion object {
+
+        fun of(command: CreateCommunityCommentCommand, communityCommentEntity: CommunityCommentEntity?,communityPostEntity: CommunityPostEntity): CommunityCommentEntity {
+            return CommunityCommentEntity(
+                content = command.content,
+                upperCommunityComment = communityCommentEntity,
+                communityPost = communityPostEntity
+            )
+        }
+    }
 }

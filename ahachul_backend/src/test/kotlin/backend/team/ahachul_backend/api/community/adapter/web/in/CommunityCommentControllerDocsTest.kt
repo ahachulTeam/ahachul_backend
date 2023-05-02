@@ -85,7 +85,7 @@ class CommunityCommentControllerDocsTest : CommonDocsConfig() {
             content = "생성된 코멘트 내용"
         )
 
-        given(communityCommentUseCase.createCommunityComment())
+        given(communityCommentUseCase.createCommunityComment(any()))
             .willReturn(response)
 
         val request = CreateCommunityCommentDto.Request(
@@ -136,7 +136,7 @@ class CommunityCommentControllerDocsTest : CommonDocsConfig() {
             content = "변경된 코멘트 내용"
         )
 
-        given(communityCommentUseCase.updateCommunityComment())
+        given(communityCommentUseCase.updateCommunityComment(any()))
             .willReturn(response)
 
         val request = UpdateCommunityCommentDto.Request(
@@ -184,7 +184,7 @@ class CommunityCommentControllerDocsTest : CommonDocsConfig() {
             id = 1
         )
 
-        given(communityCommentUseCase.deleteCommunityComment())
+        given(communityCommentUseCase.deleteCommunityComment(any()))
             .willReturn(response)
 
         // when
