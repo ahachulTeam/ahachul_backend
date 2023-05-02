@@ -1,6 +1,6 @@
 package backend.team.ahachul_backend.api.community.application.port.`in`
 
-import backend.team.ahachul_backend.api.community.adapter.web.`in`.dto.posts.*
+import backend.team.ahachul_backend.api.community.adapter.web.`in`.dto.post.*
 
 interface CommunityPostUseCase {
 

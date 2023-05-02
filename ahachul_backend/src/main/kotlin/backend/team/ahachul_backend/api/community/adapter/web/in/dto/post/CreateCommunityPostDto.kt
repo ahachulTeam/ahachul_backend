@@ -1,18 +1,18 @@
-package backend.team.ahachul_backend.api.community.adapter.web.`in`.dto.posts
+package backend.team.ahachul_backend.api.community.adapter.web.`in`.dto.post
 
 import backend.team.ahachul_backend.api.community.domain.entity.CommunityPostEntity
 import backend.team.ahachul_backend.api.community.domain.model.CommunityCategoryType
+import backend.team.ahachul_backend.common.model.RegionType
 
-class UpdateCommunityPostDto {
+class CreateCommunityPostDto {
 
     data class Request(
         val title: String,
         val content: String,
         val categoryType: CommunityCategoryType,
     ) {
-        fun toCommand(postId: Long): UpdateCommunityPostCommand {
-            return UpdateCommunityPostCommand(
-                id = postId,
+        fun toCommand(): CreateCommunityPostCommand {
+            return CreateCommunityPostCommand(
                 title = title,
                 content = content,
                 categoryType = categoryType
@@ -25,6 +25,7 @@ class UpdateCommunityPostDto {
         val title: String,
         val content: String,
         val categoryType: CommunityCategoryType,
+        val region: RegionType,
     ) {
         companion object {
             fun from(entity: CommunityPostEntity): Response {
@@ -32,7 +33,8 @@ class UpdateCommunityPostDto {
                     id = entity.id,
                     title = entity.title,
                     content = entity.content,
-                    categoryType = entity.categoryType
+                    categoryType = entity.categoryType,
+                    region = entity.regionType
                 )
             }
         }

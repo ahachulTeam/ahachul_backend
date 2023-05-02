@@ -1,18 +1,18 @@
 package backend.team.ahachul_backend.api.community.application.service
 
-import backend.team.ahachul_backend.api.community.adapter.web.`in`.dto.posts.CreateCommunityPostCommand
-import backend.team.ahachul_backend.api.community.adapter.web.`in`.dto.posts.DeleteCommunityPostCommand
-import backend.team.ahachul_backend.api.community.adapter.web.`in`.dto.posts.UpdateCommunityPostCommand
+import backend.team.ahachul_backend.api.community.adapter.web.`in`.dto.post.CreateCommunityPostCommand
+import backend.team.ahachul_backend.api.community.adapter.web.`in`.dto.post.DeleteCommunityPostCommand
+import backend.team.ahachul_backend.api.community.adapter.web.`in`.dto.post.UpdateCommunityPostCommand
 import backend.team.ahachul_backend.api.community.adapter.web.out.CommunityPostRepository
 import backend.team.ahachul_backend.api.community.application.port.`in`.CommunityPostUseCase
 import backend.team.ahachul_backend.api.community.domain.model.CommunityCategoryType
 import backend.team.ahachul_backend.api.member.adapter.web.out.MemberRepository
 import backend.team.ahachul_backend.api.member.domain.entity.MemberEntity
 import backend.team.ahachul_backend.api.member.domain.model.GenderType
-import backend.team.ahachul_backend.api.member.domain.model.MemberStatus
+import backend.team.ahachul_backend.api.member.domain.model.MemberStatusType
 import backend.team.ahachul_backend.api.member.domain.model.ProviderType
 import backend.team.ahachul_backend.common.exception.CommonException
-import backend.team.ahachul_backend.common.model.CommunityPostType
+import backend.team.ahachul_backend.api.community.domain.model.CommunityPostType
 import backend.team.ahachul_backend.common.model.RegionType
 import backend.team.ahachul_backend.common.utils.RequestUtils
 import jakarta.transaction.Transactional
@@ -45,7 +45,7 @@ class CommunityPostServiceTest(
             email = "email",
             gender = GenderType.MALE,
             ageRange = "20",
-            status = MemberStatus.ACTIVE
+            status = MemberStatusType.ACTIVE
             )
         )
         member!!.id?.let { RequestUtils.setAttribute("memberId", it) }
