@@ -16,6 +16,7 @@ import org.springframework.restdocs.operation.preprocess.Preprocessors.preproces
 import org.springframework.restdocs.payload.FieldDescriptor
 import org.springframework.restdocs.payload.JsonFieldType
 import org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath
+import org.springframework.restdocs.snippet.Attributes
 import org.springframework.test.web.servlet.MockMvc
 
 @AutoConfigureRestDocs
@@ -39,6 +40,14 @@ abstract class CommonDocsConfig {
             fieldWithPath("code").type(JsonFieldType.STRING).description("상태 코드"),
             fieldWithPath("message").type(JsonFieldType.STRING).description("상태 메시지")
         )
+    }
+
+    protected fun getFormatAttribute(format: String): Attributes.Attribute {
+        return Attributes.Attribute("format", format)
+    }
+
+    protected fun getNewLine(): String {
+        return " +\n"
     }
 
     protected fun getDocsRequest(): OperationRequestPreprocessor {
