@@ -6,6 +6,7 @@ import backend.team.ahachul_backend.api.community.application.port.out.Community
 import backend.team.ahachul_backend.api.community.application.port.out.CommunityCommentWriter
 import backend.team.ahachul_backend.api.community.application.port.out.CommunityPostReader
 import backend.team.ahachul_backend.api.community.domain.entity.CommunityCommentEntity
+import backend.team.ahachul_backend.api.member.application.port.out.MemberReader
 import backend.team.ahachul_backend.common.utils.RequestUtils
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -16,6 +17,7 @@ class CommunityCommentService(
     private val communityCommentWriter: CommunityCommentWriter,
     private val communityCommentReader: CommunityCommentReader,
     private val communityPostReader: CommunityPostReader,
+    private val memberReader: MemberReader,
 ): CommunityCommentUseCase {
 
     override fun getCommunityComments(): GetCommunityCommentsDto.Response {
@@ -24,9 +26,11 @@ class CommunityCommentService(
 
     @Transactional
     override fun createCommunityComment(command: CreateCommunityCommentCommand): CreateCommunityCommentDto.Response {
+        val memberId = RequestUtils.getAttribute("memberId")!!
         val upperCommunityComment = command.upperCommentId?.let { communityCommentReader.findById(it) }
         val communityPost = communityPostReader.getCommunityPost(command.postId)
-        val entity = communityCommentWriter.save(CommunityCommentEntity.of(command, upperCommunityComment, communityPost))
+        val member = memberReader.getMember(memberId.toLong())
+        val entity = communityCommentWriter.save(CommunityCommentEntity.of(command, upperCommunityComment, communityPost, member))
         return CreateCommunityCommentDto.Response.from(entity)
     }
 
