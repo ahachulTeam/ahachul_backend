@@ -1,4 +1,4 @@
-package backend.team.ahachul_backend.api.community.adapter.web.`in`.dto
+package backend.team.ahachul_backend.api.community.adapter.web.`in`.dto.post
 
 import backend.team.ahachul_backend.api.community.domain.model.CommunityCategoryType
 import java.time.LocalDateTime

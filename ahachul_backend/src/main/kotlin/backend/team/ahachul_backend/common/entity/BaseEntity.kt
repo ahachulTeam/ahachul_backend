@@ -1,5 +1,7 @@
 package backend.team.ahachul_backend.common.entity
 
+import backend.team.ahachul_backend.common.exception.CommonException
+import backend.team.ahachul_backend.common.response.ResponseCode
 import jakarta.persistence.Column
 import jakarta.persistence.EntityListeners
 import jakarta.persistence.MappedSuperclass
@@ -26,4 +28,8 @@ abstract class BaseEntity {
 
     @LastModifiedBy
     var updatedBy: String = ""
+
+    fun checkMe(createdBy: String) {
+        if (this.createdBy != createdBy) throw CommonException(ResponseCode.INVALID_AUTH)
+    }
 }

@@ -6,7 +6,7 @@ import backend.team.ahachul_backend.api.member.application.port.`in`.command.Che
 import backend.team.ahachul_backend.api.member.application.port.`in`.command.UpdateMemberCommand
 import backend.team.ahachul_backend.api.member.domain.entity.MemberEntity
 import backend.team.ahachul_backend.api.member.domain.model.GenderType
-import backend.team.ahachul_backend.api.member.domain.model.MemberStatus
+import backend.team.ahachul_backend.api.member.domain.model.MemberStatusType
 import backend.team.ahachul_backend.api.member.domain.model.ProviderType
 import backend.team.ahachul_backend.common.utils.RequestUtils
 import org.assertj.core.api.Assertions.assertThat
@@ -34,7 +34,7 @@ class MemberServiceTest(
                 email = "email",
                 gender = GenderType.MALE,
                 ageRange = "20",
-                status = MemberStatus.ACTIVE
+                status = MemberStatusType.ACTIVE
         ))
         member.id?.let { RequestUtils.setAttribute("memberId", it) }
     }

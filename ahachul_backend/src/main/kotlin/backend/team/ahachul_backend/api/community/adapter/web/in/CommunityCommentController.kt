@@ -1,9 +1,9 @@
 package backend.team.ahachul_backend.api.community.adapter.web.`in`
 
-import backend.team.ahachul_backend.api.community.adapter.web.`in`.dto.CreateCommunityCommentDto
-import backend.team.ahachul_backend.api.community.adapter.web.`in`.dto.DeleteCommunityCommentDto
-import backend.team.ahachul_backend.api.community.adapter.web.`in`.dto.GetCommunityCommentsDto
-import backend.team.ahachul_backend.api.community.adapter.web.`in`.dto.UpdateCommunityCommentDto
+import backend.team.ahachul_backend.api.community.adapter.web.`in`.dto.comment.CreateCommunityCommentDto
+import backend.team.ahachul_backend.api.community.adapter.web.`in`.dto.comment.DeleteCommunityCommentDto
+import backend.team.ahachul_backend.api.community.adapter.web.`in`.dto.comment.GetCommunityCommentsDto
+import backend.team.ahachul_backend.api.community.adapter.web.`in`.dto.comment.UpdateCommunityCommentDto
 import backend.team.ahachul_backend.api.community.application.port.`in`.CommunityCommentUseCase
 import backend.team.ahachul_backend.common.annotation.Authentication
 import backend.team.ahachul_backend.common.response.CommonResponse
