@@ -1,6 +1,6 @@
 === /community-comments
 
-==== 코멘트 조회 (미구현)
+==== 코멘트 조회
 
 .Request
 include::{snippets}/get-community-comments/http-request.adoc[]
@@ -11,7 +11,7 @@ include::{snippets}/get-community-comments/http-response.adoc[]
 .Response Fields
 include::{snippets}/get-community-comments/response-fields.adoc[]
 
-==== 코멘트 생성 (미구현)
+==== 코멘트 작성
 
 .Request
 include::{snippets}/create-community-comment/http-request.adoc[]
@@ -24,7 +24,7 @@ include::{snippets}/create-community-comment/http-response.adoc[]
 .Response Fields
 include::{snippets}/create-community-comment/response-fields.adoc[]
 
-==== 코멘트 업데이트 (미구현)
+==== 코멘트 수정
 
 .Request
 include::{snippets}/update-community-comment/http-request.adoc[]
@@ -37,7 +37,7 @@ include::{snippets}/update-community-comment/http-response.adoc[]
 .Response Fields
 include::{snippets}/update-community-comment/response-fields.adoc[]
 
-==== 코멘트 삭제 (미구현)
+==== 코멘트 삭제
 
 .Request
 include::{snippets}/delete-community-comment/http-request.adoc[]
