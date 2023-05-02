@@ -30,4 +30,8 @@ class CommunityCommentEntity(
             )
         }
     }
+
+    fun update(content: String) {
+        this.content = content
+    }
 }

@@ -4,5 +4,7 @@ import backend.team.ahachul_backend.api.community.domain.entity.CommunityComment
 
 interface CommunityCommentReader {
 
+    fun getById(id: Long): CommunityCommentEntity
+
     fun findById(id: Long): CommunityCommentEntity?
 }

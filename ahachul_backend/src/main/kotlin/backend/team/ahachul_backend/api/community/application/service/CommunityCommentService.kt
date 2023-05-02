@@ -6,6 +6,7 @@ import backend.team.ahachul_backend.api.community.application.port.out.Community
 import backend.team.ahachul_backend.api.community.application.port.out.CommunityCommentWriter
 import backend.team.ahachul_backend.api.community.application.port.out.CommunityPostReader
 import backend.team.ahachul_backend.api.community.domain.entity.CommunityCommentEntity
+import backend.team.ahachul_backend.common.utils.RequestUtils
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
@@ -31,7 +32,11 @@ class CommunityCommentService(
 
     @Transactional
     override fun updateCommunityComment(command: UpdateCommunityCommentCommand): UpdateCommunityCommentDto.Response {
-        TODO("Not yet implemented")
+        val memberId = RequestUtils.getAttribute("memberId")!!
+        val communityComment = communityCommentReader.getById(command.id)
+        communityComment.checkMe(memberId)
+        communityComment.update(command.content)
+        return UpdateCommunityCommentDto.Response.from(communityComment)
     }
 
     @Transactional
