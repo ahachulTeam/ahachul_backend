@@ -52,7 +52,7 @@ class AuthControllerDocsTest : CommonDocsConfig() {
                     getDocsRequest(),
                     getDocsResponse(),
                     queryParameters(
-                        parameterWithName("providerType").description("플랫폼 타입. EX) KAKAO, GOOGLE")
+                        parameterWithName("providerType").description("플랫폼 타입").attributes(getFormatAttribute("KAKAO, GOOGLE"))
                     ),
                     responseFields(
                         *commonResponseFields(),
@@ -98,7 +98,7 @@ class AuthControllerDocsTest : CommonDocsConfig() {
                     getDocsRequest(),
                     getDocsResponse(),
                     requestFields(
-                        fieldWithPath("providerType").type("ProviderType").description("플랫폼 타입. EX) KAKAO, GOOGLE"),
+                        fieldWithPath("providerType").type("ProviderType").description("플랫폼 타입").attributes(getFormatAttribute("KAKAO, GOOGLE")),
                         fieldWithPath("providerCode").type(JsonFieldType.STRING).description("인가 코드")
                     ),
                     responseFields(

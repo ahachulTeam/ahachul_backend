@@ -1,10 +1,11 @@
 |===
-|Name|Required|Description
+|Name|Required|Format|Description
 
 {{#headers}}
 
 |{{#tableCellContent}}`+{{name}}+`{{/tableCellContent}}
 |{{#tableCellContent}}{{^optional}}true{{/optional}}{{/tableCellContent}}
+|{{#tableCellContent}}{{#format}}{{.}}{{/format}}{{/tableCellContent}}
 |{{#tableCellContent}}{{description}}{{/tableCellContent}}
 
 {{/headers}}
