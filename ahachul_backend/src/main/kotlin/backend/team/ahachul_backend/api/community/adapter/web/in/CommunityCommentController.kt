@@ -13,7 +13,7 @@ class CommunityCommentController(
 
     @GetMapping("/v1/community-comments")
     fun getCommunityComments(@RequestParam postId: Long): CommonResponse<GetCommunityCommentsDto.Response> {
-        return CommonResponse.success(communityCommentUseCase.getCommunityComments())
+        return CommonResponse.success(communityCommentUseCase.getCommunityComments(GetCommunityCommentsCommand(postId)))
     }
 
     @Authentication

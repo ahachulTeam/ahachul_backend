@@ -20,8 +20,20 @@ class CommunityCommentService(
     private val memberReader: MemberReader,
 ): CommunityCommentUseCase {
 
-    override fun getCommunityComments(): GetCommunityCommentsDto.Response {
-        TODO("Not yet implemented")
+    override fun getCommunityComments(command: GetCommunityCommentsCommand): GetCommunityCommentsDto.Response {
+        val comments = communityCommentReader.findAllByPostId(command.postId)
+            .map {
+                GetCommunityCommentsDto.CommunityComment(
+                    it.id,
+                    it.upperCommunityComment?.id,
+                    it.content,
+                    it.createdAt,
+                    it.createdBy,
+                    it.member.nickname!!
+                )
+            }
+            .toList()
+        return GetCommunityCommentsDto.Response(comments)
     }
 
     @Transactional

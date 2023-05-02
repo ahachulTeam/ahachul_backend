@@ -7,4 +7,6 @@ interface CommunityCommentReader {
     fun getById(id: Long): CommunityCommentEntity
 
     fun findById(id: Long): CommunityCommentEntity?
+
+    fun findAllByPostId(postId: Long): List<CommunityCommentEntity>
 }

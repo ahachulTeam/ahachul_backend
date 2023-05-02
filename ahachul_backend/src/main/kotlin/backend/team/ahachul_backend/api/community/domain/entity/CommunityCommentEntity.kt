@@ -17,7 +17,7 @@ class CommunityCommentEntity(
 
     var status: CommunityCommentType = CommunityCommentType.CREATED,
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.EAGER)
     var upperCommunityComment: CommunityCommentEntity?,
 
     @ManyToOne(fetch = FetchType.LAZY)

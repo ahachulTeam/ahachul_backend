@@ -4,7 +4,7 @@ import backend.team.ahachul_backend.api.community.adapter.web.`in`.dto.comment.*
 
 interface CommunityCommentUseCase {
 
-    fun getCommunityComments(): GetCommunityCommentsDto.Response
+    fun getCommunityComments(command: GetCommunityCommentsCommand): GetCommunityCommentsDto.Response
 
     fun createCommunityComment(command: CreateCommunityCommentCommand): CreateCommunityCommentDto.Response
 

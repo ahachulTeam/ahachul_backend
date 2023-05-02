@@ -1,6 +1,6 @@
 === /community-comments
 
-==== 코멘트 조회 (미구현)
+==== 코멘트 조회
 
 .Request
 include::{snippets}/get-community-comments/http-request.adoc[]

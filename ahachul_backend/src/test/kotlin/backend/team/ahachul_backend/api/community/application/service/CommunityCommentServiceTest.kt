@@ -2,6 +2,7 @@ package backend.team.ahachul_backend.api.community.application.service
 
 import backend.team.ahachul_backend.api.community.adapter.web.`in`.dto.comment.CreateCommunityCommentCommand
 import backend.team.ahachul_backend.api.community.adapter.web.`in`.dto.comment.DeleteCommunityCommentCommand
+import backend.team.ahachul_backend.api.community.adapter.web.`in`.dto.comment.GetCommunityCommentsCommand
 import backend.team.ahachul_backend.api.community.adapter.web.`in`.dto.comment.UpdateCommunityCommentCommand
 import backend.team.ahachul_backend.api.community.adapter.web.out.CommunityCommentRepository
 import backend.team.ahachul_backend.api.community.adapter.web.out.CommunityPostRepository
@@ -23,6 +24,8 @@ import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.transaction.annotation.Transactional
+import java.util.stream.IntStream
+import kotlin.streams.toList
 
 @SpringBootTest
 @Transactional
@@ -143,5 +146,40 @@ class CommunityCommentServiceTest(
         val communityComment = communityCommentRepository.findById(result.id).get()
 
         assertThat(communityComment.status).isEqualTo(CommunityCommentType.DELETED)
+    }
+
+    @Test
+    @DisplayName("커뮤니티 코멘트 조회")
+    fun 커뮤니티_코멘트_조회() {
+        // given
+        val post = communityPostRepository.save(
+            CommunityPostEntity(
+                title = "제목",
+                content = "내용",
+                categoryType = CommunityCategoryType.FREE,
+            )
+        )
+        for (i in 1..10) {
+            val createCommunityCommentCommand = CreateCommunityCommentCommand(
+                postId = post.id,
+                upperCommentId = null,
+                content = "내용${i}"
+            )
+            communityCommentUseCase.createCommunityComment(createCommunityCommentCommand)
+        }
+
+        val getCommunityCommentsCommand = GetCommunityCommentsCommand(
+            postId = post.id
+        )
+
+        // when
+        val result = communityCommentUseCase.getCommunityComments(getCommunityCommentsCommand)
+
+        // then
+        assertThat(result.comments.size).isEqualTo(10)
+        assertThat(result.comments)
+            .extracting("content")
+            .usingRecursiveComparison()
+            .isEqualTo((1..10).map { "내용$it" }.toList())
     }
 }

@@ -24,4 +24,8 @@ class CommunityCommentPersistence(
     override fun findById(id: Long): CommunityCommentEntity? {
         return repository.findById(id).orElse(null)
     }
+
+    override fun findAllByPostId(postId: Long): List<CommunityCommentEntity> {
+        return repository.findAllByCommunityPostId(postId)
+    }
 }

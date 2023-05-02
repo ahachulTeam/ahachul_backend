@@ -39,12 +39,13 @@ class CommunityCommentControllerDocsTest : CommonDocsConfig() {
                     upperCommentId = 1,
                     content = "내용",
                     LocalDateTime.now(),
-                    "작성자"
+                    "작성자 ID",
+                    "작성자 닉네임"
                 )
             )
         )
 
-        given(communityCommentUseCase.getCommunityComments())
+        given(communityCommentUseCase.getCommunityComments(any()))
             .willReturn(response)
 
         // when
@@ -70,7 +71,8 @@ class CommunityCommentControllerDocsTest : CommonDocsConfig() {
                         PayloadDocumentation.fieldWithPath("result.comments[].upperCommentId").type(JsonFieldType.NUMBER).description("상위 코멘트 아이디").optional(),
                         PayloadDocumentation.fieldWithPath("result.comments[].content").type(JsonFieldType.STRING).description("코멘트 내용"),
                         PayloadDocumentation.fieldWithPath("result.comments[].createdAt").type("LocalDateTime").description("작성일자"),
-                        PayloadDocumentation.fieldWithPath("result.comments[].createdBy").type(JsonFieldType.STRING).description("작성자"),
+                        PayloadDocumentation.fieldWithPath("result.comments[].createdBy").type(JsonFieldType.STRING).description("작성자 ID"),
+                        PayloadDocumentation.fieldWithPath("result.comments[].writer").type(JsonFieldType.STRING).description("작성자 닉네임"),
                     )
                 )
             )
