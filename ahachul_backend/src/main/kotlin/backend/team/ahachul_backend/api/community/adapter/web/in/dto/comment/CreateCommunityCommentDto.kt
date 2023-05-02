@@ -6,7 +6,15 @@ class CreateCommunityCommentDto {
         val postId: Long,
         val upperCommentId: Long?,
         val content: String,
-    )
+    ) {
+        fun toCommand(): CreateCommunityCommentCommand {
+            return CreateCommunityCommentCommand(
+                postId = postId,
+                upperCommentId = upperCommentId,
+                content = content
+            )
+        }
+    }
 
     data class Response(
         val id: Long,

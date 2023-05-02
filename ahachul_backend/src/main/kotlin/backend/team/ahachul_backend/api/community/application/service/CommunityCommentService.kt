@@ -1,9 +1,6 @@
 package backend.team.ahachul_backend.api.community.application.service
 
-import backend.team.ahachul_backend.api.community.adapter.web.`in`.dto.comment.CreateCommunityCommentDto
-import backend.team.ahachul_backend.api.community.adapter.web.`in`.dto.comment.DeleteCommunityCommentDto
-import backend.team.ahachul_backend.api.community.adapter.web.`in`.dto.comment.GetCommunityCommentsDto
-import backend.team.ahachul_backend.api.community.adapter.web.`in`.dto.comment.UpdateCommunityCommentDto
+import backend.team.ahachul_backend.api.community.adapter.web.`in`.dto.comment.*
 import backend.team.ahachul_backend.api.community.application.port.`in`.CommunityCommentUseCase
 import org.springframework.stereotype.Service
 
@@ -14,15 +11,15 @@ class CommunityCommentService: CommunityCommentUseCase {
         TODO("Not yet implemented")
     }
 
-    override fun createCommunityComment(): CreateCommunityCommentDto.Response {
+    override fun createCommunityComment(command: CreateCommunityCommentCommand): CreateCommunityCommentDto.Response {
         TODO("Not yet implemented")
     }
 
-    override fun updateCommunityComment(): UpdateCommunityCommentDto.Response {
+    override fun updateCommunityComment(command: UpdateCommunityCommentCommand): UpdateCommunityCommentDto.Response {
         TODO("Not yet implemented")
     }
 
-    override fun deleteCommunityComment(): DeleteCommunityCommentDto.Response {
+    override fun deleteCommunityComment(command: DeleteCommunityCommentCommand): DeleteCommunityCommentDto.Response {
         TODO("Not yet implemented")
     }
 }
