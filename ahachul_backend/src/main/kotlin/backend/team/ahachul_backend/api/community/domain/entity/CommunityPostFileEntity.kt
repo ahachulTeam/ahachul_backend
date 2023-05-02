@@ -9,7 +9,7 @@ class CommunityPostFileEntity(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "community_category_file_id")
-    val id: Long? = null,
+    val id: Long = 0,
 
     @ManyToOne(fetch = FetchType.LAZY)
     var commentPost: CommunityPostEntity,

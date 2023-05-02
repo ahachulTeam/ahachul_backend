@@ -5,7 +5,7 @@ import backend.team.ahachul_backend.api.member.domain.model.GenderType
 
 class GetMemberDto {
     data class Response(
-            val memberId: Long?,
+            val memberId: Long,
             val nickname: String?,
             val email: String?,
             val gender: GenderType?,

@@ -8,7 +8,7 @@ class CommunityCommentEntity(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "community_comment_id")
-    val id: Long? = null,
+    val id: Long = 0,
 
     var content: String,
 

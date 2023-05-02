@@ -36,7 +36,7 @@ class MemberServiceTest(
                 ageRange = "20",
                 status = MemberStatusType.ACTIVE
         ))
-        member.id?.let { RequestUtils.setAttribute("memberId", it) }
+        member.id.let { RequestUtils.setAttribute("memberId", it) }
     }
 
     @Test
