@@ -1,6 +1,7 @@
 package backend.team.ahachul_backend.api.community.domain.entity
 
 import backend.team.ahachul_backend.api.community.adapter.web.`in`.dto.comment.CreateCommunityCommentCommand
+import backend.team.ahachul_backend.api.community.domain.model.CommunityCommentType
 import backend.team.ahachul_backend.common.entity.BaseEntity
 import jakarta.persistence.*
 
@@ -12,6 +13,8 @@ class CommunityCommentEntity(
     val id: Long = 0,
 
     var content: String,
+
+    var status: CommunityCommentType = CommunityCommentType.CREATED,
 
     @OneToOne(fetch = FetchType.LAZY)
     var upperCommunityComment: CommunityCommentEntity?,

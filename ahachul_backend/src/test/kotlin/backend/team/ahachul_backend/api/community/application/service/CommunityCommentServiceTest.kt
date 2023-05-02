@@ -7,6 +7,7 @@ import backend.team.ahachul_backend.api.community.adapter.web.out.CommunityPostR
 import backend.team.ahachul_backend.api.community.application.port.`in`.CommunityCommentUseCase
 import backend.team.ahachul_backend.api.community.domain.entity.CommunityPostEntity
 import backend.team.ahachul_backend.api.community.domain.model.CommunityCategoryType
+import backend.team.ahachul_backend.api.community.domain.model.CommunityCommentType
 import backend.team.ahachul_backend.api.member.adapter.web.out.MemberRepository
 import backend.team.ahachul_backend.api.member.domain.entity.MemberEntity
 import backend.team.ahachul_backend.api.member.domain.model.GenderType
@@ -76,6 +77,7 @@ class CommunityCommentServiceTest(
         val communityComment = communityCommentRepository.findById(result.id).get()
 
         assertThat(communityComment.id).isEqualTo(result.id)
+        assertThat(communityComment.status).isEqualTo(CommunityCommentType.CREATED)
     }
 
     @Test
