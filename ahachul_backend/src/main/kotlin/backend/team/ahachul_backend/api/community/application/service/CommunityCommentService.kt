@@ -41,6 +41,10 @@ class CommunityCommentService(
 
     @Transactional
     override fun deleteCommunityComment(command: DeleteCommunityCommentCommand): DeleteCommunityCommentDto.Response {
-        TODO("Not yet implemented")
+        val memberId = RequestUtils.getAttribute("memberId")!!
+        val communityComment = communityCommentReader.getById(command.id)
+        communityComment.checkMe(memberId)
+        communityComment.delete()
+        return DeleteCommunityCommentDto.Response(communityComment.id)
     }
 }

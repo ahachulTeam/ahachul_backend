@@ -1,6 +1,7 @@
 package backend.team.ahachul_backend.api.community.application.service
 
 import backend.team.ahachul_backend.api.community.adapter.web.`in`.dto.comment.CreateCommunityCommentCommand
+import backend.team.ahachul_backend.api.community.adapter.web.`in`.dto.comment.DeleteCommunityCommentCommand
 import backend.team.ahachul_backend.api.community.adapter.web.`in`.dto.comment.UpdateCommunityCommentCommand
 import backend.team.ahachul_backend.api.community.adapter.web.out.CommunityCommentRepository
 import backend.team.ahachul_backend.api.community.adapter.web.out.CommunityPostRepository
@@ -109,5 +110,38 @@ class CommunityCommentServiceTest(
         // then
         assertThat(result.id).isEqualTo(communityComment.id)
         assertThat(result.content).isEqualTo("수정된 내용")
+    }
+
+    @Test
+    @DisplayName("커뮤니티 코멘트 삭제")
+    fun 커뮤니티_코멘트_삭제() {
+        // given
+        val post = communityPostRepository.save(
+            CommunityPostEntity(
+                title = "제목",
+                content = "내용",
+                categoryType = CommunityCategoryType.FREE,
+            )
+        )
+        val createCommunityCommentCommand = CreateCommunityCommentCommand(
+            postId = post.id,
+            upperCommentId = null,
+            content = "내용"
+        )
+        val communityCommentRes = communityCommentUseCase.createCommunityComment(createCommunityCommentCommand)
+
+        val deleteCommunityCommentCommand = DeleteCommunityCommentCommand(
+            id = communityCommentRes.id
+        )
+
+        // when
+        val result = communityCommentUseCase.deleteCommunityComment(deleteCommunityCommentCommand)
+
+        // then
+        assertThat(result.id).isEqualTo(communityCommentRes.id)
+
+        val communityComment = communityCommentRepository.findById(result.id).get()
+
+        assertThat(communityComment.status).isEqualTo(CommunityCommentType.DELETED)
     }
 }

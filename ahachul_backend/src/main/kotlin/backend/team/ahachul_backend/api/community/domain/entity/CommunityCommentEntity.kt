@@ -37,4 +37,8 @@ class CommunityCommentEntity(
     fun update(content: String) {
         this.content = content
     }
+
+    fun delete() {
+        status = CommunityCommentType.DELETED
+    }
 }
