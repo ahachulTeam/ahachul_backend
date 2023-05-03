@@ -181,9 +181,15 @@ class LostPostControllerDocsTest: CommonDocsConfig() {
     @Test
     fun updateLostPost() {
         // given
-        val response = UpdateLostPostDto.Response(id = 1)
+        val response = UpdateLostPostDto.Response(
+            id = 1,
+            title = "title",
+            content = "content",
+            lostLine = "1",
+            status = LostStatus.COMPLETE
+        )
 
-        given(lostPostUseCase.updateLostPost())
+        given(lostPostUseCase.updateLostPost(any(), any()))
             .willReturn(response)
 
         val request = UpdateLostPostDto.Request(

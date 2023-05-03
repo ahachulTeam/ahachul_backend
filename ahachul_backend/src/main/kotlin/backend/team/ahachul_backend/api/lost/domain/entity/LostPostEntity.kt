@@ -1,6 +1,7 @@
 package backend.team.ahachul_backend.api.lost.domain.entity
 
 import backend.team.ahachul_backend.api.lost.application.service.command.CreateLostPostCommand
+import backend.team.ahachul_backend.api.lost.application.service.command.UpdateLostPostCommand
 import backend.team.ahachul_backend.api.lost.domain.model.LostOrigin
 import backend.team.ahachul_backend.api.lost.domain.model.LostStatus
 import backend.team.ahachul_backend.api.lost.domain.model.LostType
@@ -50,5 +51,12 @@ class LostPostEntity(
                 member = member
             )
         }
+    }
+
+    fun update(command: UpdateLostPostCommand) {
+        command.title?.let { this.title = it }
+        command.content?.let { this.content = it }
+        command.lostLine?.let { this.lostLine = it }
+        command.status?.let { this.status= it }
     }
 }
