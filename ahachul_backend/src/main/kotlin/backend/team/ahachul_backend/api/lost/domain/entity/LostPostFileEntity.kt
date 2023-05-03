@@ -10,7 +10,7 @@ class LostPostFileEntity (
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "lost_post_file_id")
-    var id: Long? = null,
+    var id: Long = 0,
 
     @ManyToOne(fetch = FetchType.LAZY)
     var lostPost: LostPostEntity,

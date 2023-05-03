@@ -27,7 +27,7 @@ class LostPostService(
         val memberId = RequestUtils.getAttribute("memberId")!!
         val member = memberReader.getMember(memberId.toLong())
         val entity = lostPostWriter.save(LostPostEntity.of(command, member))
-        return CreateLostPostDto.Response.from(entity.id!!)
+        return CreateLostPostDto.Response.from(entity.id)
     }
 
     override fun updateLostPost(): UpdateLostPostDto.Response {
