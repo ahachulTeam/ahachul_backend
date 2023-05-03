@@ -1,0 +1,43 @@
+spring:
+  datasource:
+    url: jdbc:h2:mem:test;MODE=MySQL;DATABASE_TO_LOWER=TRUE
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+      naming:
+        physical-strategy: backend.team.ahachul_backend.common.config.PhysicalNamingStrategy
+    properties:
+      hibernate:
+        format_sql: true
+        show_sql: true
+    database: mysql
+    database-platform: org.hibernate.dialect.MySQL8Dialect
+
+jwt:
+  secret-key: "86b75cda2c9c0496fb69f318e226cf9ebbb8b973e1651eebe437a55392ed6872aee1791fbcb18dc61cb52b1bb86531f2c000090dc231a7a80850e678e8d2d432196527f9fd1ec094c0be3a2dc49a63b11d80f283b266b51fe0a9ab4f0efa5878eb70e2e48290d5c5ea56bebfef286b595571c8a804104ce46aa25b17c91f9f50fc7675cae477fdc53d0d747140a6421c5b2f09da3cf9c548cfe7e1e5d555464263fc963ff18a8fa526ce36f63745e4fc8f62762f259a416d69ce71a3fa57bf0295f68ba572bef810405ec02ebc02c7de54cc548a928a866b49354588dcc87be4a76d282a1b0d5bfc626712022465d807b30189ff08e9f7270cc834ca747eb8a6"
+  access-token-expire-time: 3600
+  refresh-token-expire-time: 259200
+
+oauth:
+  client:
+    kakao:
+      client-id: "b2d4fda2785d278cbe20fe779ce85aad"
+      redirect-uri: "http://localhost:3000/onboarding/redirect?type=KAKAO"
+      response_type: "code"
+    google:
+      client-id: "269186990560-ffq5a3unqg0oll0ntuth2imv90roktbf.apps.googleusercontent.com"
+      client-secret: "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"
+      redirect-uri: "http://localhost:3000/onboarding/redirect?type=GOOGLE"
+      scope: "https://www.googleapis.com/auth/userinfo.email https://www.googleapis.com/auth/userinfo.profile"
+      response_type: "code"
+      access_type: "offline"
+
+  provider:
+    kakao:
+      login-uri: "https://kauth.kakao.com/oauth/authorize"
+      token-uri: "https://kauth.kakao.com/oauth/token"
+      user-info-uri: "https://kapi.kakao.com/v2/user/me"
+    google:
+      login-uri: "https://accounts.google.com/o/oauth2/v2/auth"
+      token-uri: "https://oauth2.googleapis.com/token"
+      user-info-uri: "https://www.googleapis.com/userinfo/v2/me"

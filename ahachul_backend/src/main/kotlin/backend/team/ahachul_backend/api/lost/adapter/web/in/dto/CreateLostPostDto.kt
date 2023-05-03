@@ -1,5 +1,6 @@
 package backend.team.ahachul_backend.api.lost.adapter.web.`in`.dto
 
+import backend.team.ahachul_backend.api.lost.application.service.command.CreateLostPostCommand
 import backend.team.ahachul_backend.api.lost.domain.model.LostType
 import org.jetbrains.annotations.NotNull
 
@@ -11,9 +12,25 @@ class CreateLostPostDto{
         @NotNull val lostLine: String,
         @NotNull val lostType: LostType,
         val imgUrls: List<String>?
-    )
+    ) {
+        fun toCommand(): CreateLostPostCommand {
+            return CreateLostPostCommand(
+                title = title,
+                content = content,
+                lostLine = lostLine,
+                lostType = lostType,
+                imgUrls = imgUrls
+            )
+        }
+    }
 
     data class Response(
         val id: Long
-    )
+    ) {
+        companion object {
+            fun from(id: Long): Response {
+                return Response(id)
+            }
+        }
+    }
 }

@@ -136,7 +136,7 @@ class LostPostControllerDocsTest: CommonDocsConfig() {
         // given
         val response = CreateLostPostDto.Response(id = 1)
 
-        given(lostPostUseCase.createLostPost())
+        given(lostPostUseCase.createLostPost(any()))
             .willReturn(response)
 
         val request = CreateLostPostDto.Request(

@@ -18,6 +18,5 @@ class LostPostFileEntity (
     @ManyToOne(fetch = FetchType.LAZY)
     var file: FileEntity
 
-): BaseEntity(){
-
+): BaseEntity() {
 }

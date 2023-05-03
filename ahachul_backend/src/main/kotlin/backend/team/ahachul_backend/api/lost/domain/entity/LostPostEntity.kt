@@ -1,12 +1,12 @@
 package backend.team.ahachul_backend.api.lost.domain.entity
 
+import backend.team.ahachul_backend.api.lost.application.service.command.CreateLostPostCommand
 import backend.team.ahachul_backend.api.lost.domain.model.LostOrigin
 import backend.team.ahachul_backend.api.lost.domain.model.LostStatus
 import backend.team.ahachul_backend.api.lost.domain.model.LostType
 import backend.team.ahachul_backend.api.member.domain.entity.MemberEntity
 import backend.team.ahachul_backend.common.entity.BaseEntity
 import jakarta.persistence.*
-import java.time.LocalDateTime
 
 @Entity
 class LostPostEntity(
@@ -23,22 +23,32 @@ class LostPostEntity(
 
     var content: String,
 
-    var date: LocalDateTime,
+    @Enumerated(value = EnumType.STRING)
+    var status: LostStatus = LostStatus.PROGRESS,
 
     @Enumerated(value = EnumType.STRING)
-    var status: LostStatus,
+    var origin: LostOrigin = LostOrigin.APP,
 
     @Enumerated(value = EnumType.STRING)
-    var origin: LostOrigin,
-
-    @Enumerated(value = EnumType.STRING)
-    var LostType: LostType,
+    var lostType: LostType,
 
     var lostLine: String,
 
-    var storage: String?,
+    var storage: String? = null,
 
-    var storageNumber: String?
+    var storageNumber: String? = null
 
 ): BaseEntity() {
+
+    companion object {
+        fun of(command: CreateLostPostCommand, member: MemberEntity): LostPostEntity {
+            return LostPostEntity(
+                title = command.title,
+                content = command.content,
+                lostLine = command.lostLine,
+                lostType = command.lostType,
+                member = member
+            )
+        }
+    }
 }

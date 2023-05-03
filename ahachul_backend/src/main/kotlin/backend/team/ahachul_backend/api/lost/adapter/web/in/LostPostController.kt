@@ -33,7 +33,7 @@ class LostPostController(
     @Authentication
     @PostMapping("/v1/lost-posts")
     fun createLostPost(@RequestBody request: CreateLostPostDto.Request): CommonResponse<CreateLostPostDto.Response> {
-        return CommonResponse.success(lostPostService.createLostPost())
+        return CommonResponse.success(lostPostService.createLostPost(request.toCommand()))
     }
 
     @Authentication
