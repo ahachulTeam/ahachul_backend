@@ -8,6 +8,7 @@ import backend.team.ahachul_backend.api.lost.domain.model.LostOrigin
 import backend.team.ahachul_backend.api.lost.domain.model.LostPostType
 import backend.team.ahachul_backend.config.controller.CommonDocsConfig
 import org.junit.jupiter.api.Test
+import org.mockito.BDDMockito.anyLong
 import org.mockito.BDDMockito.given
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest
 import org.springframework.boot.test.mock.mockito.MockBean
@@ -191,7 +192,7 @@ class LostPostControllerDocsTest: CommonDocsConfig() {
             status = LostStatus.COMPLETE
         )
 
-        given(lostPostUseCase.updateLostPost(any(), any()))
+        given(lostPostUseCase.updateLostPost(anyLong(), any()))
             .willReturn(response)
 
         val request = UpdateLostPostDto.Request(
@@ -233,6 +234,11 @@ class LostPostControllerDocsTest: CommonDocsConfig() {
                 responseFields(
                     *commonResponseFields(),
                     fieldWithPath("result.id").type(JsonFieldType.NUMBER).description("수정한 유실물 아이디"),
+                    fieldWithPath("result.title").type(JsonFieldType.STRING).description("유실물 제목").optional(),
+                    fieldWithPath("result.content").type(JsonFieldType.STRING).description("유실물 내용").optional(),
+                    fieldWithPath("result.lostLine").type(JsonFieldType.STRING).description("유실 호선").optional(),
+                    fieldWithPath("result.status").type(JsonFieldType.STRING).description("유실물 찾기 완료 상태")
+                        .attributes(getFormatAttribute( "PROGRESS / COMPLETE")).optional()
                 )
             ))
     }
@@ -245,7 +251,7 @@ class LostPostControllerDocsTest: CommonDocsConfig() {
             type = LostPostType.DELETED
         )
 
-        given(lostPostUseCase.deleteLostPost(any()))
+        given(lostPostUseCase.deleteLostPost(anyLong()))
             .willReturn(response)
 
         // when
@@ -269,6 +275,7 @@ class LostPostControllerDocsTest: CommonDocsConfig() {
                 responseFields(
                     *commonResponseFields(),
                     fieldWithPath("result.id").type(JsonFieldType.NUMBER).description("삭제한 유실물 아이디"),
+                    fieldWithPath("result.type").type(JsonFieldType.STRING).description("유실물 상태").attributes(getFormatAttribute("ACTIVE / DELETED"))
                 )
             ))
     }
