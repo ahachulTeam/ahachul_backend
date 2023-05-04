@@ -5,7 +5,7 @@ import backend.team.ahachul_backend.api.lost.application.service.command.UpdateL
 import backend.team.ahachul_backend.api.lost.domain.model.LostOrigin
 import backend.team.ahachul_backend.api.lost.domain.model.LostPostType
 import backend.team.ahachul_backend.api.lost.domain.model.LostStatus
-import backend.team.ahachul_backend.api.lost.domain.model.LostCategory
+import backend.team.ahachul_backend.api.lost.domain.model.LostType
 import backend.team.ahachul_backend.api.member.domain.entity.MemberEntity
 import backend.team.ahachul_backend.common.entity.BaseEntity
 import jakarta.persistence.*
@@ -35,7 +35,7 @@ class LostPostEntity(
     var origin: LostOrigin = LostOrigin.APP,
 
     @Enumerated(value = EnumType.STRING)
-    var lostCategory: LostCategory,
+    var lostType: LostType,
 
     @Enumerated(value = EnumType.STRING)
     var type: LostPostType,
@@ -52,7 +52,7 @@ class LostPostEntity(
                 title = command.title,
                 content = command.content,
                 subwayLine = subwayLine,
-                lostCategory = command.lostCategory,
+                lostType = command.lostType,
                 member = member,
                 type = LostPostType.CREATED
             )

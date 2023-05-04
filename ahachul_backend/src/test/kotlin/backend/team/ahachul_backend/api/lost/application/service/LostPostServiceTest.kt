@@ -6,7 +6,7 @@ import backend.team.ahachul_backend.api.lost.application.port.`in`.LostPostUseCa
 import backend.team.ahachul_backend.api.lost.application.service.command.CreateLostPostCommand
 import backend.team.ahachul_backend.api.lost.application.service.command.UpdateLostPostCommand
 import backend.team.ahachul_backend.api.lost.domain.entity.SubwayLine
-import backend.team.ahachul_backend.api.lost.domain.model.LostCategory
+import backend.team.ahachul_backend.api.lost.domain.model.LostType
 import backend.team.ahachul_backend.api.lost.domain.model.LostPostType
 import backend.team.ahachul_backend.api.lost.domain.model.LostStatus
 import backend.team.ahachul_backend.api.member.adapter.web.out.MemberRepository
@@ -67,7 +67,7 @@ class LostPostServiceTest(
             title = "지갑",
             content = "하늘색 지갑 잃어버렸어요",
             subwayLine = subwayLine!!.id,
-            lostCategory = LostCategory.LOST,
+            lostType = LostType.LOST,
             imgUrls = listOf("11", "22")
         )
     }
@@ -83,7 +83,7 @@ class LostPostServiceTest(
         val entity = lostPostRepository.findById(response.id).get()
 
         assertThat(entity.title).isEqualTo("지갑")
-        assertThat(entity.lostCategory).isEqualTo(LostCategory.LOST)
+        assertThat(entity.lostType).isEqualTo(LostType.LOST)
         assertThat(entity.type).isEqualTo(LostPostType.CREATED)
     }
 

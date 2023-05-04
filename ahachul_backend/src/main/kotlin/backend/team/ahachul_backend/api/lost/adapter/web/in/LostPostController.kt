@@ -3,12 +3,11 @@ package backend.team.ahachul_backend.api.lost.adapter.web.`in`
 import backend.team.ahachul_backend.api.lost.adapter.web.`in`.dto.*
 import backend.team.ahachul_backend.api.lost.application.port.`in`.LostPostUseCase
 import backend.team.ahachul_backend.api.lost.domain.model.LostOrigin
-import backend.team.ahachul_backend.api.lost.domain.model.LostCategory
+import backend.team.ahachul_backend.api.lost.domain.model.LostType
 import backend.team.ahachul_backend.common.annotation.Authentication
 import backend.team.ahachul_backend.common.response.CommonResponse
 import org.springframework.data.domain.Pageable
 import org.springframework.web.bind.annotation.*
-import java.util.Locale.Category
 
 
 @RestController
@@ -24,7 +23,7 @@ class LostPostController(
     @GetMapping("/v1/lost-posts")
     fun searchLostPosts(
         pageable: Pageable,
-        @RequestParam(value = "category") category: LostCategory,
+        @RequestParam(value = "category") category: LostType,
         @RequestParam(value = "line", required = false) line: String,
         @RequestParam(value = "origin", required = false) origin: LostOrigin,
     ): CommonResponse<SearchLostPostsDto.Response> {

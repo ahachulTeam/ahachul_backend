@@ -3,7 +3,7 @@ package backend.team.ahachul_backend.api.lost.adapter.web.`in`
 import backend.team.ahachul_backend.api.lost.adapter.web.`in`.dto.*
 import backend.team.ahachul_backend.api.lost.application.port.`in`.LostPostUseCase
 import backend.team.ahachul_backend.api.lost.domain.model.LostStatus
-import backend.team.ahachul_backend.api.lost.domain.model.LostCategory
+import backend.team.ahachul_backend.api.lost.domain.model.LostType
 import backend.team.ahachul_backend.api.lost.domain.model.LostOrigin
 import backend.team.ahachul_backend.api.lost.domain.model.LostPostType
 import backend.team.ahachul_backend.config.controller.CommonDocsConfig
@@ -102,7 +102,7 @@ class LostPostControllerDocsTest: CommonDocsConfig() {
             get("/v1/lost-posts")
                 .queryParam("page", "1")
                 .queryParam("size", "5")
-                .queryParam("category", LostCategory.LOST.name)
+                .queryParam("category", LostType.LOST.name)
                 .queryParam("line", "1호선")
                 .queryParam("origin", LostOrigin.LOST112.name)
                 .accept(MediaType.APPLICATION_JSON)
@@ -146,7 +146,7 @@ class LostPostControllerDocsTest: CommonDocsConfig() {
             title = "title",
             content = "content",
             subwayLine = 1,
-            lostCategory = LostCategory.LOST,
+            lostType = LostType.LOST,
             imgUrls = arrayListOf("url1", "url2")
         )
 
@@ -172,7 +172,7 @@ class LostPostControllerDocsTest: CommonDocsConfig() {
                         fieldWithPath("content").type(JsonFieldType.STRING).description("유실물 내용"),
                         fieldWithPath("subwayLine").type(JsonFieldType.NUMBER).description("유실 호선 ID"),
                         fieldWithPath("imgUrls").type(JsonFieldType.ARRAY).description("유실물 이미지 리스트").optional(),
-                        fieldWithPath("lostCategory").type(JsonFieldType.STRING).description("유실물 카테고리").attributes(getFormatAttribute("LOST(유실) / ACQUIRE(습득)"))
+                        fieldWithPath("lostType").type(JsonFieldType.STRING).description("유실물 타입").attributes(getFormatAttribute("LOST(유실) / ACQUIRE(습득)"))
                     ),
                     responseFields(
                         *commonResponseFields(),
