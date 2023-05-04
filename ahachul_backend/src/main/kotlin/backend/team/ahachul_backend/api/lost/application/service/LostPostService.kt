@@ -38,14 +38,18 @@ class LostPostService(
 
     @Transactional
     override fun updateLostPost(id: Long, command: UpdateLostPostCommand): UpdateLostPostDto.Response {
+        val memberId = RequestUtils.getAttribute("memberId")!!
         val entity = lostPostReader.getLostPost(id)
+        entity.checkMe(memberId)
         entity.update(command)
         return UpdateLostPostDto.Response.from(entity)
     }
 
     @Transactional
     override fun deleteLostPost(id: Long): DeleteLostPostDto.Response {
+        val memberId = RequestUtils.getAttribute("memberId")!!
         val entity = lostPostReader.getLostPost(id)
+        entity.checkMe(memberId)
         entity.delete()
         return DeleteLostPostDto.Response.from(entity)
     }

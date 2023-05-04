@@ -53,7 +53,7 @@ class LostPostEntity(
                 lostLine = command.lostLine,
                 lostCategory = command.lostCategory,
                 member = member,
-                type = LostPostType.CREATED
+                type = LostPostType.ACTIVE
             )
         }
     }

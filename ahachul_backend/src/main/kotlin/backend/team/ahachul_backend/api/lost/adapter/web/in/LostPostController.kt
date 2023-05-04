@@ -8,6 +8,7 @@ import backend.team.ahachul_backend.common.annotation.Authentication
 import backend.team.ahachul_backend.common.response.CommonResponse
 import org.springframework.data.domain.Pageable
 import org.springframework.web.bind.annotation.*
+import java.util.Locale.Category
 
 
 @RestController
@@ -23,7 +24,7 @@ class LostPostController(
     @GetMapping("/v1/lost-posts")
     fun searchLostPosts(
         pageable: Pageable,
-        @RequestParam(value = "type") type: LostCategory,
+        @RequestParam(value = "category") category: LostCategory,
         @RequestParam(value = "line", required = false) line: String,
         @RequestParam(value = "origin", required = false) origin: LostOrigin,
     ): CommonResponse<SearchLostPostsDto.Response> {

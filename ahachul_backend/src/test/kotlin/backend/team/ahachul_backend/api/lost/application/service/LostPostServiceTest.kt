@@ -10,10 +10,13 @@ import backend.team.ahachul_backend.api.lost.domain.model.LostStatus
 import backend.team.ahachul_backend.api.member.adapter.web.out.MemberRepository
 import backend.team.ahachul_backend.api.member.domain.entity.MemberEntity
 import backend.team.ahachul_backend.api.member.domain.model.GenderType
-import backend.team.ahachul_backend.api.member.domain.model.MemberStatus
+import backend.team.ahachul_backend.api.member.domain.model.MemberStatusType
 import backend.team.ahachul_backend.api.member.domain.model.ProviderType
+import backend.team.ahachul_backend.common.exception.CommonException
+import backend.team.ahachul_backend.common.response.ResponseCode
 import backend.team.ahachul_backend.common.utils.RequestUtils
 import org.assertj.core.api.Assertions.assertThat
+import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
@@ -43,10 +46,10 @@ class LostPostServiceTest(
                 email = "email",
                 gender = GenderType.MALE,
                 ageRange = "20",
-                status = MemberStatus.ACTIVE
+                status = MemberStatusType.ACTIVE
             )
         )
-        member!!.id?.let { RequestUtils.setAttribute("memberId", it)}
+        member!!.id.let { RequestUtils.setAttribute("memberId", it)}
 
         createCommand = CreateLostPostCommand(
             title = "지갑",
@@ -69,7 +72,7 @@ class LostPostServiceTest(
 
         assertThat(entity.title).isEqualTo("지갑")
         assertThat(entity.lostCategory).isEqualTo(LostCategory.LOST)
-        assertThat(entity.type).isEqualTo(LostPostType.CREATED)
+        assertThat(entity.type).isEqualTo(LostPostType.ACTIVE)
     }
 
     @Test
@@ -97,6 +100,30 @@ class LostPostServiceTest(
     }
 
     @Test
+    @DisplayName("유실물 수정 테스트 - 권한이 없는 경우")
+    fun updateLostPostUnAuthorized() {
+        // given
+        val entity = lostPostUseCase.createLostPost(createCommand!!)
+
+        val updateCommand = UpdateLostPostCommand(
+            title = null,
+            content = "파란색 지갑 잃어버렸어요",
+            lostLine = "2호선",
+            imgUrls = null,
+            status = LostStatus.COMPLETE
+        )
+
+        // when, then
+        RequestUtils.setAttribute("memberId", 2)
+
+        assertThatThrownBy {
+            lostPostUseCase.updateLostPost(entity.id, updateCommand)
+        }
+            .isExactlyInstanceOf(CommonException::class.java)
+            .hasMessage(ResponseCode.INVALID_AUTH.message)
+    }
+
+    @Test
     @DisplayName("유실물 삭제 테스트 - 권한이 있는 경우")
     fun deleteLostPost() {
         // given
@@ -108,5 +135,21 @@ class LostPostServiceTest(
         // then
         assertThat(response.id).isEqualTo(entity.id)
         assertThat(response.type).isEqualTo(LostPostType.DELETED)
+    }
+
+    @Test
+    @DisplayName("유실물 삭제 테스트 - 권한이 없는 경우")
+    fun deleteLostPostUnAuthorized() {
+        // given
+        val entity = lostPostUseCase.createLostPost(createCommand!!)
+
+        // when, then
+        RequestUtils.setAttribute("memberId", 2)
+
+        assertThatThrownBy {
+            lostPostUseCase.deleteLostPost(entity.id)
+        }
+            .isExactlyInstanceOf(CommonException::class.java)
+            .hasMessage(ResponseCode.INVALID_AUTH.message)
     }
 }

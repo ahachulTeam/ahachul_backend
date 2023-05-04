@@ -4,6 +4,7 @@ import backend.team.ahachul_backend.api.lost.adapter.web.`in`.dto.*
 import backend.team.ahachul_backend.api.lost.application.port.`in`.LostPostUseCase
 import backend.team.ahachul_backend.api.lost.domain.model.LostStatus
 import backend.team.ahachul_backend.api.lost.domain.model.LostCategory
+import backend.team.ahachul_backend.api.lost.domain.model.LostOrigin
 import backend.team.ahachul_backend.api.lost.domain.model.LostPostType
 import backend.team.ahachul_backend.config.controller.CommonDocsConfig
 import org.junit.jupiter.api.Test
@@ -67,9 +68,9 @@ class LostPostControllerDocsTest: CommonDocsConfig() {
                     fieldWithPath("result.lostLine").type(JsonFieldType.STRING).description("유실 호선"),
                     fieldWithPath("result.chats").type(JsonFieldType.NUMBER).description("유실물 쪽지 개수"),
                     fieldWithPath("result.imgUrls").type(JsonFieldType.ARRAY).description("유실물 이미지 리스트"),
-                    fieldWithPath("result.status").type(JsonFieldType.STRING).description("유실물 찾기 완료 여부 : PROGRESS / COMPLETE"),
-                    fieldWithPath("result.storage" ).type(JsonFieldType.STRING).description("보관 장소 : Lost112 데이터"),
-                    fieldWithPath("result.storageNumber").type(JsonFieldType.STRING).description("보관 장소 전화번호 : Lost112 데이터")
+                    fieldWithPath("result.status").type(JsonFieldType.STRING).description("유실물 찾기 완료 여부").attributes(getFormatAttribute( "PROGRESS / COMPLETE")),
+                    fieldWithPath("result.storage" ).type(JsonFieldType.STRING).description("보관 장소").attributes(getFormatAttribute("Lost112 데이터")),
+                    fieldWithPath("result.storageNumber").type(JsonFieldType.STRING).description("보관 장소 전화번호").attributes(getFormatAttribute("Lost112 데이터"))
                 )
             ))
     }
@@ -100,9 +101,9 @@ class LostPostControllerDocsTest: CommonDocsConfig() {
             get("/v1/lost-posts")
                 .queryParam("page", "1")
                 .queryParam("size", "5")
-                .queryParam("type", "LOST")
+                .queryParam("category", LostCategory.LOST.name)
                 .queryParam("line", "1호선")
-                .queryParam("origin", "LOST112")
+                .queryParam("origin", LostOrigin.LOST112.name)
                 .accept(MediaType.APPLICATION_JSON)
         )
 
@@ -114,9 +115,9 @@ class LostPostControllerDocsTest: CommonDocsConfig() {
                 queryParameters(
                     parameterWithName("page").description("현재 페이지"),
                     parameterWithName("size").description("페이지 노출 데이터 수"),
-                    parameterWithName("type").description("유실물 타입 : LOST(유실) / ACQUIRE(습득)"),
+                    parameterWithName("category").description("유실물 카테고리").attributes(getFormatAttribute("LOST(유실) / ACQUIRE(습득)")),
                     parameterWithName("line").description("유실물 호선").optional(),
-                    parameterWithName("origin").description("유실물 출처 : LOST112 / APP").optional()
+                    parameterWithName("origin").description("유실물 출처").attributes(getFormatAttribute( "LOST112 / APP")).optional()
                 ),
                 responseFields(
                     *commonResponseFields(),
@@ -126,8 +127,8 @@ class LostPostControllerDocsTest: CommonDocsConfig() {
                     fieldWithPath("result.posts[].date").type(JsonFieldType.STRING).description("유실물 작성 날짜"),
                     fieldWithPath("result.posts[].lostLine").type(JsonFieldType.STRING).description("유실 호선"),
                     fieldWithPath("result.posts[].chats").type(JsonFieldType.NUMBER).description("유실물 쪽지 개수"),
-                    fieldWithPath("result.posts[].imgUrl").type(JsonFieldType.STRING).description("유실물 이미지(썸네일)"),
-                    fieldWithPath("result.posts[].status").type(JsonFieldType.STRING).description("유실물 찾기 완료 여부 : PROGRESS / COMPLETE"),
+                    fieldWithPath("result.posts[].imgUrl").type(JsonFieldType.STRING).description("유실물 대표 이미지"),
+                    fieldWithPath("result.posts[].status").type(JsonFieldType.STRING).description("유실물 찾기 완료 여부").attributes(getFormatAttribute( "PROGRESS / COMPLETE"))
                 )
             ))
     }
@@ -168,9 +169,9 @@ class LostPostControllerDocsTest: CommonDocsConfig() {
                     requestFields(
                         fieldWithPath("title").type(JsonFieldType.STRING).description("유실물 제목"),
                         fieldWithPath("content").type(JsonFieldType.STRING).description("유실물 내용"),
-                        fieldWithPath("lostLine").type(JsonFieldType.STRING).description("유실 호선 EX) 1호선 / 수인분당선"),
+                        fieldWithPath("lostLine").type(JsonFieldType.STRING).description("유실 호선").attributes(getFormatAttribute("1호선 / 수인분당선")),
                         fieldWithPath("imgUrls").type(JsonFieldType.ARRAY).description("유실물 이미지 리스트").optional(),
-                        fieldWithPath("lostType").type(JsonFieldType.STRING).description("유실물 타입 : LOST(유실) / ACQUIRE(습득)"),
+                        fieldWithPath("lostCategory").type(JsonFieldType.STRING).description("유실물 카테고리").attributes(getFormatAttribute("LOST(유실) / ACQUIRE(습득)"))
                     ),
                     responseFields(
                         *commonResponseFields(),
@@ -226,7 +227,8 @@ class LostPostControllerDocsTest: CommonDocsConfig() {
                     fieldWithPath("content").type(JsonFieldType.STRING).description("유실물 내용").optional(),
                     fieldWithPath("imgUrls").type(JsonFieldType.ARRAY).description("유실물 이미지 리스트").optional(),
                     fieldWithPath("lostLine").type(JsonFieldType.STRING).description("유실 호선").optional(),
-                    fieldWithPath("status").type(JsonFieldType.STRING).description("유실물 찾기 완료 상태 : PROGRESS / COMPLETE").optional(),
+                    fieldWithPath("status").type(JsonFieldType.STRING).description("유실물 찾기 완료 상태")
+                        .attributes(getFormatAttribute( "PROGRESS / COMPLETE")).optional()
                 ),
                 responseFields(
                     *commonResponseFields(),
