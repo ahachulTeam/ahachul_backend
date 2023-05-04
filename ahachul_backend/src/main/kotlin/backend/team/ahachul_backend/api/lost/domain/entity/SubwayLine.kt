@@ -10,7 +10,7 @@ class SubwayLine (
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "subway_line_id")
-    var id: Long,
+    var id: Long = 0,
 
     var name: String,
 

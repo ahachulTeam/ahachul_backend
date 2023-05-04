@@ -35,7 +35,7 @@ class LostPostControllerDocsTest: CommonDocsConfig() {
             content = "content",
             writer = "writer",
             date = "2023/01/23",
-            lostLine = "1호선",
+            subwayLine = 1,
             chats = 1,
             status = LostStatus.PROGRESS,
             imgUrls = listOf(),
@@ -66,7 +66,7 @@ class LostPostControllerDocsTest: CommonDocsConfig() {
                     fieldWithPath("result.content").type(JsonFieldType.STRING).description("유실물 내용"),
                     fieldWithPath("result.writer").type(JsonFieldType.STRING).description("유실물 작성자 닉네임"),
                     fieldWithPath("result.date").type(JsonFieldType.STRING).description("유실물 작성 날짜"),
-                    fieldWithPath("result.lostLine").type(JsonFieldType.STRING).description("유실 호선"),
+                    fieldWithPath("result.subwayLine").type(JsonFieldType.NUMBER).description("유실 호선"),
                     fieldWithPath("result.chats").type(JsonFieldType.NUMBER).description("유실물 쪽지 개수"),
                     fieldWithPath("result.imgUrls").type(JsonFieldType.ARRAY).description("유실물 이미지 리스트"),
                     fieldWithPath("result.status").type(JsonFieldType.STRING).description("유실물 찾기 완료 여부").attributes(getFormatAttribute( "PROGRESS / COMPLETE")),
@@ -86,7 +86,7 @@ class LostPostControllerDocsTest: CommonDocsConfig() {
                     content = "content",
                     writer = "writer",
                     date = "2023/01/23",
-                    lostLine = "1호선",
+                    subwayLine = 1,
                     chats = 1,
                     status = LostStatus.PROGRESS,
                     imgUrl = "img"
@@ -126,7 +126,7 @@ class LostPostControllerDocsTest: CommonDocsConfig() {
                     fieldWithPath("result.posts[].content").type(JsonFieldType.STRING).description("유실물 내용"),
                     fieldWithPath("result.posts[].writer").type(JsonFieldType.STRING).description("유실물 작성자 닉네임"),
                     fieldWithPath("result.posts[].date").type(JsonFieldType.STRING).description("유실물 작성 날짜"),
-                    fieldWithPath("result.posts[].lostLine").type(JsonFieldType.STRING).description("유실 호선"),
+                    fieldWithPath("result.posts[].subwayLine").type(JsonFieldType.NUMBER).description("유실 호선 ID"),
                     fieldWithPath("result.posts[].chats").type(JsonFieldType.NUMBER).description("유실물 쪽지 개수"),
                     fieldWithPath("result.posts[].imgUrl").type(JsonFieldType.STRING).description("유실물 대표 이미지"),
                     fieldWithPath("result.posts[].status").type(JsonFieldType.STRING).description("유실물 찾기 완료 여부").attributes(getFormatAttribute( "PROGRESS / COMPLETE"))
@@ -145,7 +145,7 @@ class LostPostControllerDocsTest: CommonDocsConfig() {
         val request = CreateLostPostDto.Request(
             title = "title",
             content = "content",
-            lostLine = "1",
+            subwayLine = 1,
             lostCategory = LostCategory.LOST,
             imgUrls = arrayListOf("url1", "url2")
         )
@@ -170,7 +170,7 @@ class LostPostControllerDocsTest: CommonDocsConfig() {
                     requestFields(
                         fieldWithPath("title").type(JsonFieldType.STRING).description("유실물 제목"),
                         fieldWithPath("content").type(JsonFieldType.STRING).description("유실물 내용"),
-                        fieldWithPath("lostLine").type(JsonFieldType.STRING).description("유실 호선").attributes(getFormatAttribute("1호선 / 수인분당선")),
+                        fieldWithPath("subwayLine").type(JsonFieldType.NUMBER).description("유실 호선 ID"),
                         fieldWithPath("imgUrls").type(JsonFieldType.ARRAY).description("유실물 이미지 리스트").optional(),
                         fieldWithPath("lostCategory").type(JsonFieldType.STRING).description("유실물 카테고리").attributes(getFormatAttribute("LOST(유실) / ACQUIRE(습득)"))
                     ),
@@ -188,7 +188,7 @@ class LostPostControllerDocsTest: CommonDocsConfig() {
             id = 1,
             title = "title",
             content = "content",
-            lostLine = "1",
+            subwayLine = 1,
             status = LostStatus.COMPLETE
         )
 
@@ -199,7 +199,7 @@ class LostPostControllerDocsTest: CommonDocsConfig() {
             title = "title",
             content = "content",
             imgUrls = arrayListOf("url1", "url2"),
-            lostLine = "1",
+            subwayLine = 1,
             status = LostStatus.COMPLETE
         )
 
@@ -227,18 +227,18 @@ class LostPostControllerDocsTest: CommonDocsConfig() {
                     fieldWithPath("title").type(JsonFieldType.STRING).description("유실물 제목").optional(),
                     fieldWithPath("content").type(JsonFieldType.STRING).description("유실물 내용").optional(),
                     fieldWithPath("imgUrls").type(JsonFieldType.ARRAY).description("유실물 이미지 리스트").optional(),
-                    fieldWithPath("lostLine").type(JsonFieldType.STRING).description("유실 호선").optional(),
+                    fieldWithPath("subwayLine").type(JsonFieldType.NUMBER).description("유실 호선 ID").optional(),
                     fieldWithPath("status").type(JsonFieldType.STRING).description("유실물 찾기 완료 상태")
                         .attributes(getFormatAttribute( "PROGRESS / COMPLETE")).optional()
                 ),
                 responseFields(
                     *commonResponseFields(),
                     fieldWithPath("result.id").type(JsonFieldType.NUMBER).description("수정한 유실물 아이디"),
-                    fieldWithPath("result.title").type(JsonFieldType.STRING).description("유실물 제목").optional(),
-                    fieldWithPath("result.content").type(JsonFieldType.STRING).description("유실물 내용").optional(),
-                    fieldWithPath("result.lostLine").type(JsonFieldType.STRING).description("유실 호선").optional(),
+                    fieldWithPath("result.title").type(JsonFieldType.STRING).description("유실물 제목"),
+                    fieldWithPath("result.content").type(JsonFieldType.STRING).description("유실물 내용"),
+                    fieldWithPath("result.subwayLine").type(JsonFieldType.NUMBER).description("유실 호선 ID"),
                     fieldWithPath("result.status").type(JsonFieldType.STRING).description("유실물 찾기 완료 상태")
-                        .attributes(getFormatAttribute( "PROGRESS / COMPLETE")).optional()
+                        .attributes(getFormatAttribute( "PROGRESS / COMPLETE"))
                 )
             ))
     }

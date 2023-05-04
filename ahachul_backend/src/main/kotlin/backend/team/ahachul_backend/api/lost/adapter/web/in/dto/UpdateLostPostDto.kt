@@ -10,7 +10,7 @@ class UpdateLostPostDto {
         val title: String?,
         val content: String?,
         val imgUrls: List<String>?,
-        val lostLine: String?,
+        val subwayLine: Long?,
         val status: LostStatus?
     ) {
         fun toCommand(): UpdateLostPostCommand {
@@ -18,7 +18,7 @@ class UpdateLostPostDto {
                 title = title,
                 content = content,
                 imgUrls = imgUrls,
-                lostLine = lostLine,
+                subwayLine = subwayLine,
                 status = status
             )
         }
@@ -28,7 +28,7 @@ class UpdateLostPostDto {
         val id: Long,
         val title: String,
         val content: String,
-        val lostLine: String,
+        val subwayLine: Long,
         val status: LostStatus
     ) {
         companion object {
@@ -37,7 +37,7 @@ class UpdateLostPostDto {
                     id = entity.id,
                     title = entity.title,
                     content = entity.content,
-                    lostLine = entity.lostLine,
+                    subwayLine = entity.subwayLine.id,
                     status = entity.status
                 )
             }

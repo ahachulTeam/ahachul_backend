@@ -4,6 +4,7 @@ import backend.team.ahachul_backend.api.lost.adapter.web.`in`.dto.*
 import backend.team.ahachul_backend.api.lost.application.port.`in`.LostPostUseCase
 import backend.team.ahachul_backend.api.lost.application.port.out.LostPostReader
 import backend.team.ahachul_backend.api.lost.application.port.out.LostPostWriter
+import backend.team.ahachul_backend.api.lost.application.port.out.SubwayLineReader
 import backend.team.ahachul_backend.api.lost.application.service.command.CreateLostPostCommand
 import backend.team.ahachul_backend.api.lost.application.service.command.UpdateLostPostCommand
 import backend.team.ahachul_backend.api.lost.domain.entity.LostPostEntity
@@ -17,6 +18,7 @@ import org.springframework.transaction.annotation.Transactional
 class LostPostService(
     private val lostPostWriter: LostPostWriter,
     private val lostPostReader: LostPostReader,
+    private val subwayLineReader: SubwayLineReader,
     private val memberReader: MemberReader
 ): LostPostUseCase {
 
@@ -32,7 +34,15 @@ class LostPostService(
     override fun createLostPost(command: CreateLostPostCommand): CreateLostPostDto.Response {
         val memberId = RequestUtils.getAttribute("memberId")!!
         val member = memberReader.getMember(memberId.toLong())
-        val entity = lostPostWriter.save(LostPostEntity.of(command, member))
+        val subwayLine = subwayLineReader.getSubwayLine(command.subwayLine)
+
+        val entity = lostPostWriter.save(
+            LostPostEntity.of(
+                command = command,
+                member = member,
+                subwayLine = subwayLine
+            )
+        )
         return CreateLostPostDto.Response.from(entity.id)
     }
 
@@ -41,7 +51,11 @@ class LostPostService(
         val memberId = RequestUtils.getAttribute("memberId")!!
         val entity = lostPostReader.getLostPost(id)
         entity.checkMe(memberId)
-        entity.update(command)
+
+        command.subwayLine?.let {
+            entity.update(command, subwayLineReader.getSubwayLine(it))
+        } ?: entity.update(command, null)
+
         return UpdateLostPostDto.Response.from(entity)
     }
 

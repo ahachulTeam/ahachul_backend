@@ -21,6 +21,9 @@ class LostPostEntity(
     @ManyToOne(fetch = FetchType.LAZY)
     var member: MemberEntity,
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    var subwayLine: SubwayLine,
+
     var title: String,
 
     var content: String,
@@ -37,8 +40,6 @@ class LostPostEntity(
     @Enumerated(value = EnumType.STRING)
     var type: LostPostType,
 
-    var lostLine: String,
-
     var storage: String? = null,
 
     var storageNumber: String? = null
@@ -46,11 +47,11 @@ class LostPostEntity(
 ): BaseEntity() {
 
     companion object {
-        fun of(command: CreateLostPostCommand, member: MemberEntity): LostPostEntity {
+        fun of(command: CreateLostPostCommand, member: MemberEntity, subwayLine: SubwayLine): LostPostEntity {
             return LostPostEntity(
                 title = command.title,
                 content = command.content,
-                lostLine = command.lostLine,
+                subwayLine = subwayLine,
                 lostCategory = command.lostCategory,
                 member = member,
                 type = LostPostType.ACTIVE
@@ -58,11 +59,11 @@ class LostPostEntity(
         }
     }
 
-    fun update(command: UpdateLostPostCommand) {
+    fun update(command: UpdateLostPostCommand, subwayLine: SubwayLine?) {
         command.title?.let { this.title = it }
         command.content?.let { this.content = it }
-        command.lostLine?.let { this.lostLine = it }
         command.status?.let { this.status= it }
+        subwayLine?.let { this.subwayLine = subwayLine }
     }
 
     fun delete() {

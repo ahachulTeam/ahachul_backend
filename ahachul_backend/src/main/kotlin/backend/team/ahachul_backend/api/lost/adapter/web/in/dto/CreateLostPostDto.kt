@@ -9,7 +9,7 @@ class CreateLostPostDto{
     data class Request(
         @NotNull val title: String,
         @NotNull val content: String,
-        @NotNull val lostLine: String,
+        @NotNull val subwayLine: Long,
         @NotNull val lostCategory: LostCategory,
         val imgUrls: List<String>?
     ) {
@@ -17,7 +17,7 @@ class CreateLostPostDto{
             return CreateLostPostCommand(
                 title = title,
                 content = content,
-                lostLine = lostLine,
+                subwayLine = subwayLine,
                 lostCategory = lostCategory,
                 imgUrls = imgUrls
             )

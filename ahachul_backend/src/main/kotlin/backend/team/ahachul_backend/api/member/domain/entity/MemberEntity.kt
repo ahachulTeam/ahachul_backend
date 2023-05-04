@@ -8,6 +8,7 @@ import backend.team.ahachul_backend.api.member.domain.model.MemberStatusType
 import backend.team.ahachul_backend.common.dto.GoogleUserInfoDto
 import backend.team.ahachul_backend.common.dto.KakaoMemberInfoDto
 import backend.team.ahachul_backend.common.entity.BaseEntity
+import backend.team.ahachul_backend.common.model.RegionType
 import jakarta.persistence.*
 
 @Entity
@@ -32,7 +33,9 @@ class MemberEntity(
         var ageRange: String?,
 
         @Enumerated(EnumType.STRING)
-        var status: MemberStatusType
+        var status: MemberStatusType,
+
+        var regionType: RegionType = RegionType.METROPOLITAN
 ): BaseEntity() {
 
         companion object {
@@ -44,7 +47,7 @@ class MemberEntity(
                                 email = userInfo.kakaoAccount.email,
                                 gender = userInfo.kakaoAccount.gender?.let { GenderType.of(it) },
                                 ageRange = userInfo.kakaoAccount.ageRange?.let { it.split("~")[0] },
-                                status = MemberStatusType.ACTIVE
+                                status = MemberStatusType.ACTIVE,
                         )
                 }
 
