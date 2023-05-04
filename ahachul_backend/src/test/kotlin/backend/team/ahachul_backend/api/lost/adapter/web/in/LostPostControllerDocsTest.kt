@@ -3,7 +3,8 @@ package backend.team.ahachul_backend.api.lost.adapter.web.`in`
 import backend.team.ahachul_backend.api.lost.adapter.web.`in`.dto.*
 import backend.team.ahachul_backend.api.lost.application.port.`in`.LostPostUseCase
 import backend.team.ahachul_backend.api.lost.domain.model.LostStatus
-import backend.team.ahachul_backend.api.lost.domain.model.LostType
+import backend.team.ahachul_backend.api.lost.domain.model.LostCategory
+import backend.team.ahachul_backend.api.lost.domain.model.LostPostType
 import backend.team.ahachul_backend.config.controller.CommonDocsConfig
 import org.junit.jupiter.api.Test
 import org.mockito.BDDMockito.given
@@ -143,7 +144,7 @@ class LostPostControllerDocsTest: CommonDocsConfig() {
             title = "title",
             content = "content",
             lostLine = "1",
-            lostType = LostType.LOST,
+            lostCategory = LostCategory.LOST,
             imgUrls = arrayListOf("url1", "url2")
         )
 
@@ -237,9 +238,12 @@ class LostPostControllerDocsTest: CommonDocsConfig() {
     @Test
     fun deleteLostPost() {
         // given
-        val response = DeleteLostPostDto.Response(id = 1)
+        val response = DeleteLostPostDto.Response(
+            id = 1,
+            type = LostPostType.DELETED
+        )
 
-        given(lostPostUseCase.deleteLostPost())
+        given(lostPostUseCase.deleteLostPost(any()))
             .willReturn(response)
 
         // when

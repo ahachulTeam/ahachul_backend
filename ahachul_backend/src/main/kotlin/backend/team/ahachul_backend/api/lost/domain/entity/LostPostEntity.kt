@@ -3,8 +3,9 @@ package backend.team.ahachul_backend.api.lost.domain.entity
 import backend.team.ahachul_backend.api.lost.application.service.command.CreateLostPostCommand
 import backend.team.ahachul_backend.api.lost.application.service.command.UpdateLostPostCommand
 import backend.team.ahachul_backend.api.lost.domain.model.LostOrigin
+import backend.team.ahachul_backend.api.lost.domain.model.LostPostType
 import backend.team.ahachul_backend.api.lost.domain.model.LostStatus
-import backend.team.ahachul_backend.api.lost.domain.model.LostType
+import backend.team.ahachul_backend.api.lost.domain.model.LostCategory
 import backend.team.ahachul_backend.api.member.domain.entity.MemberEntity
 import backend.team.ahachul_backend.common.entity.BaseEntity
 import jakarta.persistence.*
@@ -31,7 +32,10 @@ class LostPostEntity(
     var origin: LostOrigin = LostOrigin.APP,
 
     @Enumerated(value = EnumType.STRING)
-    var lostType: LostType,
+    var lostCategory: LostCategory,
+
+    @Enumerated(value = EnumType.STRING)
+    var type: LostPostType,
 
     var lostLine: String,
 
@@ -47,8 +51,9 @@ class LostPostEntity(
                 title = command.title,
                 content = command.content,
                 lostLine = command.lostLine,
-                lostType = command.lostType,
-                member = member
+                lostCategory = command.lostCategory,
+                member = member,
+                type = LostPostType.CREATED
             )
         }
     }
@@ -58,5 +63,9 @@ class LostPostEntity(
         command.content?.let { this.content = it }
         command.lostLine?.let { this.lostLine = it }
         command.status?.let { this.status= it }
+    }
+
+    fun delete() {
+        type = LostPostType.DELETED
     }
 }

@@ -43,7 +43,10 @@ class LostPostService(
         return UpdateLostPostDto.Response.from(entity)
     }
 
-    override fun deleteLostPost(): DeleteLostPostDto.Response {
-        TODO("Not yet implemented")
+    @Transactional
+    override fun deleteLostPost(id: Long): DeleteLostPostDto.Response {
+        val entity = lostPostReader.getLostPost(id)
+        entity.delete()
+        return DeleteLostPostDto.Response.from(entity)
     }
 }

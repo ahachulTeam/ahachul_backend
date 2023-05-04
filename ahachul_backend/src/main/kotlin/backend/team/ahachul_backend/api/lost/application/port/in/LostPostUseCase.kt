@@ -14,5 +14,5 @@ interface LostPostUseCase {
 
     fun updateLostPost(id: Long, command: UpdateLostPostCommand): UpdateLostPostDto.Response
 
-    fun deleteLostPost(): DeleteLostPostDto.Response
+    fun deleteLostPost(id: Long): DeleteLostPostDto.Response
 }
