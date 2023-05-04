@@ -84,7 +84,7 @@ class LostPostServiceTest(
 
         assertThat(entity.title).isEqualTo("지갑")
         assertThat(entity.lostCategory).isEqualTo(LostCategory.LOST)
-        assertThat(entity.type).isEqualTo(LostPostType.ACTIVE)
+        assertThat(entity.type).isEqualTo(LostPostType.CREATED)
     }
 
     @Test

@@ -1,5 +1,5 @@
 package backend.team.ahachul_backend.api.lost.domain.model
 
 enum class LostPostType {
-    ACTIVE, DELETED
+    CREATED, DELETED
 }

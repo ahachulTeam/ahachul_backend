@@ -52,10 +52,11 @@ class LostPostService(
         val entity = lostPostReader.getLostPost(id)
         entity.checkMe(memberId)
 
-        command.subwayLine?.let {
-            entity.update(command, subwayLineReader.getSubwayLine(it))
-        } ?: entity.update(command, null)
+        val subwayLine = command.subwayLine?.let {
+            subwayLineReader.getSubwayLine(it)
+        }
 
+        entity.update(command = command, subwayLine = subwayLine)
         return UpdateLostPostDto.Response.from(entity)
     }
 
