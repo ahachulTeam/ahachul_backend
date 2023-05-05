@@ -6,7 +6,7 @@ import backend.team.ahachul_backend.api.lost.application.service.command.UpdateL
 
 interface LostPostUseCase {
 
-    fun getLostPost(): GetLostPostDto.Response
+    fun getLostPost(id: Long): GetLostPostDto.Response
 
     fun searchLostPosts(): SearchLostPostsDto.Response
 

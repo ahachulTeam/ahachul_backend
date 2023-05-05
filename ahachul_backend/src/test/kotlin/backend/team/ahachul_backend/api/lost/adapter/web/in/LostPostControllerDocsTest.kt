@@ -43,7 +43,7 @@ class LostPostControllerDocsTest: CommonDocsConfig() {
             storageNumber = "02-2222-3333"
         )
 
-        given(lostPostUseCase.getLostPost())
+        given(lostPostUseCase.getLostPost(anyLong()))
             .willReturn(response)
 
         // when

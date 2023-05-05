@@ -17,7 +17,7 @@ class LostPostController(
 
     @GetMapping("/v1/lost-posts/{lostId}")
     fun getLostPost(@PathVariable("lostId") lostId: Long): CommonResponse<GetLostPostDto.Response> {
-        return CommonResponse.success(lostPostService.getLostPost())
+        return CommonResponse.success(lostPostService.getLostPost(lostId))
     }
 
     @GetMapping("/v1/lost-posts")

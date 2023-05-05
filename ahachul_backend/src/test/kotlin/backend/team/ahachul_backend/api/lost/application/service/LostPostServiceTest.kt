@@ -73,6 +73,23 @@ class LostPostServiceTest(
     }
 
     @Test
+    @DisplayName("유실물 상세 조회 테스트")
+    fun getLostPost() {
+        // given
+        val entity = lostPostUseCase.createLostPost(createCommand!!)
+
+        // when
+        val response = lostPostUseCase.getLostPost(entity.id)
+
+        // then
+        assertThat(response.title).isEqualTo("지갑")
+        assertThat(response.content).isEqualTo("하늘색 지갑 잃어버렸어요")
+        assertThat(response.writer).isEqualTo("nickname")
+        assertThat(response.subwayLine).isEqualTo(subwayLine!!.id)
+        assertThat(response.status).isEqualTo(LostStatus.PROGRESS)
+    }
+
+    @Test
     @DisplayName("유실물 저장 테스트")
     fun createLostPost() {
         // when

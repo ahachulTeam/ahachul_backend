@@ -22,8 +22,9 @@ class LostPostService(
     private val memberReader: MemberReader
 ): LostPostUseCase {
 
-    override fun getLostPost(): GetLostPostDto.Response {
-        TODO("Not yet implemented")
+    override fun getLostPost(id: Long): GetLostPostDto.Response {
+        val entity = lostPostReader.getLostPost(id)
+        return GetLostPostDto.Response.from(entity);
     }
 
     override fun searchLostPosts(): SearchLostPostsDto.Response {
