@@ -23,7 +23,7 @@ class LostPostController(
     @GetMapping("/v1/lost-posts")
     fun searchLostPosts(
         pageable: Pageable,
-        @RequestParam(value = "type") type: LostType,
+        @RequestParam(value = "lostType") lostType: LostType,
         @RequestParam(value = "line", required = false) line: String,
         @RequestParam(value = "origin", required = false) origin: LostOrigin,
     ): CommonResponse<SearchLostPostsDto.Response> {
@@ -33,19 +33,19 @@ class LostPostController(
     @Authentication
     @PostMapping("/v1/lost-posts")
     fun createLostPost(@RequestBody request: CreateLostPostDto.Request): CommonResponse<CreateLostPostDto.Response> {
-        return CommonResponse.success(lostPostService.createLostPost())
+        return CommonResponse.success(lostPostService.createLostPost(request.toCommand()))
     }
 
     @Authentication
     @PatchMapping("/v1/lost-posts/{lostId}")
     fun updateLostPost(@PathVariable("lostId") lostId: Long,
                        @RequestBody request: UpdateLostPostDto.Request): CommonResponse<UpdateLostPostDto.Response> {
-        return CommonResponse.success(lostPostService.updateLostPost())
+        return CommonResponse.success(lostPostService.updateLostPost(request.toCommand(lostId)))
     }
 
     @Authentication
     @DeleteMapping("/v1/lost-posts/{lostId}")
     fun deleteLostPost(@PathVariable("lostId") lostId: Long): CommonResponse<DeleteLostPostDto.Response> {
-        return CommonResponse.success(lostPostService.deleteLostPost())
+        return CommonResponse.success(lostPostService.deleteLostPost(lostId))
     }
 }
