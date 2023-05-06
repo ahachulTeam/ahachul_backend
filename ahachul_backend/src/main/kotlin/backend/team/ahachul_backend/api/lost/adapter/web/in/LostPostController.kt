@@ -23,7 +23,7 @@ class LostPostController(
     @GetMapping("/v1/lost-posts")
     fun searchLostPosts(
         pageable: Pageable,
-        @RequestParam(value = "type") lostType: LostType,
+        @RequestParam(value = "lostType") lostType: LostType,
         @RequestParam(value = "line", required = false) line: String,
         @RequestParam(value = "origin", required = false) origin: LostOrigin,
     ): CommonResponse<SearchLostPostsDto.Response> {
