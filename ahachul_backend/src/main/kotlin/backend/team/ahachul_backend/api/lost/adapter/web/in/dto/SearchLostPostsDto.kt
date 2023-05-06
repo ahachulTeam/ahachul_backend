@@ -13,6 +13,7 @@ class SearchLostPostsDto {
         val title: String,
         val content: String,
         val writer: String,
+        val createdBy: String,
         val date: String,
         val subwayLine: Long,
         val chats: Int = 0,
