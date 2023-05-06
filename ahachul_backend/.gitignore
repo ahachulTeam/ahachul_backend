@@ -37,6 +37,8 @@ out/
 .vscode/
 
 ### Custom ###
+
+### log ###
 logs/*
 error_logs/*
 
@@ -45,6 +47,6 @@ src/main/resources/application-dev.yml
 src/main/resources/application-local.yml
 src/test/resources/application.yml
 
-### Custom ###
+### restdocs ###
 src/main/resources/static
 
