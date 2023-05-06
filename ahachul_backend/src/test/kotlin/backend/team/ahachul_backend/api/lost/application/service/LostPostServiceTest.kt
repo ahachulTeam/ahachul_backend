@@ -4,7 +4,7 @@ import backend.team.ahachul_backend.api.lost.adapter.web.out.LostPostRepository
 import backend.team.ahachul_backend.api.lost.application.port.`in`.LostPostUseCase
 import backend.team.ahachul_backend.api.lost.application.service.command.CreateLostPostCommand
 import backend.team.ahachul_backend.api.lost.application.service.command.UpdateLostPostCommand
-import backend.team.ahachul_backend.common.domain.lost.entity.SubwayLineEntity
+import backend.team.ahachul_backend.common.domain.entity.SubwayLineEntity
 import backend.team.ahachul_backend.api.lost.domain.model.LostType
 import backend.team.ahachul_backend.api.lost.domain.model.LostPostType
 import backend.team.ahachul_backend.api.lost.domain.model.LostStatus
@@ -13,7 +13,7 @@ import backend.team.ahachul_backend.api.member.domain.entity.MemberEntity
 import backend.team.ahachul_backend.api.member.domain.model.GenderType
 import backend.team.ahachul_backend.api.member.domain.model.MemberStatusType
 import backend.team.ahachul_backend.api.member.domain.model.ProviderType
-import backend.team.ahachul_backend.common.domain.lost.persistence.SubwayLineRepository
+import backend.team.ahachul_backend.common.persistence.SubwayLineRepository
 import backend.team.ahachul_backend.common.exception.CommonException
 import backend.team.ahachul_backend.common.model.RegionType
 import backend.team.ahachul_backend.common.response.ResponseCode

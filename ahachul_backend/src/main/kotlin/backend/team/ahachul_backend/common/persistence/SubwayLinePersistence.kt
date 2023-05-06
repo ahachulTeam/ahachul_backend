@@ -1,6 +1,6 @@
-package backend.team.ahachul_backend.common.domain.lost.persistence
+package backend.team.ahachul_backend.common.persistence
 
-import backend.team.ahachul_backend.common.domain.lost.entity.SubwayLineEntity
+import backend.team.ahachul_backend.common.domain.entity.SubwayLineEntity
 import backend.team.ahachul_backend.common.exception.AdapterException
 import backend.team.ahachul_backend.common.response.ResponseCode
 import org.springframework.stereotype.Component

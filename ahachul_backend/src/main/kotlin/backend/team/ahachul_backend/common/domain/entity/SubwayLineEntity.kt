@@ -1,4 +1,4 @@
-package backend.team.ahachul_backend.common.domain.lost.entity
+package backend.team.ahachul_backend.common.domain.entity
 
 import backend.team.ahachul_backend.common.entity.BaseEntity
 import backend.team.ahachul_backend.common.model.RegionType
