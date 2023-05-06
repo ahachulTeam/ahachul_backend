@@ -6,12 +6,16 @@ import backend.team.ahachul_backend.api.lost.application.port.out.LostPostReader
 import backend.team.ahachul_backend.api.lost.application.port.out.LostPostWriter
 import backend.team.ahachul_backend.api.lost.application.port.out.SubwayLineReader
 import backend.team.ahachul_backend.api.lost.application.service.command.CreateLostPostCommand
+import backend.team.ahachul_backend.api.lost.application.service.command.GetSliceLostPostsCommand
+import backend.team.ahachul_backend.api.lost.application.service.command.SearchLostPostCommand
 import backend.team.ahachul_backend.api.lost.application.service.command.UpdateLostPostCommand
 import backend.team.ahachul_backend.api.lost.domain.entity.LostPostEntity
 import backend.team.ahachul_backend.api.member.application.port.out.MemberReader
 import backend.team.ahachul_backend.common.utils.RequestUtils
+import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import java.time.format.DateTimeFormatter
 
 @Service
 @Transactional(readOnly = true)
@@ -27,8 +31,20 @@ class LostPostService(
         return GetLostPostDto.Response.from(entity);
     }
 
-    override fun searchLostPosts(): SearchLostPostsDto.Response {
-        TODO("Not yet implemented")
+    override fun searchLostPosts(pageable: Pageable, command: SearchLostPostCommand): SearchLostPostsDto.Response {
+        val subwayLine = command.subwayLine?.let { subwayLineReader.getSubwayLine(it) }
+        val sliceDto = lostPostReader.getLostPosts(pageable, GetSliceLostPostsCommand.from(command, subwayLine))
+        val lostPosts = sliceDto.content.map {
+            SearchLostPostsDto.SearchLost(
+                title = it.title,
+                content = it.content,
+                writer = it.member.nickname!!,
+                date = it.createdAt.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")),
+                subwayLine = it.subwayLine.id,
+                status = it.status
+            )
+        }
+        return SearchLostPostsDto.Response(hasNext = sliceDto.hasNext(), contents = lostPosts)
     }
 
     @Transactional

@@ -90,6 +90,11 @@ class LostPostServiceTest(
     }
 
     @Test
+    @DisplayName("유실물 전체 조회 테스트")
+    fun searchLostPosts() {
+    }
+
+    @Test
     @DisplayName("유실물 저장 테스트")
     fun createLostPost() {
         // when

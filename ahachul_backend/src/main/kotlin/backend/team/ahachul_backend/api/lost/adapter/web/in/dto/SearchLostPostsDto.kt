@@ -5,7 +5,8 @@ import backend.team.ahachul_backend.api.lost.domain.model.LostStatus
 class SearchLostPostsDto {
 
     data class Response(
-        val posts: List<SearchLost>
+        val hasNext: Boolean,
+        val contents: List<SearchLost>
     )
 
     data class SearchLost(
@@ -14,8 +15,8 @@ class SearchLostPostsDto {
         val writer: String,
         val date: String,
         val subwayLine: Long,
-        val chats: Int,
+        val chats: Int = 0,
         val status: LostStatus,
-        val imgUrl: String
+        val imgUrl: String = ""
     )
 }

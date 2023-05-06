@@ -2,6 +2,7 @@ package backend.team.ahachul_backend.api.lost.adapter.web.`in`
 
 import backend.team.ahachul_backend.api.lost.adapter.web.`in`.dto.*
 import backend.team.ahachul_backend.api.lost.application.port.`in`.LostPostUseCase
+import backend.team.ahachul_backend.api.lost.application.service.command.SearchLostPostCommand
 import backend.team.ahachul_backend.api.lost.domain.model.LostOrigin
 import backend.team.ahachul_backend.api.lost.domain.model.LostType
 import backend.team.ahachul_backend.common.annotation.Authentication
@@ -23,11 +24,17 @@ class LostPostController(
     @GetMapping("/v1/lost-posts")
     fun searchLostPosts(
         pageable: Pageable,
-        @RequestParam(value = "category") category: LostType,
-        @RequestParam(value = "line", required = false) line: String,
+        @RequestParam(value = "type") lostType: LostType,
+        @RequestParam(value = "line", required = false) line: Long,
         @RequestParam(value = "origin", required = false) origin: LostOrigin,
     ): CommonResponse<SearchLostPostsDto.Response> {
-        return CommonResponse.success(lostPostService.searchLostPosts())
+        return CommonResponse.success(lostPostService.searchLostPosts(pageable,
+            SearchLostPostCommand.of(
+                lostType = lostType,
+                line = line,
+                origin = origin
+            )
+        ))
     }
 
     @Authentication

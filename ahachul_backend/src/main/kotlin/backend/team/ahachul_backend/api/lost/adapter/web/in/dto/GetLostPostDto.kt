@@ -2,6 +2,7 @@ package backend.team.ahachul_backend.api.lost.adapter.web.`in`.dto
 
 import backend.team.ahachul_backend.api.lost.domain.entity.LostPostEntity
 import backend.team.ahachul_backend.api.lost.domain.model.LostStatus
+import java.time.format.DateTimeFormatter
 
 class GetLostPostDto {
 
@@ -23,7 +24,7 @@ class GetLostPostDto {
                     title = entity.title,
                     content = entity.content,
                     writer = entity.member.nickname!!,
-                    date = entity.createdAt.toString(),
+                    date = entity.createdAt.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")),
                     subwayLine = entity.subwayLine.id,
                     status = entity.status,
                     storage = entity.storage,
