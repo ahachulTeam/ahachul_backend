@@ -102,7 +102,7 @@ class LostPostControllerDocsTest: CommonDocsConfig() {
             get("/v1/lost-posts")
                 .queryParam("page", "1")
                 .queryParam("size", "5")
-                .queryParam("category", LostType.LOST.name)
+                .queryParam("type", LostType.LOST.name)
                 .queryParam("line", "1호선")
                 .queryParam("origin", LostOrigin.LOST112.name)
                 .accept(MediaType.APPLICATION_JSON)
@@ -116,7 +116,7 @@ class LostPostControllerDocsTest: CommonDocsConfig() {
                 queryParameters(
                     parameterWithName("page").description("현재 페이지"),
                     parameterWithName("size").description("페이지 노출 데이터 수"),
-                    parameterWithName("category").description("유실물 카테고리").attributes(getFormatAttribute("LOST(유실) / ACQUIRE(습득)")),
+                    parameterWithName("type").description("유실물 카테고리").attributes(getFormatAttribute("LOST(유실) / ACQUIRE(습득)")),
                     parameterWithName("line").description("유실물 호선").optional(),
                     parameterWithName("origin").description("유실물 출처").attributes(getFormatAttribute( "LOST112 / APP")).optional()
                 ),
@@ -225,6 +225,7 @@ class LostPostControllerDocsTest: CommonDocsConfig() {
                     parameterWithName("lostId").description("유실물 아이디")
                 ),
                 requestFields(
+                    fieldWithPath("id").type(JsonFieldType.NUMBER).description("유실물 아이디").optional().attributes(getFormatAttribute("사용 X 필드")),
                     fieldWithPath("title").type(JsonFieldType.STRING).description("유실물 제목").optional(),
                     fieldWithPath("content").type(JsonFieldType.STRING).description("유실물 내용").optional(),
                     fieldWithPath("imgUrls").type(JsonFieldType.ARRAY).description("유실물 이미지 리스트").optional(),
