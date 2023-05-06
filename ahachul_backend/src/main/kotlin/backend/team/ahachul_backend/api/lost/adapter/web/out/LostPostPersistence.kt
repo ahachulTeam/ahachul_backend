@@ -27,7 +27,7 @@ class LostPostPersistence(
             .orElseThrow { throw AdapterException(ResponseCode.INVALID_DOMAIN) }
     }
 
-    override fun getLostPosts(pageable: Pageable, command: GetSliceLostPostsCommand): Slice<LostPostEntity> {
-        return customLostPostRepository.searchLostPostByFilter(pageable, command)
+    override fun getLostPosts(command: GetSliceLostPostsCommand): Slice<LostPostEntity> {
+        return customLostPostRepository.searchLostPostByFilter(command)
     }
 }

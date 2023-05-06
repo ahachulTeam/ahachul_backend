@@ -17,7 +17,8 @@ class CustomLostPostRepository(
     private val queryFactory: JPAQueryFactory
 ) {
 
-    fun searchLostPostByFilter(pageable: Pageable, command: GetSliceLostPostsCommand): Slice<LostPostEntity> {
+    fun searchLostPostByFilter(command: GetSliceLostPostsCommand): Slice<LostPostEntity> {
+        val pageable = command.pageable
         val response = queryFactory.selectFrom(lostPostEntity)
             .where(
                 lostOriginEq(command.lostOrigin),

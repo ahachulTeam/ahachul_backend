@@ -10,7 +10,7 @@ interface LostPostUseCase {
 
     fun getLostPost(id: Long): GetLostPostDto.Response
 
-    fun searchLostPosts(pageable: Pageable, command: SearchLostPostCommand): SearchLostPostsDto.Response
+    fun searchLostPosts(command: SearchLostPostCommand): SearchLostPostsDto.Response
 
     fun createLostPost(command: CreateLostPostCommand): CreateLostPostDto.Response
 

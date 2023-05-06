@@ -12,7 +12,6 @@ import backend.team.ahachul_backend.api.lost.application.service.command.UpdateL
 import backend.team.ahachul_backend.api.lost.domain.entity.LostPostEntity
 import backend.team.ahachul_backend.api.member.application.port.out.MemberReader
 import backend.team.ahachul_backend.common.utils.RequestUtils
-import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import java.time.format.DateTimeFormatter
@@ -31,10 +30,10 @@ class LostPostService(
         return GetLostPostDto.Response.from(entity);
     }
 
-    override fun searchLostPosts(pageable: Pageable, command: SearchLostPostCommand): SearchLostPostsDto.Response {
+    override fun searchLostPosts(command: SearchLostPostCommand): SearchLostPostsDto.Response {
         val subwayLine = command.subwayLine?.let { subwayLineReader.getSubwayLine(it) }
-        val sliceDto = lostPostReader.getLostPosts(pageable, GetSliceLostPostsCommand.from(command, subwayLine))
-        val lostPosts = sliceDto.content.map {
+        val sliceObject = lostPostReader.getLostPosts(GetSliceLostPostsCommand.from(command, subwayLine))
+        val lostPosts = sliceObject.content.map {
             SearchLostPostsDto.SearchLost(
                 title = it.title,
                 content = it.content,
@@ -44,7 +43,7 @@ class LostPostService(
                 status = it.status
             )
         }
-        return SearchLostPostsDto.Response(hasNext = sliceDto.hasNext(), contents = lostPosts)
+        return SearchLostPostsDto.Response(hasNext = sliceObject.hasNext(), contents = lostPosts)
     }
 
     @Transactional

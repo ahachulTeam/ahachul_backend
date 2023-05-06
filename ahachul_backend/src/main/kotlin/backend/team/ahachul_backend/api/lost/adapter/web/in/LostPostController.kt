@@ -24,17 +24,11 @@ class LostPostController(
     @GetMapping("/v1/lost-posts")
     fun searchLostPosts(
         pageable: Pageable,
-        @RequestParam(value = "type") lostType: LostType,
+        @RequestParam(value = "lostType") lostType: LostType,
         @RequestParam(value = "line", required = false) line: Long,
         @RequestParam(value = "origin", required = false) origin: LostOrigin,
     ): CommonResponse<SearchLostPostsDto.Response> {
-        return CommonResponse.success(lostPostService.searchLostPosts(pageable,
-            SearchLostPostCommand.of(
-                lostType = lostType,
-                line = line,
-                origin = origin
-            )
-        ))
+        return CommonResponse.success(lostPostService.searchLostPosts(SearchLostPostCommand.of(pageable, lostType, line, origin)))
     }
 
     @Authentication

@@ -80,6 +80,7 @@ class LostPostControllerDocsTest: CommonDocsConfig() {
     fun searchLostPosts() {
         // given
         val response = SearchLostPostsDto.Response(
+            hasNext = true,
             listOf(
                 SearchLostPostsDto.SearchLost(
                     title = "title",
@@ -94,7 +95,7 @@ class LostPostControllerDocsTest: CommonDocsConfig() {
             )
         )
 
-        given(lostPostUseCase.searchLostPosts())
+        given(lostPostUseCase.searchLostPosts(any()))
             .willReturn(response)
 
         // when
@@ -102,7 +103,7 @@ class LostPostControllerDocsTest: CommonDocsConfig() {
             get("/v1/lost-posts")
                 .queryParam("page", "1")
                 .queryParam("size", "5")
-                .queryParam("category", LostType.LOST.name)
+                .queryParam("lostType", LostType.LOST.name)
                 .queryParam("line", "1호선")
                 .queryParam("origin", LostOrigin.LOST112.name)
                 .accept(MediaType.APPLICATION_JSON)
@@ -116,7 +117,7 @@ class LostPostControllerDocsTest: CommonDocsConfig() {
                 queryParameters(
                     parameterWithName("page").description("현재 페이지"),
                     parameterWithName("size").description("페이지 노출 데이터 수"),
-                    parameterWithName("category").description("유실물 카테고리").attributes(getFormatAttribute("LOST(유실) / ACQUIRE(습득)")),
+                    parameterWithName("lostType").description("유실물 카테고리").attributes(getFormatAttribute("LOST(유실) / ACQUIRE(습득)")),
                     parameterWithName("line").description("유실물 호선").optional(),
                     parameterWithName("origin").description("유실물 출처").attributes(getFormatAttribute( "LOST112 / APP")).optional()
                 ),
