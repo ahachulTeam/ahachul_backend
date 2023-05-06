@@ -40,23 +40,23 @@ class LostPostService(
             LostPostEntity.of(
                 command = command,
                 member = member,
-                subwayLine = subwayLine
+                subwayLineEntity = subwayLine
             )
         )
         return CreateLostPostDto.Response.from(entity.id)
     }
 
     @Transactional
-    override fun updateLostPost(id: Long, command: UpdateLostPostCommand): UpdateLostPostDto.Response {
+    override fun updateLostPost(command: UpdateLostPostCommand): UpdateLostPostDto.Response {
         val memberId = RequestUtils.getAttribute("memberId")!!
-        val entity = lostPostReader.getLostPost(id)
+        val entity = lostPostReader.getLostPost(command.id)
         entity.checkMe(memberId)
 
         val subwayLine = command.subwayLine?.let {
             subwayLineReader.getSubwayLine(it)
         }
 
-        entity.update(command = command, subwayLine = subwayLine)
+        entity.update(command = command, subwayLineEntity = subwayLine)
         return UpdateLostPostDto.Response.from(entity)
     }
 

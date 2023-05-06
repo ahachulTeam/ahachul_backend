@@ -5,7 +5,7 @@ import backend.team.ahachul_backend.api.lost.adapter.web.out.SubwayLineRepositor
 import backend.team.ahachul_backend.api.lost.application.port.`in`.LostPostUseCase
 import backend.team.ahachul_backend.api.lost.application.service.command.CreateLostPostCommand
 import backend.team.ahachul_backend.api.lost.application.service.command.UpdateLostPostCommand
-import backend.team.ahachul_backend.api.lost.domain.entity.SubwayLine
+import backend.team.ahachul_backend.api.lost.domain.entity.SubwayLineEntity
 import backend.team.ahachul_backend.api.lost.domain.model.LostType
 import backend.team.ahachul_backend.api.lost.domain.model.LostPostType
 import backend.team.ahachul_backend.api.lost.domain.model.LostStatus
@@ -39,7 +39,7 @@ class LostPostServiceTest(
 
     var member: MemberEntity? = null
     var createCommand: CreateLostPostCommand? = null
-    var subwayLine: SubwayLine? = null
+    var subwayLineEntity: SubwayLineEntity? = null
 
     @BeforeEach
     fun setUp() {
@@ -56,8 +56,8 @@ class LostPostServiceTest(
         )
         member!!.id.let { RequestUtils.setAttribute("memberId", it)}
 
-        subwayLine = subwayLineRepository.save(
-            SubwayLine(
+        subwayLineEntity = subwayLineRepository.save(
+            SubwayLineEntity(
                 name = "1호선",
                 regionType = RegionType.METROPOLITAN
             )
@@ -66,7 +66,7 @@ class LostPostServiceTest(
         createCommand = CreateLostPostCommand(
             title = "지갑",
             content = "하늘색 지갑 잃어버렸어요",
-            subwayLine = subwayLine!!.id,
+            subwayLine = subwayLineEntity!!.id,
             lostType = LostType.LOST,
             imgUrls = listOf("11", "22")
         )
@@ -94,20 +94,21 @@ class LostPostServiceTest(
         val entity = lostPostUseCase.createLostPost(createCommand!!)
 
         val updateCommand = UpdateLostPostCommand(
+            id = entity.id,
             title = null,
             content = "파란색 지갑 잃어버렸어요",
-            subwayLine = subwayLine!!.id,
+            subwayLine = subwayLineEntity!!.id,
             imgUrls = null,
             status = LostStatus.COMPLETE
         )
 
         // when
-        val response = lostPostUseCase.updateLostPost(entity.id, updateCommand)
+        val response = lostPostUseCase.updateLostPost(updateCommand)
 
         // then
         assertThat(response.id).isNotNull
         assertThat(response.content).isEqualTo("파란색 지갑 잃어버렸어요")
-        assertThat(response.subwayLine).isEqualTo(subwayLine!!.id)
+        assertThat(response.subwayLine).isEqualTo(subwayLineEntity!!.id)
         assertThat(response.status).isEqualTo(LostStatus.COMPLETE)
     }
 
@@ -118,6 +119,7 @@ class LostPostServiceTest(
         val entity = lostPostUseCase.createLostPost(createCommand!!)
 
         val updateCommand = UpdateLostPostCommand(
+            id = entity.id,
             title = null,
             content = "파란색 지갑 잃어버렸어요",
             subwayLine = null,
@@ -129,7 +131,7 @@ class LostPostServiceTest(
         RequestUtils.setAttribute("memberId", 2)
 
         assertThatThrownBy {
-            lostPostUseCase.updateLostPost(entity.id, updateCommand)
+            lostPostUseCase.updateLostPost(updateCommand)
         }
             .isExactlyInstanceOf(CommonException::class.java)
             .hasMessage(ResponseCode.INVALID_AUTH.message)
@@ -146,7 +148,6 @@ class LostPostServiceTest(
 
         // then
         assertThat(response.id).isEqualTo(entity.id)
-        assertThat(response.type).isEqualTo(LostPostType.DELETED)
     }
 
     @Test

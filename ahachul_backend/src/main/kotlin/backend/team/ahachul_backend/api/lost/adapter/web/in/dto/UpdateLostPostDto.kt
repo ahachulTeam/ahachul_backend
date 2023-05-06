@@ -7,14 +7,16 @@ import backend.team.ahachul_backend.api.lost.domain.model.LostStatus
 class UpdateLostPostDto {
 
     data class Request(
+        val id: Long,
         val title: String?,
         val content: String?,
         val imgUrls: List<String>?,
         val subwayLine: Long?,
         val status: LostStatus?
     ) {
-        fun toCommand(): UpdateLostPostCommand {
+        fun toCommand(id: Long): UpdateLostPostCommand {
             return UpdateLostPostCommand(
+                id = id,
                 title = title,
                 content = content,
                 imgUrls = imgUrls,

@@ -5,7 +5,7 @@ import backend.team.ahachul_backend.common.model.RegionType
 import jakarta.persistence.*
 
 @Entity
-class SubwayLine (
+class SubwayLineEntity (
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

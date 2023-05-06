@@ -12,7 +12,7 @@ interface LostPostUseCase {
 
     fun createLostPost(command: CreateLostPostCommand): CreateLostPostDto.Response
 
-    fun updateLostPost(id: Long, command: UpdateLostPostCommand): UpdateLostPostDto.Response
+    fun updateLostPost(command: UpdateLostPostCommand): UpdateLostPostDto.Response
 
     fun deleteLostPost(id: Long): DeleteLostPostDto.Response
 }

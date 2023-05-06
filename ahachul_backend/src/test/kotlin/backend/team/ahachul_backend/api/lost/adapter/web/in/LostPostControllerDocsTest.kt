@@ -192,10 +192,11 @@ class LostPostControllerDocsTest: CommonDocsConfig() {
             status = LostStatus.COMPLETE
         )
 
-        given(lostPostUseCase.updateLostPost(anyLong(), any()))
+        given(lostPostUseCase.updateLostPost(any()))
             .willReturn(response)
 
         val request = UpdateLostPostDto.Request(
+            id = 1,
             title = "title",
             content = "content",
             imgUrls = arrayListOf("url1", "url2"),
@@ -248,7 +249,6 @@ class LostPostControllerDocsTest: CommonDocsConfig() {
         // given
         val response = DeleteLostPostDto.Response(
             id = 1,
-            type = LostPostType.DELETED
         )
 
         given(lostPostUseCase.deleteLostPost(anyLong()))
@@ -274,8 +274,7 @@ class LostPostControllerDocsTest: CommonDocsConfig() {
                 ),
                 responseFields(
                     *commonResponseFields(),
-                    fieldWithPath("result.id").type(JsonFieldType.NUMBER).description("삭제한 유실물 아이디"),
-                    fieldWithPath("result.type").type(JsonFieldType.STRING).description("유실물 상태").attributes(getFormatAttribute("ACTIVE / DELETED"))
+                    fieldWithPath("result.id").type(JsonFieldType.NUMBER).description("삭제한 유실물 아이디")
                 )
             ))
     }

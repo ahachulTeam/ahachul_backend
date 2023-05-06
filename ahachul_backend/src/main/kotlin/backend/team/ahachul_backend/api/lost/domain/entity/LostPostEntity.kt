@@ -22,7 +22,7 @@ class LostPostEntity(
     var member: MemberEntity,
 
     @ManyToOne(fetch = FetchType.LAZY)
-    var subwayLine: SubwayLine,
+    var subwayLine: SubwayLineEntity,
 
     var title: String,
 
@@ -32,13 +32,13 @@ class LostPostEntity(
     var status: LostStatus = LostStatus.PROGRESS,
 
     @Enumerated(value = EnumType.STRING)
-    var origin: LostOrigin = LostOrigin.APP,
+    var origin: LostOrigin = LostOrigin.AHACHUL,
 
     @Enumerated(value = EnumType.STRING)
     var lostType: LostType,
 
     @Enumerated(value = EnumType.STRING)
-    var type: LostPostType,
+    var type: LostPostType = LostPostType.CREATED,
 
     var storage: String? = null,
 
@@ -47,23 +47,22 @@ class LostPostEntity(
 ): BaseEntity() {
 
     companion object {
-        fun of(command: CreateLostPostCommand, member: MemberEntity, subwayLine: SubwayLine): LostPostEntity {
+        fun of(command: CreateLostPostCommand, member: MemberEntity, subwayLineEntity: SubwayLineEntity): LostPostEntity {
             return LostPostEntity(
                 title = command.title,
                 content = command.content,
-                subwayLine = subwayLine,
+                subwayLine = subwayLineEntity,
                 lostType = command.lostType,
-                member = member,
-                type = LostPostType.CREATED
+                member = member
             )
         }
     }
 
-    fun update(command: UpdateLostPostCommand, subwayLine: SubwayLine?) {
+    fun update(command: UpdateLostPostCommand, subwayLineEntity: SubwayLineEntity?) {
         command.title?.let { this.title = it }
         command.content?.let { this.content = it }
         command.status?.let { this.status= it }
-        subwayLine?.let { this.subwayLine = subwayLine }
+        subwayLineEntity?.let { this.subwayLine = subwayLineEntity }
     }
 
     fun delete() {
