@@ -4,7 +4,7 @@ import backend.team.ahachul_backend.api.lost.adapter.web.`in`.dto.*
 import backend.team.ahachul_backend.api.lost.application.port.`in`.LostPostUseCase
 import backend.team.ahachul_backend.api.lost.application.port.out.LostPostReader
 import backend.team.ahachul_backend.api.lost.application.port.out.LostPostWriter
-import backend.team.ahachul_backend.api.lost.application.port.out.SubwayLineReader
+import backend.team.ahachul_backend.common.domain.lost.persistence.SubwayLineReader
 import backend.team.ahachul_backend.api.lost.application.service.command.CreateLostPostCommand
 import backend.team.ahachul_backend.api.lost.application.service.command.UpdateLostPostCommand
 import backend.team.ahachul_backend.api.lost.domain.entity.LostPostEntity

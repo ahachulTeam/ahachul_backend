@@ -1,7 +1,6 @@
-package backend.team.ahachul_backend.api.lost.adapter.web.out
+package backend.team.ahachul_backend.common.domain.lost.persistence
 
-import backend.team.ahachul_backend.api.lost.application.port.out.SubwayLineReader
-import backend.team.ahachul_backend.api.lost.domain.entity.SubwayLineEntity
+import backend.team.ahachul_backend.common.domain.lost.entity.SubwayLineEntity
 import backend.team.ahachul_backend.common.exception.AdapterException
 import backend.team.ahachul_backend.common.response.ResponseCode
 import org.springframework.stereotype.Component

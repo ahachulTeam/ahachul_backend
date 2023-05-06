@@ -7,6 +7,7 @@ import backend.team.ahachul_backend.api.lost.domain.model.LostPostType
 import backend.team.ahachul_backend.api.lost.domain.model.LostStatus
 import backend.team.ahachul_backend.api.lost.domain.model.LostType
 import backend.team.ahachul_backend.api.member.domain.entity.MemberEntity
+import backend.team.ahachul_backend.common.domain.lost.entity.SubwayLineEntity
 import backend.team.ahachul_backend.common.entity.BaseEntity
 import jakarta.persistence.*
 

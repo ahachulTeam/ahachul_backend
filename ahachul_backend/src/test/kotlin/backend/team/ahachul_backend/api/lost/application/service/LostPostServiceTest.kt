@@ -5,7 +5,7 @@ import backend.team.ahachul_backend.api.lost.adapter.web.out.SubwayLineRepositor
 import backend.team.ahachul_backend.api.lost.application.port.`in`.LostPostUseCase
 import backend.team.ahachul_backend.api.lost.application.service.command.CreateLostPostCommand
 import backend.team.ahachul_backend.api.lost.application.service.command.UpdateLostPostCommand
-import backend.team.ahachul_backend.api.lost.domain.entity.SubwayLineEntity
+import backend.team.ahachul_backend.common.domain.lost.entity.SubwayLineEntity
 import backend.team.ahachul_backend.api.lost.domain.model.LostType
 import backend.team.ahachul_backend.api.lost.domain.model.LostPostType
 import backend.team.ahachul_backend.api.lost.domain.model.LostStatus
