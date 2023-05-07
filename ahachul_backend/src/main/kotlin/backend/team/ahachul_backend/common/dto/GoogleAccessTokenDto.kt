@@ -8,5 +8,5 @@ data class GoogleAccessTokenDto(
     @JsonProperty("token_type") val tokenType: String,
     @JsonProperty("expires_in") val expiresIn: Int,
     @JsonProperty("scope") val scope: String,
-    @JsonProperty("refresh_token") val refreshToken: String
+    @JsonProperty("refresh_token") val refreshToken: String?
 )
