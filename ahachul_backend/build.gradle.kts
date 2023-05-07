@@ -62,6 +62,8 @@ dependencies {
     // https://mvnrepository.com/artifact/org.springframework.cloud/spring-cloud-starter-aws
     implementation("org.springframework.cloud:spring-cloud-starter-aws:2.2.6.RELEASE")
 
+    implementation("org.springframework.boot:spring-boot-starter-data-redis")
+
     implementation("org.jetbrains.kotlin:kotlin-reflect")
     runtimeOnly("com.mysql:mysql-connector-j")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
