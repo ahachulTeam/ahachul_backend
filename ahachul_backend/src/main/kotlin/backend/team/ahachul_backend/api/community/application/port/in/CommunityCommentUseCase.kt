@@ -1,17 +1,14 @@
 package backend.team.ahachul_backend.api.community.application.port.`in`
 
-import backend.team.ahachul_backend.api.community.adapter.web.`in`.dto.comment.CreateCommunityCommentDto
-import backend.team.ahachul_backend.api.community.adapter.web.`in`.dto.comment.DeleteCommunityCommentDto
-import backend.team.ahachul_backend.api.community.adapter.web.`in`.dto.comment.GetCommunityCommentsDto
-import backend.team.ahachul_backend.api.community.adapter.web.`in`.dto.comment.UpdateCommunityCommentDto
+import backend.team.ahachul_backend.api.community.adapter.web.`in`.dto.comment.*
 
 interface CommunityCommentUseCase {
 
-    fun getCommunityComments(): GetCommunityCommentsDto.Response
+    fun getCommunityComments(command: GetCommunityCommentsCommand): GetCommunityCommentsDto.Response
 
-    fun createCommunityComment(): CreateCommunityCommentDto.Response
+    fun createCommunityComment(command: CreateCommunityCommentCommand): CreateCommunityCommentDto.Response
 
-    fun updateCommunityComment(): UpdateCommunityCommentDto.Response
+    fun updateCommunityComment(command: UpdateCommunityCommentCommand): UpdateCommunityCommentDto.Response
 
-    fun deleteCommunityComment(): DeleteCommunityCommentDto.Response
+    fun deleteCommunityComment(command: DeleteCommunityCommentCommand): DeleteCommunityCommentDto.Response
 }

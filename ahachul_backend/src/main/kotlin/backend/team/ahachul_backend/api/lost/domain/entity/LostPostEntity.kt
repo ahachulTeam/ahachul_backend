@@ -33,13 +33,13 @@ class LostPostEntity(
     var status: LostStatus = LostStatus.PROGRESS,
 
     @Enumerated(value = EnumType.STRING)
-    var origin: LostOrigin = LostOrigin.APP,
+    var origin: LostOrigin = LostOrigin.AHACHUL,
 
     @Enumerated(value = EnumType.STRING)
     var lostType: LostType,
 
     @Enumerated(value = EnumType.STRING)
-    var type: LostPostType,
+    var type: LostPostType = LostPostType.CREATED,
 
     var storage: String? = null,
 
@@ -54,8 +54,7 @@ class LostPostEntity(
                 content = command.content,
                 subwayLine = subwayLine,
                 lostType = command.lostType,
-                member = member,
-                type = LostPostType.CREATED
+                member = member
             )
         }
     }

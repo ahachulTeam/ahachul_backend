@@ -10,9 +10,10 @@ class GetCommunityCommentsDto {
 
     data class CommunityComment(
         val id: Long,
-        val upperCommentId: Long,
+        val upperCommentId: Long?,
         val content: String,
         val createdAt: LocalDateTime,
-        val createdBy: String
+        val createdBy: String,
+        val writer: String,
     )
 }
