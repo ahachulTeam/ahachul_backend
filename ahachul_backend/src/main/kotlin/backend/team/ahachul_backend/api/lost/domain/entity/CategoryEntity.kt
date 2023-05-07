@@ -4,17 +4,13 @@ import backend.team.ahachul_backend.common.entity.BaseEntity
 import jakarta.persistence.*
 
 @Entity
-class CategoryLostPost(
+class CategoryEntity(
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "category_lost_post_id")
+    @Column(name = "category_id")
     var id: Long = 0,
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    var lostPost: LostPostEntity,
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    var category: Category
+    var name: String
 ): BaseEntity() {
 }

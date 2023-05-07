@@ -7,6 +7,7 @@ import backend.team.ahachul_backend.api.lost.domain.model.LostPostType
 import backend.team.ahachul_backend.api.lost.domain.model.LostStatus
 import backend.team.ahachul_backend.api.lost.domain.model.LostType
 import backend.team.ahachul_backend.api.member.domain.entity.MemberEntity
+import backend.team.ahachul_backend.common.domain.entity.SubwayLineEntity
 import backend.team.ahachul_backend.common.entity.BaseEntity
 import jakarta.persistence.*
 
@@ -22,7 +23,7 @@ class LostPostEntity(
     var member: MemberEntity,
 
     @ManyToOne(fetch = FetchType.LAZY)
-    var subwayLine: SubwayLine,
+    var subwayLine: SubwayLineEntity,
 
     var title: String,
 
@@ -47,7 +48,7 @@ class LostPostEntity(
 ): BaseEntity() {
 
     companion object {
-        fun of(command: CreateLostPostCommand, member: MemberEntity, subwayLine: SubwayLine): LostPostEntity {
+        fun of(command: CreateLostPostCommand, member: MemberEntity, subwayLine: SubwayLineEntity): LostPostEntity {
             return LostPostEntity(
                 title = command.title,
                 content = command.content,
@@ -59,7 +60,7 @@ class LostPostEntity(
         }
     }
 
-    fun update(command: UpdateLostPostCommand, subwayLine: SubwayLine?) {
+    fun update(command: UpdateLostPostCommand, subwayLine: SubwayLineEntity?) {
         command.title?.let { this.title = it }
         command.content?.let { this.content = it }
         command.status?.let { this.status= it }

@@ -2,10 +2,9 @@ package backend.team.ahachul_backend.api.lost.adapter.web.`in`
 
 import backend.team.ahachul_backend.api.lost.adapter.web.`in`.dto.*
 import backend.team.ahachul_backend.api.lost.application.port.`in`.LostPostUseCase
+import backend.team.ahachul_backend.api.lost.domain.model.LostOrigin
 import backend.team.ahachul_backend.api.lost.domain.model.LostStatus
 import backend.team.ahachul_backend.api.lost.domain.model.LostType
-import backend.team.ahachul_backend.api.lost.domain.model.LostOrigin
-import backend.team.ahachul_backend.api.lost.domain.model.LostPostType
 import backend.team.ahachul_backend.config.controller.CommonDocsConfig
 import org.junit.jupiter.api.Test
 import org.mockito.BDDMockito.anyLong
@@ -198,7 +197,7 @@ class LostPostControllerDocsTest: CommonDocsConfig() {
             status = LostStatus.COMPLETE
         )
 
-        given(lostPostUseCase.updateLostPost(anyLong(), any()))
+        given(lostPostUseCase.updateLostPost(any()))
             .willReturn(response)
 
         val request = UpdateLostPostDto.Request(
@@ -230,6 +229,7 @@ class LostPostControllerDocsTest: CommonDocsConfig() {
                     parameterWithName("lostId").description("유실물 아이디")
                 ),
                 requestFields(
+                    fieldWithPath("id").type(JsonFieldType.NUMBER).description("유실물 아이디").optional().attributes(getFormatAttribute("사용 X 필드")),
                     fieldWithPath("title").type(JsonFieldType.STRING).description("유실물 제목").optional(),
                     fieldWithPath("content").type(JsonFieldType.STRING).description("유실물 내용").optional(),
                     fieldWithPath("imgUrls").type(JsonFieldType.ARRAY).description("유실물 이미지 리스트").optional(),
@@ -253,8 +253,7 @@ class LostPostControllerDocsTest: CommonDocsConfig() {
     fun deleteLostPost() {
         // given
         val response = DeleteLostPostDto.Response(
-            id = 1,
-            type = LostPostType.DELETED
+            id = 1
         )
 
         given(lostPostUseCase.deleteLostPost(anyLong()))
@@ -280,8 +279,7 @@ class LostPostControllerDocsTest: CommonDocsConfig() {
                 ),
                 responseFields(
                     *commonResponseFields(),
-                    fieldWithPath("result.id").type(JsonFieldType.NUMBER).description("삭제한 유실물 아이디"),
-                    fieldWithPath("result.type").type(JsonFieldType.STRING).description("유실물 상태").attributes(getFormatAttribute("ACTIVE / DELETED"))
+                    fieldWithPath("result.id").type(JsonFieldType.NUMBER).description("삭제한 유실물 아이디")
                 )
             ))
     }

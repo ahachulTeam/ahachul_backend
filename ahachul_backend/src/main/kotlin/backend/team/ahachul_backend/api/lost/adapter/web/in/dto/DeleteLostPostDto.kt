@@ -6,14 +6,12 @@ import backend.team.ahachul_backend.api.lost.domain.model.LostPostType
 class DeleteLostPostDto {
 
     data class Response(
-        val id: Long,
-        val type: LostPostType
+        val id: Long
     ) {
         companion object {
             fun from(entity: LostPostEntity): Response {
                 return Response(
-                    id = entity.id,
-                    type = entity.type
+                    id = entity.id
                 )
             }
         }

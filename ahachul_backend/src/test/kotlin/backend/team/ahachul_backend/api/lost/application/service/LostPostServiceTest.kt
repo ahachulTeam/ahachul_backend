@@ -1,12 +1,10 @@
 package backend.team.ahachul_backend.api.lost.application.service
 
 import backend.team.ahachul_backend.api.lost.adapter.web.out.LostPostRepository
-import backend.team.ahachul_backend.api.lost.adapter.web.out.SubwayLineRepository
 import backend.team.ahachul_backend.api.lost.application.port.`in`.LostPostUseCase
 import backend.team.ahachul_backend.api.lost.application.service.command.CreateLostPostCommand
 import backend.team.ahachul_backend.api.lost.application.service.command.SearchLostPostCommand
 import backend.team.ahachul_backend.api.lost.application.service.command.UpdateLostPostCommand
-import backend.team.ahachul_backend.api.lost.domain.entity.SubwayLine
 import backend.team.ahachul_backend.api.lost.domain.model.LostPostType
 import backend.team.ahachul_backend.api.lost.domain.model.LostStatus
 import backend.team.ahachul_backend.api.lost.domain.model.LostType
@@ -15,8 +13,10 @@ import backend.team.ahachul_backend.api.member.domain.entity.MemberEntity
 import backend.team.ahachul_backend.api.member.domain.model.GenderType
 import backend.team.ahachul_backend.api.member.domain.model.MemberStatusType
 import backend.team.ahachul_backend.api.member.domain.model.ProviderType
+import backend.team.ahachul_backend.common.domain.entity.SubwayLineEntity
 import backend.team.ahachul_backend.common.exception.CommonException
 import backend.team.ahachul_backend.common.model.RegionType
+import backend.team.ahachul_backend.common.persistence.SubwayLineRepository
 import backend.team.ahachul_backend.common.response.ResponseCode
 import backend.team.ahachul_backend.common.utils.RequestUtils
 import org.assertj.core.api.Assertions.assertThat
@@ -40,7 +40,7 @@ class LostPostServiceTest(
 ){
 
     var member: MemberEntity? = null
-    var subwayLine: SubwayLine? = null
+    var subwayLine: SubwayLineEntity? = null
 
     @BeforeEach
     fun setUp() {
@@ -165,6 +165,7 @@ class LostPostServiceTest(
         val entity = lostPostUseCase.createLostPost(createCommand)
 
         val updateCommand = UpdateLostPostCommand(
+            id = entity.id,
             title = null,
             content = "수정한 내용",
             subwayLine = subwayLine!!.id,
@@ -173,7 +174,7 @@ class LostPostServiceTest(
         )
 
         // when
-        val response = lostPostUseCase.updateLostPost(entity.id, updateCommand)
+        val response = lostPostUseCase.updateLostPost(updateCommand)
 
         // then
         assertThat(response.id).isNotNull
@@ -190,6 +191,7 @@ class LostPostServiceTest(
         val entity = lostPostUseCase.createLostPost(createCommand)
 
         val updateCommand = UpdateLostPostCommand(
+            id = entity.id,
             title = null,
             content = "수정한 내용",
             subwayLine = null,
@@ -201,7 +203,7 @@ class LostPostServiceTest(
         RequestUtils.setAttribute("memberId", member!!.id + 1)
 
         assertThatThrownBy {
-            lostPostUseCase.updateLostPost(entity.id, updateCommand)
+            lostPostUseCase.updateLostPost(updateCommand)
         }
             .isExactlyInstanceOf(CommonException::class.java)
             .hasMessage(ResponseCode.INVALID_AUTH.message)
@@ -219,7 +221,6 @@ class LostPostServiceTest(
 
         // then
         assertThat(response.id).isEqualTo(entity.id)
-        assertThat(response.type).isEqualTo(LostPostType.DELETED)
     }
 
     @Test
@@ -249,16 +250,16 @@ class LostPostServiceTest(
         )
     }
 
-    private fun createSubwayLine(name: String): SubwayLine {
+    private fun createSubwayLine(name: String): SubwayLineEntity {
         return subwayLineRepository.save(
-            SubwayLine(
+            SubwayLineEntity(
                 name = name,
                 regionType = RegionType.METROPOLITAN
             )
         )
     }
 
-    private fun createSearchLostPostCommand(page: Int, subwayLine: SubwayLine): SearchLostPostCommand {
+    private fun createSearchLostPostCommand(page: Int, subwayLine: SubwayLineEntity): SearchLostPostCommand {
         return SearchLostPostCommand.of(
             PageRequest.of(page, 3),
             LostType.LOST,

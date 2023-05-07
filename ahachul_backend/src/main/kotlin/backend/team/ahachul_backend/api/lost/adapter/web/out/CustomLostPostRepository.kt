@@ -3,9 +3,9 @@ package backend.team.ahachul_backend.api.lost.adapter.web.out
 import backend.team.ahachul_backend.api.lost.application.service.command.GetSliceLostPostsCommand
 import backend.team.ahachul_backend.api.lost.domain.entity.LostPostEntity
 import backend.team.ahachul_backend.api.lost.domain.entity.QLostPostEntity.lostPostEntity
-import backend.team.ahachul_backend.api.lost.domain.entity.SubwayLine
 import backend.team.ahachul_backend.api.lost.domain.model.LostOrigin
 import backend.team.ahachul_backend.api.lost.domain.model.LostType
+import backend.team.ahachul_backend.common.domain.entity.SubwayLineEntity
 import com.querydsl.jpa.impl.JPAQueryFactory
 import org.springframework.data.domain.Pageable
 import org.springframework.data.domain.Slice
@@ -53,7 +53,7 @@ class CustomLostPostRepository(
     private fun lostOriginEq(lostOrigin: LostOrigin?) =
         lostOrigin?.let { lostPostEntity.origin.eq(lostOrigin) }
 
-    private fun subwayLineEq(subwayLine: SubwayLine?) =
+    private fun subwayLineEq(subwayLine: SubwayLineEntity?) =
         subwayLine?.let { lostPostEntity.subwayLine.eq(subwayLine) }
 
     private fun lostTypeEq(lostType: LostType?) =

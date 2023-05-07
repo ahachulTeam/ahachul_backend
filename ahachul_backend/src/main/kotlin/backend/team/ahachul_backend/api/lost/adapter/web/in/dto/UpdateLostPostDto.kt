@@ -13,8 +13,9 @@ class UpdateLostPostDto {
         val subwayLine: Long?,
         val status: LostStatus?
     ) {
-        fun toCommand(): UpdateLostPostCommand {
+        fun toCommand(id: Long): UpdateLostPostCommand {
             return UpdateLostPostCommand(
+                id = id,
                 title = title,
                 content = content,
                 imgUrls = imgUrls,

@@ -4,7 +4,7 @@ import backend.team.ahachul_backend.api.lost.adapter.web.`in`.dto.*
 import backend.team.ahachul_backend.api.lost.application.port.`in`.LostPostUseCase
 import backend.team.ahachul_backend.api.lost.application.port.out.LostPostReader
 import backend.team.ahachul_backend.api.lost.application.port.out.LostPostWriter
-import backend.team.ahachul_backend.api.lost.application.port.out.SubwayLineReader
+import backend.team.ahachul_backend.common.persistence.SubwayLineReader
 import backend.team.ahachul_backend.api.lost.application.service.command.CreateLostPostCommand
 import backend.team.ahachul_backend.api.lost.application.service.command.GetSliceLostPostsCommand
 import backend.team.ahachul_backend.api.lost.application.service.command.SearchLostPostCommand
@@ -65,9 +65,9 @@ class LostPostService(
     }
 
     @Transactional
-    override fun updateLostPost(id: Long, command: UpdateLostPostCommand): UpdateLostPostDto.Response {
+    override fun updateLostPost(command: UpdateLostPostCommand): UpdateLostPostDto.Response {
         val memberId = RequestUtils.getAttribute("memberId")!!
-        val entity = lostPostReader.getLostPost(id)
+        val entity = lostPostReader.getLostPost(command.id)
         entity.checkMe(memberId)
 
         val subwayLine = command.subwayLine?.let {
