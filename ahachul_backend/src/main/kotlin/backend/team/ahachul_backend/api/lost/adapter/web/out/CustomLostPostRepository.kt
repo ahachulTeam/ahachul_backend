@@ -7,6 +7,7 @@ import backend.team.ahachul_backend.api.lost.domain.entity.SubwayLine
 import backend.team.ahachul_backend.api.lost.domain.model.LostOrigin
 import backend.team.ahachul_backend.api.lost.domain.model.LostType
 import com.querydsl.jpa.impl.JPAQueryFactory
+import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.data.domain.Slice
 import org.springframework.data.domain.SliceImpl
@@ -26,16 +27,26 @@ class CustomLostPostRepository(
                 lostTypeEq(command.lostType)
             )
             .orderBy(lostPostEntity.createdAt.desc())
-            .offset(pageable.offset)
-            .limit(pageable.pageSize.toLong())
+            .offset(getOffset(pageable).toLong())
+            .limit((pageable.pageSize + 1).toLong())
             .fetch()
 
         return SliceImpl(response, pageable, hasNext(response, pageable))
     }
 
-    private fun hasNext(response: List<LostPostEntity>, pageable: Pageable): Boolean {
+    private fun getOffset(pageable: Pageable): Int {
         return when {
-            response.size > pageable.offset + pageable.pageSize -> true
+            pageable.pageNumber != 0 -> (pageable.pageNumber + pageable.pageSize) - 1
+            else -> pageable.pageNumber
+        }
+    }
+
+    private fun hasNext(response: MutableList<LostPostEntity>, pageable: Pageable): Boolean {
+        return when {
+            response.size > pageable.pageSize -> {
+                response.removeAt(response.size - 1)
+                true
+            }
             else -> false
         }
     }

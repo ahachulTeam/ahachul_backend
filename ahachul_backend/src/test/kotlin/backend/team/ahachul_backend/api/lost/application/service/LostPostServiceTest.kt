@@ -4,11 +4,12 @@ import backend.team.ahachul_backend.api.lost.adapter.web.out.LostPostRepository
 import backend.team.ahachul_backend.api.lost.adapter.web.out.SubwayLineRepository
 import backend.team.ahachul_backend.api.lost.application.port.`in`.LostPostUseCase
 import backend.team.ahachul_backend.api.lost.application.service.command.CreateLostPostCommand
+import backend.team.ahachul_backend.api.lost.application.service.command.SearchLostPostCommand
 import backend.team.ahachul_backend.api.lost.application.service.command.UpdateLostPostCommand
 import backend.team.ahachul_backend.api.lost.domain.entity.SubwayLine
-import backend.team.ahachul_backend.api.lost.domain.model.LostType
 import backend.team.ahachul_backend.api.lost.domain.model.LostPostType
 import backend.team.ahachul_backend.api.lost.domain.model.LostStatus
+import backend.team.ahachul_backend.api.lost.domain.model.LostType
 import backend.team.ahachul_backend.api.member.adapter.web.out.MemberRepository
 import backend.team.ahachul_backend.api.member.domain.entity.MemberEntity
 import backend.team.ahachul_backend.api.member.domain.model.GenderType
@@ -25,6 +26,7 @@ import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
+import org.springframework.data.domain.PageRequest
 import org.springframework.transaction.annotation.Transactional
 
 
@@ -89,11 +91,89 @@ class LostPostServiceTest(
         assertThat(response.status).isEqualTo(LostStatus.PROGRESS)
     }
 
+
     @Test
-    @DisplayName("유실물 전체 조회 테스트")
-    fun searchLostPosts() {
+    @DisplayName("유실물 전체 조회 및 페이징 테스트 - 노선 필터링")
+    fun searchLostPostsBySubwayLine() {
+        // given
+        val subwayLine1 = subwayLineRepository.save(
+            SubwayLine(
+                name = "1호선",
+                regionType = RegionType.METROPOLITAN
+            )
+        )
+
+        val subwayLine2 = subwayLineRepository.save(
+            SubwayLine(
+                name = "2호선",
+                regionType = RegionType.METROPOLITAN
+            )
+        )
+
+        for(i: Int in 1.. 5) {
+            val createCommand1 = CreateLostPostCommand(
+                title = "지갑",
+                content = "유실물$i",
+                subwayLine = subwayLine1.id,
+                lostType = LostType.LOST,
+                imgUrls = listOf("11", "22")
+            )
+
+            val createCommand2 = CreateLostPostCommand(
+                title = "지갑",
+                content = "유실물$i",
+                subwayLine = subwayLine2.id,
+                lostType = LostType.LOST,
+                imgUrls = listOf("11", "22")
+            )
+
+            lostPostUseCase.createLostPost(createCommand1)
+            lostPostUseCase.createLostPost(createCommand2)
+        }
+
+        val searchCommand1 = SearchLostPostCommand.of(
+            PageRequest.of(0, 3),
+            LostType.LOST,
+            subwayLine1.id,
+            null
+        )
+
+        val searchCommand2 = SearchLostPostCommand.of(
+            PageRequest.of(1, 3),
+            LostType.LOST,
+            subwayLine1.id,
+            null
+        )
+
+        // when + then
+        val response1 = lostPostUseCase.searchLostPosts(searchCommand1)
+
+        assertThat(response1.hasNext).isEqualTo(true)
+        assertThat(response1.contents.size).isEqualTo(3)
+        assertThat(response1.contents)
+            .extracting("subwayLine")
+            .usingRecursiveComparison()
+            .isEqualTo((1.. 3).map {subwayLine1.id}.toList())
+        assertThat(response1.contents)
+            .extracting("content")
+            .usingRecursiveComparison()
+            .isEqualTo((5 downTo 3).map { "유실물$it" })
+
+        // when + then
+        val response2 = lostPostUseCase.searchLostPosts(searchCommand2)
+        assertThat(response2.hasNext).isEqualTo(false)
+        assertThat(response2.contents.size).isEqualTo(2)
+        assertThat(response2.contents)
+            .extracting("content")
+            .usingRecursiveComparison()
+            .isEqualTo((2 downTo 1).map { "유실물$it" })
     }
 
+    @Test
+    @DisplayName("유실물 전체 조회 테스트 - 유실물 / 습득물 필터링")
+    fun searchLostPostsByLostType() {
+
+    }
     @Test
     @DisplayName("유실물 저장 테스트")
     fun createLostPost() {
