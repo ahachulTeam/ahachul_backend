@@ -96,15 +96,15 @@ class LostPostServiceTest(
 
         // then
         assertThat(response1.hasNext).isEqualTo(true)
-        assertThat(response1.contents.size).isEqualTo(3)
-        assertThat(response1.contents)
+        assertThat(response1.posts.size).isEqualTo(3)
+        assertThat(response1.posts)
             .extracting("content")
             .usingRecursiveComparison()
             .isEqualTo((5 downTo 3).map { "유실물$it" })
 
         assertThat(response2.hasNext).isEqualTo(false)
-        assertThat(response2.contents.size).isEqualTo(2)
-        assertThat(response2.contents)
+        assertThat(response2.posts.size).isEqualTo(2)
+        assertThat(response2.posts)
             .extracting("content")
             .usingRecursiveComparison()
             .isEqualTo((2 downTo 1).map { "유실물$it" })
@@ -131,8 +131,8 @@ class LostPostServiceTest(
         val response = lostPostUseCase.searchLostPosts(searchCommand)
 
         // then
-        assertThat(response.contents.size).isEqualTo(3)
-        assertThat(response.contents)
+        assertThat(response.posts.size).isEqualTo(3)
+        assertThat(response.posts)
             .extracting("subwayLine")
             .usingRecursiveComparison()
             .isEqualTo((1.. 3).map {subwayLine1.id}.toList())

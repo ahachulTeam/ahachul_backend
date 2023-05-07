@@ -6,7 +6,7 @@ class SearchLostPostsDto {
 
     data class Response(
         val hasNext: Boolean,
-        val contents: List<SearchLost>
+        val posts: List<SearchLost>
     )
 
     data class SearchLost(

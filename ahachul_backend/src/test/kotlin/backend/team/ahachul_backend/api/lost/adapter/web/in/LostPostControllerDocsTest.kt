@@ -107,7 +107,7 @@ class LostPostControllerDocsTest: CommonDocsConfig() {
                 .queryParam("page", "1")
                 .queryParam("size", "5")
                 .queryParam("lostType", LostType.LOST.name)
-                .queryParam("line", "1호선")
+                .queryParam("line", "1")
                 .queryParam("origin", LostOrigin.LOST112.name)
                 .accept(MediaType.APPLICATION_JSON)
         )
@@ -126,6 +126,7 @@ class LostPostControllerDocsTest: CommonDocsConfig() {
                 ),
                 responseFields(
                     *commonResponseFields(),
+                    fieldWithPath("result.hasNext").type(JsonFieldType.BOOLEAN).description("다음 유실물 포스트 존재 여부"),
                     fieldWithPath("result.posts[].title").type(JsonFieldType.STRING).description("유실물 제목"),
                     fieldWithPath("result.posts[].content").type(JsonFieldType.STRING).description("유실물 내용"),
                     fieldWithPath("result.posts[].writer").type(JsonFieldType.STRING).description("유실물 작성자 닉네임"),

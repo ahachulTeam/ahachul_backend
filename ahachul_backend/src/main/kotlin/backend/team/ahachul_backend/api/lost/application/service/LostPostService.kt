@@ -33,6 +33,7 @@ class LostPostService(
     override fun searchLostPosts(command: SearchLostPostCommand): SearchLostPostsDto.Response {
         val subwayLine = command.subwayLine?.let { subwayLineReader.getSubwayLine(it) }
         val sliceObject = lostPostReader.getLostPosts(GetSliceLostPostsCommand.from(command, subwayLine))
+
         val lostPosts = sliceObject.content.map {
             SearchLostPostsDto.SearchLost(
                 title = it.title,
@@ -44,7 +45,7 @@ class LostPostService(
                 status = it.status
             )
         }
-        return SearchLostPostsDto.Response(hasNext = sliceObject.hasNext(), contents = lostPosts)
+        return SearchLostPostsDto.Response(hasNext = sliceObject.hasNext(), posts = lostPosts)
     }
 
     @Transactional
