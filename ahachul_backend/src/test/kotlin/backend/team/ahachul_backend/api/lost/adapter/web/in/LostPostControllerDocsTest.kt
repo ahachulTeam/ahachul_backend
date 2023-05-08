@@ -5,8 +5,6 @@ import backend.team.ahachul_backend.api.lost.application.port.`in`.LostPostUseCa
 import backend.team.ahachul_backend.api.lost.domain.model.LostOrigin
 import backend.team.ahachul_backend.api.lost.domain.model.LostStatus
 import backend.team.ahachul_backend.api.lost.domain.model.LostType
-import backend.team.ahachul_backend.api.lost.domain.model.LostOrigin
-import backend.team.ahachul_backend.api.lost.domain.model.LostPostType
 import backend.team.ahachul_backend.config.controller.CommonDocsConfig
 import org.junit.jupiter.api.Test
 import org.mockito.BDDMockito.anyLong
