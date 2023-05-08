@@ -2,8 +2,6 @@ package backend.team.ahachul_backend.api.lost.adapter.web.`in`
 
 import backend.team.ahachul_backend.api.lost.adapter.web.`in`.dto.*
 import backend.team.ahachul_backend.api.lost.application.port.`in`.LostPostUseCase
-import backend.team.ahachul_backend.api.lost.domain.model.LostOrigin
-import backend.team.ahachul_backend.api.lost.domain.model.LostType
 import backend.team.ahachul_backend.common.annotation.Authentication
 import backend.team.ahachul_backend.common.response.CommonResponse
 import org.springframework.data.domain.Pageable
@@ -17,17 +15,15 @@ class LostPostController(
 
     @GetMapping("/v1/lost-posts/{lostId}")
     fun getLostPost(@PathVariable("lostId") lostId: Long): CommonResponse<GetLostPostDto.Response> {
-        return CommonResponse.success(lostPostService.getLostPost())
+        return CommonResponse.success(lostPostService.getLostPost(lostId))
     }
 
     @GetMapping("/v1/lost-posts")
     fun searchLostPosts(
         pageable: Pageable,
-        @RequestParam(value = "lostType") lostType: LostType,
-        @RequestParam(value = "line", required = false) line: String,
-        @RequestParam(value = "origin", required = false) origin: LostOrigin,
+        request: SearchLostPostsDto.Request
     ): CommonResponse<SearchLostPostsDto.Response> {
-        return CommonResponse.success(lostPostService.searchLostPosts())
+        return CommonResponse.success(lostPostService.searchLostPosts(request.toCommand(pageable)))
     }
 
     @Authentication

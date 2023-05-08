@@ -2,10 +2,9 @@ package backend.team.ahachul_backend.api.lost.adapter.web.`in`
 
 import backend.team.ahachul_backend.api.lost.adapter.web.`in`.dto.*
 import backend.team.ahachul_backend.api.lost.application.port.`in`.LostPostUseCase
+import backend.team.ahachul_backend.api.lost.domain.model.LostOrigin
 import backend.team.ahachul_backend.api.lost.domain.model.LostStatus
 import backend.team.ahachul_backend.api.lost.domain.model.LostType
-import backend.team.ahachul_backend.api.lost.domain.model.LostOrigin
-import backend.team.ahachul_backend.api.lost.domain.model.LostPostType
 import backend.team.ahachul_backend.config.controller.CommonDocsConfig
 import org.junit.jupiter.api.Test
 import org.mockito.BDDMockito.anyLong
@@ -34,6 +33,7 @@ class LostPostControllerDocsTest: CommonDocsConfig() {
             title = "title",
             content = "content",
             writer = "writer",
+            createdBy = "1",
             date = "2023/01/23",
             subwayLine = 1,
             chats = 1,
@@ -43,7 +43,7 @@ class LostPostControllerDocsTest: CommonDocsConfig() {
             storageNumber = "02-2222-3333"
         )
 
-        given(lostPostUseCase.getLostPost())
+        given(lostPostUseCase.getLostPost(anyLong()))
             .willReturn(response)
 
         // when
@@ -65,6 +65,7 @@ class LostPostControllerDocsTest: CommonDocsConfig() {
                     fieldWithPath("result.title").type(JsonFieldType.STRING).description("유실물 제목"),
                     fieldWithPath("result.content").type(JsonFieldType.STRING).description("유실물 내용"),
                     fieldWithPath("result.writer").type(JsonFieldType.STRING).description("유실물 작성자 닉네임"),
+                    fieldWithPath("result.createdBy").type(JsonFieldType.STRING).description("작성자 ID"),
                     fieldWithPath("result.date").type(JsonFieldType.STRING).description("유실물 작성 날짜"),
                     fieldWithPath("result.subwayLine").type(JsonFieldType.NUMBER).description("유실 호선"),
                     fieldWithPath("result.chats").type(JsonFieldType.NUMBER).description("유실물 쪽지 개수"),
@@ -80,11 +81,13 @@ class LostPostControllerDocsTest: CommonDocsConfig() {
     fun searchLostPosts() {
         // given
         val response = SearchLostPostsDto.Response(
+            hasNext = true,
             listOf(
                 SearchLostPostsDto.SearchLost(
                     title = "title",
                     content = "content",
                     writer = "writer",
+                    createdBy = "1",
                     date = "2023/01/23",
                     subwayLine = 1,
                     chats = 1,
@@ -94,7 +97,7 @@ class LostPostControllerDocsTest: CommonDocsConfig() {
             )
         )
 
-        given(lostPostUseCase.searchLostPosts())
+        given(lostPostUseCase.searchLostPosts(any()))
             .willReturn(response)
 
         // when
@@ -103,7 +106,7 @@ class LostPostControllerDocsTest: CommonDocsConfig() {
                 .queryParam("page", "1")
                 .queryParam("size", "5")
                 .queryParam("lostType", LostType.LOST.name)
-                .queryParam("line", "1호선")
+                .queryParam("subwayLineId", "1")
                 .queryParam("origin", LostOrigin.LOST112.name)
                 .accept(MediaType.APPLICATION_JSON)
         )
@@ -117,14 +120,16 @@ class LostPostControllerDocsTest: CommonDocsConfig() {
                     parameterWithName("page").description("현재 페이지"),
                     parameterWithName("size").description("페이지 노출 데이터 수"),
                     parameterWithName("lostType").description("유실물 카테고리").attributes(getFormatAttribute("LOST(유실) / ACQUIRE(습득)")),
-                    parameterWithName("line").description("유실물 호선").optional(),
+                    parameterWithName("subwayLineId").description("유실물 호선").optional(),
                     parameterWithName("origin").description("유실물 출처").attributes(getFormatAttribute( "LOST112 / APP")).optional()
                 ),
                 responseFields(
                     *commonResponseFields(),
+                    fieldWithPath("result.hasNext").type(JsonFieldType.BOOLEAN).description("다음 유실물 포스트 존재 여부"),
                     fieldWithPath("result.posts[].title").type(JsonFieldType.STRING).description("유실물 제목"),
                     fieldWithPath("result.posts[].content").type(JsonFieldType.STRING).description("유실물 내용"),
                     fieldWithPath("result.posts[].writer").type(JsonFieldType.STRING).description("유실물 작성자 닉네임"),
+                    fieldWithPath("result.posts[].createdBy").type(JsonFieldType.STRING).description("작성자 ID"),
                     fieldWithPath("result.posts[].date").type(JsonFieldType.STRING).description("유실물 작성 날짜"),
                     fieldWithPath("result.posts[].subwayLine").type(JsonFieldType.NUMBER).description("유실 호선 ID"),
                     fieldWithPath("result.posts[].chats").type(JsonFieldType.NUMBER).description("유실물 쪽지 개수"),
@@ -249,7 +254,7 @@ class LostPostControllerDocsTest: CommonDocsConfig() {
     fun deleteLostPost() {
         // given
         val response = DeleteLostPostDto.Response(
-            id = 1,
+            id = 1
         )
 
         given(lostPostUseCase.deleteLostPost(anyLong()))

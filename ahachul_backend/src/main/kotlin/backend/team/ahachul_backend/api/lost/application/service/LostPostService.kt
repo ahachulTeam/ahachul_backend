@@ -6,12 +6,15 @@ import backend.team.ahachul_backend.api.lost.application.port.out.LostPostReader
 import backend.team.ahachul_backend.api.lost.application.port.out.LostPostWriter
 import backend.team.ahachul_backend.common.persistence.SubwayLineReader
 import backend.team.ahachul_backend.api.lost.application.service.command.CreateLostPostCommand
+import backend.team.ahachul_backend.api.lost.application.service.command.GetSliceLostPostsCommand
+import backend.team.ahachul_backend.api.lost.application.service.command.SearchLostPostCommand
 import backend.team.ahachul_backend.api.lost.application.service.command.UpdateLostPostCommand
 import backend.team.ahachul_backend.api.lost.domain.entity.LostPostEntity
 import backend.team.ahachul_backend.api.member.application.port.out.MemberReader
 import backend.team.ahachul_backend.common.utils.RequestUtils
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import java.time.format.DateTimeFormatter
 
 @Service
 @Transactional(readOnly = true)
@@ -22,12 +25,27 @@ class LostPostService(
     private val memberReader: MemberReader
 ): LostPostUseCase {
 
-    override fun getLostPost(): GetLostPostDto.Response {
-        TODO("Not yet implemented")
+    override fun getLostPost(id: Long): GetLostPostDto.Response {
+        val entity = lostPostReader.getLostPost(id)
+        return GetLostPostDto.Response.from(entity);
     }
 
-    override fun searchLostPosts(): SearchLostPostsDto.Response {
-        TODO("Not yet implemented")
+    override fun searchLostPosts(command: SearchLostPostCommand): SearchLostPostsDto.Response {
+        val subwayLine = command.subwayLineId?.let { subwayLineReader.getSubwayLine(it) }
+        val sliceObject = lostPostReader.getLostPosts(GetSliceLostPostsCommand.from(command, subwayLine))
+
+        val lostPosts = sliceObject.content.map {
+            SearchLostPostsDto.SearchLost(
+                title = it.title,
+                content = it.content,
+                writer = it.member.nickname!!,
+                createdBy = it.createdBy,
+                date = it.createdAt.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")),
+                subwayLine = it.subwayLine.id,
+                status = it.status
+            )
+        }
+        return SearchLostPostsDto.Response(hasNext = sliceObject.hasNext(), posts = lostPosts)
     }
 
     @Transactional
@@ -40,7 +58,7 @@ class LostPostService(
             LostPostEntity.of(
                 command = command,
                 member = member,
-                subwayLineEntity = subwayLine
+                subwayLine = subwayLine
             )
         )
         return CreateLostPostDto.Response.from(entity.id)
@@ -56,7 +74,7 @@ class LostPostService(
             subwayLineReader.getSubwayLine(it)
         }
 
-        entity.update(command = command, subwayLineEntity = subwayLine)
+        entity.update(command = command, subwayLine = subwayLine)
         return UpdateLostPostDto.Response.from(entity)
     }
 
