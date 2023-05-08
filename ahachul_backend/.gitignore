@@ -49,4 +49,3 @@ src/test/resources/application.yml
 
 ### restdocs ###
 src/main/resources/static
-

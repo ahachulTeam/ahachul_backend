@@ -9,6 +9,7 @@ plugins {
     kotlin("jvm") version "1.7.22"
     kotlin("plugin.spring") version "1.7.22"
     kotlin("plugin.jpa") version "1.7.22"
+    kotlin("kapt") version "1.7.22"      // Kotlin Annotation Processor
 }
 
 noArg {
@@ -30,6 +31,7 @@ repositories {
 }
 
 val asciidoctorExt: Configuration by configurations.creating
+val kapt by configurations
 
 dependencies {
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
@@ -58,6 +60,10 @@ dependencies {
 
     // https://mvnrepository.com/artifact/com.h2database/h2
     runtimeOnly("com.h2database:h2:2.1.214")
+
+    // QueryDSL
+    implementation("com.querydsl:querydsl-jpa:5.0.0:jakarta")
+    kapt("com.querydsl:querydsl-apt:5.0.0:jakarta")
 
     implementation("org.jetbrains.kotlin:kotlin-reflect")
     runtimeOnly("com.mysql:mysql-connector-j")
