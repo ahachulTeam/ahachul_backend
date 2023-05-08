@@ -5,6 +5,7 @@ import backend.team.ahachul_backend.common.logging.Logger
 import backend.team.ahachul_backend.common.properties.AwsS3Properties
 import backend.team.ahachul_backend.common.response.ResponseCode
 import com.amazonaws.services.s3.AmazonS3Client
+import com.amazonaws.services.s3.model.CannedAccessControlList
 import com.amazonaws.services.s3.model.PutObjectRequest
 import mu.KotlinLogging
 import org.springframework.stereotype.Component
@@ -28,7 +29,7 @@ class AwsS3Client(
                     s3Properties.bucketName,
                     generateRandomUUID(),
                     convertToFile(file)
-                )
+                ).withCannedAcl(CannedAccessControlList.PublicRead)
             )
         } catch (e: CommonException) {
             logger.error(e.message, ResponseCode.BAD_REQUEST, e.stackTraceToString())
