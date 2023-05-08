@@ -104,9 +104,10 @@ class CommunityPostControllerDocsTest : CommonDocsConfig() {
             CommunityCategoryType.ISSUE,
             0,
             0,
-            "METROPOLITAN",
+            RegionType.METROPOLITAN,
             LocalDateTime.now(),
-            "작성자"
+            "작성자 ID",
+            "작성자 닉네임"
         )
 
         given(communityPostUseCase.getCommunityPost(any()))
@@ -136,9 +137,10 @@ class CommunityPostControllerDocsTest : CommonDocsConfig() {
                         fieldWithPath("result.categoryType").type("CategoryType").description("카테고리 타입").attributes(getFormatAttribute("FREE, INSIGHT, ISSUE, HUMOR")),
                         fieldWithPath("result.views").type(JsonFieldType.NUMBER).description("조회수"),
                         fieldWithPath("result.likes").type(JsonFieldType.NUMBER).description("좋아요 수"),
-                        fieldWithPath("result.region").type(JsonFieldType.STRING).description("지역"),
+                        fieldWithPath("result.region").type("RegionType").description("지역").attributes(getFormatAttribute("METROPOLITAN")),
                         fieldWithPath("result.createdAt").type("LocalDateTime").description("작성일자"),
-                        fieldWithPath("result.createdBy").type(JsonFieldType.STRING).description("작성자"),
+                        fieldWithPath("result.createdBy").type(JsonFieldType.STRING).description("작성자 ID"),
+                        fieldWithPath("result.writer").type(JsonFieldType.STRING).description("작성자 닉네임"),
                     )
                 )
             )

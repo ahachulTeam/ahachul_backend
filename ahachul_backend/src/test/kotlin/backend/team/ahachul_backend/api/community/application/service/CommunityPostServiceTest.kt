@@ -2,6 +2,7 @@ package backend.team.ahachul_backend.api.community.application.service
 
 import backend.team.ahachul_backend.api.community.adapter.web.`in`.dto.post.CreateCommunityPostCommand
 import backend.team.ahachul_backend.api.community.adapter.web.`in`.dto.post.DeleteCommunityPostCommand
+import backend.team.ahachul_backend.api.community.adapter.web.`in`.dto.post.GetCommunityPostCommand
 import backend.team.ahachul_backend.api.community.adapter.web.`in`.dto.post.UpdateCommunityPostCommand
 import backend.team.ahachul_backend.api.community.adapter.web.out.CommunityPostRepository
 import backend.team.ahachul_backend.api.community.application.port.`in`.CommunityPostUseCase
@@ -151,5 +152,32 @@ class CommunityPostServiceTest(
         assertThat(result.status).isEqualTo(CommunityPostType.CREATED)
         communityPostUseCase.deleteCommunityPost(deleteCommand)
         assertThat(result.status).isEqualTo(CommunityPostType.DELETED)
+    }
+
+    @Test
+    @DisplayName("커뮤니티 게시글 단 건 조회")
+    fun 커뮤니티_게시글_단건_조회() {
+        // given
+        val createCommand = CreateCommunityPostCommand(
+            title = "제목",
+            content = "내용",
+            categoryType = CommunityCategoryType.FREE
+        )
+        val (postId, _, _, _, _) = communityPostUseCase.createCommunityPost(createCommand)
+
+        val getCommunityPostCommand = GetCommunityPostCommand(
+            id = postId
+        )
+
+        // when
+        val result = communityPostUseCase.getCommunityPost(getCommunityPostCommand)
+
+        // then
+        assertThat(result.id).isEqualTo(postId)
+        assertThat(result.title).isEqualTo(result.title)
+        assertThat(result.content).isEqualTo(result.content)
+        assertThat(result.categoryType).isEqualTo(CommunityCategoryType.FREE)
+        assertThat(result.region).isEqualTo(RegionType.METROPOLITAN)
+        assertThat(result.writer).isEqualTo(member?.nickname)
     }
 }

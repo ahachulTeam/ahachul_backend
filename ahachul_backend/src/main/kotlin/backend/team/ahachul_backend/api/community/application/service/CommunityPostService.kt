@@ -23,7 +23,8 @@ class CommunityPostService(
     }
 
     override fun getCommunityPost(command: GetCommunityPostCommand): GetCommunityPostDto.Response {
-        TODO("Not yet implemented")
+        val communityPost = communityPostReader.getCommunityPost(command.id)
+        return GetCommunityPostDto.Response.from(communityPost)
     }
 
     @Transactional
