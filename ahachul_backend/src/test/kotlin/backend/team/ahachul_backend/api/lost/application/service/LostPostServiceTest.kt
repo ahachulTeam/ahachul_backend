@@ -239,7 +239,7 @@ class LostPostServiceTest(
             .isExactlyInstanceOf(CommonException::class.java)
             .hasMessage(ResponseCode.INVALID_AUTH.message)
     }
-
+    
     private fun createLostPostCommand(subwayLineId: Long, content: String): CreateLostPostCommand {
         return CreateLostPostCommand(
             title = "지갑",

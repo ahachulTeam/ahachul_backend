@@ -37,6 +37,8 @@ out/
 .vscode/
 
 ### Custom ###
+
+### log ###
 logs/*
 error_logs/*
 
