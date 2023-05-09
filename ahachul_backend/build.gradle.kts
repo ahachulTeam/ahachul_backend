@@ -61,6 +61,9 @@ dependencies {
     // https://mvnrepository.com/artifact/com.h2database/h2
     runtimeOnly("com.h2database:h2:2.1.214")
 
+    implementation("org.flywaydb:flyway-core:9.17.0")
+    implementation("org.flywaydb:flyway-mysql:9.17.0")
+
     // https://mvnrepository.com/artifact/org.springframework.cloud/spring-cloud-starter-aws
     implementation("org.springframework.cloud:spring-cloud-starter-aws:2.2.6.RELEASE")
 

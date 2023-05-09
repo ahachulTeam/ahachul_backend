@@ -13,9 +13,11 @@ class LostPostFileEntity (
     var id: Long = 0,
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "lost_post_id")
     var lostPost: LostPostEntity,
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "file_id")
     var file: FileEntity
 
 ): BaseEntity() {

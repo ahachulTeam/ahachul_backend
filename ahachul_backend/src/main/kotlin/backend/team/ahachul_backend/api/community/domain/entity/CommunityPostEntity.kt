@@ -20,16 +20,19 @@ class CommunityPostEntity(
 
     var content: String,
 
+    @Enumerated(EnumType.STRING)
     var categoryType: CommunityCategoryType,
 
     var views: Int = 0,
 
+    @Enumerated(EnumType.STRING)
     var status: CommunityPostType = CommunityPostType.CREATED,
 
     @Enumerated(EnumType.STRING)
     var regionType: RegionType = RegionType.METROPOLITAN,
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "member_id")
     var member: MemberEntity? = null,
 
     ): BaseEntity() {
