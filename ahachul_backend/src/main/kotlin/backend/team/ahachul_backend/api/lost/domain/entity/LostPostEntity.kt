@@ -50,22 +50,22 @@ class LostPostEntity(
 ): BaseEntity() {
 
     companion object {
-        fun of(command: CreateLostPostCommand, member: MemberEntity, subwayLineEntity: SubwayLineEntity): LostPostEntity {
+        fun of(command: CreateLostPostCommand, member: MemberEntity, subwayLine: SubwayLineEntity): LostPostEntity {
             return LostPostEntity(
                 title = command.title,
                 content = command.content,
-                subwayLine = subwayLineEntity,
+                subwayLine = subwayLine,
                 lostType = command.lostType,
                 member = member
             )
         }
     }
 
-    fun update(command: UpdateLostPostCommand, subwayLineEntity: SubwayLineEntity?) {
+    fun update(command: UpdateLostPostCommand, subwayLine: SubwayLineEntity?) {
         command.title?.let { this.title = it }
         command.content?.let { this.content = it }
         command.status?.let { this.status= it }
-        subwayLineEntity?.let { this.subwayLine = subwayLineEntity }
+        subwayLine?.let { this.subwayLine = subwayLine }
     }
 
     fun delete() {

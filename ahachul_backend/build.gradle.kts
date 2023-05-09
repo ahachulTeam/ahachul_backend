@@ -9,6 +9,7 @@ plugins {
     kotlin("jvm") version "1.7.22"
     kotlin("plugin.spring") version "1.7.22"
     kotlin("plugin.jpa") version "1.7.22"
+    kotlin("kapt") version "1.7.22"      // Kotlin Annotation Processor
 }
 
 noArg {
@@ -30,6 +31,7 @@ repositories {
 }
 
 val asciidoctorExt: Configuration by configurations.creating
+val kapt by configurations
 
 dependencies {
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
@@ -61,6 +63,15 @@ dependencies {
 
     implementation("org.flywaydb:flyway-core:9.17.0")
     implementation("org.flywaydb:flyway-mysql:9.17.0")
+
+    // https://mvnrepository.com/artifact/org.springframework.cloud/spring-cloud-starter-aws
+    implementation("org.springframework.cloud:spring-cloud-starter-aws:2.2.6.RELEASE")
+
+    implementation("org.springframework.boot:spring-boot-starter-data-redis")
+    
+    // QueryDSL
+    implementation("com.querydsl:querydsl-jpa:5.0.0:jakarta")
+    kapt("com.querydsl:querydsl-apt:5.0.0:jakarta")
 
     implementation("org.jetbrains.kotlin:kotlin-reflect")
     runtimeOnly("com.mysql:mysql-connector-j")
