@@ -14,6 +14,7 @@ class SubwayLineEntity (
 
     var name: String,
 
+    @Enumerated(EnumType.STRING)
     var regionType: RegionType
 
 ): BaseEntity() {

@@ -15,15 +15,19 @@ class CommunityCommentEntity(
 
     var content: String,
 
+    @Enumerated(EnumType.STRING)
     var status: CommunityCommentType = CommunityCommentType.CREATED,
 
-    @OneToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "upper_comment_id")
     var upperCommunityComment: CommunityCommentEntity?,
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "community_post_id")
     var communityPost: CommunityPostEntity,
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "member_id")
     var member: MemberEntity,
 
 ): BaseEntity() {

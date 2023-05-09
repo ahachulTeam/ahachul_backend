@@ -8,13 +8,15 @@ import jakarta.persistence.*
 class CommunityPostFileEntity(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "community_category_file_id")
+    @Column(name = "community_post_file_id")
     val id: Long = 0,
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "community_post_id")
     var commentPost: CommunityPostEntity,
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "file_id")
     var file: FileEntity
 ): BaseEntity() {
 }
