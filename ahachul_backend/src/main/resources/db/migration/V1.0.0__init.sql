@@ -1,6 +1,7 @@
 CREATE TABLE tb_community_post
 (
     community_post_id BIGINT auto_increment NOT NULL,
+    member_id         BIGINT NOT NULL,
     title             VARCHAR(100) NOT NULL,
     content           TEXT NOT NULL,
     status            VARCHAR(20) NOT NULL,
@@ -19,6 +20,7 @@ CREATE TABLE tb_community_comment
     community_comment_id BIGINT auto_increment NOT NULL,
     content              TEXT NOT NULL,
     status               VARCHAR(20) NOT NULL,
+    member_id            BIGINT NOT NULL,
     upper_comment_id     BIGINT NULL,
     community_post_id    BIGINT NOT NULL,
     created_at           TIMESTAMP NOT NULL,
@@ -72,8 +74,9 @@ CREATE TABLE tb_member
 
 CREATE TABLE tb_lost_post
 (
-    lost_id        BIGINT NOT NULL auto_increment,
+    lost_post_id   BIGINT NOT NULL auto_increment,
     member_id      BIGINT NOT NULL,
+    subway_line_id BIGINT NOT NULL,
     title          VARCHAR(100) NOT NULL,
     content        TEXT NOT NULL,
     status         VARCHAR(10) NOT NULL,
@@ -81,20 +84,19 @@ CREATE TABLE tb_lost_post
     lost_category  VARCHAR(10) NOT NULL,
     type           VARCHAR(10) NOT NULL,
     lost_type      VARCHAR(10) NOT NULL,
-    lost_line      VARCHAR(10) NOT NULL,
     storage        VARCHAR(10) NOT NULL,
     storage_number VARCHAR(10),
     created_at     TIMESTAMP NOT NULL,
     created_by     VARCHAR(50) NOT NULL,
     updated_at     TIMESTAMP NOT NULL,
     updated_by     VARCHAR(50) NOT NULL,
-    PRIMARY KEY (lost_id)
+    PRIMARY KEY (lost_post_id)
 );
 
 CREATE TABLE tb_lost_post_file
 (
     lost_post_file_id BIGINT NOT NULL auto_increment,
-    lost_id           BIGINT NOT NULL,
+    lost_post_id           BIGINT NOT NULL,
     file_id           BIGINT NOT NULL,
     created_at        TIMESTAMP NOT NULL,
     created_by        VARCHAR(50) NOT NULL,
@@ -103,16 +105,16 @@ CREATE TABLE tb_lost_post_file
     PRIMARY KEY (lost_post_file_id)
 );
 
-CREATE TABLE tb_category_post
+CREATE TABLE tb_category_lost_post
 (
-    category_post_id BIGINT NOT NULL auto_increment,
+    category_lost_post_id BIGINT NOT NULL auto_increment,
     lost_post_id     BIGINT NOT NULL,
     category_id      BIGINT NOT NULL,
     created_at       TIMESTAMP NOT NULL,
     created_by       VARCHAR(50) NOT NULL,
     updated_at       TIMESTAMP NOT NULL,
     updated_by       VARCHAR(50) NOT NULL,
-    PRIMARY KEY (category_post_id)
+    PRIMARY KEY (category_lost_post_id)
 );
 
 CREATE TABLE tb_category
