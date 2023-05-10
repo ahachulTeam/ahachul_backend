@@ -6,6 +6,7 @@ import backend.team.ahachul_backend.api.community.application.port.out.Community
 import backend.team.ahachul_backend.api.community.application.port.out.CommunityPostWriter
 import backend.team.ahachul_backend.api.community.domain.entity.CommunityPostEntity
 import backend.team.ahachul_backend.api.member.application.port.out.MemberReader
+import backend.team.ahachul_backend.common.support.ViewsSupport
 import backend.team.ahachul_backend.common.utils.RequestUtils
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -16,6 +17,7 @@ class CommunityPostService(
     private val communityPostWriter: CommunityPostWriter,
     private val communityPostReader: CommunityPostReader,
     private val memberReader: MemberReader,
+    private val viewsSupport: ViewsSupport,
 ): CommunityPostUseCase {
 
     override fun searchCommunityPosts(): SearchCommunityPostDto.Response {
@@ -24,7 +26,8 @@ class CommunityPostService(
 
     override fun getCommunityPost(command: GetCommunityPostCommand): GetCommunityPostDto.Response {
         val communityPost = communityPostReader.getCommunityPost(command.id)
-        return GetCommunityPostDto.Response.from(communityPost)
+        val views = viewsSupport.increase(command.id)
+        return GetCommunityPostDto.Response.of(communityPost, views)
     }
 
     @Transactional

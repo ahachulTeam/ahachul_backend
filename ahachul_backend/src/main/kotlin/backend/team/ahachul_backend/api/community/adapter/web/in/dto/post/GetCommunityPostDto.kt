@@ -20,13 +20,13 @@ class GetCommunityPostDto {
         val writer: String
     ) {
         companion object {
-            fun from(entity: CommunityPostEntity): Response {
+            fun of(entity: CommunityPostEntity, views: Int): Response {
                 return Response(
                     id = entity.id,
                     title = entity.title,
                     content = entity.content,
                     categoryType = entity.categoryType,
-                    views = entity.views,
+                    views = views,
                     // TODO 좋아요 구현 후
                     likes = 0,
                     region = entity.regionType,

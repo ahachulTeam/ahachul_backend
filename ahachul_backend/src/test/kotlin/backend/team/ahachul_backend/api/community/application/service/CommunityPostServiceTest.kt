@@ -180,4 +180,31 @@ class CommunityPostServiceTest(
         assertThat(result.region).isEqualTo(RegionType.METROPOLITAN)
         assertThat(result.writer).isEqualTo(member?.nickname)
     }
+
+//    @Test TODO
+    @DisplayName("커뮤니티 조회수 증가")
+    fun 커뮤니티_조회수_증가() {
+        // given
+        val createCommand = CreateCommunityPostCommand(
+            title = "제목",
+            content = "내용",
+            categoryType = CommunityCategoryType.FREE
+        )
+        val (postId, _, _, _, _) = communityPostUseCase.createCommunityPost(createCommand)
+
+        val getCommunityPostCommand = GetCommunityPostCommand(
+            id = postId
+        )
+
+        // when, then
+        var result = communityPostUseCase.getCommunityPost(getCommunityPostCommand)
+        assertThat(result.views).isEqualTo(1)
+
+        result = communityPostUseCase.getCommunityPost(getCommunityPostCommand)
+        assertThat(result.views).isEqualTo(2)
+
+        communityPostUseCase.getCommunityPost(getCommunityPostCommand)
+        result = communityPostUseCase.getCommunityPost(getCommunityPostCommand)
+        assertThat(result.views).isEqualTo(4)
+    }
 }
