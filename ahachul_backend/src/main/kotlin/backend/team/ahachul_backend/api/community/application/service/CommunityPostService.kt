@@ -6,6 +6,7 @@ import backend.team.ahachul_backend.api.community.application.port.out.Community
 import backend.team.ahachul_backend.api.community.application.port.out.CommunityPostWriter
 import backend.team.ahachul_backend.api.community.domain.entity.CommunityPostEntity
 import backend.team.ahachul_backend.api.member.application.port.out.MemberReader
+import backend.team.ahachul_backend.common.persistence.SubwayLineReader
 import backend.team.ahachul_backend.common.support.ViewsSupport
 import backend.team.ahachul_backend.common.utils.RequestUtils
 import org.springframework.stereotype.Service
@@ -17,11 +18,12 @@ class CommunityPostService(
     private val communityPostWriter: CommunityPostWriter,
     private val communityPostReader: CommunityPostReader,
     private val memberReader: MemberReader,
+    private val subwayLineReader: SubwayLineReader,
     private val viewsSupport: ViewsSupport,
 ): CommunityPostUseCase {
 
-    override fun searchCommunityPosts(): SearchCommunityPostDto.Response {
-        TODO("Not yet implemented")
+    override fun searchCommunityPosts(command: SearchCommunityPostCommand): SearchCommunityPostDto.Response {
+        return SearchCommunityPostDto.Response(true, arrayListOf())
     }
 
     override fun getCommunityPost(command: GetCommunityPostCommand): GetCommunityPostDto.Response {
@@ -33,8 +35,10 @@ class CommunityPostService(
     @Transactional
     override fun createCommunityPost(command: CreateCommunityPostCommand): CreateCommunityPostDto.Response {
         val memberId = RequestUtils.getAttribute("memberId")!!
-        val entity = communityPostWriter.save(CommunityPostEntity.of(command, memberReader.getMember(memberId.toLong())))
-        return CreateCommunityPostDto.Response.from(entity)
+        val member = memberReader.getMember(memberId.toLong())
+        val subwayLine = subwayLineReader.getSubwayLine(command.subwayLineId)
+        val communityPost = communityPostWriter.save(CommunityPostEntity.of(command, member, subwayLine))
+        return CreateCommunityPostDto.Response.from(communityPost)
     }
 
     @Transactional

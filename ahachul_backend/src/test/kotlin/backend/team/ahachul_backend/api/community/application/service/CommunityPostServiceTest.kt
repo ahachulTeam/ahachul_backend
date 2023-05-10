@@ -14,7 +14,9 @@ import backend.team.ahachul_backend.api.member.domain.model.MemberStatusType
 import backend.team.ahachul_backend.api.member.domain.model.ProviderType
 import backend.team.ahachul_backend.common.exception.CommonException
 import backend.team.ahachul_backend.api.community.domain.model.CommunityPostType
+import backend.team.ahachul_backend.common.domain.entity.SubwayLineEntity
 import backend.team.ahachul_backend.common.model.RegionType
+import backend.team.ahachul_backend.common.persistence.SubwayLineRepository
 import backend.team.ahachul_backend.common.utils.RequestUtils
 import jakarta.transaction.Transactional
 import org.assertj.core.api.Assertions.assertThat
@@ -32,9 +34,11 @@ class CommunityPostServiceTest(
     @Autowired val communityPostRepository: CommunityPostRepository,
     @Autowired val communityPostUseCase: CommunityPostUseCase,
     @Autowired val memberRepository: MemberRepository,
+    @Autowired val subwayLineRepository: SubwayLineRepository,
 ) {
 
     var member: MemberEntity? = null
+    private lateinit var subwayLine: SubwayLineEntity
 
     @BeforeEach
     fun setup() {
@@ -50,6 +54,7 @@ class CommunityPostServiceTest(
             )
         )
         member!!.id.let { RequestUtils.setAttribute("memberId", it) }
+        subwayLine = subwayLineRepository.save(SubwayLineEntity(name = "1호선", regionType = RegionType.METROPOLITAN))
     }
 
     @Test
@@ -59,7 +64,8 @@ class CommunityPostServiceTest(
         val command = CreateCommunityPostCommand(
             title = "제목",
             content = "내용",
-            categoryType = CommunityCategoryType.FREE
+            categoryType = CommunityCategoryType.FREE,
+            subwayLineId = subwayLine.id
         )
 
         // when
@@ -84,7 +90,8 @@ class CommunityPostServiceTest(
         val createCommand = CreateCommunityPostCommand(
             title = "제목",
             content = "내용",
-            categoryType = CommunityCategoryType.FREE
+            categoryType = CommunityCategoryType.FREE,
+            subwayLineId = subwayLine.id
         )
         val (postId, _, _, _, _) = communityPostUseCase.createCommunityPost(createCommand)
 
@@ -112,7 +119,8 @@ class CommunityPostServiceTest(
         val createCommand = CreateCommunityPostCommand(
             title = "제목",
             content = "내용",
-            categoryType = CommunityCategoryType.FREE
+            categoryType = CommunityCategoryType.FREE,
+            subwayLineId = subwayLine.id
         )
         val (postId, _, _, _, _) = communityPostUseCase.createCommunityPost(createCommand)
 
@@ -140,7 +148,8 @@ class CommunityPostServiceTest(
         val createCommand = CreateCommunityPostCommand(
             title = "제목",
             content = "내용",
-            categoryType = CommunityCategoryType.FREE
+            categoryType = CommunityCategoryType.FREE,
+            subwayLineId = subwayLine.id
         )
         val (postId, _, _, _, _) = communityPostUseCase.createCommunityPost(createCommand)
 
@@ -161,7 +170,8 @@ class CommunityPostServiceTest(
         val createCommand = CreateCommunityPostCommand(
             title = "제목",
             content = "내용",
-            categoryType = CommunityCategoryType.FREE
+            categoryType = CommunityCategoryType.FREE,
+            subwayLineId = subwayLine.id
         )
         val (postId, _, _, _, _) = communityPostUseCase.createCommunityPost(createCommand)
 
@@ -188,7 +198,8 @@ class CommunityPostServiceTest(
         val createCommand = CreateCommunityPostCommand(
             title = "제목",
             content = "내용",
-            categoryType = CommunityCategoryType.FREE
+            categoryType = CommunityCategoryType.FREE,
+            subwayLineId = subwayLine.id
         )
         val (postId, _, _, _, _) = communityPostUseCase.createCommunityPost(createCommand)
 
