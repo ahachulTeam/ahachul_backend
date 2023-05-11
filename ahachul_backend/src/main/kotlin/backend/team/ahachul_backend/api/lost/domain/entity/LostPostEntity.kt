@@ -16,13 +16,15 @@ class LostPostEntity(
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "lost_post_entity_id")
+    @Column(name = "lost_post_id")
     var id: Long = 0,
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "member_id")
     var member: MemberEntity,
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "subway_line_id")
     var subwayLine: SubwayLineEntity,
 
     var title: String,

@@ -27,7 +27,7 @@ class MemberEntity(
 
         var email: String?,
 
-        @Enumerated(EnumType.ORDINAL)
+        @Enumerated(EnumType.STRING)
         var gender: GenderType?,
 
         var ageRange: String?,
@@ -35,6 +35,7 @@ class MemberEntity(
         @Enumerated(EnumType.STRING)
         var status: MemberStatusType,
 
+        @Enumerated(EnumType.STRING)
         var regionType: RegionType = RegionType.METROPOLITAN
 ): BaseEntity() {
 

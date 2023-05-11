@@ -12,9 +12,11 @@ class CategoryLostPostEntity(
     var id: Long = 0,
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "lost_post_id")
     var lostPost: LostPostEntity,
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "category_id")
     var category: CategoryEntity
 ): BaseEntity() {
 }
