@@ -22,9 +22,9 @@ class CommunityPostController(
     @GetMapping("/v1/community-posts")
     fun searchCommunityPosts(
         pageable: Pageable,
-        searchCommunityPostDto: SearchCommunityPostDto.Request
+        request: SearchCommunityPostDto.Request
     ): CommonResponse<SearchCommunityPostDto.Response> {
-        return CommonResponse.success(communityPostUseCase.searchCommunityPosts())
+        return CommonResponse.success(communityPostUseCase.searchCommunityPosts(request.toCommand(pageable)))
     }
 
     @GetMapping("/v1/community-posts/{postId}")

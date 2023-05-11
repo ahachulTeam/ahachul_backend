@@ -23,7 +23,11 @@ class CommunityPostService(
 ): CommunityPostUseCase {
 
     override fun searchCommunityPosts(command: SearchCommunityPostCommand): SearchCommunityPostDto.Response {
-        return SearchCommunityPostDto.Response(true, arrayListOf())
+        val searchCommunityPosts = communityPostReader.searchCommunityPosts(command)
+        val views = searchCommunityPosts.map {
+            viewsSupport.get(it.id)
+        }.toList()
+        return SearchCommunityPostDto.Response.of(searchCommunityPosts, views)
     }
 
     override fun getCommunityPost(command: GetCommunityPostCommand): GetCommunityPostDto.Response {
