@@ -19,6 +19,7 @@ import backend.team.ahachul_backend.common.domain.entity.SubwayLineEntity
 import backend.team.ahachul_backend.common.model.RegionType
 import backend.team.ahachul_backend.common.persistence.SubwayLineRepository
 import backend.team.ahachul_backend.common.utils.RequestUtils
+import backend.team.ahachul_backend.config.controller.CommonServiceTestConfig
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.BeforeEach
@@ -36,7 +37,7 @@ class CommunityCommentServiceTest(
     @Autowired val communityPostRepository: CommunityPostRepository,
     @Autowired val memberRepository: MemberRepository,
     @Autowired val subwayLineRepository: SubwayLineRepository
-) {
+): CommonServiceTestConfig() {
 
     private lateinit var subwayLine: SubwayLineEntity
 

@@ -15,7 +15,7 @@ import backend.team.ahachul_backend.common.domain.entity.SubwayLineEntity
 import backend.team.ahachul_backend.common.model.RegionType
 import backend.team.ahachul_backend.common.persistence.SubwayLineRepository
 import backend.team.ahachul_backend.common.utils.RequestUtils
-import jakarta.transaction.Transactional
+import backend.team.ahachul_backend.config.controller.CommonServiceTestConfig
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.jupiter.api.Assertions.*
@@ -23,17 +23,14 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.data.domain.Pageable
 
-@SpringBootTest
-@Transactional
 class CommunityPostServiceTest(
     @Autowired val communityPostRepository: CommunityPostRepository,
     @Autowired val communityPostUseCase: CommunityPostUseCase,
     @Autowired val memberRepository: MemberRepository,
     @Autowired val subwayLineRepository: SubwayLineRepository,
-) {
+): CommonServiceTestConfig() {
 
     var member: MemberEntity? = null
     private lateinit var subwayLine: SubwayLineEntity

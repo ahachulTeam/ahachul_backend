@@ -120,7 +120,7 @@ tasks {
 
 tasks.register<Copy>("copySecret") {
     from("./ahachul_secret") {
-//        exclude("application.yml")
+        exclude("application.yml")
     }
     into("./src/main/resources")
 }
