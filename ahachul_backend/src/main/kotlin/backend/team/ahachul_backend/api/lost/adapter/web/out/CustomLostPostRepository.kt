@@ -35,7 +35,7 @@ class CustomLostPostRepository(
 
     private fun getOffset(pageable: Pageable): Int {
         return when {
-            pageable.pageNumber != 0 -> (pageable.pageNumber + pageable.pageSize) - 1
+            pageable.pageNumber != 0 -> (pageable.pageNumber * pageable.pageSize) + 1
             else -> pageable.pageNumber
         }
     }

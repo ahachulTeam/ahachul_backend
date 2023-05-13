@@ -4,7 +4,7 @@ import backend.team.ahachul_backend.api.community.adapter.web.`in`.dto.post.*
 
 interface CommunityPostUseCase {
 
-    fun searchCommunityPosts(): SearchCommunityPostDto.Response
+    fun searchCommunityPosts(command: SearchCommunityPostCommand): SearchCommunityPostDto.Response
 
     fun getCommunityPost(command: GetCommunityPostCommand): GetCommunityPostDto.Response
 

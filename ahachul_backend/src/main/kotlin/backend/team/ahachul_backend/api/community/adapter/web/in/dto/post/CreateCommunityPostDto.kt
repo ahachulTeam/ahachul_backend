@@ -10,12 +10,14 @@ class CreateCommunityPostDto {
         val title: String,
         val content: String,
         val categoryType: CommunityCategoryType,
+        val subwayLineId: Long,
     ) {
         fun toCommand(): CreateCommunityPostCommand {
             return CreateCommunityPostCommand(
                 title = title,
                 content = content,
-                categoryType = categoryType
+                categoryType = categoryType,
+                subwayLineId = subwayLineId
             )
         }
     }
@@ -26,6 +28,7 @@ class CreateCommunityPostDto {
         val content: String,
         val categoryType: CommunityCategoryType,
         val region: RegionType,
+        val subwayLineId: Long
     ) {
         companion object {
             fun from(entity: CommunityPostEntity): Response {
@@ -34,7 +37,8 @@ class CreateCommunityPostDto {
                     title = entity.title,
                     content = entity.content,
                     categoryType = entity.categoryType,
-                    region = entity.regionType
+                    region = entity.regionType,
+                    subwayLineId = entity.subwayLineEntity.id
                 )
             }
         }

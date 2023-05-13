@@ -6,5 +6,6 @@ class CreateCommunityPostCommand(
     val title: String,
     val content: String,
     val categoryType: CommunityCategoryType,
+    val subwayLineId: Long,
 ) {
 }

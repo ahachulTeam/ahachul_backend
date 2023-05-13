@@ -15,6 +15,9 @@ import backend.team.ahachul_backend.api.member.domain.entity.MemberEntity
 import backend.team.ahachul_backend.api.member.domain.model.GenderType
 import backend.team.ahachul_backend.api.member.domain.model.MemberStatusType
 import backend.team.ahachul_backend.api.member.domain.model.ProviderType
+import backend.team.ahachul_backend.common.domain.entity.SubwayLineEntity
+import backend.team.ahachul_backend.common.model.RegionType
+import backend.team.ahachul_backend.common.persistence.SubwayLineRepository
 import backend.team.ahachul_backend.common.utils.RequestUtils
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Assertions.*
@@ -24,8 +27,6 @@ import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.transaction.annotation.Transactional
-import java.util.stream.IntStream
-import kotlin.streams.toList
 
 @SpringBootTest
 @Transactional
@@ -34,7 +35,10 @@ class CommunityCommentServiceTest(
     @Autowired val communityCommentUseCase: CommunityCommentUseCase,
     @Autowired val communityPostRepository: CommunityPostRepository,
     @Autowired val memberRepository: MemberRepository,
+    @Autowired val subwayLineRepository: SubwayLineRepository
 ) {
+
+    private lateinit var subwayLine: SubwayLineEntity
 
     @BeforeEach
     fun setup() {
@@ -50,6 +54,7 @@ class CommunityCommentServiceTest(
         )
         )
         member.id.let { RequestUtils.setAttribute("memberId", it) }
+        subwayLine = subwayLineRepository.save(SubwayLineEntity(name = "1호선", regionType = RegionType.METROPOLITAN))
     }
 
     @Test
@@ -61,6 +66,7 @@ class CommunityCommentServiceTest(
                 title = "제목",
                 content = "내용",
                 categoryType = CommunityCategoryType.FREE,
+                subwayLineEntity = subwayLine
             )
         )
 
@@ -93,6 +99,7 @@ class CommunityCommentServiceTest(
                 title = "제목",
                 content = "내용",
                 categoryType = CommunityCategoryType.FREE,
+                subwayLineEntity = subwayLine
             )
         )
         val createCommunityCommentCommand = CreateCommunityCommentCommand(
@@ -124,6 +131,7 @@ class CommunityCommentServiceTest(
                 title = "제목",
                 content = "내용",
                 categoryType = CommunityCategoryType.FREE,
+                subwayLineEntity = subwayLine
             )
         )
         val createCommunityCommentCommand = CreateCommunityCommentCommand(
@@ -157,6 +165,7 @@ class CommunityCommentServiceTest(
                 title = "제목",
                 content = "내용",
                 categoryType = CommunityCategoryType.FREE,
+                subwayLineEntity = subwayLine
             )
         )
         for (i in 1..10) {

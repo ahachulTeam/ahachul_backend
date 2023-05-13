@@ -1,8 +1,6 @@
 package backend.team.ahachul_backend.api.community.application.service
 
-import backend.team.ahachul_backend.api.community.adapter.web.`in`.dto.post.CreateCommunityPostCommand
-import backend.team.ahachul_backend.api.community.adapter.web.`in`.dto.post.DeleteCommunityPostCommand
-import backend.team.ahachul_backend.api.community.adapter.web.`in`.dto.post.UpdateCommunityPostCommand
+import backend.team.ahachul_backend.api.community.adapter.web.`in`.dto.post.*
 import backend.team.ahachul_backend.api.community.adapter.web.out.CommunityPostRepository
 import backend.team.ahachul_backend.api.community.application.port.`in`.CommunityPostUseCase
 import backend.team.ahachul_backend.api.community.domain.model.CommunityCategoryType
@@ -13,7 +11,9 @@ import backend.team.ahachul_backend.api.member.domain.model.MemberStatusType
 import backend.team.ahachul_backend.api.member.domain.model.ProviderType
 import backend.team.ahachul_backend.common.exception.CommonException
 import backend.team.ahachul_backend.api.community.domain.model.CommunityPostType
+import backend.team.ahachul_backend.common.domain.entity.SubwayLineEntity
 import backend.team.ahachul_backend.common.model.RegionType
+import backend.team.ahachul_backend.common.persistence.SubwayLineRepository
 import backend.team.ahachul_backend.common.utils.RequestUtils
 import jakarta.transaction.Transactional
 import org.assertj.core.api.Assertions.assertThat
@@ -24,6 +24,7 @@ import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
+import org.springframework.data.domain.Pageable
 
 @SpringBootTest
 @Transactional
@@ -31,9 +32,11 @@ class CommunityPostServiceTest(
     @Autowired val communityPostRepository: CommunityPostRepository,
     @Autowired val communityPostUseCase: CommunityPostUseCase,
     @Autowired val memberRepository: MemberRepository,
+    @Autowired val subwayLineRepository: SubwayLineRepository,
 ) {
 
     var member: MemberEntity? = null
+    private lateinit var subwayLine: SubwayLineEntity
 
     @BeforeEach
     fun setup() {
@@ -49,6 +52,7 @@ class CommunityPostServiceTest(
             )
         )
         member!!.id.let { RequestUtils.setAttribute("memberId", it) }
+        subwayLine = subwayLineRepository.save(SubwayLineEntity(name = "1호선", regionType = RegionType.METROPOLITAN))
     }
 
     @Test
@@ -58,7 +62,8 @@ class CommunityPostServiceTest(
         val command = CreateCommunityPostCommand(
             title = "제목",
             content = "내용",
-            categoryType = CommunityCategoryType.FREE
+            categoryType = CommunityCategoryType.FREE,
+            subwayLineId = subwayLine.id
         )
 
         // when
@@ -83,7 +88,8 @@ class CommunityPostServiceTest(
         val createCommand = CreateCommunityPostCommand(
             title = "제목",
             content = "내용",
-            categoryType = CommunityCategoryType.FREE
+            categoryType = CommunityCategoryType.FREE,
+            subwayLineId = subwayLine.id
         )
         val (postId, _, _, _, _) = communityPostUseCase.createCommunityPost(createCommand)
 
@@ -111,7 +117,8 @@ class CommunityPostServiceTest(
         val createCommand = CreateCommunityPostCommand(
             title = "제목",
             content = "내용",
-            categoryType = CommunityCategoryType.FREE
+            categoryType = CommunityCategoryType.FREE,
+            subwayLineId = subwayLine.id
         )
         val (postId, _, _, _, _) = communityPostUseCase.createCommunityPost(createCommand)
 
@@ -139,7 +146,8 @@ class CommunityPostServiceTest(
         val createCommand = CreateCommunityPostCommand(
             title = "제목",
             content = "내용",
-            categoryType = CommunityCategoryType.FREE
+            categoryType = CommunityCategoryType.FREE,
+            subwayLineId = subwayLine.id
         )
         val (postId, _, _, _, _) = communityPostUseCase.createCommunityPost(createCommand)
 
@@ -152,4 +160,156 @@ class CommunityPostServiceTest(
         communityPostUseCase.deleteCommunityPost(deleteCommand)
         assertThat(result.status).isEqualTo(CommunityPostType.DELETED)
     }
+
+    @Test
+    @DisplayName("커뮤니티 게시글 단 건 조회")
+    fun 커뮤니티_게시글_단건_조회() {
+        // given
+        val createCommand = CreateCommunityPostCommand(
+            title = "제목",
+            content = "내용",
+            categoryType = CommunityCategoryType.FREE,
+            subwayLineId = subwayLine.id
+        )
+        val (postId, _, _, _, _) = communityPostUseCase.createCommunityPost(createCommand)
+
+        val getCommunityPostCommand = GetCommunityPostCommand(
+            id = postId
+        )
+
+        // when
+        val result = communityPostUseCase.getCommunityPost(getCommunityPostCommand)
+
+        // then
+        assertThat(result.id).isEqualTo(postId)
+        assertThat(result.title).isEqualTo(result.title)
+        assertThat(result.content).isEqualTo(result.content)
+        assertThat(result.categoryType).isEqualTo(CommunityCategoryType.FREE)
+        assertThat(result.region).isEqualTo(RegionType.METROPOLITAN)
+        assertThat(result.writer).isEqualTo(member?.nickname)
+    }
+
+//    @Test TODO
+    @DisplayName("커뮤니티 조회수 증가")
+    fun 커뮤니티_조회수_증가() {
+        // given
+        val createCommand = CreateCommunityPostCommand(
+            title = "제목",
+            content = "내용",
+            categoryType = CommunityCategoryType.FREE,
+            subwayLineId = subwayLine.id
+        )
+        val (postId, _, _, _, _) = communityPostUseCase.createCommunityPost(createCommand)
+
+        val getCommunityPostCommand = GetCommunityPostCommand(
+            id = postId
+        )
+
+        // when, then
+        var result = communityPostUseCase.getCommunityPost(getCommunityPostCommand)
+        assertThat(result.views).isEqualTo(1)
+
+        result = communityPostUseCase.getCommunityPost(getCommunityPostCommand)
+        assertThat(result.views).isEqualTo(2)
+
+        communityPostUseCase.getCommunityPost(getCommunityPostCommand)
+        result = communityPostUseCase.getCommunityPost(getCommunityPostCommand)
+        assertThat(result.views).isEqualTo(4)
+    }
+
+    @Test
+    @DisplayName("커뮤니티 게시글 내용 조회")
+    fun 커뮤니티_게시글_내용_조회() {
+        // given
+        val createCommand = CreateCommunityPostCommand(
+            title = "지하철 제목",
+            content = "지하철 내용",
+            categoryType = CommunityCategoryType.FREE,
+            subwayLineId = subwayLine.id
+        )
+        val createCommand2 = CreateCommunityPostCommand(
+            title = "지하철 안와요",
+            content = "지하철이 왜 안와",
+            categoryType = CommunityCategoryType.ISSUE,
+            subwayLineId = subwayLine.id
+        )
+        val communityPost = communityPostUseCase.createCommunityPost(createCommand)
+        val communityPost2 = communityPostUseCase.createCommunityPost(createCommand2)
+
+        val verifyNameCommand = SearchCommunityPostCommand(
+            content = "제",
+            pageable = Pageable.ofSize(2)
+        )
+        val verifyNameCommand2 = SearchCommunityPostCommand(
+            content = "지하철",
+            pageable = Pageable.ofSize(1)
+        )
+        val verifyNameCommand3 = SearchCommunityPostCommand(
+            content = "지하철",
+            pageable = Pageable.ofSize(2)
+        )
+        val verifyOrderCommand = SearchCommunityPostCommand(
+            pageable = Pageable.ofSize(2)
+        )
+
+        // when, then
+        var result = communityPostUseCase.searchCommunityPosts(verifyNameCommand)
+        assertThat(result.hasNext).isFalse()
+        assertThat(result.posts).hasSize(1)
+        assertThat(result.posts.first().id).isEqualTo(communityPost.id)
+
+        result = communityPostUseCase.searchCommunityPosts(verifyNameCommand2)
+        assertThat(result.hasNext).isTrue()
+        assertThat(result.posts).hasSize(1)
+        assertThat(result.posts.first().id).isEqualTo(communityPost2.id)
+
+        result = communityPostUseCase.searchCommunityPosts(verifyNameCommand3)
+        assertThat(result.hasNext).isFalse()
+        assertThat(result.posts).hasSize(2)
+
+        result = communityPostUseCase.searchCommunityPosts(verifyOrderCommand)
+        assertThat(result.posts).hasSize(2)
+        assertThat(result.posts.map { it.createdAt })
+            .isEqualTo(result.posts.map { it.createdAt }.sortedDescending())
+
+    }
+
+     @Test
+     @DisplayName("커뮤니티_게시글_카테고리_조회")
+     fun 커뮤니티_게시글_카테고리_조회() {
+         // given
+         val createCommand = CreateCommunityPostCommand(
+             title = "지하철 제목",
+             content = "지하철 내용",
+             categoryType = CommunityCategoryType.FREE,
+             subwayLineId = subwayLine.id
+         )
+         val createCommand2 = CreateCommunityPostCommand(
+             title = "지하철 안와요",
+             content = "지하철이 왜 안와",
+             categoryType = CommunityCategoryType.ISSUE,
+             subwayLineId = subwayLine.id
+         )
+         val communityPost = communityPostUseCase.createCommunityPost(createCommand)
+         val communityPost2 = communityPostUseCase.createCommunityPost(createCommand2)
+
+
+         val verifyCategoryCommand = SearchCommunityPostCommand(
+             categoryType = CommunityCategoryType.FREE,
+             pageable = Pageable.ofSize(2)
+         )
+         val verifyCategoryCommand2 = SearchCommunityPostCommand(
+             categoryType = CommunityCategoryType.ISSUE,
+             pageable = Pageable.ofSize(2)
+         )
+
+         // when, then
+         var result = communityPostUseCase.searchCommunityPosts(verifyCategoryCommand)
+         assertThat(result.posts).hasSize(1)
+         assertThat(result.posts.first().id).isEqualTo(communityPost.id)
+
+         result = communityPostUseCase.searchCommunityPosts(verifyCategoryCommand2)
+         assertThat(result.posts).hasSize(1)
+         assertThat(result.posts.first().id).isEqualTo(communityPost2.id)
+     }
 }

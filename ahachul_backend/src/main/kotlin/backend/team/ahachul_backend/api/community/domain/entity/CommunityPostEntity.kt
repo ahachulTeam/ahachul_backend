@@ -6,6 +6,7 @@ import backend.team.ahachul_backend.api.community.domain.model.CommunityCategory
 import backend.team.ahachul_backend.api.member.domain.entity.MemberEntity
 import backend.team.ahachul_backend.common.entity.BaseEntity
 import backend.team.ahachul_backend.api.community.domain.model.CommunityPostType
+import backend.team.ahachul_backend.common.domain.entity.SubwayLineEntity
 import backend.team.ahachul_backend.common.model.RegionType
 import jakarta.persistence.*
 
@@ -35,15 +36,20 @@ class CommunityPostEntity(
     @JoinColumn(name = "member_id")
     var member: MemberEntity? = null,
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "subway_line_id")
+    var subwayLineEntity: SubwayLineEntity
+
     ): BaseEntity() {
 
     companion object {
-        fun of(command: CreateCommunityPostCommand, memberEntity: MemberEntity): CommunityPostEntity {
+        fun of(command: CreateCommunityPostCommand, memberEntity: MemberEntity, subwayLineEntity: SubwayLineEntity): CommunityPostEntity {
             return CommunityPostEntity(
                 title = command.title,
                 content = command.content,
                 categoryType = command.categoryType,
-                member = memberEntity
+                member = memberEntity,
+                subwayLineEntity = subwayLineEntity
             )
         }
     }
