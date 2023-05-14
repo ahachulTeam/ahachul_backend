@@ -5,7 +5,7 @@ import backend.team.ahachul_backend.api.community.adapter.web.`in`.dto.post.*
 import backend.team.ahachul_backend.api.community.application.port.`in`.CommunityPostUseCase
 import backend.team.ahachul_backend.api.community.domain.model.CommunityCategoryType
 import backend.team.ahachul_backend.common.model.RegionType
-import backend.team.ahachul_backend.config.controller.CommonDocsConfig
+import backend.team.ahachul_backend.config.controller.CommonDocsTestConfig
 import org.junit.jupiter.api.Test
 import org.mockito.BDDMockito.given
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest
@@ -22,7 +22,7 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 import java.time.LocalDateTime
 
 @WebMvcTest(CommunityPostController::class)
-class CommunityPostControllerDocsTest : CommonDocsConfig() {
+class CommunityPostControllerDocsTestTest : CommonDocsTestConfig() {
 
     @MockBean
     lateinit var communityPostUseCase: CommunityPostUseCase

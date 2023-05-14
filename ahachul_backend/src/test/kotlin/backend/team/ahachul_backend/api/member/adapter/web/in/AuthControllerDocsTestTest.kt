@@ -5,7 +5,7 @@ import backend.team.ahachul_backend.api.member.adapter.web.`in`.dto.GetTokenDto
 import backend.team.ahachul_backend.api.member.adapter.web.`in`.dto.LoginMemberDto
 import backend.team.ahachul_backend.api.member.application.port.`in`.AuthUseCase
 import backend.team.ahachul_backend.api.member.domain.model.ProviderType
-import backend.team.ahachul_backend.config.controller.CommonDocsConfig
+import backend.team.ahachul_backend.config.controller.CommonDocsTestConfig
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
 import org.mockito.BDDMockito.given
@@ -22,7 +22,7 @@ import org.springframework.restdocs.request.RequestDocumentation.*
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 
 @WebMvcTest(AuthController::class)
-class AuthControllerDocsTest : CommonDocsConfig() {
+class AuthControllerDocsTestTest : CommonDocsTestConfig() {
 
     @MockBean
     lateinit var authUseCase: AuthUseCase
