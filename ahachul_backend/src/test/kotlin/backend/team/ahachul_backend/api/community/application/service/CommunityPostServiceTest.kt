@@ -186,7 +186,7 @@ class CommunityPostServiceTest(
         assertThat(result.writer).isEqualTo(member?.nickname)
     }
 
-//    @Test TODO
+    @Test
     @DisplayName("커뮤니티 조회수 증가")
     fun 커뮤니티_조회수_증가() {
         // given
