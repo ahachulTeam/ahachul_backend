@@ -5,7 +5,7 @@ import backend.team.ahachul_backend.api.community.adapter.web.`in`.dto.comment.D
 import backend.team.ahachul_backend.api.community.adapter.web.`in`.dto.comment.GetCommunityCommentsDto
 import backend.team.ahachul_backend.api.community.adapter.web.`in`.dto.comment.UpdateCommunityCommentDto
 import backend.team.ahachul_backend.api.community.application.port.`in`.CommunityCommentUseCase
-import backend.team.ahachul_backend.config.controller.CommonDocsConfig
+import backend.team.ahachul_backend.config.controller.CommonDocsTestConfig
 import org.junit.jupiter.api.Test
 import org.mockito.BDDMockito.given
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest
@@ -24,7 +24,7 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 import java.time.LocalDateTime
 
 @WebMvcTest(CommunityCommentController::class)
-class CommunityCommentControllerDocsTest : CommonDocsConfig() {
+class CommunityCommentControllerDocsTestTest : CommonDocsTestConfig() {
 
     @MockBean
     lateinit var communityCommentUseCase: CommunityCommentUseCase

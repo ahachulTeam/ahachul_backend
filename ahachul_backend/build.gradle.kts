@@ -68,6 +68,11 @@ dependencies {
     implementation("org.springframework.cloud:spring-cloud-starter-aws:2.2.6.RELEASE")
 
     implementation("org.springframework.boot:spring-boot-starter-data-redis")
+
+    // https://www.testcontainers.org/
+    testImplementation("org.junit.jupiter:junit-jupiter:5.8.1")
+    testImplementation("org.testcontainers:testcontainers:1.18.1")
+    testImplementation("org.testcontainers:junit-jupiter:1.18.1")
     
     // QueryDSL
     implementation("com.querydsl:querydsl-jpa:5.0.0:jakarta")
