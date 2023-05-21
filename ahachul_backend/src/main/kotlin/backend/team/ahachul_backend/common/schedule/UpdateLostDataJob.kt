@@ -56,10 +56,10 @@ class UpdateLostDataJob(
         logger.info("===== END JOB: [${this::class.simpleName}] =====")
     }
 
-    private fun <T> readFileData(): T = run {
+    private inline fun <reified T: Any> readFileData(): T = run {
         try {
             FileReader(FILE_READ_PATH).use {
-                val typeRef = object: TypeReference<T> (){}
+                val typeRef = object : TypeReference<T>() {}
                 return objectMapper.readValue(it, typeRef)
             }
         } catch (e: IOException) {
