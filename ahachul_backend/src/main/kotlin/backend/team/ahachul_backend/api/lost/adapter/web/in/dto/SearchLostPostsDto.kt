@@ -31,7 +31,7 @@ class SearchLostPostsDto {
     data class SearchLost(
         val title: String,
         val content: String,
-        val writer: String,
+        val writer: String?,
         val createdBy: String,
         val date: String,
         val subwayLine: Long,

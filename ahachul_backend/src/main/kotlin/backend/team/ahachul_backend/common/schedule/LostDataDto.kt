@@ -12,5 +12,6 @@ data class LostDataDto(
     val phone: String,
     val context: String,
     val image: String,
-    val source: String
+    val source: String,
+    val page: String
 )

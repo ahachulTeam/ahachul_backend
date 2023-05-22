@@ -40,7 +40,8 @@ class LostPostControllerDocsTest: CommonDocsConfig() {
             status = LostStatus.PROGRESS,
             imgUrls = listOf(),
             storage = "우리집",
-            storageNumber = "02-2222-3333"
+            storageNumber = "02-2222-3333",
+            pageUrl = "http://lost112"
         )
 
         given(lostPostUseCase.getLostPost(anyLong()))
@@ -72,7 +73,8 @@ class LostPostControllerDocsTest: CommonDocsConfig() {
                     fieldWithPath("result.imgUrls").type(JsonFieldType.ARRAY).description("유실물 이미지 리스트"),
                     fieldWithPath("result.status").type(JsonFieldType.STRING).description("유실물 찾기 완료 여부").attributes(getFormatAttribute( "PROGRESS / COMPLETE")),
                     fieldWithPath("result.storage" ).type(JsonFieldType.STRING).description("보관 장소").attributes(getFormatAttribute("Lost112 데이터")),
-                    fieldWithPath("result.storageNumber").type(JsonFieldType.STRING).description("보관 장소 전화번호").attributes(getFormatAttribute("Lost112 데이터"))
+                    fieldWithPath("result.storageNumber").type(JsonFieldType.STRING).description("보관 장소 전화번호").attributes(getFormatAttribute("Lost112 데이터")),
+                    fieldWithPath("result.pageUrl" ).type(JsonFieldType.STRING).description("외부 유실물 데이터 페이지 링크")
                 )
             ))
     }
@@ -134,7 +136,7 @@ class LostPostControllerDocsTest: CommonDocsConfig() {
                     fieldWithPath("result.posts[].subwayLine").type(JsonFieldType.NUMBER).description("유실 호선 ID"),
                     fieldWithPath("result.posts[].chats").type(JsonFieldType.NUMBER).description("유실물 쪽지 개수"),
                     fieldWithPath("result.posts[].imgUrl").type(JsonFieldType.STRING).description("유실물 대표 이미지"),
-                    fieldWithPath("result.posts[].status").type(JsonFieldType.STRING).description("유실물 찾기 완료 여부").attributes(getFormatAttribute( "PROGRESS / COMPLETE"))
+                    fieldWithPath("result.posts[].status").type(JsonFieldType.STRING).description("유실물 찾기 완료 여부").attributes(getFormatAttribute( "PROGRESS / COMPLETE")),
                 )
             ))
     }

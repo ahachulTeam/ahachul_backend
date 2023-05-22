@@ -40,7 +40,7 @@ class LostPostService(
                 content = it.content,
                 writer = it.member?.nickname,
                 createdBy = it.createdBy,
-                date = it.createdAt.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")),
+                date = it.date.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")),
                 subwayLine = it.subwayLine.id,
                 status = it.status
             )

@@ -10,6 +10,7 @@ import backend.team.ahachul_backend.api.member.domain.entity.MemberEntity
 import backend.team.ahachul_backend.common.domain.entity.SubwayLineEntity
 import backend.team.ahachul_backend.common.entity.BaseEntity
 import jakarta.persistence.*
+import java.time.LocalDateTime
 
 @Entity
 class LostPostEntity(
@@ -21,7 +22,7 @@ class LostPostEntity(
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
-    var member: MemberEntity,
+    var member: MemberEntity? = null,
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "subway_line_id")
@@ -45,7 +46,11 @@ class LostPostEntity(
 
     var storage: String? = null,
 
-    var storageNumber: String? = null
+    var storageNumber: String? = null,
+
+    var pageUrl: String? = null,
+
+    var receivedDate: LocalDateTime = LocalDateTime.now()
 
 ): BaseEntity() {
 
@@ -71,4 +76,10 @@ class LostPostEntity(
     fun delete() {
         type = LostPostType.DELETED
     }
+
+    val date: LocalDateTime
+        get() = when (origin) {
+            LostOrigin.LOST112 -> receivedDate
+            else -> createdAt
+        }
 }
