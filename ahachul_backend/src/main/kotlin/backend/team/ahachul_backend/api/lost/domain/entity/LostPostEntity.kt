@@ -9,10 +9,8 @@ import backend.team.ahachul_backend.api.lost.domain.model.LostType
 import backend.team.ahachul_backend.api.member.domain.entity.MemberEntity
 import backend.team.ahachul_backend.common.domain.entity.SubwayLineEntity
 import backend.team.ahachul_backend.common.entity.BaseEntity
-import backend.team.ahachul_backend.common.schedule.LostDataDto
 import jakarta.persistence.*
 import java.time.LocalDateTime
-import java.time.format.DateTimeFormatter
 
 @Entity
 class LostPostEntity(
@@ -66,21 +64,6 @@ class LostPostEntity(
                 member = member
             )
         }
-
-//        fun ofLost112(it: LostDataDto): LostPostEntity {
-////            return LostPostEntity(
-////                title = it.title,
-////                content = it.context,
-////                lostType = LostType.LOST,
-////                origin = LostOrigin.LOST112,
-////                storageNumber = it.phone,
-////                storage = it.storagePlace,
-////                subwayLine = extractSubwayLine(it.receiptPlace),
-////                pageUrl = it.page,
-////                receivedDate = LocalDateTime.parse(it.getDate,
-////                    DateTimeFormatter.ofPattern("yyyy-MM-dd HH시경"))
-//            )
-//        }
     }
 
     fun update(command: UpdateLostPostCommand, subwayLine: SubwayLineEntity?) {
