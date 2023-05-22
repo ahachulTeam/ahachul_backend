@@ -35,7 +35,7 @@ class ScheduleConfig(
             .withIdentity(TriggerKey("UPDATE_LOST_DATA_TRIGGER ", "LOST"))
             .startNow()
             .withSchedule(
-                CronScheduleBuilder.cronSchedule("0 36 21 ? * *")
+                CronScheduleBuilder.cronSchedule("0 * * ? * *")
             )
             .build()
     }

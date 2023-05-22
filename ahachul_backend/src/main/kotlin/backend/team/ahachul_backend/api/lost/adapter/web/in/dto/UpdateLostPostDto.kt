@@ -30,7 +30,7 @@ class UpdateLostPostDto {
         val id: Long,
         val title: String,
         val content: String,
-        val subwayLine: Long,
+        val subwayLine: Long?,
         val status: LostStatus
     ) {
         companion object {
@@ -39,7 +39,7 @@ class UpdateLostPostDto {
                     id = entity.id,
                     title = entity.title,
                     content = entity.content,
-                    subwayLine = entity.subwayLine.id,
+                    subwayLine = entity.subwayLine?.id,
                     status = entity.status
                 )
             }
