@@ -1,6 +1,7 @@
 package backend.team.ahachul_backend.api.community.application.service
 
 import backend.team.ahachul_backend.api.community.adapter.web.`in`.dto.post.*
+import backend.team.ahachul_backend.api.community.adapter.web.out.CommunityPostHashTagRepository
 import backend.team.ahachul_backend.api.community.adapter.web.out.CommunityPostRepository
 import backend.team.ahachul_backend.api.community.application.port.`in`.CommunityPostUseCase
 import backend.team.ahachul_backend.api.community.domain.model.CommunityCategoryType
@@ -13,6 +14,7 @@ import backend.team.ahachul_backend.common.exception.CommonException
 import backend.team.ahachul_backend.api.community.domain.model.CommunityPostType
 import backend.team.ahachul_backend.common.domain.entity.SubwayLineEntity
 import backend.team.ahachul_backend.common.model.RegionType
+import backend.team.ahachul_backend.common.persistence.HashTagRepository
 import backend.team.ahachul_backend.common.persistence.SubwayLineRepository
 import backend.team.ahachul_backend.common.utils.RequestUtils
 import backend.team.ahachul_backend.config.controller.CommonServiceTestConfig
@@ -28,6 +30,9 @@ import org.springframework.data.domain.Pageable
 class CommunityPostServiceTest(
     @Autowired val communityPostRepository: CommunityPostRepository,
     @Autowired val communityPostUseCase: CommunityPostUseCase,
+
+    @Autowired val communityPostHashTagRepository: CommunityPostHashTagRepository,
+    @Autowired val hashTagRepository: HashTagRepository,
     @Autowired val memberRepository: MemberRepository,
     @Autowired val subwayLineRepository: SubwayLineRepository,
 ): CommonServiceTestConfig() {
@@ -60,7 +65,8 @@ class CommunityPostServiceTest(
             title = "제목",
             content = "내용",
             categoryType = CommunityCategoryType.FREE,
-            subwayLineId = subwayLine.id
+            subwayLineId = subwayLine.id,
+            hashTags = arrayListOf("여행", "취미")
         )
 
         // when
@@ -76,6 +82,11 @@ class CommunityPostServiceTest(
         val communityPost = communityPostRepository.findById(result.id).get()
 
         assertThat(communityPost.member!!.id).isEqualTo(member!!.id)
+
+        assertThat(hashTagRepository.findByName("여행")).isNotNull
+        assertThat(hashTagRepository.findByName("취미")).isNotNull
+
+        assertThat(communityPostHashTagRepository.findAll()).hasSize(2)
     }
 
     @Test

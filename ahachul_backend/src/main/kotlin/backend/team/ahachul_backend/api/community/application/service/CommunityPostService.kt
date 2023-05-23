@@ -2,10 +2,16 @@ package backend.team.ahachul_backend.api.community.application.service
 
 import backend.team.ahachul_backend.api.community.adapter.web.`in`.dto.post.*
 import backend.team.ahachul_backend.api.community.application.port.`in`.CommunityPostUseCase
+import backend.team.ahachul_backend.api.community.application.port.out.CommunityPostHashTagReader
+import backend.team.ahachul_backend.api.community.application.port.out.CommunityPostHashTagWriter
 import backend.team.ahachul_backend.api.community.application.port.out.CommunityPostReader
 import backend.team.ahachul_backend.api.community.application.port.out.CommunityPostWriter
 import backend.team.ahachul_backend.api.community.domain.entity.CommunityPostEntity
+import backend.team.ahachul_backend.api.community.domain.entity.CommunityPostHashTagEntity
 import backend.team.ahachul_backend.api.member.application.port.out.MemberReader
+import backend.team.ahachul_backend.common.domain.entity.HashTagEntity
+import backend.team.ahachul_backend.common.persistence.HashTagReader
+import backend.team.ahachul_backend.common.persistence.HashTagWriter
 import backend.team.ahachul_backend.common.persistence.SubwayLineReader
 import backend.team.ahachul_backend.common.support.ViewsSupport
 import backend.team.ahachul_backend.common.utils.RequestUtils
@@ -17,6 +23,10 @@ import org.springframework.transaction.annotation.Transactional
 class CommunityPostService(
     private val communityPostWriter: CommunityPostWriter,
     private val communityPostReader: CommunityPostReader,
+
+    private val hashTagWriter: HashTagWriter,
+    private val hashTagReader: HashTagReader,
+    private val communityPostHashTagWriter: CommunityPostHashTagWriter,
     private val memberReader: MemberReader,
     private val subwayLineReader: SubwayLineReader,
     private val viewsSupport: ViewsSupport,
@@ -42,6 +52,18 @@ class CommunityPostService(
         val member = memberReader.getMember(memberId.toLong())
         val subwayLine = subwayLineReader.getSubwayLine(command.subwayLineId)
         val communityPost = communityPostWriter.save(CommunityPostEntity.of(command, member, subwayLine))
+
+        for (hashTagName in command.hashTags) {
+            val hashTag = hashTagReader.find(hashTagName) ?: hashTagWriter.save(
+                HashTagEntity(name = hashTagName)
+            )
+            communityPostHashTagWriter.save(
+                CommunityPostHashTagEntity(
+                    communityPost = communityPost,
+                    hashTagEntity = hashTag
+                )
+            )
+        }
         return CreateCommunityPostDto.Response.from(communityPost)
     }
 
