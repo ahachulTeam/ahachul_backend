@@ -9,13 +9,15 @@ class UpdateCommunityPostDto {
         val title: String,
         val content: String,
         val categoryType: CommunityCategoryType,
+        val hashTags: List<String>,
     ) {
         fun toCommand(postId: Long): UpdateCommunityPostCommand {
             return UpdateCommunityPostCommand(
                 id = postId,
                 title = title,
                 content = content,
-                categoryType = categoryType
+                categoryType = categoryType,
+                hashTags = hashTags
             )
         }
     }

@@ -7,5 +7,6 @@ class UpdateCommunityPostCommand(
     val title: String,
     val content: String,
     val categoryType: CommunityCategoryType,
+    val hashTags: List<String> = arrayListOf(),
 ) {
 }

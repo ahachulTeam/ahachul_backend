@@ -224,7 +224,8 @@ class CommunityPostControllerDocsTestTest : CommonDocsTestConfig() {
         val request = UpdateCommunityPostDto.Request(
             title = "변경할 제목",
             content = "변경할 내용",
-            categoryType = CommunityCategoryType.ISSUE
+            categoryType = CommunityCategoryType.ISSUE,
+            hashTags = arrayListOf("여행", "취미")
         )
 
         // when
@@ -250,9 +251,10 @@ class CommunityPostControllerDocsTestTest : CommonDocsTestConfig() {
                         parameterWithName("postId").description("게시물 아이디")
                     ),
                     requestFields(
-                        fieldWithPath("title").description("변경할 제목"),
-                        fieldWithPath("content").description("변경할 내용"),
-                        fieldWithPath("categoryType").description("변경할 카테고리 타입").attributes(getFormatAttribute("FREE, INSIGHT, ISSUE, HUMOR")),
+                        fieldWithPath("title").type(JsonFieldType.STRING).description("변경할 제목"),
+                        fieldWithPath("content").type(JsonFieldType.STRING).description("변경할 내용"),
+                        fieldWithPath("categoryType").type("CategoryType").description("변경할 카테고리 타입").attributes(getFormatAttribute("FREE, INSIGHT, ISSUE, HUMOR")),
+                        fieldWithPath("hashTags").type(JsonFieldType.ARRAY).description("해시 태그 목록").optional(),
                     ),
                     responseFields(
                         *commonResponseFields(),
