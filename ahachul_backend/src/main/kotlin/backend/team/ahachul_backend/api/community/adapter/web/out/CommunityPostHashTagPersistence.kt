@@ -13,4 +13,8 @@ class CommunityPostHashTagPersistence(
     override fun save(entity: CommunityPostHashTagEntity): CommunityPostHashTagEntity {
         return repository.save(entity)
     }
+
+    override fun findAllByPostId(postId: Long): List<CommunityPostHashTagEntity> {
+        return repository.findAllByCommunityPostId(postId)
+    }
 }

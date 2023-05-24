@@ -2,6 +2,7 @@ package backend.team.ahachul_backend.api.community.application.service
 
 import backend.team.ahachul_backend.api.community.adapter.web.`in`.dto.post.*
 import backend.team.ahachul_backend.api.community.application.port.`in`.CommunityPostUseCase
+import backend.team.ahachul_backend.api.community.application.port.out.CommunityPostHashTagReader
 import backend.team.ahachul_backend.api.community.application.port.out.CommunityPostReader
 import backend.team.ahachul_backend.api.community.application.port.out.CommunityPostWriter
 import backend.team.ahachul_backend.api.community.domain.entity.CommunityPostEntity
@@ -20,6 +21,7 @@ class CommunityPostService(
 
     private val memberReader: MemberReader,
     private val subwayLineReader: SubwayLineReader,
+    private val communityPostHashTagReader: CommunityPostHashTagReader,
 
     private val communityPostHashTagService: CommunityPostHashTagService,
 
@@ -37,7 +39,8 @@ class CommunityPostService(
     override fun getCommunityPost(command: GetCommunityPostCommand): GetCommunityPostDto.Response {
         val communityPost = communityPostReader.getCommunityPost(command.id)
         val views = viewsSupport.increase(command.id)
-        return GetCommunityPostDto.Response.of(communityPost, views)
+        val hashTags = communityPostHashTagReader.findAllByPostId(communityPost.id).map { it.hashTag.name }
+        return GetCommunityPostDto.Response.of(communityPost, hashTags, views)
     }
 
     @Transactional

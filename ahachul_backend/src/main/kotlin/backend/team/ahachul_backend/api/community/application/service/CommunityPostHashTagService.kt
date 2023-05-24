@@ -25,7 +25,7 @@ class CommunityPostHashTagService(
             communityPostHashTagWriter.save(
                 CommunityPostHashTagEntity(
                     communityPost = communityPost,
-                    hashTagEntity = hashTag
+                    hashTag = hashTag
                 )
             )
         }

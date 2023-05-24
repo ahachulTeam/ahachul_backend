@@ -177,7 +177,8 @@ class CommunityPostServiceTest(
             title = "제목",
             content = "내용",
             categoryType = CommunityCategoryType.FREE,
-            subwayLineId = subwayLine.id
+            subwayLineId = subwayLine.id,
+            hashTags = arrayListOf("여행", "취미")
         )
         val (postId, _, _, _, _) = communityPostUseCase.createCommunityPost(createCommand)
 
@@ -195,6 +196,7 @@ class CommunityPostServiceTest(
         assertThat(result.categoryType).isEqualTo(CommunityCategoryType.FREE)
         assertThat(result.region).isEqualTo(RegionType.METROPOLITAN)
         assertThat(result.writer).isEqualTo(member?.nickname)
+        assertThat(result.hashTags).containsExactly("여행", "취미")
     }
 
     @Test

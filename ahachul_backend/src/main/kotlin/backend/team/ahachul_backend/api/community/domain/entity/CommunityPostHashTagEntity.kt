@@ -17,7 +17,7 @@ class CommunityPostHashTagEntity(
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "hash_tag_id")
-    var hashTagEntity: HashTagEntity,
+    var hashTag: HashTagEntity,
 
     ): BaseEntity() {
 }
