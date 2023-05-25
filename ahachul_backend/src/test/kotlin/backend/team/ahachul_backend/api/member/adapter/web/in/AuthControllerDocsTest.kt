@@ -22,7 +22,7 @@ import org.springframework.restdocs.request.RequestDocumentation.*
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 
 @WebMvcTest(AuthController::class)
-class AuthControllerDocsTestTest : CommonDocsTestConfig() {
+class AuthControllerDocsTest : CommonDocsTestConfig() {
 
     @MockBean
     lateinit var authUseCase: AuthUseCase

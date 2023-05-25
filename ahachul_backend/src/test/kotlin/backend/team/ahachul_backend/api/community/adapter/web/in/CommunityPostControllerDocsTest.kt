@@ -22,7 +22,7 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 import java.time.LocalDateTime
 
 @WebMvcTest(CommunityPostController::class)
-class CommunityPostControllerDocsTestTest : CommonDocsTestConfig() {
+class CommunityPostControllerDocsTest : CommonDocsTestConfig() {
 
     @MockBean
     lateinit var communityPostUseCase: CommunityPostUseCase
