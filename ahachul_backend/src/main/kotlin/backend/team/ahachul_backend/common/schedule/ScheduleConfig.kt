@@ -1,6 +1,5 @@
 package backend.team.ahachul_backend.common.schedule
 
-import backend.team.ahachul_backend.common.logging.Logger
 import jakarta.annotation.PostConstruct
 import org.quartz.*
 import org.springframework.context.annotation.Configuration
@@ -11,23 +10,29 @@ class ScheduleConfig(
     private val scheduler: Scheduler
 ){
 
-    private val logger: Logger = Logger(javaClass)
-
     @PostConstruct
     fun init() {
-        try {
-            scheduler.scheduleJob(getJobDetail(), getTrigger())
-        } catch (e: SchedulerException) {
-            logger.info("===== Exception occur while scheduling: stop [${this::class.simpleName}]")
-            throw JobExecutionException(true)
-        }
+        setTriggerListener()
+        scheduler.scheduleJob(getJobDetail(), getTrigger())
+    }
+
+    private fun setTriggerListener() {
+        val listenerManager = scheduler.listenerManager
+        listenerManager.addTriggerListener(JobFailureHandlingListener())
     }
 
     private fun getJobDetail(): JobDetail {
         return JobBuilder.newJob()
             .ofType(UpdateLostDataJob::class.java)
+            .usingJobData(getJobDataMap())
             .withIdentity(JobKey("UPDATE_LOST_DATA_JOB", "LOST"))
             .build()
+    }
+
+    private fun getJobDataMap(): JobDataMap {
+        val jobDataMap = JobDataMap()
+        jobDataMap.put(UpdateLostDataJob.RETRY_KEY, 0)
+        return jobDataMap
     }
 
     private fun getTrigger(): Trigger {
@@ -36,6 +41,7 @@ class ScheduleConfig(
             .startNow()
             .withSchedule(
                 CronScheduleBuilder.cronSchedule("0 * * ? * *")
+                    .withMisfireHandlingInstructionFireAndProceed()
             )
             .build()
     }
