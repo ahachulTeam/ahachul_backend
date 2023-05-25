@@ -5,9 +5,11 @@ import backend.team.ahachul_backend.schedule.listener.JobFailureHandlingListener
 import jakarta.annotation.PostConstruct
 import org.quartz.*
 import org.springframework.context.annotation.Configuration
+import org.springframework.context.annotation.Profile
 
 
 @Configuration
+@Profile("dev")
 class ScheduleConfig(
     private val scheduler: Scheduler
 ){
