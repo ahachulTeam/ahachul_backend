@@ -1,5 +1,7 @@
-package backend.team.ahachul_backend.common.schedule
+package backend.team.ahachul_backend.schedule.config
 
+import backend.team.ahachul_backend.schedule.job.UpdateLostDataJob
+import backend.team.ahachul_backend.schedule.listener.JobFailureHandlingListener
 import jakarta.annotation.PostConstruct
 import org.quartz.*
 import org.springframework.context.annotation.Configuration

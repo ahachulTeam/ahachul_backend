@@ -1,7 +1,7 @@
-package backend.team.ahachul_backend.common.schedule
+package backend.team.ahachul_backend.schedule
 
 
-data class LostDataDto(
+data class Lost112Data(
     val title: String = "",
     val getDate: String = "",
     val getPlace: String = "",

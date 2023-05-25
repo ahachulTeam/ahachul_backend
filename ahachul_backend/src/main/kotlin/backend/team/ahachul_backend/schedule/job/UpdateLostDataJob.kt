@@ -1,4 +1,4 @@
-package backend.team.ahachul_backend.common.schedule
+package backend.team.ahachul_backend.schedule.job
 
 import backend.team.ahachul_backend.api.lost.application.port.out.LostPostWriter
 import backend.team.ahachul_backend.api.lost.domain.entity.LostPostEntity
@@ -6,6 +6,7 @@ import backend.team.ahachul_backend.common.domain.entity.SubwayLineEntity
 import backend.team.ahachul_backend.common.logging.Logger
 import backend.team.ahachul_backend.common.persistence.SubwayLineReader
 import backend.team.ahachul_backend.common.utils.FileUtils
+import backend.team.ahachul_backend.schedule.Lost112Data
 import org.quartz.*
 import org.springframework.stereotype.Component
 import java.util.concurrent.TimeUnit
@@ -27,7 +28,7 @@ class UpdateLostDataJob(
     override fun execute(context: JobExecutionContext?) {
         try {
             updateRetryCount(context!!)
-            val response = FileUtils.readFileData<List<Map<String, LostDataDto>>>()
+            val response = FileUtils.readFileData<List<Map<String, Lost112Data>>>(FILE_READ_PATH)
             saveLostPosts(response)
         }  catch (e: SchedulerException) {
             logger.info("Recoverable exception occur while scheduling: restarting job [${ context!!.jobDetail.key } ]")
@@ -45,7 +46,7 @@ class UpdateLostDataJob(
         }
     }
 
-    private fun saveLostPosts(response: List<Map<String, LostDataDto>>) {
+    private fun saveLostPosts(response: List<Map<String, Lost112Data>>) {
         response.forEach { data ->
             data.values.map {
                 LostPostEntity.ofLost112(it, getSubwayLineEntity(it.receiptPlace))

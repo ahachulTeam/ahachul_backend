@@ -1,6 +1,7 @@
-package backend.team.ahachul_backend.common.schedule
+package backend.team.ahachul_backend.schedule.listener
 
 import backend.team.ahachul_backend.common.logging.Logger
+import backend.team.ahachul_backend.schedule.job.UpdateLostDataJob
 import org.quartz.*
 import org.springframework.stereotype.Component
 

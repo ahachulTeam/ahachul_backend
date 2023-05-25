@@ -2,7 +2,6 @@ package backend.team.ahachul_backend.common.utils
 
 import backend.team.ahachul_backend.common.exception.CommonException
 import backend.team.ahachul_backend.common.response.ResponseCode
-import backend.team.ahachul_backend.common.schedule.UpdateLostDataJob
 import com.fasterxml.jackson.core.type.TypeReference
 import com.fasterxml.jackson.databind.ObjectMapper
 import org.springframework.stereotype.Component
@@ -15,9 +14,9 @@ class FileUtils {
     companion object {
         val objectMapper = ObjectMapper()
 
-        inline fun <reified T: Any> readFileData(): T = run {
+        inline fun <reified T: Any> readFileData(readPath: String): T = run {
             try {
-                FileReader(UpdateLostDataJob.FILE_READ_PATH).use {
+                FileReader(readPath).use {
                     val typeRef = object : TypeReference<T>() {}
                     return objectMapper.readValue(it, typeRef)
                 }
