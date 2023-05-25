@@ -56,6 +56,7 @@ class CommunityPostControllerDocsTestTest : CommonDocsTestConfig() {
                 .param("categoryType", "ISSUE")
                 .param("subwayLineId", "1")
                 .param("content", "내용")
+                .param("hashTag", "여행")
                 .param("page", "1")
                 .param("size", "10")
                 .param("sort", "createdAt,desc")
@@ -72,7 +73,8 @@ class CommunityPostControllerDocsTestTest : CommonDocsTestConfig() {
                     queryParameters(
                         parameterWithName("categoryType").description("카테고리 타입").attributes(getFormatAttribute("FREE, INSIGHT, ISSUE, HUMOR")).optional(),
                         parameterWithName("subwayLineId").description("노선 ID").optional(),
-                        parameterWithName("content").description("탐색하고자 하는 내용").optional(),
+                        parameterWithName("content").description("검색하고자 하는 내용").optional(),
+                        parameterWithName("hashTag").description("검색하고자 하는 해시 태그").optional(),
                         parameterWithName("page").description("현재 페이지"),
                         parameterWithName("size").description("페이지 노출 데이터 수"),
                         parameterWithName("sort").description("정렬 조건").attributes(getFormatAttribute("(likes|createdAt|views),(asc|desc)")),

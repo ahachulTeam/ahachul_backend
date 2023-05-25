@@ -3,10 +3,13 @@ package backend.team.ahachul_backend.api.community.adapter.web.out
 import backend.team.ahachul_backend.api.community.adapter.web.`in`.dto.post.SearchCommunityPostCommand
 import backend.team.ahachul_backend.api.community.domain.entity.CommunityPostEntity
 import backend.team.ahachul_backend.api.community.domain.entity.QCommunityPostEntity.communityPostEntity
+import backend.team.ahachul_backend.api.community.domain.entity.QCommunityPostHashTagEntity.communityPostHashTagEntity
 import backend.team.ahachul_backend.api.community.domain.model.CommunityCategoryType
 import backend.team.ahachul_backend.api.member.domain.entity.QMemberEntity.memberEntity
+import backend.team.ahachul_backend.common.domain.entity.QHashTagEntity.hashTagEntity
 import backend.team.ahachul_backend.common.domain.entity.QSubwayLineEntity.subwayLineEntity
 import com.querydsl.core.types.OrderSpecifier
+import com.querydsl.jpa.JPAExpressions
 import com.querydsl.jpa.impl.JPAQueryFactory
 import org.springframework.data.domain.Pageable
 import org.springframework.data.domain.Slice
@@ -26,7 +29,8 @@ class CustomCommunityPostRepository(
             .where(
                 categoryTypeEq(command.categoryType),
                 subwayLineIdEq(command.subwayLineId),
-                titleOrContentContains(command.content)
+                hashTagEqWithSubQuery(command.hashTag),
+                titleOrContentContains(command.content),
             )
             .orderBy(getOrder(pageable))
             .offset(getOffset(pageable).toLong())
@@ -69,6 +73,14 @@ class CustomCommunityPostRepository(
 
     private fun subwayLineIdEq(subwayLineId: Long?) =
         subwayLineId?.let { communityPostEntity.subwayLineEntity.id.eq(subwayLineId) }
+
+    private fun hashTagEqWithSubQuery(hashTag: String?) =
+        hashTag?.let {
+            communityPostEntity.`in`(JPAExpressions.select(communityPostHashTagEntity.communityPost)
+                .from(communityPostHashTagEntity)
+                .join(communityPostHashTagEntity.hashTag, hashTagEntity)
+                .where(hashTagEntity.name.eq(hashTag)))
+        }
 
     private fun titleOrContentContains(content: String?) =
         content?.let { communityPostEntity.title.contains(content).or(communityPostEntity.content.contains(content)) }

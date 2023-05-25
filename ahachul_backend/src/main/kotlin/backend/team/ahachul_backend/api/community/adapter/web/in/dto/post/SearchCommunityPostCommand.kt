@@ -7,6 +7,7 @@ class SearchCommunityPostCommand(
     val categoryType: CommunityCategoryType? = null,
     val subwayLineId: Long? = null,
     val content: String? = null,
-    val pageable: Pageable
+    val hashTag: String? = null,
+    val pageable: Pageable,
 ) {
 }
