@@ -5,11 +5,12 @@ import backend.team.ahachul_backend.schedule.listener.JobFailureHandlingListener
 import jakarta.annotation.PostConstruct
 import org.quartz.*
 import org.springframework.context.annotation.Configuration
+import org.springframework.context.annotation.Profile
 import java.util.concurrent.TimeUnit
 
 
 @Configuration
-//@Profile("dev")
+@Profile("dev")
 class ScheduleConfig(
     private val scheduler: Scheduler
 ){
@@ -51,7 +52,7 @@ class ScheduleConfig(
             .withIdentity(TriggerKey("UPDATE_LOST_DATA_TRIGGER ", "LOST"))
             .startNow()
             .withSchedule(
-                CronScheduleBuilder.cronSchedule("0 * * ? * *")
+                CronScheduleBuilder.cronSchedule("30 24 * ? * *")
                     .withMisfireHandlingInstructionFireAndProceed()
             )
             .build()
