@@ -5,6 +5,7 @@ import backend.team.ahachul_backend.common.response.ResponseCode
 import com.fasterxml.jackson.core.type.TypeReference
 import com.fasterxml.jackson.databind.ObjectMapper
 import org.springframework.stereotype.Component
+import java.io.File
 import java.io.FileReader
 import java.io.IOException
 
@@ -16,7 +17,7 @@ class FileUtils {
 
         inline fun <reified T: Any> readFileData(readPath: String): T = run {
             try {
-                FileReader(readPath).use {
+                FileReader(File(readPath)).use {
                     val typeRef = object : TypeReference<T>() {}
                     return objectMapper.readValue(it, typeRef)
                 }
