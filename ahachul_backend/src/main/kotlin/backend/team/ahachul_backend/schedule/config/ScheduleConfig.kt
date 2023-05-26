@@ -36,7 +36,7 @@ class ScheduleConfig(
     private fun getJobDataMap(): JobDataMap {
         val jobDataMap = JobDataMap()
         jobDataMap.put(UpdateLostDataJob.RETRY_KEY, 0)
-        jobDataMap.put("FILE_READ_PATH", "file://home/ec2-user/ahachul_data/datas/updated.json")
+        jobDataMap.put("FILE_READ_PATH", "/home/ec2-user/ahachul_data/datas/updated.json")
         return jobDataMap
     }
 
