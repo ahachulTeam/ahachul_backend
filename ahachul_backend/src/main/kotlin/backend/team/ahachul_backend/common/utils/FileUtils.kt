@@ -21,7 +21,7 @@ class FileUtils {
                     return objectMapper.readValue(it, typeRef)
                 }
             } catch (e: IOException) {
-                throw CommonException(ResponseCode.INTERNAL_SERVER_ERROR)
+                throw CommonException(ResponseCode.INTERNAL_SERVER_ERROR, e)
             }
         }
     }

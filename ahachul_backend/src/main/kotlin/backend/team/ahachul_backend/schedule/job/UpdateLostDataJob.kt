@@ -21,14 +21,16 @@ class UpdateLostDataJob(
     private val logger: Logger = Logger(javaClass)
 
     companion object {
-        const val FILE_READ_PATH = "/home/ec2-user/ahachul_data/datas/updated.json"
         val RETRY_KEY = "${this::class.simpleName} execution count"
     }
 
     override fun execute(context: JobExecutionContext?) {
         try {
-            updateRetryCount(context!!)
-            val response = FileUtils.readFileData<List<Map<String, Lost112Data>>>(FILE_READ_PATH)
+            val jobDataMap = context!!.jobDetail.jobDataMap
+            updateRetryCount(jobDataMap)
+
+            val fileReadPath = jobDataMap.getString("FILE_READ_PATH")
+            val response = FileUtils.readFileData<List<Map<String, Lost112Data>>>(fileReadPath)
             saveLostPosts(response)
         }  catch (e: SchedulerException) {
             logger.info("Recoverable exception occur while scheduling: restarting job [${ context!!.jobDetail.key } ]")
@@ -37,9 +39,7 @@ class UpdateLostDataJob(
         }
     }
 
-    private fun updateRetryCount(context: JobExecutionContext) {
-        val jobDataMap = context.jobDetail.jobDataMap
-
+    private fun updateRetryCount(jobDataMap: JobDataMap) {
         if (jobDataMap.containsKey(RETRY_KEY)) {
             val cnt = jobDataMap.getInt(RETRY_KEY)
             jobDataMap.put(RETRY_KEY, cnt + 1)
