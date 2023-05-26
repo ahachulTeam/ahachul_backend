@@ -7,43 +7,24 @@ import backend.team.ahachul_backend.common.logging.Logger
 import backend.team.ahachul_backend.common.persistence.SubwayLineReader
 import backend.team.ahachul_backend.common.utils.FileUtils
 import backend.team.ahachul_backend.schedule.Lost112Data
-import org.quartz.*
+import org.quartz.JobExecutionContext
+import org.springframework.scheduling.quartz.QuartzJobBean
 import org.springframework.stereotype.Component
-import java.util.concurrent.TimeUnit
 
 
 @Component
 class UpdateLostDataJob(
     private val lostPostWriter: LostPostWriter,
     private val subwayLineReader: SubwayLineReader
-): Job {
+): QuartzJobBean() {
 
     private val logger: Logger = Logger(javaClass)
 
-    companion object {
-        val RETRY_KEY = "${this::class.simpleName} execution count"
-    }
-
-    override fun execute(context: JobExecutionContext?) {
-        try {
-            val jobDataMap = context!!.jobDetail.jobDataMap
-            updateRetryCount(jobDataMap)
-
-            val fileReadPath = jobDataMap.getString("FILE_READ_PATH")
-            val response = FileUtils.readFileData<List<Map<String, Lost112Data>>>(fileReadPath)
-            saveLostPosts(response)
-        }  catch (e: SchedulerException) {
-            logger.info("Recoverable exception occur while scheduling: restarting job [${ context!!.jobDetail.key } ]")
-            TimeUnit.MINUTES.sleep(1)
-            throw JobExecutionException(true)
-        }
-    }
-
-    private fun updateRetryCount(jobDataMap: JobDataMap) {
-        if (jobDataMap.containsKey(RETRY_KEY)) {
-            val cnt = jobDataMap.getInt(RETRY_KEY)
-            jobDataMap.put(RETRY_KEY, cnt + 1)
-        }
+    override fun executeInternal(context: JobExecutionContext) {
+        val jobDataMap = context.jobDetail.jobDataMap
+        val fileReadPath = jobDataMap.getString("FILE_READ_PATH")
+        val response = FileUtils.readFileData<List<Map<String, Lost112Data>>>(fileReadPath)
+        saveLostPosts(response)
     }
 
     private fun saveLostPosts(response: List<Map<String, Lost112Data>>) {

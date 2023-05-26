@@ -5,19 +5,24 @@ import backend.team.ahachul_backend.schedule.listener.JobFailureHandlingListener
 import jakarta.annotation.PostConstruct
 import org.quartz.*
 import org.springframework.context.annotation.Configuration
-import org.springframework.context.annotation.Profile
+import java.util.concurrent.TimeUnit
 
 
 @Configuration
-@Profile("dev")
+//@Profile("dev")
 class ScheduleConfig(
     private val scheduler: Scheduler
 ){
 
     @PostConstruct
     fun init() {
-        setTriggerListener()
-        scheduler.scheduleJob(getJobDetail(), getTrigger())
+        try {
+            setTriggerListener()
+            scheduler.scheduleJob(getJobDetail(), getTrigger())
+        } catch (e: SchedulerException) {
+            TimeUnit.MINUTES.sleep(1)
+            throw JobExecutionException(true)
+        }
     }
 
     private fun setTriggerListener() {
@@ -35,8 +40,9 @@ class ScheduleConfig(
 
     private fun getJobDataMap(): JobDataMap {
         val jobDataMap = JobDataMap()
-        jobDataMap.put(UpdateLostDataJob.RETRY_KEY, 0)
-        jobDataMap.put("FILE_READ_PATH", "/home/ec2-user/ahachul_data/datas/updated.json")
+        jobDataMap.put("EXECUTION_COUNT", 0)
+        jobDataMap.put("MAX_RETRY_COUNT", 3)
+        jobDataMap.put("FILE_READ_PATH", "/home/updated.json")
         return jobDataMap
     }
 
