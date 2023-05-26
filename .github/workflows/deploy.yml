@@ -72,4 +72,4 @@ jobs:
         run: |
           docker pull ${{ env.ECR_REGISTRY }}/${{ env.ECR_REPOSITORY }}:latest
           docker stop ${{ env.ECR_REPOSITORY }} && docker rm ${{ env.ECR_REPOSITORY }} && docker rmi ${{ env.ECR_REGISTRY }}/${{ env.ECR_REPOSITORY }}:latest
-          docker run -d -p 80:8080 --name ${{ env.ECR_REPOSITORY }} --restart always ${{ env.ECR_REGISTRY }}/${{ env.ECR_REPOSITORY }}:latest
+          docker run -v /home/ec2-user/ahachul_data/datas/:/home -d -p 80:8080 --name ${{ env.ECR_REPOSITORY }} --restart always ${{ env.ECR_REGISTRY }}/${{ env.ECR_REPOSITORY }}:latest
