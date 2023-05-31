@@ -13,12 +13,14 @@ class SearchCommunityPostDto {
         val categoryType: CommunityCategoryType?,
         val subwayLineId: Long?,
         val content: String?,
+        val hashTag: String?,
     ) {
         fun toCommand(pageable: Pageable): SearchCommunityPostCommand {
             return SearchCommunityPostCommand(
                 categoryType = categoryType,
                 subwayLineId = subwayLineId,
                 content = content,
+                hashTag = hashTag,
                 pageable = pageable
             )
         }

@@ -12,6 +12,7 @@ class GetCommunityPostDto {
         val title: String,
         val content: String,
         val categoryType: CommunityCategoryType,
+        val hashTags: List<String>,
         val views: Int,
         val likes: Int,
         val region: RegionType,
@@ -20,12 +21,13 @@ class GetCommunityPostDto {
         val writer: String
     ) {
         companion object {
-            fun of(entity: CommunityPostEntity, views: Int): Response {
+            fun of(entity: CommunityPostEntity, hashTags: List<String>, views: Int): Response {
                 return Response(
                     id = entity.id,
                     title = entity.title,
                     content = entity.content,
                     categoryType = entity.categoryType,
+                    hashTags = hashTags,
                     views = views,
                     // TODO 좋아요 구현 후
                     likes = 0,

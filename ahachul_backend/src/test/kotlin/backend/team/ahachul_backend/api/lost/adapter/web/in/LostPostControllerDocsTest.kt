@@ -22,7 +22,7 @@ import org.springframework.restdocs.request.RequestDocumentation.*
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 
 @WebMvcTest(LostPostController::class)
-class LostPostControllerDocsTestTest: CommonDocsTestConfig() {
+class LostPostControllerDocsTest: CommonDocsTestConfig() {
 
     @MockBean lateinit var lostPostUseCase: LostPostUseCase
 

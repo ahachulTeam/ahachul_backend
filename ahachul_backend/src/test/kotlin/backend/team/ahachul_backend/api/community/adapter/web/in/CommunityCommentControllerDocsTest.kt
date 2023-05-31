@@ -26,7 +26,7 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 import java.time.LocalDateTime
 
 @WebMvcTest(CommunityCommentController::class)
-class CommunityCommentControllerDocsTestTest : CommonDocsTestConfig() {
+class CommunityCommentControllerDocsTest : CommonDocsTestConfig() {
 
     @MockBean
     lateinit var communityCommentUseCase: CommunityCommentUseCase

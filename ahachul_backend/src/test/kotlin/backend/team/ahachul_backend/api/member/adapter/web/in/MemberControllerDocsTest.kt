@@ -21,7 +21,7 @@ import org.springframework.restdocs.payload.PayloadDocumentation.*
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 
 @WebMvcTest(MemberController::class)
-class MemberControllerDocsTestTest : CommonDocsTestConfig() {
+class MemberControllerDocsTest : CommonDocsTestConfig() {
 
     @MockBean
     lateinit var memberUseCase: MemberUseCase

@@ -10,6 +10,7 @@ class CreateCommunityPostDto {
         val title: String,
         val content: String,
         val categoryType: CommunityCategoryType,
+        val hashTags: List<String>,
         val subwayLineId: Long,
     ) {
         fun toCommand(): CreateCommunityPostCommand {
@@ -17,6 +18,7 @@ class CreateCommunityPostDto {
                 title = title,
                 content = content,
                 categoryType = categoryType,
+                hashTags = hashTags,
                 subwayLineId = subwayLineId
             )
         }

@@ -22,7 +22,7 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 import java.time.LocalDateTime
 
 @WebMvcTest(CommunityPostController::class)
-class CommunityPostControllerDocsTestTest : CommonDocsTestConfig() {
+class CommunityPostControllerDocsTest : CommonDocsTestConfig() {
 
     @MockBean
     lateinit var communityPostUseCase: CommunityPostUseCase
@@ -56,6 +56,7 @@ class CommunityPostControllerDocsTestTest : CommonDocsTestConfig() {
                 .param("categoryType", "ISSUE")
                 .param("subwayLineId", "1")
                 .param("content", "내용")
+                .param("hashTag", "여행")
                 .param("page", "1")
                 .param("size", "10")
                 .param("sort", "createdAt,desc")
@@ -72,7 +73,8 @@ class CommunityPostControllerDocsTestTest : CommonDocsTestConfig() {
                     queryParameters(
                         parameterWithName("categoryType").description("카테고리 타입").attributes(getFormatAttribute("FREE, INSIGHT, ISSUE, HUMOR")).optional(),
                         parameterWithName("subwayLineId").description("노선 ID").optional(),
-                        parameterWithName("content").description("탐색하고자 하는 내용").optional(),
+                        parameterWithName("content").description("검색하고자 하는 내용").optional(),
+                        parameterWithName("hashTag").description("검색하고자 하는 해시 태그").optional(),
                         parameterWithName("page").description("현재 페이지"),
                         parameterWithName("size").description("페이지 노출 데이터 수"),
                         parameterWithName("sort").description("정렬 조건").attributes(getFormatAttribute("(likes|createdAt|views),(asc|desc)")),
@@ -102,6 +104,7 @@ class CommunityPostControllerDocsTestTest : CommonDocsTestConfig() {
             "제목",
             "내용",
             CommunityCategoryType.ISSUE,
+            arrayListOf("여행", "취미"),
             0,
             0,
             RegionType.METROPOLITAN,
@@ -135,6 +138,7 @@ class CommunityPostControllerDocsTestTest : CommonDocsTestConfig() {
                         fieldWithPath("result.title").type(JsonFieldType.STRING).description("게시글 제목"),
                         fieldWithPath("result.content").type(JsonFieldType.STRING).description("게시글 내용"),
                         fieldWithPath("result.categoryType").type("CategoryType").description("카테고리 타입").attributes(getFormatAttribute("FREE, INSIGHT, ISSUE, HUMOR")),
+                        fieldWithPath("result.hashTags").type(JsonFieldType.ARRAY).description("해시 태그 목록"),
                         fieldWithPath("result.views").type(JsonFieldType.NUMBER).description("조회수"),
                         fieldWithPath("result.likes").type(JsonFieldType.NUMBER).description("좋아요 수"),
                         fieldWithPath("result.region").type("RegionType").description("지역").attributes(getFormatAttribute("METROPOLITAN")),
@@ -165,7 +169,8 @@ class CommunityPostControllerDocsTestTest : CommonDocsTestConfig() {
             title = "생성할 제목",
             content = "생성할 내용",
             categoryType = CommunityCategoryType.ISSUE,
-            subwayLineId = 1
+            subwayLineId = 1,
+            hashTags = arrayListOf("여행", "취미")
         )
 
         // when
@@ -188,10 +193,11 @@ class CommunityPostControllerDocsTestTest : CommonDocsTestConfig() {
                         headerWithName("Authorization").description("엑세스 토큰")
                     ),
                     requestFields(
-                        fieldWithPath("title").description("생성할 제목"),
-                        fieldWithPath("content").description("생성할 내용"),
-                        fieldWithPath("categoryType").description("카테고리 타입").attributes(getFormatAttribute("FREE, INSIGHT, ISSUE, HUMOR")),
-                        fieldWithPath("subwayLineId").description("지하철 노선 ID"),
+                        fieldWithPath("title").type(JsonFieldType.STRING).description("생성할 제목"),
+                        fieldWithPath("content").type(JsonFieldType.STRING).description("생성할 내용"),
+                        fieldWithPath("categoryType").type("CategoryType").description("카테고리 타입").attributes(getFormatAttribute("FREE, INSIGHT, ISSUE, HUMOR")),
+                        fieldWithPath("subwayLineId").type(JsonFieldType.NUMBER).description("지하철 노선 ID"),
+                        fieldWithPath("hashTags").type(JsonFieldType.ARRAY).description("해시 태그 목록").optional(),
                     ),
                     responseFields(
                         *commonResponseFields(),
@@ -222,7 +228,8 @@ class CommunityPostControllerDocsTestTest : CommonDocsTestConfig() {
         val request = UpdateCommunityPostDto.Request(
             title = "변경할 제목",
             content = "변경할 내용",
-            categoryType = CommunityCategoryType.ISSUE
+            categoryType = CommunityCategoryType.ISSUE,
+            hashTags = arrayListOf("여행", "취미")
         )
 
         // when
@@ -248,9 +255,10 @@ class CommunityPostControllerDocsTestTest : CommonDocsTestConfig() {
                         parameterWithName("postId").description("게시물 아이디")
                     ),
                     requestFields(
-                        fieldWithPath("title").description("변경할 제목"),
-                        fieldWithPath("content").description("변경할 내용"),
-                        fieldWithPath("categoryType").description("변경할 카테고리 타입").attributes(getFormatAttribute("FREE, INSIGHT, ISSUE, HUMOR")),
+                        fieldWithPath("title").type(JsonFieldType.STRING).description("변경할 제목"),
+                        fieldWithPath("content").type(JsonFieldType.STRING).description("변경할 내용"),
+                        fieldWithPath("categoryType").type("CategoryType").description("변경할 카테고리 타입").attributes(getFormatAttribute("FREE, INSIGHT, ISSUE, HUMOR")),
+                        fieldWithPath("hashTags").type(JsonFieldType.ARRAY).description("해시 태그 목록").optional(),
                     ),
                     responseFields(
                         *commonResponseFields(),
