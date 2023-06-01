@@ -54,6 +54,8 @@ class LostPostEntity(
 ): BaseEntity() {
 
     companion object {
+        const val MIN_BLOCK_REPORT_COUNT = 5
+
         fun of(command: CreateLostPostCommand, member: MemberEntity, subwayLine: SubwayLineEntity): LostPostEntity {
             return LostPostEntity(
                 title = command.title,
@@ -79,5 +81,13 @@ class LostPostEntity(
     fun hasDuplicateReportByMember(member: MemberEntity): Boolean{
         return lostPostReports.stream()
             .anyMatch {x -> x.sourceMember.id == member.id}
+    }
+
+    fun exceedMinReportCount(): Boolean {
+        return lostPostReports.size >= MIN_BLOCK_REPORT_COUNT
+    }
+
+    fun block() {
+        type = LostPostType.BLOCKED
     }
 }

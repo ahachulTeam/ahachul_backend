@@ -1,7 +1,9 @@
 package backend.team.ahachul_backend.api.report.application.service
 
 import backend.team.ahachul_backend.api.community.application.port.out.CommunityPostReader
+import backend.team.ahachul_backend.api.community.domain.entity.CommunityPostEntity
 import backend.team.ahachul_backend.api.member.application.port.out.MemberReader
+import backend.team.ahachul_backend.api.member.domain.entity.MemberEntity
 import backend.team.ahachul_backend.api.report.adpater.`in`.dto.ActionReportDto
 import backend.team.ahachul_backend.api.report.adpater.`in`.dto.CreateReportDto
 import backend.team.ahachul_backend.api.report.application.port.`in`.ReportUseCase
@@ -33,17 +35,15 @@ class CommunityPostReportService(
         val target = communityPostReader.getCommunityPost(targetId)
         val targetMember = target.member!!
 
-        if (sourceMember == targetMember) {
-            throw DomainException(ResponseCode.INVALID_REPORT_REQUEST)
-        }
-
-        if (target.hasDuplicateReportByMember(sourceMember)) {
-            throw DomainException(ResponseCode.DUPLICATE_REPORT_REQUEST)
-        }
+        validate(sourceMember, targetMember, target)
 
         val entity = reportWriter.saveReport(
             ReportEntity.from(sourceMember, targetMember, target)
         )
+
+        if (target.exceedMinReportCount()) {
+            target.block()
+        }
 
         return CreateReportDto.Response(
             id = entity.id,
@@ -51,6 +51,16 @@ class CommunityPostReportService(
             targetMemberId = targetMember.id,
             targetId = targetId
         )
+    }
+
+    private fun validate(sourceMember: MemberEntity, targetMember: MemberEntity, target: CommunityPostEntity) {
+        if (sourceMember == targetMember) {
+            throw DomainException(ResponseCode.INVALID_REPORT_REQUEST)
+        }
+
+        if (target.hasDuplicateReportByMember(sourceMember)) {
+            throw DomainException(ResponseCode.DUPLICATE_REPORT_REQUEST)
+        }
     }
 
     override fun actionOnReport(command: ActionReportCommand): ActionReportDto.Response {

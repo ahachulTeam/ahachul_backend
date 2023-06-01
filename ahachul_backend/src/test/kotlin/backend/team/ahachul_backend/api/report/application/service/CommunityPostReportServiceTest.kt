@@ -4,6 +4,8 @@ import backend.team.ahachul_backend.api.community.adapter.web.`in`.dto.post.Crea
 import backend.team.ahachul_backend.api.community.adapter.web.out.CommunityPostRepository
 import backend.team.ahachul_backend.api.community.domain.entity.CommunityPostEntity
 import backend.team.ahachul_backend.api.community.domain.model.CommunityCategoryType
+import backend.team.ahachul_backend.api.community.domain.model.CommunityPostType
+import backend.team.ahachul_backend.api.lost.domain.model.LostPostType
 import backend.team.ahachul_backend.api.member.adapter.web.out.MemberRepository
 import backend.team.ahachul_backend.api.member.domain.entity.MemberEntity
 import backend.team.ahachul_backend.api.member.domain.model.GenderType
@@ -132,6 +134,36 @@ class CommunityPostReportServiceTest(
         }
             .isExactlyInstanceOf(DomainException::class.java)
             .hasMessage(ResponseCode.INVALID_REPORT_ACTION.message)
+    }
+
+    @Test
+    @DisplayName("유실물 게시물 블락 처리 테스트")
+    fun blockLostPost() {
+        // given
+        val target = communityPostRepository.save(createCommunityPost())    // 신고 대상
+        val otherMember2 = memberRepository.save(createMember("닉네임3"))
+        val otherMember3 = memberRepository.save(createMember("닉네임4"))
+        val otherMember4 = memberRepository.save(createMember("닉네임4"))
+        val otherMember5 = memberRepository.save(createMember("닉네임4"))
+
+        // when
+        communityPostReportService.saveReport(target.id)
+
+        RequestUtils.setAttribute("memberId", otherMember2.id)
+        communityPostReportService.saveReport(target.id)
+
+        RequestUtils.setAttribute("memberId", otherMember3.id)
+        communityPostReportService.saveReport(target.id)
+
+        RequestUtils.setAttribute("memberId", otherMember4.id)
+        communityPostReportService.saveReport(target.id)
+
+        RequestUtils.setAttribute("memberId", otherMember5.id)
+        communityPostReportService.saveReport(target.id)
+
+        // then
+        Assertions.assertThat(target.communityPostReports.size).isEqualTo(5)
+        Assertions.assertThat(target.status).isEqualTo(CommunityPostType.BLOCKED)
     }
 
     private fun createMember(nickname: String): MemberEntity {

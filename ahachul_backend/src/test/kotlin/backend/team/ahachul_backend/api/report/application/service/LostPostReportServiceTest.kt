@@ -3,6 +3,7 @@ package backend.team.ahachul_backend.api.report.application.service
 import backend.team.ahachul_backend.api.lost.adapter.web.out.LostPostRepository
 import backend.team.ahachul_backend.api.lost.application.service.command.CreateLostPostCommand
 import backend.team.ahachul_backend.api.lost.domain.entity.LostPostEntity
+import backend.team.ahachul_backend.api.lost.domain.model.LostPostType
 import backend.team.ahachul_backend.api.lost.domain.model.LostType
 import backend.team.ahachul_backend.api.member.adapter.web.out.MemberRepository
 import backend.team.ahachul_backend.api.member.domain.entity.MemberEntity
@@ -136,6 +137,36 @@ class LostPostReportServiceTest(
         }
             .isExactlyInstanceOf(DomainException::class.java)
             .hasMessage(ResponseCode.INVALID_REPORT_ACTION.message)
+    }
+
+    @Test
+    @DisplayName("유실물 게시물 블락 처리 테스트")
+    fun blockLostPost() {
+        // given
+        val target = lostPostRepository.save(createLostPost())    // 신고 대상
+        val otherMember2 = memberRepository.save(createMember("닉네임3"))
+        val otherMember3 = memberRepository.save(createMember("닉네임4"))
+        val otherMember4 = memberRepository.save(createMember("닉네임4"))
+        val otherMember5 = memberRepository.save(createMember("닉네임4"))
+
+        // when
+        lostPostReportService.saveReport(target.id)
+
+        RequestUtils.setAttribute("memberId", otherMember2.id)
+        lostPostReportService.saveReport(target.id)
+
+        RequestUtils.setAttribute("memberId", otherMember3.id)
+        lostPostReportService.saveReport(target.id)
+
+        RequestUtils.setAttribute("memberId", otherMember4.id)
+        lostPostReportService.saveReport(target.id)
+
+        RequestUtils.setAttribute("memberId", otherMember5.id)
+        lostPostReportService.saveReport(target.id)
+
+        // then
+        Assertions.assertThat(target.lostPostReports.size).isEqualTo(5)
+        Assertions.assertThat(target.type).isEqualTo(LostPostType.BLOCKED)
     }
 
     private fun createMember(nickname: String): MemberEntity {

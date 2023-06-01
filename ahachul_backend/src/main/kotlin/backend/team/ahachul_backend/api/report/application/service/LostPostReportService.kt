@@ -1,7 +1,9 @@
 package backend.team.ahachul_backend.api.report.application.service
 
 import backend.team.ahachul_backend.api.lost.application.port.out.LostPostReader
+import backend.team.ahachul_backend.api.lost.domain.entity.LostPostEntity
 import backend.team.ahachul_backend.api.member.application.port.out.MemberReader
+import backend.team.ahachul_backend.api.member.domain.entity.MemberEntity
 import backend.team.ahachul_backend.api.report.adpater.`in`.dto.ActionReportDto
 import backend.team.ahachul_backend.api.report.adpater.`in`.dto.CreateReportDto
 import backend.team.ahachul_backend.api.report.application.port.`in`.ReportUseCase
@@ -26,23 +28,24 @@ class LostPostReportService(
     private val redisClient: RedisClient
 ): ReportUseCase {
 
+    /**
+     * 게시물은 자동으로 특정 횟수 이상이면 필드에
+     */
     override fun saveReport(targetId: Long): CreateReportDto.Response {
         val memberId = RequestUtils.getAttribute("memberId")!!
         val sourceMember = memberReader.getMember(memberId.toLong())
         val target = lostPostReader.getLostPost(targetId)
         val targetMember = target.member
 
-        if (sourceMember == targetMember) {
-            throw DomainException(ResponseCode.INVALID_REPORT_REQUEST)
-        }
-
-        if (target.hasDuplicateReportByMember(sourceMember)) {
-            throw DomainException(ResponseCode.DUPLICATE_REPORT_REQUEST)
-        }
+        validate(sourceMember, targetMember, target)
 
         val entity = reportWriter.saveReport(
             ReportEntity.from(sourceMember, targetMember, target)
         )
+
+        if (target.exceedMinReportCount()) {
+            target.block()
+        }
 
         return CreateReportDto.Response(
             id = entity.id,
@@ -50,6 +53,16 @@ class LostPostReportService(
             targetMemberId = targetMember.id,
             targetId = targetId
         )
+    }
+
+    private fun validate(sourceMember: MemberEntity, targetMember: MemberEntity, target: LostPostEntity) {
+        if (sourceMember == targetMember) {
+            throw DomainException(ResponseCode.INVALID_REPORT_REQUEST)
+        }
+
+        if (target.hasDuplicateReportByMember(sourceMember)) {
+            throw DomainException(ResponseCode.DUPLICATE_REPORT_REQUEST)
+        }
     }
 
     override fun actionOnReport(command: ActionReportCommand): ActionReportDto.Response {
