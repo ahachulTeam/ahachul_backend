@@ -2,22 +2,28 @@ package backend.team.ahachul_backend.api.report.application.service
 
 import backend.team.ahachul_backend.api.lost.application.port.out.LostPostReader
 import backend.team.ahachul_backend.api.member.application.port.out.MemberReader
+import backend.team.ahachul_backend.api.report.adpater.`in`.dto.ActionReportDto
 import backend.team.ahachul_backend.api.report.adpater.`in`.dto.CreateReportDto
 import backend.team.ahachul_backend.api.report.application.port.`in`.ReportUseCase
+import backend.team.ahachul_backend.api.report.application.port.`in`.command.ActionReportCommand
 import backend.team.ahachul_backend.api.report.application.port.out.ReportWriter
+import backend.team.ahachul_backend.api.report.domain.BlockType
 import backend.team.ahachul_backend.api.report.domain.ReportEntity
+import backend.team.ahachul_backend.common.client.RedisClient
 import backend.team.ahachul_backend.common.exception.DomainException
 import backend.team.ahachul_backend.common.response.ResponseCode
 import backend.team.ahachul_backend.common.utils.RequestUtils
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import java.util.concurrent.TimeUnit
 
 @Service
 @Transactional(readOnly = true)
 class LostPostReportService(
     private val lostPostReader: LostPostReader,
     private val memberReader: MemberReader,
-    private val reportWriter: ReportWriter
+    private val reportWriter: ReportWriter,
+    private val redisClient: RedisClient
 ): ReportUseCase {
 
     override fun saveReport(targetId: Long, type: String): CreateReportDto.Response {
@@ -44,5 +50,24 @@ class LostPostReportService(
             targetMemberId = targetMember.id,
             targetId = targetId
         )
+    }
+
+    override fun actionOnReport(command: ActionReportCommand): ActionReportDto.Response {
+        val blockMemberId = command.targetMemberId
+        val member = memberReader.getMember(blockMemberId)
+        val blockType = BlockType.of(command.blockType)
+
+        if (!member.isConditionsMetToBlock(blockType.blockDays)) {
+            throw DomainException(ResponseCode.INVALID_CONDITION_TO_BLOCK_MEMBER)
+        }
+
+        member.blockMember()
+
+        redisClient.set("blocked-member:${blockMemberId}",
+            blockMemberId.toString(),
+            blockType.blockDays.toLong(),
+            TimeUnit.DAYS
+        )
+        return ActionReportDto.Response(command.targetMemberId)
     }
 }

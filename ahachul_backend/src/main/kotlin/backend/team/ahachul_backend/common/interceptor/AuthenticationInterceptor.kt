@@ -1,6 +1,7 @@
 package backend.team.ahachul_backend.common.interceptor
 
 import backend.team.ahachul_backend.common.annotation.Authentication
+import backend.team.ahachul_backend.common.client.RedisClient
 import backend.team.ahachul_backend.common.exception.CommonException
 import backend.team.ahachul_backend.common.response.ResponseCode
 import backend.team.ahachul_backend.common.utils.JwtUtils
@@ -11,13 +12,15 @@ import io.jsonwebtoken.UnsupportedJwtException
 import io.jsonwebtoken.security.SignatureException
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse
+import org.apache.http.protocol.ResponseServer
 import org.springframework.stereotype.Component
 import org.springframework.web.method.HandlerMethod
 import org.springframework.web.servlet.HandlerInterceptor
 
 @Component
 class AuthenticationInterceptor(
-        private val jwtUtils: JwtUtils
+        private val jwtUtils: JwtUtils,
+        private val redisClient: RedisClient
 ): HandlerInterceptor {
 
     companion object {
@@ -29,16 +32,15 @@ class AuthenticationInterceptor(
         handler.getMethodAnnotation(Authentication::class.java) ?: return true
 
         try {
-            val jwtToken = request.getHeader("Authorization")
-
-            if (!jwtToken.startsWith(AUTH_PREFIX)) throw UnsupportedJwtException("not supported jwt")
-
-            val jwtTokenExcludePrefix = jwtToken.substring(AUTH_PREFIX.length)
-
+            val jwtTokenExcludePrefix = parseJwtToken(request)
             val verifiedJwtToken = jwtUtils.verify(jwtTokenExcludePrefix)
+            val authenticatedMemberId = verifiedJwtToken.body.subject
 
-            RequestUtils.setAttribute("memberId", verifiedJwtToken.body.subject)
+            if (isBlockedMember(authenticatedMemberId)) {
+                throw CommonException(ResponseCode.BLOCKED_MEMBER)
+            }
 
+            RequestUtils.setAttribute("memberId", authenticatedMemberId)
         } catch (e: Exception) {
             when (e) {
                 is SignatureException, is UnsupportedJwtException, is IllegalArgumentException, is MalformedJwtException -> {
@@ -50,11 +52,24 @@ class AuthenticationInterceptor(
                 }
 
                 else -> {
+                    if (e.message == ResponseCode.BLOCKED_MEMBER.message) throw e
                     throw CommonException(ResponseCode.INTERNAL_SERVER_ERROR)
                 }
             }
         }
-
         return true
+    }
+
+    private fun parseJwtToken(request: HttpServletRequest): String{
+        val jwtToken = request.getHeader("Authorization")
+
+        if (!jwtToken.startsWith(AUTH_PREFIX)) {
+            throw UnsupportedJwtException("not supported jwt")
+        }
+        return jwtToken.substring(AUTH_PREFIX.length)
+    }
+
+    private fun isBlockedMember(memberId: String): Boolean {
+        return !redisClient.get("blocked-member:${memberId}").isNullOrEmpty()
     }
 }

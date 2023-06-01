@@ -20,7 +20,7 @@ class ReportEntity (
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "target_member_id")
-    val targetMember: MemberEntity,
+    var targetMember: MemberEntity? = null,
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "community_post_id")
@@ -34,22 +34,26 @@ class ReportEntity (
 
     companion object {
         fun from(sourceMember: MemberEntity, targetMember: MemberEntity, target: Any): ReportEntity {
-            val entity = ReportEntity(
-                sourceMember = sourceMember,
-                targetMember = targetMember)
+            val entity = ReportEntity(sourceMember = sourceMember)
+            entity.addTargetMember(targetMember)
             entity.addCommunityPost(target)
             entity.addLostPost(target)
             return entity
         }
     }
 
+    private fun addTargetMember(targetMember: MemberEntity) {
+        this.targetMember = targetMember
+        targetMember.memberReports.add(this)
+    }
+
     private fun addCommunityPost(target: Any) {
-        communityPost = if (target is CommunityPostEntity) target else null
+        this.communityPost = if (target is CommunityPostEntity) target else null
         communityPost?.communityPostReports?.add(this)
     }
 
     private fun addLostPost(target: Any) {
-        lostPost = if (target is LostPostEntity) target else null
+        this.lostPost = if (target is LostPostEntity) target else null
         lostPost?.lostPostReports?.add(this)
     }
 }

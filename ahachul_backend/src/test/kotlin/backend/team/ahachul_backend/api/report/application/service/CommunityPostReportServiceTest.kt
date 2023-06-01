@@ -10,13 +10,13 @@ import backend.team.ahachul_backend.api.member.domain.model.GenderType
 import backend.team.ahachul_backend.api.member.domain.model.MemberStatusType
 import backend.team.ahachul_backend.api.member.domain.model.ProviderType
 import backend.team.ahachul_backend.api.report.application.port.`in`.ReportUseCase
+import backend.team.ahachul_backend.api.report.application.port.`in`.command.ActionReportCommand
 import backend.team.ahachul_backend.common.domain.entity.SubwayLineEntity
 import backend.team.ahachul_backend.common.exception.DomainException
 import backend.team.ahachul_backend.common.model.RegionType
 import backend.team.ahachul_backend.common.persistence.SubwayLineRepository
 import backend.team.ahachul_backend.common.response.ResponseCode
 import backend.team.ahachul_backend.common.utils.RequestUtils
-import backend.team.ahachul_backend.config.controller.CommonDocsTestConfig
 import backend.team.ahachul_backend.config.controller.CommonServiceTestConfig
 import org.assertj.core.api.Assertions
 import org.junit.jupiter.api.BeforeEach
@@ -89,6 +89,50 @@ class CommunityPostReportServiceTest(
             .hasMessage(ResponseCode.DUPLICATE_REPORT_REQUEST.message)
     }
 
+    @Test
+    @DisplayName("특정 신고 횟수를 넘지 못했을 때는 블락 불가능 테스트")
+    fun invalidConditionToBlock() {
+        // given
+        val target = communityPostRepository.save(createCommunityPost())
+        communityPostReportService.saveReport(target.id, "lost")
+        val command = ActionReportCommand(target.member!!.id, "post")
+
+        // when, then
+        Assertions.assertThatThrownBy {
+            communityPostReportService.actionOnReport(command)
+        }
+            .isExactlyInstanceOf(DomainException::class.java)
+            .hasMessage(ResponseCode.INVALID_CONDITION_TO_BLOCK_MEMBER.message)
+    }
+
+    @Test
+    @DisplayName("관리자가 유저를 중복으로 블락하지 못하는 테스트")
+    fun duplicateBlockAction() {
+        // given
+        val target = communityPostRepository.save(createCommunityPost())  // 신고 대상
+        val otherMember2 = memberRepository.save(createMember("닉네임3"))
+        val otherMember3 = memberRepository.save(createMember("닉네임4"))
+
+        // when
+        communityPostReportService.saveReport(target.id, "lost")
+
+        RequestUtils.setAttribute("memberId", otherMember2.id)
+        communityPostReportService.saveReport(target.id, "lost")
+
+        RequestUtils.setAttribute("memberId", otherMember3.id)
+        communityPostReportService.saveReport(target.id, "lost")
+
+        val command = ActionReportCommand(target.member!!.id, "post")
+        communityPostReportService.actionOnReport(command)
+
+        // then
+        Assertions.assertThat(target.member!!.status).isEqualTo(MemberStatusType.SUSPENDED)
+        Assertions.assertThatThrownBy {
+            communityPostReportService.actionOnReport(command)
+        }
+            .isExactlyInstanceOf(DomainException::class.java)
+            .hasMessage(ResponseCode.INVALID_REPORT_ACTION.message)
+    }
 
     private fun createMember(nickname: String): MemberEntity {
         return MemberEntity(
