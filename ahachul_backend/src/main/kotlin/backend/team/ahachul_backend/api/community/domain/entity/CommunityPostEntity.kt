@@ -6,6 +6,7 @@ import backend.team.ahachul_backend.api.community.domain.model.CommunityCategory
 import backend.team.ahachul_backend.api.member.domain.entity.MemberEntity
 import backend.team.ahachul_backend.common.entity.BaseEntity
 import backend.team.ahachul_backend.api.community.domain.model.CommunityPostType
+import backend.team.ahachul_backend.api.report.domain.ReportEntity
 import backend.team.ahachul_backend.common.domain.entity.SubwayLineEntity
 import backend.team.ahachul_backend.common.model.RegionType
 import jakarta.persistence.*
@@ -38,7 +39,10 @@ class CommunityPostEntity(
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "subway_line_id")
-    var subwayLineEntity: SubwayLineEntity
+    var subwayLineEntity: SubwayLineEntity,
+
+    @OneToMany(mappedBy = "communityPost")
+    var communityPostReports: MutableList<ReportEntity> = mutableListOf(),
 
     ): BaseEntity() {
 
@@ -62,5 +66,10 @@ class CommunityPostEntity(
 
     fun delete() {
         status = CommunityPostType.DELETED
+    }
+
+    fun hasDuplicateReportByMember(member: MemberEntity): Boolean{
+        return communityPostReports.stream()
+            .anyMatch {x -> x.sourceMember.id == member.id}
     }
 }

@@ -7,6 +7,7 @@ import backend.team.ahachul_backend.api.lost.domain.model.LostPostType
 import backend.team.ahachul_backend.api.lost.domain.model.LostStatus
 import backend.team.ahachul_backend.api.lost.domain.model.LostType
 import backend.team.ahachul_backend.api.member.domain.entity.MemberEntity
+import backend.team.ahachul_backend.api.report.domain.ReportEntity
 import backend.team.ahachul_backend.common.domain.entity.SubwayLineEntity
 import backend.team.ahachul_backend.common.entity.BaseEntity
 import jakarta.persistence.*
@@ -26,6 +27,9 @@ class LostPostEntity(
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "subway_line_id")
     var subwayLine: SubwayLineEntity,
+
+    @OneToMany(mappedBy = "lostPost")
+    var lostPostReports: MutableList<ReportEntity> = mutableListOf(),
 
     var title: String,
 
@@ -70,5 +74,10 @@ class LostPostEntity(
 
     fun delete() {
         type = LostPostType.DELETED
+    }
+
+    fun hasDuplicateReportByMember(member: MemberEntity): Boolean{
+        return lostPostReports.stream()
+            .anyMatch {x -> x.sourceMember.id == member.id}
     }
 }
