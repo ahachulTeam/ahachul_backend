@@ -19,9 +19,8 @@ class CommunityPostReportController(
 
     @Authentication
     @PostMapping("/v1/reports/community-post/{targetId}")
-    fun saveReport(@PathVariable("targetId") targetId: Long,
-                   @RequestParam("type") type: String): CommonResponse<CreateReportDto.Response> {
-        return CommonResponse.success(communityPostReportService.saveReport(targetId, type))
+    fun saveReport(@PathVariable("targetId") targetId: Long): CommonResponse<CreateReportDto.Response> {
+        return CommonResponse.success(communityPostReportService.saveReport(targetId))
     }
 
     // TODO: 관리자 전용 API

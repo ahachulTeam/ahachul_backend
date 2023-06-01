@@ -26,7 +26,7 @@ class LostPostReportService(
     private val redisClient: RedisClient
 ): ReportUseCase {
 
-    override fun saveReport(targetId: Long, type: String): CreateReportDto.Response {
+    override fun saveReport(targetId: Long): CreateReportDto.Response {
         val memberId = RequestUtils.getAttribute("memberId")!!
         val sourceMember = memberReader.getMember(memberId.toLong())
         val target = lostPostReader.getLostPost(targetId)

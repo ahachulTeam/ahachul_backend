@@ -53,7 +53,7 @@ class LostPostReportServiceTest(
         val target = lostPostRepository.save(createLostPost())
 
         // when
-        val result = lostPostReportService.saveReport(target.id, "lost")
+        val result = lostPostReportService.saveReport(target.id)
 
         // then
         Assertions.assertThat(result.targetId).isEqualTo(target.id)
@@ -71,7 +71,7 @@ class LostPostReportServiceTest(
         otherMember!!.id.let { RequestUtils.setAttribute("memberId", it) }
 
         Assertions.assertThatThrownBy {
-            lostPostReportService.saveReport(target.id, "lost")
+            lostPostReportService.saveReport(target.id)
         }
             .isExactlyInstanceOf(DomainException::class.java)
             .hasMessage(ResponseCode.INVALID_REPORT_REQUEST.message)
@@ -82,12 +82,12 @@ class LostPostReportServiceTest(
     fun checkDuplicateReport() {
         // given
         val target = lostPostRepository.save(createLostPost())
-        val result = lostPostReportService.saveReport(target.id, "lost")
+        val result = lostPostReportService.saveReport(target.id)
         Assertions.assertThat(target.lostPostReports.size).isEqualTo(1)
 
         // when, then
         Assertions.assertThatThrownBy {
-            lostPostReportService.saveReport(target.id, "lost")
+            lostPostReportService.saveReport(target.id)
         }
             .isExactlyInstanceOf(DomainException::class.java)
             .hasMessage(ResponseCode.DUPLICATE_REPORT_REQUEST.message)
@@ -98,7 +98,7 @@ class LostPostReportServiceTest(
     fun invalidConditionToBlock() {
         // given
         val target = lostPostRepository.save(createLostPost())
-        lostPostReportService.saveReport(target.id, "lost")
+        lostPostReportService.saveReport(target.id)
         val command = ActionReportCommand(target.member.id, "post")
 
         // when, then
@@ -118,13 +118,13 @@ class LostPostReportServiceTest(
         val otherMember3 = memberRepository.save(createMember("닉네임4"))
 
         // when
-        lostPostReportService.saveReport(target.id, "lost")
+        lostPostReportService.saveReport(target.id)
 
         RequestUtils.setAttribute("memberId", otherMember2.id)
-        lostPostReportService.saveReport(target.id, "lost")
+        lostPostReportService.saveReport(target.id)
 
         RequestUtils.setAttribute("memberId", otherMember3.id)
-        lostPostReportService.saveReport(target.id, "lost")
+        lostPostReportService.saveReport(target.id)
 
         val command = ActionReportCommand(target.member.id, "post")
         lostPostReportService.actionOnReport(command)

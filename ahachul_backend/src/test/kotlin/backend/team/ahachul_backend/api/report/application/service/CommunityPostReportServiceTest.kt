@@ -50,7 +50,7 @@ class CommunityPostReportServiceTest(
         val target = communityPostRepository.save(createCommunityPost())
 
         // when
-        val result = communityPostReportService.saveReport(target.id, "lost")
+        val result = communityPostReportService.saveReport(target.id)
 
         // then
         Assertions.assertThat(result.targetId).isEqualTo(target.id)
@@ -68,7 +68,7 @@ class CommunityPostReportServiceTest(
         otherMember!!.id.let { RequestUtils.setAttribute("memberId", it) }
 
         Assertions.assertThatThrownBy {
-            communityPostReportService.saveReport(target.id, "lost")
+            communityPostReportService.saveReport(target.id)
         }
             .isExactlyInstanceOf(DomainException::class.java)
             .hasMessage(ResponseCode.INVALID_REPORT_REQUEST.message)
@@ -79,11 +79,11 @@ class CommunityPostReportServiceTest(
     fun checkDuplicateReport() {
         // given
         val target = communityPostRepository.save(createCommunityPost())
-        communityPostReportService.saveReport(target.id, "lost")
+        communityPostReportService.saveReport(target.id)
 
         // when, then
         Assertions.assertThatThrownBy {
-            communityPostReportService.saveReport(target.id, "lost")
+            communityPostReportService.saveReport(target.id)
         }
             .isExactlyInstanceOf(DomainException::class.java)
             .hasMessage(ResponseCode.DUPLICATE_REPORT_REQUEST.message)
@@ -94,7 +94,7 @@ class CommunityPostReportServiceTest(
     fun invalidConditionToBlock() {
         // given
         val target = communityPostRepository.save(createCommunityPost())
-        communityPostReportService.saveReport(target.id, "lost")
+        communityPostReportService.saveReport(target.id)
         val command = ActionReportCommand(target.member!!.id, "post")
 
         // when, then
@@ -114,13 +114,13 @@ class CommunityPostReportServiceTest(
         val otherMember3 = memberRepository.save(createMember("닉네임4"))
 
         // when
-        communityPostReportService.saveReport(target.id, "lost")
+        communityPostReportService.saveReport(target.id)
 
         RequestUtils.setAttribute("memberId", otherMember2.id)
-        communityPostReportService.saveReport(target.id, "lost")
+        communityPostReportService.saveReport(target.id)
 
         RequestUtils.setAttribute("memberId", otherMember3.id)
-        communityPostReportService.saveReport(target.id, "lost")
+        communityPostReportService.saveReport(target.id)
 
         val command = ActionReportCommand(target.member!!.id, "post")
         communityPostReportService.actionOnReport(command)

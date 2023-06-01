@@ -6,7 +6,7 @@ import backend.team.ahachul_backend.api.report.application.port.`in`.command.Act
 
 interface ReportUseCase {
 
-    fun saveReport(targetId: Long, type: String): CreateReportDto.Response
+    fun saveReport(targetId: Long): CreateReportDto.Response
 
     fun actionOnReport(command: ActionReportCommand): ActionReportDto.Response
 }

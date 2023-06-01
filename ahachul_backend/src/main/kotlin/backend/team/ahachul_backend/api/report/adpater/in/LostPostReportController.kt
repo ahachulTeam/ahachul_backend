@@ -11,10 +11,9 @@ class LostPostReportController(
     private val lostPostReportService: ReportUseCase,
 ) {
     @PostMapping("/v1/reports/lost-post/{targetId}")
-    fun saveReport(@PathVariable("targetId") targetId: Long,
-                   @RequestParam("type") type: String): CommonResponse<CreateReportDto.Response> {
+    fun saveReport(@PathVariable("targetId") targetId: Long): CommonResponse<CreateReportDto.Response> {
 
-        return CommonResponse.success(lostPostReportService.saveReport(targetId, type))
+        return CommonResponse.success(lostPostReportService.saveReport(targetId))
     }
 
     // TODO: 관리자 전용 API
