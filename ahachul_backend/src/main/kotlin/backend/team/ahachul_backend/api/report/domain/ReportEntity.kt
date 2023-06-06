@@ -48,12 +48,12 @@ class ReportEntity (
     }
 
     private fun addCommunityPost(target: Any) {
-        this.communityPost = if (target is CommunityPostEntity) target else null
+        this.communityPost = target as? CommunityPostEntity
         communityPost?.communityPostReports?.add(this)
     }
 
     private fun addLostPost(target: Any) {
-        this.lostPost = if (target is LostPostEntity) target else null
+        this.lostPost = target as? LostPostEntity
         lostPost?.lostPostReports?.add(this)
     }
 }

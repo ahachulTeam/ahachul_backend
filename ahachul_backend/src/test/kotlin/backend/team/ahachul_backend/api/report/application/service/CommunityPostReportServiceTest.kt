@@ -5,7 +5,6 @@ import backend.team.ahachul_backend.api.community.adapter.web.out.CommunityPostR
 import backend.team.ahachul_backend.api.community.domain.entity.CommunityPostEntity
 import backend.team.ahachul_backend.api.community.domain.model.CommunityCategoryType
 import backend.team.ahachul_backend.api.community.domain.model.CommunityPostType
-import backend.team.ahachul_backend.api.lost.domain.model.LostPostType
 import backend.team.ahachul_backend.api.member.adapter.web.out.MemberRepository
 import backend.team.ahachul_backend.api.member.domain.entity.MemberEntity
 import backend.team.ahachul_backend.api.member.domain.model.GenderType
@@ -52,7 +51,7 @@ class CommunityPostReportServiceTest(
         val target = communityPostRepository.save(createCommunityPost())
 
         // when
-        val result = communityPostReportService.saveReport(target.id)
+        val result = communityPostReportService.save(target.id)
 
         // then
         Assertions.assertThat(result.targetId).isEqualTo(target.id)
@@ -70,7 +69,7 @@ class CommunityPostReportServiceTest(
         otherMember!!.id.let { RequestUtils.setAttribute("memberId", it) }
 
         Assertions.assertThatThrownBy {
-            communityPostReportService.saveReport(target.id)
+            communityPostReportService.save(target.id)
         }
             .isExactlyInstanceOf(DomainException::class.java)
             .hasMessage(ResponseCode.INVALID_REPORT_REQUEST.message)
@@ -81,11 +80,11 @@ class CommunityPostReportServiceTest(
     fun checkDuplicateReport() {
         // given
         val target = communityPostRepository.save(createCommunityPost())
-        communityPostReportService.saveReport(target.id)
+        communityPostReportService.save(target.id)
 
         // when, then
         Assertions.assertThatThrownBy {
-            communityPostReportService.saveReport(target.id)
+            communityPostReportService.save(target.id)
         }
             .isExactlyInstanceOf(DomainException::class.java)
             .hasMessage(ResponseCode.DUPLICATE_REPORT_REQUEST.message)
@@ -96,7 +95,7 @@ class CommunityPostReportServiceTest(
     fun invalidConditionToBlock() {
         // given
         val target = communityPostRepository.save(createCommunityPost())
-        communityPostReportService.saveReport(target.id)
+        communityPostReportService.save(target.id)
         val command = ActionReportCommand(target.member!!.id, "post")
 
         // when, then
@@ -116,13 +115,13 @@ class CommunityPostReportServiceTest(
         val otherMember3 = memberRepository.save(createMember("닉네임4"))
 
         // when
-        communityPostReportService.saveReport(target.id)
+        communityPostReportService.save(target.id)
 
         RequestUtils.setAttribute("memberId", otherMember2.id)
-        communityPostReportService.saveReport(target.id)
+        communityPostReportService.save(target.id)
 
         RequestUtils.setAttribute("memberId", otherMember3.id)
-        communityPostReportService.saveReport(target.id)
+        communityPostReportService.save(target.id)
 
         val command = ActionReportCommand(target.member!!.id, "post")
         communityPostReportService.actionOnReport(command)
@@ -147,19 +146,19 @@ class CommunityPostReportServiceTest(
         val otherMember5 = memberRepository.save(createMember("닉네임4"))
 
         // when
-        communityPostReportService.saveReport(target.id)
+        communityPostReportService.save(target.id)
 
         RequestUtils.setAttribute("memberId", otherMember2.id)
-        communityPostReportService.saveReport(target.id)
+        communityPostReportService.save(target.id)
 
         RequestUtils.setAttribute("memberId", otherMember3.id)
-        communityPostReportService.saveReport(target.id)
+        communityPostReportService.save(target.id)
 
         RequestUtils.setAttribute("memberId", otherMember4.id)
-        communityPostReportService.saveReport(target.id)
+        communityPostReportService.save(target.id)
 
         RequestUtils.setAttribute("memberId", otherMember5.id)
-        communityPostReportService.saveReport(target.id)
+        communityPostReportService.save(target.id)
 
         // then
         Assertions.assertThat(target.communityPostReports.size).isEqualTo(5)

@@ -29,20 +29,20 @@ class CommunityPostReportService(
     private val redisClient: RedisClient
 ): ReportUseCase {
 
-    override fun saveReport(targetId: Long): CreateReportDto.Response {
+    override fun save(targetId: Long): CreateReportDto.Response {
         val memberId = RequestUtils.getAttribute("memberId")!!
         val sourceMember = memberReader.getMember(memberId.toLong())
-        val target = communityPostReader.getCommunityPost(targetId)
-        val targetMember = target.member!!
+        val targetPost = communityPostReader.getCommunityPost(targetId)
+        val targetMember = targetPost.member!!
 
-        validate(sourceMember, targetMember, target)
+        validate(sourceMember, targetMember, targetPost)
 
-        val entity = reportWriter.saveReport(
-            ReportEntity.from(sourceMember, targetMember, target)
+        val entity = reportWriter.save(
+            ReportEntity.from(sourceMember, targetMember, targetPost)
         )
 
-        if (target.exceedMinReportCount()) {
-            target.block()
+        if (targetPost.exceedMinReportCount()) {
+            targetPost.block()
         }
 
         return CreateReportDto.Response(

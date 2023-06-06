@@ -9,7 +9,7 @@ class ReportPersistence(
     private val repository: ReportRepository
 ): ReportWriter {
 
-    override fun saveReport(reportEntity: ReportEntity): ReportEntity {
+    override fun save(reportEntity: ReportEntity): ReportEntity {
         return repository.save(reportEntity)
     }
 }

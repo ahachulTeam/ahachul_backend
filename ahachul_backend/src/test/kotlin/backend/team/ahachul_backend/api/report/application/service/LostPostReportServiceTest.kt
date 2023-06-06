@@ -12,7 +12,6 @@ import backend.team.ahachul_backend.api.member.domain.model.MemberStatusType
 import backend.team.ahachul_backend.api.member.domain.model.ProviderType
 import backend.team.ahachul_backend.api.report.application.port.`in`.ReportUseCase
 import backend.team.ahachul_backend.api.report.application.port.`in`.command.ActionReportCommand
-import backend.team.ahachul_backend.common.client.RedisClient
 import backend.team.ahachul_backend.common.domain.entity.SubwayLineEntity
 import backend.team.ahachul_backend.common.exception.DomainException
 import backend.team.ahachul_backend.common.model.RegionType
@@ -54,7 +53,7 @@ class LostPostReportServiceTest(
         val target = lostPostRepository.save(createLostPost())
 
         // when
-        val result = lostPostReportService.saveReport(target.id)
+        val result = lostPostReportService.save(target.id)
 
         // then
         Assertions.assertThat(result.targetId).isEqualTo(target.id)
@@ -72,7 +71,7 @@ class LostPostReportServiceTest(
         otherMember!!.id.let { RequestUtils.setAttribute("memberId", it) }
 
         Assertions.assertThatThrownBy {
-            lostPostReportService.saveReport(target.id)
+            lostPostReportService.save(target.id)
         }
             .isExactlyInstanceOf(DomainException::class.java)
             .hasMessage(ResponseCode.INVALID_REPORT_REQUEST.message)
@@ -83,12 +82,12 @@ class LostPostReportServiceTest(
     fun checkDuplicateReport() {
         // given
         val target = lostPostRepository.save(createLostPost())
-        val result = lostPostReportService.saveReport(target.id)
+        val result = lostPostReportService.save(target.id)
         Assertions.assertThat(target.lostPostReports.size).isEqualTo(1)
 
         // when, then
         Assertions.assertThatThrownBy {
-            lostPostReportService.saveReport(target.id)
+            lostPostReportService.save(target.id)
         }
             .isExactlyInstanceOf(DomainException::class.java)
             .hasMessage(ResponseCode.DUPLICATE_REPORT_REQUEST.message)
@@ -99,7 +98,7 @@ class LostPostReportServiceTest(
     fun invalidConditionToBlock() {
         // given
         val target = lostPostRepository.save(createLostPost())
-        lostPostReportService.saveReport(target.id)
+        lostPostReportService.save(target.id)
         val command = ActionReportCommand(target.member.id, "post")
 
         // when, then
@@ -119,13 +118,13 @@ class LostPostReportServiceTest(
         val otherMember3 = memberRepository.save(createMember("닉네임4"))
 
         // when
-        lostPostReportService.saveReport(target.id)
+        lostPostReportService.save(target.id)
 
         RequestUtils.setAttribute("memberId", otherMember2.id)
-        lostPostReportService.saveReport(target.id)
+        lostPostReportService.save(target.id)
 
         RequestUtils.setAttribute("memberId", otherMember3.id)
-        lostPostReportService.saveReport(target.id)
+        lostPostReportService.save(target.id)
 
         val command = ActionReportCommand(target.member.id, "post")
         lostPostReportService.actionOnReport(command)
@@ -150,19 +149,19 @@ class LostPostReportServiceTest(
         val otherMember5 = memberRepository.save(createMember("닉네임4"))
 
         // when
-        lostPostReportService.saveReport(target.id)
+        lostPostReportService.save(target.id)
 
         RequestUtils.setAttribute("memberId", otherMember2.id)
-        lostPostReportService.saveReport(target.id)
+        lostPostReportService.save(target.id)
 
         RequestUtils.setAttribute("memberId", otherMember3.id)
-        lostPostReportService.saveReport(target.id)
+        lostPostReportService.save(target.id)
 
         RequestUtils.setAttribute("memberId", otherMember4.id)
-        lostPostReportService.saveReport(target.id)
+        lostPostReportService.save(target.id)
 
         RequestUtils.setAttribute("memberId", otherMember5.id)
-        lostPostReportService.saveReport(target.id)
+        lostPostReportService.save(target.id)
 
         // then
         Assertions.assertThat(target.lostPostReports.size).isEqualTo(5)
