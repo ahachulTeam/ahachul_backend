@@ -2,6 +2,7 @@ package backend.team.ahachul_backend.api.community.adapter.web.`in`.dto.post
 
 import backend.team.ahachul_backend.api.community.domain.entity.CommunityPostEntity
 import backend.team.ahachul_backend.api.community.domain.model.CommunityCategoryType
+import backend.team.ahachul_backend.common.dto.ImageDto
 import backend.team.ahachul_backend.common.model.RegionType
 import org.springframework.web.multipart.MultipartFile
 
@@ -34,10 +35,10 @@ class CreateCommunityPostDto {
         val categoryType: CommunityCategoryType,
         val region: RegionType,
         val subwayLineId: Long,
-        val imageUrls: List<String> = arrayListOf()
+        val images: List<ImageDto> = arrayListOf()
     ) {
         companion object {
-            fun from(entity: CommunityPostEntity, imageUrls: List<String>): Response {
+            fun of(entity: CommunityPostEntity, images: List<ImageDto>): Response {
                 return Response(
                     id = entity.id,
                     title = entity.title,
@@ -45,7 +46,7 @@ class CreateCommunityPostDto {
                     categoryType = entity.categoryType,
                     region = entity.regionType,
                     subwayLineId = entity.subwayLineEntity.id,
-                    imageUrls = imageUrls
+                    images = images
                 )
             }
         }

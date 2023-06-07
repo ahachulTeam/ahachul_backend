@@ -4,6 +4,7 @@ import backend.team.ahachul_backend.api.community.adapter.web.`in`.dto.*
 import backend.team.ahachul_backend.api.community.adapter.web.`in`.dto.post.*
 import backend.team.ahachul_backend.api.community.application.port.`in`.CommunityPostUseCase
 import backend.team.ahachul_backend.api.community.domain.model.CommunityCategoryType
+import backend.team.ahachul_backend.common.dto.ImageDto
 import backend.team.ahachul_backend.common.model.RegionType
 import backend.team.ahachul_backend.config.controller.CommonDocsTestConfig
 import org.junit.jupiter.api.Test
@@ -161,7 +162,7 @@ class CommunityPostControllerDocsTest : CommonDocsTestConfig() {
             categoryType = CommunityCategoryType.ISSUE,
             region = RegionType.METROPOLITAN,
             subwayLineId = 1,
-            imageUrls = listOf("url1", "url2")
+            images = listOf(ImageDto.of(1L, "url1"), ImageDto.of(2L, "url2"))
         )
 
         given(communityPostUseCase.createCommunityPost(any()))
@@ -209,7 +210,9 @@ class CommunityPostControllerDocsTest : CommonDocsTestConfig() {
                         fieldWithPath("result.categoryType").type("CategoryType").description("카테고리 타입").attributes(getFormatAttribute("FREE, INSIGHT, ISSUE, HUMOR")),
                         fieldWithPath("result.region").type(JsonFieldType.STRING).description("지역"),
                         fieldWithPath("result.subwayLineId").type(JsonFieldType.NUMBER).description("지하철 노선 ID"),
-                        fieldWithPath("result.imageUrls").type(JsonFieldType.ARRAY).description("등록된 이미지 URI"),
+                        fieldWithPath("result.images").type(JsonFieldType.ARRAY).description("등록된 이미지"),
+                        fieldWithPath("result.images[].imageId").type(JsonFieldType.NUMBER).description("등록된 이미지 ID"),
+                        fieldWithPath("result.images[].imageUrl").type(JsonFieldType.STRING).description("등록된 이미지 URI"),
                     )
                 )
             )

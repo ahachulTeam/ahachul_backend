@@ -51,11 +51,11 @@ class CommunityPostService(
         val subwayLine = subwayLineReader.getSubwayLine(command.subwayLineId)
         val communityPost = communityPostWriter.save(CommunityPostEntity.of(command, member, subwayLine))
         communityPostHashTagService.createCommunityPostHashTag(communityPost, command.hashTags)
-        val imageUrls = communityPostFileService.createCommunityPostFiles(communityPost, command.imageFiles)
+        val images = communityPostFileService.createCommunityPostFiles(communityPost, command.imageFiles)
 
-        return CreateCommunityPostDto.Response.from(
+        return CreateCommunityPostDto.Response.of(
             communityPost,
-            imageUrls
+            images
         )
     }
 
