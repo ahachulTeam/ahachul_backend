@@ -1,16 +1,16 @@
-package backend.team.ahachul_backend.api.report.application.service
+package backend.team.ahachul_backend.admin.application.service
 
 import backend.team.ahachul_backend.api.community.adapter.web.`in`.dto.post.CreateCommunityPostCommand
 import backend.team.ahachul_backend.api.community.adapter.web.out.CommunityPostRepository
 import backend.team.ahachul_backend.api.community.domain.entity.CommunityPostEntity
 import backend.team.ahachul_backend.api.community.domain.model.CommunityCategoryType
-import backend.team.ahachul_backend.api.community.domain.model.CommunityPostType
 import backend.team.ahachul_backend.api.member.adapter.web.out.MemberRepository
 import backend.team.ahachul_backend.api.member.domain.entity.MemberEntity
 import backend.team.ahachul_backend.api.member.domain.model.GenderType
 import backend.team.ahachul_backend.api.member.domain.model.MemberStatusType
 import backend.team.ahachul_backend.api.member.domain.model.ProviderType
-import backend.team.ahachul_backend.api.report.application.port.`in`.ReportUseCase
+import backend.team.ahachul_backend.api.report.application.port.`in`.command.ActionReportCommand
+import backend.team.ahachul_backend.api.report.application.service.CommunityPostReportService
 import backend.team.ahachul_backend.common.domain.entity.SubwayLineEntity
 import backend.team.ahachul_backend.common.exception.DomainException
 import backend.team.ahachul_backend.common.model.RegionType
@@ -24,8 +24,10 @@ import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 
-class CommunityPostReportServiceTest(
-    @Autowired val communityPostReportService: ReportUseCase,
+
+class AdminServiceTest(
+    @Autowired val adminService: AdminService,
+    @Autowired val communityPostReportService:CommunityPostReportService,
     @Autowired val memberRepository: MemberRepository,
     @Autowired val communityPostRepository: CommunityPostRepository,
     @Autowired val subwayLineRepository: SubwayLineRepository
@@ -34,70 +36,40 @@ class CommunityPostReportServiceTest(
     private var subwayLine: SubwayLineEntity? = null
     private var member: MemberEntity? = null
     private var otherMember: MemberEntity? = null
+    private var manager: MemberEntity? = null
 
     @BeforeEach
     fun setup() {
         member = memberRepository.save(createMember("닉네임1"))
-        member!!.id.let { RequestUtils.setAttribute("memberId", it) }
         otherMember = memberRepository.save(createMember("닉네임2"))
+        manager = memberRepository.save(createMember("관리자"))
+        member!!.id.let { RequestUtils.setAttribute("memberId", it) }
         subwayLine = createSubwayLine()
     }
 
     @Test
-    @DisplayName("신고 저장")
-    fun saveReport() {
-        // given
-        val target = communityPostRepository.save(createCommunityPost())
-
-        // when
-        val result = communityPostReportService.save(target.id)
-
-        // then
-        Assertions.assertThat(result.targetId).isEqualTo(target.id)
-        Assertions.assertThat(result.sourceMemberId).isEqualTo(member!!.id)
-        Assertions.assertThat(result.targetMemberId).isEqualTo(otherMember!!.id)
-    }
-
-    @Test
-    @DisplayName("본인이 작성한 게시물 신고 테스트")
-    fun checkSameTargetReport() {
-        // given
-        val target = communityPostRepository.save(createCommunityPost())
-
-        // when, then
-        otherMember!!.id.let { RequestUtils.setAttribute("memberId", it) }
-
-        Assertions.assertThatThrownBy {
-            communityPostReportService.save(target.id)
-        }
-            .isExactlyInstanceOf(DomainException::class.java)
-            .hasMessage(ResponseCode.INVALID_REPORT_REQUEST.message)
-    }
-
-    @Test
-    @DisplayName("중복으로 같은 게시물 신고 테스트")
-    fun checkDuplicateReport() {
+    @DisplayName("특정 신고 횟수를 넘지 못했을 때는 블락 불가능 테스트")
+    fun invalidConditionToBlock() {
         // given
         val target = communityPostRepository.save(createCommunityPost())
         communityPostReportService.save(target.id)
+        val command = ActionReportCommand(target.member!!.id, "post")
 
         // when, then
         Assertions.assertThatThrownBy {
-            communityPostReportService.save(target.id)
+            adminService.actionOnReport(command)
         }
             .isExactlyInstanceOf(DomainException::class.java)
-            .hasMessage(ResponseCode.DUPLICATE_REPORT_REQUEST.message)
+            .hasMessage(ResponseCode.INVALID_CONDITION_TO_BLOCK_MEMBER.message)
     }
 
     @Test
-    @DisplayName("유실물 게시물 블락 처리 테스트")
-    fun blockLostPost() {
+    @DisplayName("관리자가 유저를 중복으로 블락하지 못하는 테스트")
+    fun duplicateBlockAction() {
         // given
-        val target = communityPostRepository.save(createCommunityPost())    // 신고 대상
+        val target = communityPostRepository.save(createCommunityPost())  // 신고 대상
         val otherMember2 = memberRepository.save(createMember("닉네임3"))
         val otherMember3 = memberRepository.save(createMember("닉네임4"))
-        val otherMember4 = memberRepository.save(createMember("닉네임4"))
-        val otherMember5 = memberRepository.save(createMember("닉네임4"))
 
         // when
         communityPostReportService.save(target.id)
@@ -108,15 +80,16 @@ class CommunityPostReportServiceTest(
         RequestUtils.setAttribute("memberId", otherMember3.id)
         communityPostReportService.save(target.id)
 
-        RequestUtils.setAttribute("memberId", otherMember4.id)
-        communityPostReportService.save(target.id)
-
-        RequestUtils.setAttribute("memberId", otherMember5.id)
-        communityPostReportService.save(target.id)
+        val command = ActionReportCommand(target.member!!.id, "post")
+        adminService.actionOnReport(command)
 
         // then
-        Assertions.assertThat(target.communityPostReports.size).isEqualTo(5)
-        Assertions.assertThat(target.status).isEqualTo(CommunityPostType.BLOCKED)
+        Assertions.assertThat(target.member!!.status).isEqualTo(MemberStatusType.SUSPENDED)
+        Assertions.assertThatThrownBy {
+            adminService.actionOnReport(command)
+        }
+            .isExactlyInstanceOf(DomainException::class.java)
+            .hasMessage(ResponseCode.INVALID_REPORT_ACTION.message)
     }
 
     private fun createMember(nickname: String): MemberEntity {
@@ -151,4 +124,5 @@ class CommunityPostReportServiceTest(
             subwayLine!!
         )
     }
+
 }

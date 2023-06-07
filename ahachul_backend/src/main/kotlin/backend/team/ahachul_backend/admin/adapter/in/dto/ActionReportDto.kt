@@ -1,4 +1,4 @@
-package backend.team.ahachul_backend.api.report.adpater.`in`.dto
+package backend.team.ahachul_backend.admin.adapter.`in`.dto
 
 import backend.team.ahachul_backend.api.report.application.port.`in`.command.ActionReportCommand
 
