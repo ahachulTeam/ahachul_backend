@@ -11,6 +11,7 @@ import org.mockito.BDDMockito.given
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest
 import org.springframework.boot.test.mock.mockito.MockBean
 import org.springframework.http.MediaType
+import org.springframework.mock.web.MockMultipartFile
 import org.springframework.restdocs.headers.HeaderDocumentation.headerWithName
 import org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders
 import org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document
@@ -159,26 +160,24 @@ class CommunityPostControllerDocsTest : CommonDocsTestConfig() {
             content = "생성된 내용",
             categoryType = CommunityCategoryType.ISSUE,
             region = RegionType.METROPOLITAN,
-            subwayLineId = 1
+            subwayLineId = 1,
+            imageUrls = listOf("url1", "url2")
         )
 
         given(communityPostUseCase.createCommunityPost(any()))
             .willReturn(response)
 
-        val request = CreateCommunityPostDto.Request(
-            title = "생성할 제목",
-            content = "생성할 내용",
-            categoryType = CommunityCategoryType.ISSUE,
-            subwayLineId = 1,
-            hashTags = arrayListOf("여행", "취미")
-        )
-
         // when
         val result = mockMvc.perform(
-            post("/v1/community-posts")
+            multipart("/v1/community-posts")
+                .file("imageFiles", MockMultipartFile("files", "file1.txt", MediaType.TEXT_PLAIN_VALUE, "File 1 Content".toByteArray()).bytes)
+                .queryParam("title", "생성할 제목")
+                .queryParam("content", "생성할 내용")
+                .queryParam("categoryType", CommunityCategoryType.ISSUE.name)
+                .queryParam("subwayLineId", "1")
+                .queryParam("hashTags", "여행, 취미")
                 .header("Authorization", "Bearer <Access Token>")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(request))
+                .contentType(MediaType.MULTIPART_FORM_DATA)
                 .accept(MediaType.APPLICATION_JSON)
         )
 
@@ -192,12 +191,15 @@ class CommunityPostControllerDocsTest : CommonDocsTestConfig() {
                     requestHeaders(
                         headerWithName("Authorization").description("엑세스 토큰")
                     ),
-                    requestFields(
-                        fieldWithPath("title").type(JsonFieldType.STRING).description("생성할 제목"),
-                        fieldWithPath("content").type(JsonFieldType.STRING).description("생성할 내용"),
-                        fieldWithPath("categoryType").type("CategoryType").description("카테고리 타입").attributes(getFormatAttribute("FREE, INSIGHT, ISSUE, HUMOR")),
-                        fieldWithPath("subwayLineId").type(JsonFieldType.NUMBER).description("지하철 노선 ID"),
-                        fieldWithPath("hashTags").type(JsonFieldType.ARRAY).description("해시 태그 목록").optional(),
+                    queryParameters(
+                        parameterWithName("title").description("생성할 제목"),
+                        parameterWithName("content").description("생성할 내용"),
+                        parameterWithName("categoryType").description("카테고리 타입").attributes(getFormatAttribute("FREE, INSIGHT, ISSUE, HUMOR")),
+                        parameterWithName("subwayLineId").description("지하철 노선 ID"),
+                        parameterWithName("hashTags").description("해시 태그 목록").optional(),
+                    ),
+                    requestParts(
+                        partWithName("imageFiles").description("이미지 파일").optional(),
                     ),
                     responseFields(
                         *commonResponseFields(),
@@ -207,6 +209,7 @@ class CommunityPostControllerDocsTest : CommonDocsTestConfig() {
                         fieldWithPath("result.categoryType").type("CategoryType").description("카테고리 타입").attributes(getFormatAttribute("FREE, INSIGHT, ISSUE, HUMOR")),
                         fieldWithPath("result.region").type(JsonFieldType.STRING).description("지역"),
                         fieldWithPath("result.subwayLineId").type(JsonFieldType.NUMBER).description("지하철 노선 ID"),
+                        fieldWithPath("result.imageUrls").type(JsonFieldType.ARRAY).description("등록된 이미지 URI"),
                     )
                 )
             )

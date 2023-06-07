@@ -24,6 +24,7 @@ class CommunityPostService(
     private val communityPostHashTagReader: CommunityPostHashTagReader,
 
     private val communityPostHashTagService: CommunityPostHashTagService,
+    private val communityPostFileService: CommunityPostFileService,
 
     private val viewsSupport: ViewsSupport,
 ): CommunityPostUseCase {
@@ -50,7 +51,12 @@ class CommunityPostService(
         val subwayLine = subwayLineReader.getSubwayLine(command.subwayLineId)
         val communityPost = communityPostWriter.save(CommunityPostEntity.of(command, member, subwayLine))
         communityPostHashTagService.createCommunityPostHashTag(communityPost, command.hashTags)
-        return CreateCommunityPostDto.Response.from(communityPost)
+        val imageUrls = communityPostFileService.createCommunityPostFiles(communityPost, command.imageFiles)
+
+        return CreateCommunityPostDto.Response.from(
+            communityPost,
+            imageUrls
+        )
     }
 
     @Transactional

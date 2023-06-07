@@ -28,8 +28,9 @@ include::{snippets}/get-community-post/response-fields.adoc[]
 include::{snippets}/create-community-post/http-request.adoc[]
 .Request Headers
 include::{snippets}/create-community-post/request-headers.adoc[]
-.Request Fields
-include::{snippets}/create-community-post/request-fields.adoc[]
+.Request Map Value
+include::{snippets}/create-community-post/query-parameters.adoc[]
+include::{snippets}/create-community-post/request-parts.adoc[]
 .Response
 include::{snippets}/create-community-post/http-response.adoc[]
 .Response Fields

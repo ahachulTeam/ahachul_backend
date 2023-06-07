@@ -19,4 +19,13 @@ class CommunityPostFileEntity(
     @JoinColumn(name = "file_id")
     var file: FileEntity
 ): BaseEntity() {
+
+    companion object {
+        fun of(post: CommunityPostEntity, file: FileEntity): CommunityPostFileEntity {
+            return CommunityPostFileEntity(
+                commentPost = post,
+                file = file
+            )
+        }
+    }
 }
