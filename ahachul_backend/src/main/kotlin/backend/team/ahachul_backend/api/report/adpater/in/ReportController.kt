@@ -26,7 +26,6 @@ class ReportController(
     @Authentication
     @PostMapping("/v1/reports/lost-post/{postId}")
     fun saveReportLostPost(@PathVariable("postId") postId: Long): CommonResponse<CreateReportDto.Response> {
-
         return CommonResponse.success(lostPostReportService.save(postId))
     }
 }
