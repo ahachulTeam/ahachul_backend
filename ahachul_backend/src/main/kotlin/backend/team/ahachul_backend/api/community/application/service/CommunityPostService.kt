@@ -44,7 +44,18 @@ class CommunityPostService(
         val communityPost = communityPostReader.getCommunityPost(command.id)
         val views = viewsSupport.increase(command.id)
         val hashTags = communityPostHashTagReader.findAllByPostId(communityPost.id).map { it.hashTag.name }
-        return GetCommunityPostDto.Response.of(communityPost, hashTags, views)
+        val communityPostFiles = communityPostFileReader.findAllByPostId(communityPost.id)
+        return GetCommunityPostDto.Response.of(
+            communityPost,
+            hashTags,
+            views,
+            communityPostFiles.map {
+                ImageDto.of(
+                    imageId = it.id,
+                    imageUrl = it.file.filePath
+                )
+            }
+        )
     }
 
     @Transactional
@@ -74,10 +85,12 @@ class CommunityPostService(
         val communityPostFiles = communityPostFileReader.findAllByPostId(communityPost.id)
         return UpdateCommunityPostDto.Response.of(
             communityPost,
-            communityPostFiles.map { ImageDto.of(
-                imageId = it.id,
-                imageUrl = it.file.filePath
-            ) }
+            communityPostFiles.map {
+                ImageDto.of(
+                    imageId = it.id,
+                    imageUrl = it.file.filePath
+                )
+            }
         )
     }
 

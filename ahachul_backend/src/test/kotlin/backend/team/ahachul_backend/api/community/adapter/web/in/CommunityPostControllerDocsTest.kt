@@ -112,7 +112,8 @@ class CommunityPostControllerDocsTest : CommonDocsTestConfig() {
             RegionType.METROPOLITAN,
             LocalDateTime.now(),
             "작성자 ID",
-            "작성자 닉네임"
+            "작성자 닉네임",
+            listOf(ImageDto.of(1L, "url1"), ImageDto.of(2L, "url2"))
         )
 
         given(communityPostUseCase.getCommunityPost(any()))
@@ -147,6 +148,9 @@ class CommunityPostControllerDocsTest : CommonDocsTestConfig() {
                         fieldWithPath("result.createdAt").type("LocalDateTime").description("작성일자"),
                         fieldWithPath("result.createdBy").type(JsonFieldType.STRING).description("작성자 ID"),
                         fieldWithPath("result.writer").type(JsonFieldType.STRING).description("작성자 닉네임"),
+                        fieldWithPath("result.images").type(JsonFieldType.ARRAY).description("등록된 이미지"),
+                        fieldWithPath("result.images[].imageId").type(JsonFieldType.NUMBER).description("등록된 이미지 ID"),
+                        fieldWithPath("result.images[].imageUrl").type(JsonFieldType.STRING).description("등록된 이미지 URI"),
                     )
                 )
             )
