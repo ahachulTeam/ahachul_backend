@@ -11,4 +11,8 @@ class FilePersistence(
     override fun save(entity: FileEntity): FileEntity {
         return repository.save(entity)
     }
+
+    override fun delete(id: Long) {
+        return repository.deleteById(id)
+    }
 }

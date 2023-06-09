@@ -5,4 +5,6 @@ import backend.team.ahachul_backend.api.community.domain.entity.CommunityPostFil
 interface CommunityPostFileWriter {
 
     fun save(entity: CommunityPostFileEntity): CommunityPostFileEntity
+
+    fun deleteByFileId(fileId: Long)
 }

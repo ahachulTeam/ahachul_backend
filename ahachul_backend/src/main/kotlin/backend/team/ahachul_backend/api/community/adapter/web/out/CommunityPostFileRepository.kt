@@ -4,4 +4,8 @@ import backend.team.ahachul_backend.api.community.domain.entity.CommunityPostFil
 import org.springframework.data.jpa.repository.JpaRepository
 
 interface CommunityPostFileRepository: JpaRepository<CommunityPostFileEntity, Long> {
+
+    fun findAllByCommentPostIdOOrderById(communityPostId: Long): List<CommunityPostFileEntity>
+
+    fun deleteByFileId(fileId: Long)
 }

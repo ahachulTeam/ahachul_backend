@@ -45,4 +45,11 @@ class CommunityPostFileService(
             ImageDto.of(file.id, s3FileUrl)
         }
     }
+
+    override fun deleteCommunityPostFiles(fileIds: List<Long>) {
+        fileIds.forEach {
+            fileWriter.delete(it)
+            communityPostFileWriter.deleteByFileId(it)
+        }
+    }
 }

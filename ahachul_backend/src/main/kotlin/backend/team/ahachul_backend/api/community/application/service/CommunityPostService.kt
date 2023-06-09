@@ -2,11 +2,13 @@ package backend.team.ahachul_backend.api.community.application.service
 
 import backend.team.ahachul_backend.api.community.adapter.web.`in`.dto.post.*
 import backend.team.ahachul_backend.api.community.application.port.`in`.CommunityPostUseCase
+import backend.team.ahachul_backend.api.community.application.port.out.CommunityPostFileReader
 import backend.team.ahachul_backend.api.community.application.port.out.CommunityPostHashTagReader
 import backend.team.ahachul_backend.api.community.application.port.out.CommunityPostReader
 import backend.team.ahachul_backend.api.community.application.port.out.CommunityPostWriter
 import backend.team.ahachul_backend.api.community.domain.entity.CommunityPostEntity
 import backend.team.ahachul_backend.api.member.application.port.out.MemberReader
+import backend.team.ahachul_backend.common.dto.ImageDto
 import backend.team.ahachul_backend.common.persistence.SubwayLineReader
 import backend.team.ahachul_backend.common.support.ViewsSupport
 import backend.team.ahachul_backend.common.utils.RequestUtils
@@ -22,6 +24,7 @@ class CommunityPostService(
     private val memberReader: MemberReader,
     private val subwayLineReader: SubwayLineReader,
     private val communityPostHashTagReader: CommunityPostHashTagReader,
+    private val communityPostFileReader: CommunityPostFileReader,
 
     private val communityPostHashTagService: CommunityPostHashTagService,
     private val communityPostFileService: CommunityPostFileService,
@@ -66,7 +69,16 @@ class CommunityPostService(
         communityPost.checkMe(memberId)
         communityPost.update(command)
         communityPostHashTagService.createCommunityPostHashTag(communityPost, command.hashTags)
-        return UpdateCommunityPostDto.Response.from(communityPost)
+        communityPostFileService.createCommunityPostFiles(communityPost, command.uploadFiles)
+        communityPostFileService.deleteCommunityPostFiles(command.removeFileIds)
+        val communityPostFiles = communityPostFileReader.findAllByPostId(communityPost.id)
+        return UpdateCommunityPostDto.Response.of(
+            communityPost,
+            communityPostFiles.map { ImageDto.of(
+                imageId = it.id,
+                imageUrl = it.file.filePath
+            ) }
+        )
     }
 
     @Transactional

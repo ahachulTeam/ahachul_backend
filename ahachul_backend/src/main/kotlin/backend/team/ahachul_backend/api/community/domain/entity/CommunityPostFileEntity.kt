@@ -15,7 +15,7 @@ class CommunityPostFileEntity(
     @JoinColumn(name = "community_post_id")
     var commentPost: CommunityPostEntity,
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "file_id")
     var file: FileEntity
 ): BaseEntity() {

@@ -39,8 +39,8 @@ class CommunityPostController(
     }
 
     @Authentication
-    @PatchMapping("/v1/community-posts/{postId}")
-    fun updateCommunityPost(@PathVariable postId: Long, @RequestBody request: UpdateCommunityPostDto.Request): CommonResponse<UpdateCommunityPostDto.Response> {
+    @PostMapping("/v1/community-posts/{postId}")
+    fun updateCommunityPost(@PathVariable postId: Long, request: UpdateCommunityPostDto.Request): CommonResponse<UpdateCommunityPostDto.Response> {
         return CommonResponse.success(communityPostUseCase.updateCommunityPost(request.toCommand(postId)))
     }
 

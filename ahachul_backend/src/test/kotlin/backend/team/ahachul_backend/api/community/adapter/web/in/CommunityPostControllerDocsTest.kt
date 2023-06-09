@@ -225,26 +225,25 @@ class CommunityPostControllerDocsTest : CommonDocsTestConfig() {
             id = 1,
             title = "변경된 제목",
             content = "변경된 내용",
-            categoryType = CommunityCategoryType.ISSUE
+            categoryType = CommunityCategoryType.ISSUE,
+            images = listOf(ImageDto.of(3L, "url3"))
         )
 
         given(communityPostUseCase.updateCommunityPost(any()))
             .willReturn(response)
 
-        val request = UpdateCommunityPostDto.Request(
-            title = "변경할 제목",
-            content = "변경할 내용",
-            categoryType = CommunityCategoryType.ISSUE,
-            hashTags = arrayListOf("여행", "취미")
-        )
-
         // when
         val result = mockMvc.perform(
-            patch("/v1/community-posts/{postId}", 1)
-                .header("Authorization", "Bearer <Access Token>")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(request))
-                .accept(MediaType.APPLICATION_JSON)
+             multipart("/v1/community-posts/{postId}", 1)
+                 .file("uploadFiles", MockMultipartFile("files", "file1.txt", MediaType.TEXT_PLAIN_VALUE, "File 1 Content".toByteArray()).bytes)
+                 .queryParam("title", "변경할 제목")
+                 .queryParam("content", "변경할 내용")
+                 .queryParam("categoryType", CommunityCategoryType.ISSUE.name)
+                 .queryParam("hashTags", "여행, 취미")
+                 .queryParam("removeFileIds", "1, 2")
+                 .header("Authorization", "Bearer <Access Token>")
+                 .contentType(MediaType.MULTIPART_FORM_DATA)
+                 .accept(MediaType.APPLICATION_JSON)
         )
 
         // then
@@ -260,11 +259,15 @@ class CommunityPostControllerDocsTest : CommonDocsTestConfig() {
                     pathParameters(
                         parameterWithName("postId").description("게시물 아이디")
                     ),
-                    requestFields(
-                        fieldWithPath("title").type(JsonFieldType.STRING).description("변경할 제목"),
-                        fieldWithPath("content").type(JsonFieldType.STRING).description("변경할 내용"),
-                        fieldWithPath("categoryType").type("CategoryType").description("변경할 카테고리 타입").attributes(getFormatAttribute("FREE, INSIGHT, ISSUE, HUMOR")),
-                        fieldWithPath("hashTags").type(JsonFieldType.ARRAY).description("해시 태그 목록").optional(),
+                    queryParameters(
+                        parameterWithName("title").description("변경할 제목"),
+                        parameterWithName("content").description("변경할 내용"),
+                        parameterWithName("categoryType").description("변경할 카테고리 타입").attributes(getFormatAttribute("FREE, INSIGHT, ISSUE, HUMOR")),
+                        parameterWithName("hashTags").description("해시 태그 목록").optional(),
+                        parameterWithName("removeFileIds").description("삭제할 파일 ID 목록")
+                    ),
+                    requestParts(
+                        partWithName("uploadFiles").description("이미지 파일").optional(),
                     ),
                     responseFields(
                         *commonResponseFields(),
@@ -272,6 +275,9 @@ class CommunityPostControllerDocsTest : CommonDocsTestConfig() {
                         fieldWithPath("result.title").type(JsonFieldType.STRING).description("변경된 게시글 제목"),
                         fieldWithPath("result.content").type(JsonFieldType.STRING).description("변경된 게시글 내용"),
                         fieldWithPath("result.categoryType").type("CategoryType").description("변경된 카테고리 타입").attributes(getFormatAttribute("FREE, INSIGHT, ISSUE, HUMOR")),
+                        fieldWithPath("result.images").type(JsonFieldType.ARRAY).description("등록된 이미지"),
+                        fieldWithPath("result.images[].imageId").type(JsonFieldType.NUMBER).description("등록된 이미지 ID"),
+                        fieldWithPath("result.images[].imageUrl").type(JsonFieldType.STRING).description("등록된 이미지 URI"),
                     )
                 )
             )

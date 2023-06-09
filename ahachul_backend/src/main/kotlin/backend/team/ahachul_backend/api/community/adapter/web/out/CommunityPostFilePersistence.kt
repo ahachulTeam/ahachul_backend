@@ -13,4 +13,12 @@ class CommunityPostFilePersistence(
     override fun save(entity: CommunityPostFileEntity): CommunityPostFileEntity {
         return repository.save(entity)
     }
+
+    override fun deleteByFileId(fileId: Long) {
+        return repository.deleteByFileId(fileId)
+    }
+
+    override fun findAllByPostId(postId: Long): List<CommunityPostFileEntity> {
+        return repository.findAllByCommentPostIdOOrderById(postId)
+    }
 }
