@@ -23,6 +23,7 @@ include::{snippets}/get-community-post/http-response.adoc[]
 include::{snippets}/get-community-post/response-fields.adoc[]
 
 ==== 게시글 작성
+- 문서 오류로 인해서 query param 으로 넣어놨는데 multipart/form-data 형태로 보내시면 됩니다.
 
 .Request
 include::{snippets}/create-community-post/http-request.adoc[]
@@ -37,13 +38,15 @@ include::{snippets}/create-community-post/http-response.adoc[]
 include::{snippets}/create-community-post/response-fields.adoc[]
 
 ==== 게시글 수정
+- 문서 오류로 인해서 query param 으로 넣어놨는데 multipart/form-data 형태로 보내시면 됩니다.
 
 .Request
 include::{snippets}/update-community-post/http-request.adoc[]
 .Request Headers
 include::{snippets}/update-community-post/request-headers.adoc[]
-.Request Fields
-include::{snippets}/update-community-post/request-fields.adoc[]
+.Request Map Value
+include::{snippets}/update-community-post/query-parameters.adoc[]
+include::{snippets}/update-community-post/request-parts.adoc[]
 .Response
 include::{snippets}/update-community-post/http-response.adoc[]
 .Response Fields
