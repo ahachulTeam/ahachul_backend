@@ -5,7 +5,9 @@ import org.springframework.data.jpa.repository.JpaRepository
 
 interface CommunityPostFileRepository: JpaRepository<CommunityPostFileEntity, Long> {
 
-    fun findAllByCommentPostIdOOrderById(communityPostId: Long): List<CommunityPostFileEntity>
+    fun findTopByCommentPostIdOrderById(communityPostId: Long): CommunityPostFileEntity?
+
+    fun findAllByCommentPostIdOrderById(communityPostId: Long): List<CommunityPostFileEntity>
 
     fun deleteByFileId(fileId: Long)
 }

@@ -2,6 +2,7 @@ package backend.team.ahachul_backend.api.community.adapter.web.`in`.dto.post
 
 import backend.team.ahachul_backend.api.community.domain.entity.CommunityPostEntity
 import backend.team.ahachul_backend.api.community.domain.model.CommunityCategoryType
+import backend.team.ahachul_backend.common.dto.ImageDto
 import backend.team.ahachul_backend.common.model.RegionType
 import org.springframework.data.domain.Pageable
 import org.springframework.data.domain.Slice
@@ -31,12 +32,10 @@ class SearchCommunityPostDto {
         val posts: List<CommunityPost>,
     ) {
         companion object {
-            fun of(entities: Slice<CommunityPostEntity>, views: List<Int>): Response {
+            fun of(hasNext: Boolean, posts: List<CommunityPost>): Response {
                 return Response(
-                    hasNext = entities.hasNext(),
-                    posts = entities
-                        .mapIndexed { idx, entity -> CommunityPost.of(entity, views[idx]) }
-                        .toList()
+                    hasNext = hasNext,
+                    posts = posts
                 )
             }
         }
@@ -51,10 +50,11 @@ class SearchCommunityPostDto {
         val region: RegionType,
         val createdAt: LocalDateTime,
         val createdBy: String,
-        val writer: String
+        val writer: String,
+        val image: ImageDto?,
     ) {
         companion object {
-            fun of(entity: CommunityPostEntity, views: Int): CommunityPost {
+            fun of(entity: CommunityPostEntity, image: ImageDto?, views: Int): CommunityPost {
                 return CommunityPost(
                     id = entity.id,
                     title = entity.title,
@@ -64,7 +64,8 @@ class SearchCommunityPostDto {
                     region = entity.regionType,
                     createdAt = entity.createdAt,
                     createdBy = entity.createdBy,
-                    writer = entity.member!!.nickname!!
+                    writer = entity.member!!.nickname!!,
+                    image = image,
                 )
             }
         }

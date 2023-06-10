@@ -4,5 +4,7 @@ import backend.team.ahachul_backend.api.community.domain.entity.CommunityPostFil
 
 interface CommunityPostFileReader {
 
+    fun findByPostId(postId: Long): CommunityPostFileEntity?
+
     fun findAllByPostId(postId: Long): List<CommunityPostFileEntity>
 }

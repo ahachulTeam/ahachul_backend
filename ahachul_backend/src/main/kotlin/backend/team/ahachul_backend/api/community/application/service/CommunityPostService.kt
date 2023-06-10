@@ -34,10 +34,20 @@ class CommunityPostService(
 
     override fun searchCommunityPosts(command: SearchCommunityPostCommand): SearchCommunityPostDto.Response {
         val searchCommunityPosts = communityPostReader.searchCommunityPosts(command)
-        val views = searchCommunityPosts.map {
-            viewsSupport.get(it.id)
-        }.toList()
-        return SearchCommunityPostDto.Response.of(searchCommunityPosts, views)
+        val posts = searchCommunityPosts
+            .map {
+                val file = communityPostFileReader.findByPostId(it.id)?.file
+                SearchCommunityPostDto.CommunityPost.of(
+                    entity = it,
+                    image = file?.let { it1 -> ImageDto.of(it1.id, file.filePath) },
+                    views = viewsSupport.get(it.id)
+                )
+            }.toList()
+
+        return SearchCommunityPostDto.Response.of(
+            hasNext = searchCommunityPosts.hasNext(),
+            posts = posts
+        )
     }
 
     override fun getCommunityPost(command: GetCommunityPostCommand): GetCommunityPostDto.Response {

@@ -18,7 +18,11 @@ class CommunityPostFilePersistence(
         return repository.deleteByFileId(fileId)
     }
 
+    override fun findByPostId(postId: Long): CommunityPostFileEntity? {
+        return repository.findTopByCommentPostIdOrderById(postId)
+    }
+
     override fun findAllByPostId(postId: Long): List<CommunityPostFileEntity> {
-        return repository.findAllByCommentPostIdOOrderById(postId)
+        return repository.findAllByCommentPostIdOrderById(postId)
     }
 }

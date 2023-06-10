@@ -44,7 +44,8 @@ class CommunityPostControllerDocsTest : CommonDocsTestConfig() {
                     RegionType.METROPOLITAN,
                     LocalDateTime.now(),
                     "작성자 ID",
-                    "작성자 닉네임"
+                    "작성자 닉네임",
+                    ImageDto.of(1L, "url1")
                 )
             )
         )
@@ -93,6 +94,9 @@ class CommunityPostControllerDocsTest : CommonDocsTestConfig() {
                         fieldWithPath("result.posts[].createdAt").type("LocalDateTime").description("작성일자"),
                         fieldWithPath("result.posts[].createdBy").type(JsonFieldType.STRING).description("작성자 ID"),
                         fieldWithPath("result.posts[].writer").type(JsonFieldType.STRING).description("작성자 닉네임"),
+                        fieldWithPath("result.posts[].image").type(JsonFieldType.OBJECT).description("등록된 이미지"),
+                        fieldWithPath("result.posts[].image.imageId").type(JsonFieldType.NUMBER).description("등록된 첫 번쨰 이미지 ID"),
+                        fieldWithPath("result.posts[].image.imageUrl").type(JsonFieldType.STRING).description("등록된 첫 번째 이미지 URI"),
                     )
                 )
             )
@@ -148,7 +152,7 @@ class CommunityPostControllerDocsTest : CommonDocsTestConfig() {
                         fieldWithPath("result.createdAt").type("LocalDateTime").description("작성일자"),
                         fieldWithPath("result.createdBy").type(JsonFieldType.STRING).description("작성자 ID"),
                         fieldWithPath("result.writer").type(JsonFieldType.STRING).description("작성자 닉네임"),
-                        fieldWithPath("result.images").type(JsonFieldType.ARRAY).description("등록된 이미지"),
+                        fieldWithPath("result.images[]").type(JsonFieldType.ARRAY).description("등록된 이미지 목록"),
                         fieldWithPath("result.images[].imageId").type(JsonFieldType.NUMBER).description("등록된 이미지 ID"),
                         fieldWithPath("result.images[].imageUrl").type(JsonFieldType.STRING).description("등록된 이미지 URI"),
                     )
@@ -214,7 +218,7 @@ class CommunityPostControllerDocsTest : CommonDocsTestConfig() {
                         fieldWithPath("result.categoryType").type("CategoryType").description("카테고리 타입").attributes(getFormatAttribute("FREE, INSIGHT, ISSUE, HUMOR")),
                         fieldWithPath("result.region").type(JsonFieldType.STRING).description("지역"),
                         fieldWithPath("result.subwayLineId").type(JsonFieldType.NUMBER).description("지하철 노선 ID"),
-                        fieldWithPath("result.images").type(JsonFieldType.ARRAY).description("등록된 이미지"),
+                        fieldWithPath("result.images[]").type(JsonFieldType.ARRAY).description("등록된 이미지 목록"),
                         fieldWithPath("result.images[].imageId").type(JsonFieldType.NUMBER).description("등록된 이미지 ID"),
                         fieldWithPath("result.images[].imageUrl").type(JsonFieldType.STRING).description("등록된 이미지 URI"),
                     )
@@ -279,7 +283,7 @@ class CommunityPostControllerDocsTest : CommonDocsTestConfig() {
                         fieldWithPath("result.title").type(JsonFieldType.STRING).description("변경된 게시글 제목"),
                         fieldWithPath("result.content").type(JsonFieldType.STRING).description("변경된 게시글 내용"),
                         fieldWithPath("result.categoryType").type("CategoryType").description("변경된 카테고리 타입").attributes(getFormatAttribute("FREE, INSIGHT, ISSUE, HUMOR")),
-                        fieldWithPath("result.images").type(JsonFieldType.ARRAY).description("등록된 이미지"),
+                        fieldWithPath("result.images[]").type(JsonFieldType.ARRAY).description("등록된 이미지 목록"),
                         fieldWithPath("result.images[].imageId").type(JsonFieldType.NUMBER).description("등록된 이미지 ID"),
                         fieldWithPath("result.images[].imageUrl").type(JsonFieldType.STRING).description("등록된 이미지 URI"),
                     )
