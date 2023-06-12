@@ -7,6 +7,7 @@ import backend.team.ahachul_backend.api.community.application.port.out.Community
 import backend.team.ahachul_backend.api.community.application.port.out.CommunityPostReader
 import backend.team.ahachul_backend.api.community.application.port.out.CommunityPostWriter
 import backend.team.ahachul_backend.api.community.domain.entity.CommunityPostEntity
+import backend.team.ahachul_backend.api.community.domain.entity.CommunityPostFileEntity
 import backend.team.ahachul_backend.api.member.application.port.out.MemberReader
 import backend.team.ahachul_backend.common.dto.ImageDto
 import backend.team.ahachul_backend.common.persistence.SubwayLineReader
@@ -59,12 +60,7 @@ class CommunityPostService(
             communityPost,
             hashTags,
             views,
-            communityPostFiles.map {
-                ImageDto.of(
-                    imageId = it.id,
-                    imageUrl = it.file.filePath
-                )
-            }
+            convertToImageDto(communityPostFiles)
         )
     }
 
@@ -95,12 +91,7 @@ class CommunityPostService(
         val communityPostFiles = communityPostFileReader.findAllByPostId(communityPost.id)
         return UpdateCommunityPostDto.Response.of(
             communityPost,
-            communityPostFiles.map {
-                ImageDto.of(
-                    imageId = it.id,
-                    imageUrl = it.file.filePath
-                )
-            }
+            convertToImageDto(communityPostFiles)
         )
     }
 
@@ -111,5 +102,14 @@ class CommunityPostService(
         entity.checkMe(memberId)
         entity.delete()
         return DeleteCommunityPostDto.Response(entity.id)
+    }
+
+    private fun convertToImageDto(communityPostFiles: List<CommunityPostFileEntity>): List<ImageDto> {
+        return communityPostFiles.map {
+            ImageDto.of(
+                imageId = it.id,
+                imageUrl = it.file.filePath
+            )
+        }
     }
 }

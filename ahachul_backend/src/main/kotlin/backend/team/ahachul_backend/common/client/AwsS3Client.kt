@@ -40,6 +40,13 @@ class AwsS3Client(
         return files.map { upload(it) }
     }
 
+    fun delete(fileName: String) {
+        s3Client.deleteObject(
+            s3Properties.bucketName,
+            fileName
+        )
+    }
+
     private fun generateRandomUUID(): String {
         return UUID.randomUUID().toString()
     }

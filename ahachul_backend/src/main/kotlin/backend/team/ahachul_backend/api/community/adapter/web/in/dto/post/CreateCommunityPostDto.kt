@@ -11,10 +11,10 @@ class CreateCommunityPostDto {
     data class Request(
         val title: String,
         val content: String,
-        val categoryType: String,
-        val hashTags: List<String>,
+        val categoryType: CommunityCategoryType,
+        val hashTags: List<String> = listOf(),
         val subwayLineId: String,
-        val imageFiles: List<MultipartFile> = arrayListOf()
+        val imageFiles: List<MultipartFile> = listOf()
     ) {
         fun toCommand(): CreateCommunityPostCommand {
             return CreateCommunityPostCommand(

@@ -47,9 +47,11 @@ class CommunityPostFileService(
     }
 
     override fun deleteCommunityPostFiles(fileIds: List<Long>) {
-        fileIds.forEach {
-            fileWriter.delete(it)
-            communityPostFileWriter.deleteByFileId(it)
+        val files = fileReader.findAllIdIn(fileIds)
+        files.forEach {
+            fileWriter.delete(it.id)
+            communityPostFileWriter.deleteByFileId(it.id)
+            s3Client.delete(it.fileName)
         }
     }
 }

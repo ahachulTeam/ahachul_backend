@@ -15,4 +15,8 @@ class FilePersistence(
     override fun delete(id: Long) {
         return repository.deleteById(id)
     }
+
+    override fun findAllIdIn(fileIds: List<Long>): List<FileEntity> {
+        return repository.findAllByIdIn(fileIds)
+    }
 }
