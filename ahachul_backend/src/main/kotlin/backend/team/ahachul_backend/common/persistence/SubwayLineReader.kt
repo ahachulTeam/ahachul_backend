@@ -6,5 +6,5 @@ interface SubwayLineReader {
 
     fun getSubwayLine(id: Long): SubwayLineEntity
 
-    fun getSubwayLineByName(name: String): SubwayLineEntity
+    fun getByName(name: String): SubwayLineEntity
 }

@@ -52,7 +52,7 @@ class LostPostEntity(
 
     var pageUrl: String? = null,
 
-    var receivedDate: LocalDateTime = LocalDateTime.now()
+    var receivedDate: LocalDateTime? = null
 
 ): BaseEntity() {
 
@@ -96,7 +96,7 @@ class LostPostEntity(
 
     val date: LocalDateTime
         get() = when (origin) {
-            LostOrigin.LOST112 -> receivedDate
+            LostOrigin.LOST112 -> receivedDate!!
             else -> createdAt
         }
 }

@@ -16,7 +16,7 @@ class SubwayLinePersistence(
         }
     }
 
-    override fun getSubwayLineByName(name: String): SubwayLineEntity {
+    override fun getByName(name: String): SubwayLineEntity {
         return subwayLineRepository.findByName(name) ?: throw AdapterException(ResponseCode.INVALID_DOMAIN)
     }
 

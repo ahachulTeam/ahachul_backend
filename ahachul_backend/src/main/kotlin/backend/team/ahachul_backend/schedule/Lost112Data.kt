@@ -1,5 +1,7 @@
 package backend.team.ahachul_backend.schedule
 
+import com.fasterxml.jackson.annotation.JsonProperty
+
 
 data class Lost112Data(
     val title: String = "",
@@ -11,7 +13,9 @@ data class Lost112Data(
     val lostStatus: String = "",
     val phone: String = "",
     val context: String = "",
-    val image: String = "",
-    val source: String = "",
+    @JsonProperty("image")
+    val imageUrl: String = "",
+    @JsonProperty("source")
+    val origin: String = "",
     val page: String = ""
 )
