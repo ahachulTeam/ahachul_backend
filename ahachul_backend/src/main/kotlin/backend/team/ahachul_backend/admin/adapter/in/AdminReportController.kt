@@ -8,10 +8,11 @@ import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RestController
 
 @RestController
-class AdminController(
+class AdminReportController(
     private val adminService: AdminUseCase
 ) {
 
+    @Deprecated("Admin function is not created")
     @PostMapping("admin/v1/reports/block")
     fun actionForReport(@RequestBody request: ActionReportDto.Request): CommonResponse<ActionReportDto.Response> {
         return CommonResponse.success(adminService.actionOnReport(request.toCommand()))
