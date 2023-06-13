@@ -12,7 +12,7 @@ class AdminReportController(
     private val adminService: AdminUseCase
 ) {
 
-    @Deprecated("Admin function is not created")
+    @Deprecated("Admin function is not supported")
     @PostMapping("admin/v1/reports/block")
     fun actionForReport(@RequestBody request: ActionReportDto.Request): CommonResponse<ActionReportDto.Response> {
         return CommonResponse.success(adminService.actionOnReport(request.toCommand()))
