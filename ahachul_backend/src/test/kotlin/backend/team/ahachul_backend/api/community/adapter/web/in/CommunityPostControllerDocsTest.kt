@@ -4,6 +4,7 @@ import backend.team.ahachul_backend.api.community.adapter.web.`in`.dto.*
 import backend.team.ahachul_backend.api.community.adapter.web.`in`.dto.post.*
 import backend.team.ahachul_backend.api.community.application.port.`in`.CommunityPostUseCase
 import backend.team.ahachul_backend.api.community.domain.model.CommunityCategoryType
+import backend.team.ahachul_backend.common.dto.ImageDto
 import backend.team.ahachul_backend.common.model.RegionType
 import backend.team.ahachul_backend.config.controller.CommonDocsTestConfig
 import org.junit.jupiter.api.Test
@@ -11,6 +12,7 @@ import org.mockito.BDDMockito.given
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest
 import org.springframework.boot.test.mock.mockito.MockBean
 import org.springframework.http.MediaType
+import org.springframework.mock.web.MockMultipartFile
 import org.springframework.restdocs.headers.HeaderDocumentation.headerWithName
 import org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders
 import org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document
@@ -42,7 +44,8 @@ class CommunityPostControllerDocsTest : CommonDocsTestConfig() {
                     RegionType.METROPOLITAN,
                     LocalDateTime.now(),
                     "작성자 ID",
-                    "작성자 닉네임"
+                    "작성자 닉네임",
+                    ImageDto.of(1L, "url1")
                 )
             )
         )
@@ -91,6 +94,9 @@ class CommunityPostControllerDocsTest : CommonDocsTestConfig() {
                         fieldWithPath("result.posts[].createdAt").type("LocalDateTime").description("작성일자"),
                         fieldWithPath("result.posts[].createdBy").type(JsonFieldType.STRING).description("작성자 ID"),
                         fieldWithPath("result.posts[].writer").type(JsonFieldType.STRING).description("작성자 닉네임"),
+                        fieldWithPath("result.posts[].image").type(JsonFieldType.OBJECT).description("등록된 이미지"),
+                        fieldWithPath("result.posts[].image.imageId").type(JsonFieldType.NUMBER).description("등록된 첫 번쨰 이미지 ID"),
+                        fieldWithPath("result.posts[].image.imageUrl").type(JsonFieldType.STRING).description("등록된 첫 번째 이미지 URI"),
                     )
                 )
             )
@@ -110,7 +116,8 @@ class CommunityPostControllerDocsTest : CommonDocsTestConfig() {
             RegionType.METROPOLITAN,
             LocalDateTime.now(),
             "작성자 ID",
-            "작성자 닉네임"
+            "작성자 닉네임",
+            listOf(ImageDto.of(1L, "url1"), ImageDto.of(2L, "url2"))
         )
 
         given(communityPostUseCase.getCommunityPost(any()))
@@ -145,6 +152,9 @@ class CommunityPostControllerDocsTest : CommonDocsTestConfig() {
                         fieldWithPath("result.createdAt").type("LocalDateTime").description("작성일자"),
                         fieldWithPath("result.createdBy").type(JsonFieldType.STRING).description("작성자 ID"),
                         fieldWithPath("result.writer").type(JsonFieldType.STRING).description("작성자 닉네임"),
+                        fieldWithPath("result.images[]").type(JsonFieldType.ARRAY).description("등록된 이미지 목록"),
+                        fieldWithPath("result.images[].imageId").type(JsonFieldType.NUMBER).description("등록된 이미지 ID"),
+                        fieldWithPath("result.images[].imageUrl").type(JsonFieldType.STRING).description("등록된 이미지 URI"),
                     )
                 )
             )
@@ -159,26 +169,24 @@ class CommunityPostControllerDocsTest : CommonDocsTestConfig() {
             content = "생성된 내용",
             categoryType = CommunityCategoryType.ISSUE,
             region = RegionType.METROPOLITAN,
-            subwayLineId = 1
+            subwayLineId = 1,
+            images = listOf(ImageDto.of(1L, "url1"), ImageDto.of(2L, "url2"))
         )
 
         given(communityPostUseCase.createCommunityPost(any()))
             .willReturn(response)
 
-        val request = CreateCommunityPostDto.Request(
-            title = "생성할 제목",
-            content = "생성할 내용",
-            categoryType = CommunityCategoryType.ISSUE,
-            subwayLineId = 1,
-            hashTags = arrayListOf("여행", "취미")
-        )
-
         // when
         val result = mockMvc.perform(
-            post("/v1/community-posts")
+            multipart("/v1/community-posts")
+                .file("imageFiles", MockMultipartFile("files", "file1.txt", MediaType.TEXT_PLAIN_VALUE, "File 1 Content".toByteArray()).bytes)
+                .queryParam("title", "생성할 제목")
+                .queryParam("content", "생성할 내용")
+                .queryParam("categoryType", CommunityCategoryType.ISSUE.name)
+                .queryParam("subwayLineId", "1")
+                .queryParam("hashTags", "여행, 취미")
                 .header("Authorization", "Bearer <Access Token>")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(request))
+                .contentType(MediaType.MULTIPART_FORM_DATA)
                 .accept(MediaType.APPLICATION_JSON)
         )
 
@@ -192,12 +200,15 @@ class CommunityPostControllerDocsTest : CommonDocsTestConfig() {
                     requestHeaders(
                         headerWithName("Authorization").description("엑세스 토큰")
                     ),
-                    requestFields(
-                        fieldWithPath("title").type(JsonFieldType.STRING).description("생성할 제목"),
-                        fieldWithPath("content").type(JsonFieldType.STRING).description("생성할 내용"),
-                        fieldWithPath("categoryType").type("CategoryType").description("카테고리 타입").attributes(getFormatAttribute("FREE, INSIGHT, ISSUE, HUMOR")),
-                        fieldWithPath("subwayLineId").type(JsonFieldType.NUMBER).description("지하철 노선 ID"),
-                        fieldWithPath("hashTags").type(JsonFieldType.ARRAY).description("해시 태그 목록").optional(),
+                    queryParameters(
+                        parameterWithName("title").description("생성할 제목"),
+                        parameterWithName("content").description("생성할 내용"),
+                        parameterWithName("categoryType").description("카테고리 타입").attributes(getFormatAttribute("FREE, INSIGHT, ISSUE, HUMOR")),
+                        parameterWithName("subwayLineId").description("지하철 노선 ID"),
+                        parameterWithName("hashTags").description("해시 태그 목록").optional(),
+                    ),
+                    requestParts(
+                        partWithName("imageFiles").description("이미지 파일").optional(),
                     ),
                     responseFields(
                         *commonResponseFields(),
@@ -207,6 +218,9 @@ class CommunityPostControllerDocsTest : CommonDocsTestConfig() {
                         fieldWithPath("result.categoryType").type("CategoryType").description("카테고리 타입").attributes(getFormatAttribute("FREE, INSIGHT, ISSUE, HUMOR")),
                         fieldWithPath("result.region").type(JsonFieldType.STRING).description("지역"),
                         fieldWithPath("result.subwayLineId").type(JsonFieldType.NUMBER).description("지하철 노선 ID"),
+                        fieldWithPath("result.images[]").type(JsonFieldType.ARRAY).description("등록된 이미지 목록"),
+                        fieldWithPath("result.images[].imageId").type(JsonFieldType.NUMBER).description("등록된 이미지 ID"),
+                        fieldWithPath("result.images[].imageUrl").type(JsonFieldType.STRING).description("등록된 이미지 URI"),
                     )
                 )
             )
@@ -219,26 +233,25 @@ class CommunityPostControllerDocsTest : CommonDocsTestConfig() {
             id = 1,
             title = "변경된 제목",
             content = "변경된 내용",
-            categoryType = CommunityCategoryType.ISSUE
+            categoryType = CommunityCategoryType.ISSUE,
+            images = listOf(ImageDto.of(3L, "url3"))
         )
 
         given(communityPostUseCase.updateCommunityPost(any()))
             .willReturn(response)
 
-        val request = UpdateCommunityPostDto.Request(
-            title = "변경할 제목",
-            content = "변경할 내용",
-            categoryType = CommunityCategoryType.ISSUE,
-            hashTags = arrayListOf("여행", "취미")
-        )
-
         // when
         val result = mockMvc.perform(
-            patch("/v1/community-posts/{postId}", 1)
-                .header("Authorization", "Bearer <Access Token>")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(request))
-                .accept(MediaType.APPLICATION_JSON)
+             multipart("/v1/community-posts/{postId}", 1)
+                 .file("uploadFiles", MockMultipartFile("files", "file1.txt", MediaType.TEXT_PLAIN_VALUE, "File 1 Content".toByteArray()).bytes)
+                 .queryParam("title", "변경할 제목")
+                 .queryParam("content", "변경할 내용")
+                 .queryParam("categoryType", CommunityCategoryType.ISSUE.name)
+                 .queryParam("hashTags", "여행, 취미")
+                 .queryParam("removeFileIds", "1, 2")
+                 .header("Authorization", "Bearer <Access Token>")
+                 .contentType(MediaType.MULTIPART_FORM_DATA)
+                 .accept(MediaType.APPLICATION_JSON)
         )
 
         // then
@@ -254,11 +267,15 @@ class CommunityPostControllerDocsTest : CommonDocsTestConfig() {
                     pathParameters(
                         parameterWithName("postId").description("게시물 아이디")
                     ),
-                    requestFields(
-                        fieldWithPath("title").type(JsonFieldType.STRING).description("변경할 제목"),
-                        fieldWithPath("content").type(JsonFieldType.STRING).description("변경할 내용"),
-                        fieldWithPath("categoryType").type("CategoryType").description("변경할 카테고리 타입").attributes(getFormatAttribute("FREE, INSIGHT, ISSUE, HUMOR")),
-                        fieldWithPath("hashTags").type(JsonFieldType.ARRAY).description("해시 태그 목록").optional(),
+                    queryParameters(
+                        parameterWithName("title").description("변경할 제목"),
+                        parameterWithName("content").description("변경할 내용"),
+                        parameterWithName("categoryType").description("변경할 카테고리 타입").attributes(getFormatAttribute("FREE, INSIGHT, ISSUE, HUMOR")),
+                        parameterWithName("hashTags").description("해시 태그 목록").optional(),
+                        parameterWithName("removeFileIds").description("삭제할 파일 ID 목록")
+                    ),
+                    requestParts(
+                        partWithName("uploadFiles").description("이미지 파일").optional(),
                     ),
                     responseFields(
                         *commonResponseFields(),
@@ -266,6 +283,9 @@ class CommunityPostControllerDocsTest : CommonDocsTestConfig() {
                         fieldWithPath("result.title").type(JsonFieldType.STRING).description("변경된 게시글 제목"),
                         fieldWithPath("result.content").type(JsonFieldType.STRING).description("변경된 게시글 내용"),
                         fieldWithPath("result.categoryType").type("CategoryType").description("변경된 카테고리 타입").attributes(getFormatAttribute("FREE, INSIGHT, ISSUE, HUMOR")),
+                        fieldWithPath("result.images[]").type(JsonFieldType.ARRAY).description("등록된 이미지 목록"),
+                        fieldWithPath("result.images[].imageId").type(JsonFieldType.NUMBER).description("등록된 이미지 ID"),
+                        fieldWithPath("result.images[].imageUrl").type(JsonFieldType.STRING).description("등록된 이미지 URI"),
                     )
                 )
             )

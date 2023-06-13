@@ -15,8 +15,17 @@ class CommunityPostFileEntity(
     @JoinColumn(name = "community_post_id")
     var commentPost: CommunityPostEntity,
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "file_id")
     var file: FileEntity
 ): BaseEntity() {
+
+    companion object {
+        fun of(post: CommunityPostEntity, file: FileEntity): CommunityPostFileEntity {
+            return CommunityPostFileEntity(
+                commentPost = post,
+                file = file
+            )
+        }
+    }
 }
