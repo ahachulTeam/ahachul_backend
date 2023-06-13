@@ -11,7 +11,7 @@ import jakarta.persistence.*
 class ReportEntity (
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "community_post_report_id")
+    @Column(name = "report_id")
     var id: Long = 0,
 
     @ManyToOne(fetch = FetchType.LAZY)
