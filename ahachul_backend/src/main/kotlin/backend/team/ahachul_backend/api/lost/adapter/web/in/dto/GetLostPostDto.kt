@@ -7,6 +7,7 @@ import java.time.format.DateTimeFormatter
 class GetLostPostDto {
 
     data class Response(
+        val id: Long,
         val title: String,
         val content: String,
         val writer: String?,
@@ -23,6 +24,7 @@ class GetLostPostDto {
         companion object {
             fun from(entity: LostPostEntity): Response {
                 return Response(
+                    id = entity.id,
                     title = entity.title,
                     content = entity.content,
                     writer = entity.member?.nickname,

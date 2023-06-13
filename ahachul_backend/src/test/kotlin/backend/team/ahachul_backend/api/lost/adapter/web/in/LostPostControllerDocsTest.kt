@@ -30,6 +30,7 @@ class LostPostControllerDocsTest: CommonDocsConfig() {
     fun getLostPost() {
         // given
         val response = GetLostPostDto.Response(
+            id = 1,
             title = "title",
             content = "content",
             writer = "writer",
@@ -63,6 +64,7 @@ class LostPostControllerDocsTest: CommonDocsConfig() {
                 ),
                 responseFields(
                     *commonResponseFields(),
+                    fieldWithPath("result.id").type(JsonFieldType.NUMBER).description("유실물 아이디"),
                     fieldWithPath("result.title").type(JsonFieldType.STRING).description("유실물 제목"),
                     fieldWithPath("result.content").type(JsonFieldType.STRING).description("유실물 내용"),
                     fieldWithPath("result.writer").type(JsonFieldType.STRING).description("유실물 작성자 닉네임"),
@@ -86,6 +88,7 @@ class LostPostControllerDocsTest: CommonDocsConfig() {
             hasNext = true,
             listOf(
                 SearchLostPostsDto.SearchLost(
+                    id = 1,
                     title = "title",
                     content = "content",
                     writer = "writer",
@@ -128,6 +131,7 @@ class LostPostControllerDocsTest: CommonDocsConfig() {
                 responseFields(
                     *commonResponseFields(),
                     fieldWithPath("result.hasNext").type(JsonFieldType.BOOLEAN).description("다음 유실물 포스트 존재 여부"),
+                    fieldWithPath("result.posts[].id").type(JsonFieldType.NUMBER).description("유실물 아이디"),
                     fieldWithPath("result.posts[].title").type(JsonFieldType.STRING).description("유실물 제목"),
                     fieldWithPath("result.posts[].content").type(JsonFieldType.STRING).description("유실물 내용"),
                     fieldWithPath("result.posts[].writer").type(JsonFieldType.STRING).description("유실물 작성자 닉네임"),

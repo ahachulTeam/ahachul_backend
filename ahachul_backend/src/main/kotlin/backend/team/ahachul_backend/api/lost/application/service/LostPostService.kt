@@ -36,6 +36,7 @@ class LostPostService(
 
         val lostPosts = sliceObject.content.map {
             SearchLostPostsDto.SearchLost(
+                id = it.id,
                 title = it.title,
                 content = it.content,
                 writer = it.member?.nickname,
