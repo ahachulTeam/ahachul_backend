@@ -13,9 +13,9 @@ data class Lost112Data(
     val lostStatus: String = "",
     val phone: String = "",
     val context: String = "",
-    @JsonProperty("image")
+    @field:JsonProperty("image")
     val imageUrl: String = "",
-    @JsonProperty("source")
+    @field:JsonProperty("source")
     val origin: String = "",
     val page: String = ""
 )
