@@ -4,13 +4,13 @@ import backend.team.ahachul_backend.api.lost.adapter.web.`in`.dto.*
 import backend.team.ahachul_backend.api.lost.application.port.`in`.LostPostUseCase
 import backend.team.ahachul_backend.api.lost.application.port.out.LostPostReader
 import backend.team.ahachul_backend.api.lost.application.port.out.LostPostWriter
-import backend.team.ahachul_backend.common.persistence.SubwayLineReader
 import backend.team.ahachul_backend.api.lost.application.service.command.CreateLostPostCommand
 import backend.team.ahachul_backend.api.lost.application.service.command.GetSliceLostPostsCommand
 import backend.team.ahachul_backend.api.lost.application.service.command.SearchLostPostCommand
 import backend.team.ahachul_backend.api.lost.application.service.command.UpdateLostPostCommand
 import backend.team.ahachul_backend.api.lost.domain.entity.LostPostEntity
 import backend.team.ahachul_backend.api.member.application.port.out.MemberReader
+import backend.team.ahachul_backend.common.persistence.SubwayLineReader
 import backend.team.ahachul_backend.common.utils.RequestUtils
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -27,7 +27,7 @@ class LostPostService(
 
     override fun getLostPost(id: Long): GetLostPostDto.Response {
         val entity = lostPostReader.getLostPost(id)
-        return GetLostPostDto.Response.from(entity);
+        return GetLostPostDto.Response.from(entity)
     }
 
     override fun searchLostPosts(command: SearchLostPostCommand): SearchLostPostsDto.Response {
@@ -36,12 +36,13 @@ class LostPostService(
 
         val lostPosts = sliceObject.content.map {
             SearchLostPostsDto.SearchLost(
+                id = it.id,
                 title = it.title,
                 content = it.content,
-                writer = it.member.nickname!!,
+                writer = it.member?.nickname,
                 createdBy = it.createdBy,
-                date = it.createdAt.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")),
-                subwayLine = it.subwayLine.id,
+                date = it.date.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")),
+                subwayLine = it.subwayLine?.id,
                 status = it.status
             )
         }

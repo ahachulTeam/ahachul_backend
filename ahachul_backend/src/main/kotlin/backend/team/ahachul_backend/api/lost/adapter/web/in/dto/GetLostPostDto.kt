@@ -7,30 +7,34 @@ import java.time.format.DateTimeFormatter
 class GetLostPostDto {
 
     data class Response(
+        val id: Long,
         val title: String,
         val content: String,
-        val writer: String,
-        val createdBy: String,
+        val writer: String?,
+        val createdBy: String?,
         val date: String,
-        val subwayLine: Long,
+        val subwayLine: Long?,
         val chats: Int = 0,
         val status: LostStatus,
         val imgUrls: List<String>? = listOf(),
         val storage: String?,
-        val storageNumber: String?
+        val storageNumber: String?,
+        val pageUrl: String?
     ) {
         companion object {
             fun from(entity: LostPostEntity): Response {
                 return Response(
+                    id = entity.id,
                     title = entity.title,
                     content = entity.content,
-                    writer = entity.member.nickname!!,
-                    createdBy = entity.member.createdBy,
-                    date = entity.createdAt.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")),
-                    subwayLine = entity.subwayLine.id,
+                    writer = entity.member?.nickname,
+                    createdBy = entity.member?.createdBy,
+                    date = entity.date.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")),
+                    subwayLine = entity.subwayLine?.id,
                     status = entity.status,
                     storage = entity.storage,
-                    storageNumber = entity.storageNumber
+                    storageNumber = entity.storageNumber,
+                    pageUrl = entity.pageUrl
                 )
             }
         }

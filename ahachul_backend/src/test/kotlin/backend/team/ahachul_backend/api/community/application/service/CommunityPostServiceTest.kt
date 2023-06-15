@@ -1,6 +1,7 @@
 package backend.team.ahachul_backend.api.community.application.service
 
 import backend.team.ahachul_backend.api.community.adapter.web.`in`.dto.post.*
+import backend.team.ahachul_backend.api.community.adapter.web.out.CommunityPostHashTagRepository
 import backend.team.ahachul_backend.api.community.adapter.web.out.CommunityPostRepository
 import backend.team.ahachul_backend.api.community.application.port.`in`.CommunityPostUseCase
 import backend.team.ahachul_backend.api.community.domain.model.CommunityCategoryType
@@ -13,6 +14,7 @@ import backend.team.ahachul_backend.common.exception.CommonException
 import backend.team.ahachul_backend.api.community.domain.model.CommunityPostType
 import backend.team.ahachul_backend.common.domain.entity.SubwayLineEntity
 import backend.team.ahachul_backend.common.model.RegionType
+import backend.team.ahachul_backend.common.persistence.HashTagRepository
 import backend.team.ahachul_backend.common.persistence.SubwayLineRepository
 import backend.team.ahachul_backend.common.utils.RequestUtils
 import backend.team.ahachul_backend.config.controller.CommonServiceTestConfig
@@ -28,6 +30,9 @@ import org.springframework.data.domain.Pageable
 class CommunityPostServiceTest(
     @Autowired val communityPostRepository: CommunityPostRepository,
     @Autowired val communityPostUseCase: CommunityPostUseCase,
+
+    @Autowired val communityPostHashTagRepository: CommunityPostHashTagRepository,
+    @Autowired val hashTagRepository: HashTagRepository,
     @Autowired val memberRepository: MemberRepository,
     @Autowired val subwayLineRepository: SubwayLineRepository,
 ): CommonServiceTestConfig() {
@@ -60,7 +65,8 @@ class CommunityPostServiceTest(
             title = "제목",
             content = "내용",
             categoryType = CommunityCategoryType.FREE,
-            subwayLineId = subwayLine.id
+            subwayLineId = subwayLine.id,
+            hashTags = arrayListOf("여행", "취미")
         )
 
         // when
@@ -76,6 +82,11 @@ class CommunityPostServiceTest(
         val communityPost = communityPostRepository.findById(result.id).get()
 
         assertThat(communityPost.member!!.id).isEqualTo(member!!.id)
+
+        assertThat(hashTagRepository.findByName("여행")).isNotNull
+        assertThat(hashTagRepository.findByName("취미")).isNotNull
+
+        assertThat(communityPostHashTagRepository.findAll()).hasSize(2)
     }
 
     @Test
@@ -166,7 +177,8 @@ class CommunityPostServiceTest(
             title = "제목",
             content = "내용",
             categoryType = CommunityCategoryType.FREE,
-            subwayLineId = subwayLine.id
+            subwayLineId = subwayLine.id,
+            hashTags = arrayListOf("여행", "취미")
         )
         val (postId, _, _, _, _) = communityPostUseCase.createCommunityPost(createCommand)
 
@@ -184,6 +196,7 @@ class CommunityPostServiceTest(
         assertThat(result.categoryType).isEqualTo(CommunityCategoryType.FREE)
         assertThat(result.region).isEqualTo(RegionType.METROPOLITAN)
         assertThat(result.writer).isEqualTo(member?.nickname)
+        assertThat(result.hashTags).containsExactly("여행", "취미")
     }
 
     @Test
@@ -272,7 +285,7 @@ class CommunityPostServiceTest(
     }
 
      @Test
-     @DisplayName("커뮤니티_게시글_카테고리_조회")
+     @DisplayName("커뮤니티 게시글 카테고리 조회")
      fun 커뮤니티_게시글_카테고리_조회() {
          // given
          val createCommand = CreateCommunityPostCommand(
@@ -309,4 +322,43 @@ class CommunityPostServiceTest(
          assertThat(result.posts).hasSize(1)
          assertThat(result.posts.first().id).isEqualTo(communityPost2.id)
      }
+
+    @Test
+    @DisplayName("커뮤니티 게시글 해시태그 조회")
+    fun 커뮤니티_게시글_해시태그_조회() {
+        // given
+        val createCommand = CreateCommunityPostCommand(
+            title = "제목",
+            content = "내용",
+            categoryType = CommunityCategoryType.FREE,
+            subwayLineId = subwayLine.id,
+            hashTags = arrayListOf("여행", "취미")
+        )
+        val createCommand2 = CreateCommunityPostCommand(
+            title = "제목",
+            content = "내용",
+            categoryType = CommunityCategoryType.FREE,
+            subwayLineId = subwayLine.id,
+            hashTags = arrayListOf("바이킹", "취미")
+        )
+        val communityPost = communityPostUseCase.createCommunityPost(createCommand)
+        communityPostUseCase.createCommunityPost(createCommand2)
+
+        val verifyHashTagCommand = SearchCommunityPostCommand(
+            hashTag = "여행",
+            pageable = Pageable.ofSize(2)
+        )
+        val verifyHashTagCommand2 = SearchCommunityPostCommand(
+            hashTag = "취미",
+            pageable = Pageable.ofSize(2)
+        )
+
+        // when, then
+        var result = communityPostUseCase.searchCommunityPosts(verifyHashTagCommand)
+        assertThat(result.posts).hasSize(1)
+        assertThat(result.posts.first().id).isEqualTo(communityPost.id)
+
+        result = communityPostUseCase.searchCommunityPosts(verifyHashTagCommand2)
+        assertThat(result.posts).hasSize(2)
+    }
 }

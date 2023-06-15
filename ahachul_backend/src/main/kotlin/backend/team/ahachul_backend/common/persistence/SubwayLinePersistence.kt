@@ -8,11 +8,19 @@ import org.springframework.stereotype.Component
 @Component
 class SubwayLinePersistence(
     private val subwayLineRepository: SubwayLineRepository
-): SubwayLineReader {
+): SubwayLineReader, SubwayLineWriter {
 
     override fun getSubwayLine(id: Long): SubwayLineEntity {
         return subwayLineRepository.findById(id).orElseThrow {
             throw AdapterException(ResponseCode.INVALID_DOMAIN)
         }
+    }
+
+    override fun getByName(name: String): SubwayLineEntity {
+        return subwayLineRepository.findByName(name) ?: throw AdapterException(ResponseCode.INVALID_DOMAIN)
+    }
+
+    override fun save(subwayLineEntity: SubwayLineEntity): SubwayLineEntity {
+        return subwayLineRepository.save(subwayLineEntity)
     }
 }

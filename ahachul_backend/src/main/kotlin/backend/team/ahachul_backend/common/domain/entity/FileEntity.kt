@@ -14,4 +14,13 @@ class FileEntity(
 
     var filePath: String
 ): BaseEntity() {
+
+    companion object {
+        fun of(fileName: String, filePath: String): FileEntity {
+            return FileEntity(
+                fileName = fileName,
+                filePath = filePath
+            )
+        }
+    }
 }

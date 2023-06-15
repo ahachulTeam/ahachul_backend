@@ -10,7 +10,10 @@ import backend.team.ahachul_backend.api.member.domain.entity.MemberEntity
 import backend.team.ahachul_backend.api.report.domain.ReportEntity
 import backend.team.ahachul_backend.common.domain.entity.SubwayLineEntity
 import backend.team.ahachul_backend.common.entity.BaseEntity
+import backend.team.ahachul_backend.schedule.Lost112Data
 import jakarta.persistence.*
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 
 @Entity
 class LostPostEntity(
@@ -22,11 +25,11 @@ class LostPostEntity(
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
-    var member: MemberEntity,
+    var member: MemberEntity? = null,
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "subway_line_id")
-    var subwayLine: SubwayLineEntity,
+    var subwayLine: SubwayLineEntity?,
 
     @OneToMany(mappedBy = "lostPost")
     var lostPostReports: MutableList<ReportEntity> = mutableListOf(),
@@ -49,7 +52,11 @@ class LostPostEntity(
 
     var storage: String? = null,
 
-    var storageNumber: String? = null
+    var storageNumber: String? = null,
+
+    var pageUrl: String? = null,
+
+    var receivedDate: LocalDateTime? = null
 
 ): BaseEntity() {
 
@@ -63,6 +70,21 @@ class LostPostEntity(
                 subwayLine = subwayLine,
                 lostType = command.lostType,
                 member = member
+            )
+        }
+
+        fun ofLost112(data: Lost112Data, subwayLine: SubwayLineEntity?): LostPostEntity {
+            return LostPostEntity(
+                title = data.title,
+                content = data.context,
+                lostType = LostType.LOST,
+                origin = LostOrigin.LOST112,
+                storageNumber = data.phone,
+                storage = data.storagePlace,
+                subwayLine = subwayLine,
+                pageUrl = data.page,
+                receivedDate = LocalDateTime.parse(data.getDate,
+                    DateTimeFormatter.ofPattern("yyyy-MM-dd HH시경"))
             )
         }
     }
@@ -90,4 +112,10 @@ class LostPostEntity(
     fun block() {
         type = LostPostType.BLOCKED
     }
+
+    val date: LocalDateTime
+        get() = when (origin) {
+            LostOrigin.LOST112 -> receivedDate!!
+            else -> createdAt
+        }
 }
