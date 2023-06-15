@@ -2,6 +2,7 @@ package backend.team.ahachul_backend.api.report.application.service
 
 import backend.team.ahachul_backend.api.lost.application.port.out.LostPostReader
 import backend.team.ahachul_backend.api.lost.domain.entity.LostPostEntity
+import backend.team.ahachul_backend.api.lost.domain.model.LostOrigin
 import backend.team.ahachul_backend.api.member.application.port.out.MemberReader
 import backend.team.ahachul_backend.api.member.domain.entity.MemberEntity
 import backend.team.ahachul_backend.api.report.adpater.`in`.dto.CreateReportDto
@@ -27,8 +28,12 @@ class LostPostReportService(
         val memberId = RequestUtils.getAttribute("memberId")!!
         val sourceMember = memberReader.getMember(memberId.toLong())
         val targetPost = lostPostReader.getLostPost(targetId)
-        val targetMember = targetPost.member
 
+        if (targetPost.origin == LostOrigin.LOST112) {
+            throw DomainException(ResponseCode.EXTERNAL_REPORT_REQUEST)
+        }
+
+        val targetMember = targetPost.member!!
         validate(sourceMember, targetMember, targetPost)
 
         val entity = reportWriter.save(

@@ -1,6 +1,3 @@
-ALTER TABLE tb_community_post
-    ADD COLUMN subway_line_id BIGINT NOT NULL;
-
 ALTER TABLE tb_lost_post
     MODIFY member_id BIGINT NULL;
 
