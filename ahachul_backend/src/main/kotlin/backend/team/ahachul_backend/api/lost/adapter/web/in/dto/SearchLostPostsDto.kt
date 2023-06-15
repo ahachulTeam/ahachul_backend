@@ -29,12 +29,13 @@ class SearchLostPostsDto {
     )
 
     data class SearchLost(
+        val id: Long,
         val title: String,
         val content: String,
-        val writer: String,
+        val writer: String?,
         val createdBy: String,
         val date: String,
-        val subwayLine: Long,
+        val subwayLine: Long?,
         val chats: Int = 0,
         val status: LostStatus,
         val imgUrl: String = ""
