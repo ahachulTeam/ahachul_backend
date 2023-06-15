@@ -5,10 +5,13 @@ import backend.team.ahachul_backend.api.member.domain.model.GenderType
 import backend.team.ahachul_backend.api.member.domain.model.ProviderType
 
 import backend.team.ahachul_backend.api.member.domain.model.MemberStatusType
+import backend.team.ahachul_backend.api.report.domain.ReportEntity
 import backend.team.ahachul_backend.common.dto.GoogleUserInfoDto
 import backend.team.ahachul_backend.common.dto.KakaoMemberInfoDto
 import backend.team.ahachul_backend.common.entity.BaseEntity
+import backend.team.ahachul_backend.common.exception.DomainException
 import backend.team.ahachul_backend.common.model.RegionType
+import backend.team.ahachul_backend.common.response.ResponseCode
 import jakarta.persistence.*
 
 @Entity
@@ -36,7 +39,10 @@ class MemberEntity(
         var status: MemberStatusType,
 
         @Enumerated(EnumType.STRING)
-        var regionType: RegionType = RegionType.METROPOLITAN
+        var regionType: RegionType = RegionType.METROPOLITAN,
+
+        @OneToMany(mappedBy = "targetMember")
+        var memberReports: MutableList<ReportEntity> = mutableListOf()
 ): BaseEntity() {
 
         companion object {
@@ -79,5 +85,16 @@ class MemberEntity(
 
         fun isNeedAdditionalUserInfo(): Boolean {
                 return nickname == null || gender == null || ageRange == null
+        }
+
+        fun isConditionsMetToBlock(reportedCount: Int): Boolean {
+                return memberReports.size >= reportedCount
+        }
+
+        fun blockMember() {
+                if (status == MemberStatusType.SUSPENDED) {
+                        throw DomainException(ResponseCode.INVALID_REPORT_ACTION)
+                }
+                this.status = MemberStatusType.SUSPENDED
         }
 }
