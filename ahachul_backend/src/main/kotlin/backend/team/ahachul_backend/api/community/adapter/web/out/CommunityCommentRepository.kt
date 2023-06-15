@@ -6,6 +6,10 @@ import org.springframework.data.jpa.repository.Query
 
 interface CommunityCommentRepository: JpaRepository<CommunityCommentEntity, Long> {
 
-    @Query("SELECT cc FROM CommunityCommentEntity cc JOIN FETCH cc.member m WHERE cc.communityPost.id = :postId")
+    @Query("SELECT cc " +
+            "FROM CommunityCommentEntity cc " +
+            "JOIN FETCH cc.member m " +
+            "WHERE cc.communityPost.id = :postId " +
+            "ORDER BY cc.createdAt ASC")
     fun findAllByCommunityPostId(postId: Long): List<CommunityCommentEntity>
 }

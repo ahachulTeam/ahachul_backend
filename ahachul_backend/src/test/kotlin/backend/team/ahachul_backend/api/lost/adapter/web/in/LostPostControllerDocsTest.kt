@@ -5,7 +5,7 @@ import backend.team.ahachul_backend.api.lost.application.port.`in`.LostPostUseCa
 import backend.team.ahachul_backend.api.lost.domain.model.LostOrigin
 import backend.team.ahachul_backend.api.lost.domain.model.LostStatus
 import backend.team.ahachul_backend.api.lost.domain.model.LostType
-import backend.team.ahachul_backend.config.controller.CommonDocsConfig
+import backend.team.ahachul_backend.config.controller.CommonDocsTestConfig
 import org.junit.jupiter.api.Test
 import org.mockito.BDDMockito.anyLong
 import org.mockito.BDDMockito.given
@@ -22,7 +22,7 @@ import org.springframework.restdocs.request.RequestDocumentation.*
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 
 @WebMvcTest(LostPostController::class)
-class LostPostControllerDocsTest: CommonDocsConfig() {
+class LostPostControllerDocsTest: CommonDocsTestConfig() {
 
     @MockBean lateinit var lostPostUseCase: LostPostUseCase
 

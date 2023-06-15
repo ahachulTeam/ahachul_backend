@@ -5,7 +5,7 @@ import backend.team.ahachul_backend.api.member.adapter.web.`in`.dto.GetMemberDto
 import backend.team.ahachul_backend.api.member.adapter.web.`in`.dto.UpdateMemberDto
 import backend.team.ahachul_backend.api.member.application.port.`in`.MemberUseCase
 import backend.team.ahachul_backend.api.member.domain.model.GenderType
-import backend.team.ahachul_backend.config.controller.CommonDocsConfig
+import backend.team.ahachul_backend.config.controller.CommonDocsTestConfig
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
 import org.mockito.BDDMockito.given
@@ -21,7 +21,7 @@ import org.springframework.restdocs.payload.PayloadDocumentation.*
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 
 @WebMvcTest(MemberController::class)
-class MemberControllerDocsTest : CommonDocsConfig() {
+class MemberControllerDocsTest : CommonDocsTestConfig() {
 
     @MockBean
     lateinit var memberUseCase: MemberUseCase

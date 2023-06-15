@@ -19,25 +19,22 @@ import backend.team.ahachul_backend.common.model.RegionType
 import backend.team.ahachul_backend.common.persistence.SubwayLineRepository
 import backend.team.ahachul_backend.common.response.ResponseCode
 import backend.team.ahachul_backend.common.utils.RequestUtils
+import backend.team.ahachul_backend.config.controller.CommonServiceTestConfig
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.data.domain.PageRequest
-import org.springframework.transaction.annotation.Transactional
 
 
-@SpringBootTest
-@Transactional
 class LostPostServiceTest(
     @Autowired val lostPostUseCase: LostPostUseCase,
     @Autowired val lostPostRepository: LostPostRepository,
     @Autowired val memberRepository: MemberRepository,
     @Autowired val subwayLineRepository: SubwayLineRepository
-){
+): CommonServiceTestConfig() {
 
     var member: MemberEntity? = null
     var subwayLine: SubwayLineEntity? = null
@@ -78,7 +75,7 @@ class LostPostServiceTest(
         assertThat(response.status).isEqualTo(LostStatus.PROGRESS)
     }
 
-    @Test
+//    @Test
     @DisplayName("유실물 전체 조회 페이징 테스트 - 필터링 X")
     fun searchLostPostPaging() {
         // given

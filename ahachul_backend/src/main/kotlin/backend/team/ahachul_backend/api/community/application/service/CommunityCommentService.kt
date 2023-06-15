@@ -27,13 +27,33 @@ class CommunityCommentService(
                     it.id,
                     it.upperCommunityComment?.id,
                     it.content,
+                    it.status,
                     it.createdAt,
                     it.createdBy,
                     it.member.nickname!!
                 )
             }
-            .toList()
-        return GetCommunityCommentsDto.Response(comments)
+
+        val parentComments = mutableListOf<GetCommunityCommentsDto.CommunityComment>()
+        val childCommentMap = HashMap<Long, MutableList<GetCommunityCommentsDto.CommunityComment>>()
+
+        comments.forEach { comment ->
+            val parentId = comment.upperCommentId ?: run {
+                parentComments.add(comment)
+                childCommentMap[comment.id] = mutableListOf()
+                return@forEach
+            }
+            childCommentMap[parentId]?.add(comment)
+        }
+
+        return GetCommunityCommentsDto.Response(
+            parentComments.map {
+                GetCommunityCommentsDto.CommunityCommentList(
+                    it,
+                    childCommentMap[it.id]?.toList() ?: listOf()
+                )
+            }
+        )
     }
 
     @Transactional

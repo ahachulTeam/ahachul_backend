@@ -20,7 +20,7 @@ import org.springframework.restdocs.snippet.Attributes
 import org.springframework.test.web.servlet.MockMvc
 
 @AutoConfigureRestDocs
-abstract class CommonDocsConfig {
+abstract class CommonDocsTestConfig {
 
     @Autowired
     lateinit var mockMvc: MockMvc
