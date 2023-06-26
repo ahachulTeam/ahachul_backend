@@ -3,7 +3,9 @@ package backend.team.ahachul_backend.schedule.job
 import backend.team.ahachul_backend.api.lost.application.port.out.LostPostWriter
 import backend.team.ahachul_backend.api.lost.domain.entity.LostPostEntity
 import backend.team.ahachul_backend.common.domain.entity.SubwayLineEntity
+import backend.team.ahachul_backend.common.logging.Logger
 import backend.team.ahachul_backend.common.persistence.SubwayLineReader
+import backend.team.ahachul_backend.common.response.ResponseCode
 import backend.team.ahachul_backend.common.utils.FileUtils
 import backend.team.ahachul_backend.schedule.Lost112Data
 import org.quartz.JobExecutionContext
@@ -16,6 +18,8 @@ class UpdateLostDataJob(
     private val lostPostWriter: LostPostWriter,
     private val subwayLineReader: SubwayLineReader
 ): QuartzJobBean() {
+
+    private val logger: Logger = Logger(javaClass)
 
     override fun executeInternal(context: JobExecutionContext) {
         val jobDataMap = context.jobDetail.jobDataMap
@@ -36,9 +40,16 @@ class UpdateLostDataJob(
 
     private fun getSubwayLineEntity(receivedPlace: String): SubwayLineEntity? {
         val subwayLineName = extractSubwayLine(receivedPlace)
+        logger.info("extract subway line : $subwayLineName")
 
         return runCatching {
             subwayLineReader.getByName(subwayLineName)
+        }.onFailure {
+            logger.error(
+                it.message,
+                ResponseCode.INTERNAL_SERVER_ERROR,
+                it.stackTraceToString()
+            )
         }.getOrNull()
     }
 
