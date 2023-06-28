@@ -22,7 +22,8 @@ class LostPostService(
     private val lostPostWriter: LostPostWriter,
     private val lostPostReader: LostPostReader,
     private val subwayLineReader: SubwayLineReader,
-    private val memberReader: MemberReader
+    private val memberReader: MemberReader,
+    private val lostPostFileService: LostPostFileService
 ): LostPostUseCase {
 
     override fun getLostPost(id: Long): GetLostPostDto.Response {
@@ -62,7 +63,9 @@ class LostPostService(
                 subwayLine = subwayLine
             )
         )
-        return CreateLostPostDto.Response.from(entity.id)
+
+        val images = lostPostFileService.createLostPostFiles(entity, command.imageFiles)
+        return CreateLostPostDto.Response.from(entity.id, images)
     }
 
     @Transactional

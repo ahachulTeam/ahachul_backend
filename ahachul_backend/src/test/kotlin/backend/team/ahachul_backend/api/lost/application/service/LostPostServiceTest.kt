@@ -14,6 +14,7 @@ import backend.team.ahachul_backend.api.member.domain.model.GenderType
 import backend.team.ahachul_backend.api.member.domain.model.MemberStatusType
 import backend.team.ahachul_backend.api.member.domain.model.ProviderType
 import backend.team.ahachul_backend.common.domain.entity.SubwayLineEntity
+import backend.team.ahachul_backend.common.dto.ImageDto
 import backend.team.ahachul_backend.common.exception.CommonException
 import backend.team.ahachul_backend.common.model.RegionType
 import backend.team.ahachul_backend.common.persistence.SubwayLineRepository
@@ -27,6 +28,8 @@ import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.domain.PageRequest
+import org.springframework.mock.web.MockMultipartFile
+import java.nio.charset.StandardCharsets
 
 
 class LostPostServiceTest(
@@ -38,6 +41,10 @@ class LostPostServiceTest(
 
     var member: MemberEntity? = null
     var subwayLine: SubwayLineEntity? = null
+    val images = listOf(
+        MockMultipartFile("file", "test1.txt", "text/plain", "test1".toByteArray(StandardCharsets.UTF_8)),
+        MockMultipartFile("file", "test2.txt", "text/plain", "test2".toByteArray(StandardCharsets.UTF_8))
+    )
 
     @BeforeEach
     fun setUp() {
@@ -152,6 +159,7 @@ class LostPostServiceTest(
         assertThat(entity.content).isEqualTo("내용")
         assertThat(entity.lostType).isEqualTo(LostType.LOST)
         assertThat(entity.type).isEqualTo(LostPostType.CREATED)
+        assertThat(response.images.size).isEqualTo(2)
     }
 
     @Test
@@ -242,8 +250,7 @@ class LostPostServiceTest(
             title = "지갑",
             content = content,
             subwayLine = subwayLineId,
-            lostType = LostType.LOST,
-            imgUrls = listOf("11", "22")
+            lostType = LostType.LOST
         )
     }
 

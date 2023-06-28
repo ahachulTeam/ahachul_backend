@@ -6,6 +6,7 @@ import backend.team.ahachul_backend.common.annotation.Authentication
 import backend.team.ahachul_backend.common.response.CommonResponse
 import org.springframework.data.domain.Pageable
 import org.springframework.web.bind.annotation.*
+import org.springframework.web.multipart.MultipartFile
 
 
 @RestController
@@ -28,8 +29,11 @@ class LostPostController(
 
     @Authentication
     @PostMapping("/v1/lost-posts")
-    fun createLostPost(@RequestBody request: CreateLostPostDto.Request): CommonResponse<CreateLostPostDto.Response> {
-        return CommonResponse.success(lostPostService.createLostPost(request.toCommand()))
+    fun createLostPost(
+        @RequestPart(value = "dto") request: CreateLostPostDto.Request,
+        @RequestPart(value = "files", required = false) files: List<MultipartFile>
+    ): CommonResponse<CreateLostPostDto.Response> {
+        return CommonResponse.success(lostPostService.createLostPost(request.toCommand(files)))
     }
 
     @Authentication

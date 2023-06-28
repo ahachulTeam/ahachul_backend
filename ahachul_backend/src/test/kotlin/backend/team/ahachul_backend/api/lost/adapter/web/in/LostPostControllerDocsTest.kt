@@ -5,13 +5,16 @@ import backend.team.ahachul_backend.api.lost.application.port.`in`.LostPostUseCa
 import backend.team.ahachul_backend.api.lost.domain.model.LostOrigin
 import backend.team.ahachul_backend.api.lost.domain.model.LostStatus
 import backend.team.ahachul_backend.api.lost.domain.model.LostType
+import backend.team.ahachul_backend.common.dto.ImageDto
 import backend.team.ahachul_backend.config.controller.CommonDocsTestConfig
+import com.fasterxml.jackson.databind.ObjectMapper
 import org.junit.jupiter.api.Test
 import org.mockito.BDDMockito.anyLong
 import org.mockito.BDDMockito.given
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest
 import org.springframework.boot.test.mock.mockito.MockBean
 import org.springframework.http.MediaType
+import org.springframework.mock.web.MockMultipartFile
 import org.springframework.restdocs.headers.HeaderDocumentation.headerWithName
 import org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders
 import org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document
@@ -148,7 +151,9 @@ class LostPostControllerDocsTest: CommonDocsTestConfig() {
     @Test
     fun createLostPost() {
         // given
-        val response = CreateLostPostDto.Response(id = 1)
+        val response = CreateLostPostDto.Response(
+            id = 1,
+            images = listOf(ImageDto.of(1L, "url1"), ImageDto.of(2L, "url2")))
 
         given(lostPostUseCase.createLostPost(any()))
             .willReturn(response)
@@ -157,16 +162,29 @@ class LostPostControllerDocsTest: CommonDocsTestConfig() {
             title = "title",
             content = "content",
             subwayLine = 1,
-            lostType = LostType.LOST,
-            imgUrls = arrayListOf("url1", "url2")
+            lostType = LostType.LOST
         )
+
+        val mapper = ObjectMapper()
+        val requestFile = MockMultipartFile(
+            "dto",
+            "dto",
+            MediaType.APPLICATION_JSON_VALUE,
+            mapper.writeValueAsString(request).toByteArray())
+
+        val imageFile = MockMultipartFile(
+            "files",
+            "file.txt",
+            MediaType.TEXT_PLAIN_VALUE,
+            "File Content".toByteArray())
 
         // when
         val result = mockMvc.perform(
-            post("/v1/lost-posts")
+            multipart("/v1/lost-posts")
+                .file("dto", requestFile.bytes)
+                .file("files", imageFile.bytes)
                 .header("Authorization", "Bearer <Access Token>")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(request))
+                .contentType(MediaType.MULTIPART_FORM_DATA)
                 .accept(MediaType.APPLICATION_JSON)
         )
 
@@ -182,7 +200,7 @@ class LostPostControllerDocsTest: CommonDocsTestConfig() {
                         fieldWithPath("title").type(JsonFieldType.STRING).description("유실물 제목"),
                         fieldWithPath("content").type(JsonFieldType.STRING).description("유실물 내용"),
                         fieldWithPath("subwayLine").type(JsonFieldType.NUMBER).description("유실 호선 ID"),
-                        fieldWithPath("imgUrls").type(JsonFieldType.ARRAY).description("유실물 이미지 리스트").optional(),
+                        fieldWithPath("images").type(JsonFieldType.ARRAY).description("유실물 이미지 리스트").optional(),
                         fieldWithPath("lostType").type(JsonFieldType.STRING).description("유실물 타입").attributes(getFormatAttribute("LOST(유실) / ACQUIRE(습득)"))
                     ),
                     responseFields(
