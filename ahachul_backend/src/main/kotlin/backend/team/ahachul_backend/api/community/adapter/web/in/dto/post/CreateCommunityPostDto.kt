@@ -20,7 +20,7 @@ class CreateCommunityPostDto {
             return CreateCommunityPostCommand(
                 title = title,
                 content = content,
-                categoryType = CommunityCategoryType.ISSUE,
+                categoryType = categoryType,
                 hashTags = arrayListOf(),
                 subwayLineId = 1,
                 imageFiles = imageFiles
