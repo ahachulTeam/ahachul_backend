@@ -1,11 +1,11 @@
 ALTER TABLE tb_subway_line
-    MODIFY created_at DEFAULT CURRENT_TIMESTAMP;
+    ALTER created_at SET DEFAULT CURRENT_TIMESTAMP;
 
 ALTER TABLE tb_subway_line
-    MODIFY updated_at DEFAULT CURRENT_TIMESTAMP;
+    ALTER updated_at SET DEFAULT CURRENT_TIMESTAMP;
 
 ALTER TABLE tb_subway_line
-    MODIFY created_by DEFAULT 'SYSTEM';
+    ALTER created_by SET DEFAULT 'SYSTEM';
 
 ALTER TABLE tb_subway_line
-    MODIFY updated_by DEFAULT 'SYSTEM';
+    ALTER updated_by SET DEFAULT 'SYSTEM';
