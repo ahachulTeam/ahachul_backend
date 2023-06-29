@@ -81,7 +81,7 @@ class CommunityPostControllerDocsTest : CommonDocsTestConfig() {
                         parameterWithName("content").description("검색하고자 하는 내용").optional(),
                         parameterWithName("hashTag").description("검색하고자 하는 해시 태그").optional(),
                         parameterWithName("page").description("현재 페이지"),
-                        parameterWithName("size").description("페이지 노출 데이터 수"),
+                        parameterWithName("size").description("페이지 노출 데이터 수. index 0부터 시작"),
                         parameterWithName("sort").description("정렬 조건").attributes(getFormatAttribute("(likes|createdAt|views),(asc|desc)")),
                     ),
                     responseFields(
