@@ -9,4 +9,6 @@ interface CommunityCommentReader {
     fun findById(id: Long): CommunityCommentEntity?
 
     fun findAllByPostId(postId: Long): List<CommunityCommentEntity>
+
+    fun count(postId: Long): Int
 }

@@ -12,4 +12,6 @@ interface CommunityCommentRepository: JpaRepository<CommunityCommentEntity, Long
             "WHERE cc.communityPost.id = :postId " +
             "ORDER BY cc.createdAt ASC")
     fun findAllByCommunityPostId(postId: Long): List<CommunityCommentEntity>
+
+    fun countByCommunityPostId(postId: Long): Int
 }
