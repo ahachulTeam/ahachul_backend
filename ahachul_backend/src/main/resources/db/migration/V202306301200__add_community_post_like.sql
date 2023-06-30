@@ -1,7 +1,7 @@
 CREATE TABLE tb_community_post_like
 (
     community_post_like_id BIGINT auto_increment NOT NULL,
-    is_like                CHAR NOT NULL,
+    like_yn                CHAR NOT NULL,
     member_id              BIGINT NOT NULL,
     community_post_id      BIGINT NOT NULL,
     created_at             TIMESTAMP NOT NULL,

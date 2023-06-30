@@ -6,6 +6,7 @@ import backend.team.ahachul_backend.api.community.application.port.`in`.Communit
 import backend.team.ahachul_backend.api.community.domain.model.CommunityCategoryType
 import backend.team.ahachul_backend.common.dto.ImageDto
 import backend.team.ahachul_backend.common.model.RegionType
+import backend.team.ahachul_backend.common.model.YNType
 import backend.team.ahachul_backend.config.controller.CommonDocsTestConfig
 import org.junit.jupiter.api.Test
 import org.mockito.BDDMockito.given
@@ -117,6 +118,9 @@ class CommunityPostControllerDocsTest : CommonDocsTestConfig() {
             arrayListOf("여행", "취미"),
             0,
             0,
+            0,
+            YNType.Y,
+            YNType.N,
             RegionType.METROPOLITAN,
             LocalDateTime.now(),
             "작성자 ID",
@@ -150,9 +154,12 @@ class CommunityPostControllerDocsTest : CommonDocsTestConfig() {
                         fieldWithPath("result.content").type(JsonFieldType.STRING).description("게시글 내용"),
                         fieldWithPath("result.categoryType").type("CategoryType").description("카테고리 타입").attributes(getFormatAttribute("FREE, INSIGHT, ISSUE, HUMOR")),
                         fieldWithPath("result.hashTags").type(JsonFieldType.ARRAY).description("해시 태그 목록"),
-                        fieldWithPath("result.views").type(JsonFieldType.NUMBER).description("조회수"),
-                        fieldWithPath("result.likes").type(JsonFieldType.NUMBER).description("좋아요 수"),
-                        fieldWithPath("result.region").type("RegionType").description("지역").attributes(getFormatAttribute("METROPOLITAN")),
+                        fieldWithPath("result.viewCnt").type(JsonFieldType.NUMBER).description("조회수"),
+                        fieldWithPath("result.likeCnt").type(JsonFieldType.NUMBER).description("좋아요 수"),
+                        fieldWithPath("result.hateCnt").type(JsonFieldType.NUMBER).description("싫어요 수"),
+                        fieldWithPath("result.likeYn").type("YNType").description("좋아요 눌렀는지 여부"),
+                        fieldWithPath("result.hateYn").type("YNType").description("싫어요 눌렀는지 여부"),
+                        fieldWithPath("result.regionType").type("RegionType").description("지역").attributes(getFormatAttribute("METROPOLITAN")),
                         fieldWithPath("result.createdAt").type("LocalDateTime").description("작성일자"),
                         fieldWithPath("result.createdBy").type(JsonFieldType.STRING).description("작성자 ID"),
                         fieldWithPath("result.writer").type(JsonFieldType.STRING).description("작성자 닉네임"),

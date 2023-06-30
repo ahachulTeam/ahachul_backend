@@ -28,10 +28,10 @@ class CommunityPostLikeService (
     override fun like(postId: Long) {
         val memberId = RequestUtils.getAttribute("memberId")!!.toLong()
         val postLike = communityPostLikeReader.find(postId, memberId)
-        if (postLike?.isLike == YNType.Y) {
+        if (postLike?.likeYn == YNType.Y) {
             throw CommonException(ResponseCode.ALREADY_LIKED_POST)
         }
-        if (postLike?.isLike == YNType.N) {
+        if (postLike?.likeYn == YNType.N) {
             postLike.like()
             return
         }
@@ -48,7 +48,7 @@ class CommunityPostLikeService (
     override fun notLike(postId: Long) {
         val memberId = RequestUtils.getAttribute("memberId")!!.toLong()
         communityPostLikeReader.find(postId, memberId)?.let {
-            if (it.isLike == YNType.N) {
+            if (it.likeYn == YNType.N) {
                 throw CommonException(ResponseCode.REJECT_BY_HATE_STATUS)
             }
         } ?: throw CommonException(ResponseCode.BAD_REQUEST)
@@ -60,10 +60,10 @@ class CommunityPostLikeService (
     override fun hate(postId: Long) {
         val memberId = RequestUtils.getAttribute("memberId")!!.toLong()
         val postLike = communityPostLikeReader.find(postId, memberId)
-        if (postLike?.isLike == YNType.N) {
+        if (postLike?.likeYn == YNType.N) {
             throw CommonException(ResponseCode.ALREADY_HATED_POST)
         }
-        if (postLike?.isLike == YNType.Y) {
+        if (postLike?.likeYn == YNType.Y) {
             postLike.hate()
             return
         }
@@ -80,7 +80,7 @@ class CommunityPostLikeService (
     override fun notHate(postId: Long) {
         val memberId = RequestUtils.getAttribute("memberId")!!.toLong()
         communityPostLikeReader.find(postId, memberId)?.let {
-            if (it.isLike == YNType.Y) {
+            if (it.likeYn == YNType.Y) {
                 throw CommonException(ResponseCode.REJECT_BY_LIKE_STATUS)
             }
         } ?: throw CommonException(ResponseCode.BAD_REQUEST)

@@ -194,7 +194,7 @@ class CommunityPostServiceTest(
         assertThat(result.title).isEqualTo(result.title)
         assertThat(result.content).isEqualTo(result.content)
         assertThat(result.categoryType).isEqualTo(CommunityCategoryType.FREE)
-        assertThat(result.region).isEqualTo(RegionType.METROPOLITAN)
+        assertThat(result.regionType).isEqualTo(RegionType.METROPOLITAN)
         assertThat(result.writer).isEqualTo(member?.nickname)
         assertThat(result.hashTags).containsExactly("여행", "취미")
     }
@@ -217,14 +217,14 @@ class CommunityPostServiceTest(
 
         // when, then
         var result = communityPostUseCase.getCommunityPost(getCommunityPostCommand)
-        assertThat(result.views).isEqualTo(1)
+        assertThat(result.viewCnt).isEqualTo(1)
 
         result = communityPostUseCase.getCommunityPost(getCommunityPostCommand)
-        assertThat(result.views).isEqualTo(2)
+        assertThat(result.viewCnt).isEqualTo(2)
 
         communityPostUseCase.getCommunityPost(getCommunityPostCommand)
         result = communityPostUseCase.getCommunityPost(getCommunityPostCommand)
-        assertThat(result.views).isEqualTo(4)
+        assertThat(result.viewCnt).isEqualTo(4)
     }
 
     @Test

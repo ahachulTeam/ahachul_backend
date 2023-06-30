@@ -13,7 +13,7 @@ class CommunityPostLikeEntity(
     val id: Long = 0,
 
     @Enumerated(EnumType.STRING)
-    var isLike: YNType,
+    var likeYn: YNType,
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "community_post_id")
@@ -30,17 +30,17 @@ class CommunityPostLikeEntity(
             fun of(communityPost: CommunityPostEntity, member: MemberEntity, isLike: YNType): CommunityPostLikeEntity {
                 return CommunityPostLikeEntity(
                     communityPost = communityPost,
-                    isLike = isLike,
+                    likeYn = isLike,
                     member = member,
                 )
             }
         }
 
     fun like() {
-        isLike = YNType.Y
+        likeYn = YNType.Y
     }
 
     fun hate() {
-        isLike = YNType.N
+        likeYn = YNType.N
     }
 }

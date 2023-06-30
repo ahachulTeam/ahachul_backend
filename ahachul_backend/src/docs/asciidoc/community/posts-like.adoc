@@ -1,28 +1,55 @@
 ==== 게시글 좋아요
 
 .Request
-include::{snippets}/create-community-post-like/http-request.adoc[]
+include::{snippets}/community-post-like/http-request.adoc[]
 .Request Headers
-include::{snippets}/create-community-post-like/request-headers.adoc[]
+include::{snippets}/community-post-like/request-headers.adoc[]
 .Path Parameters
-include::{snippets}/create-community-post-like/path-parameters.adoc[]
+include::{snippets}/community-post-like/path-parameters.adoc[]
 .Response
-include::{snippets}/create-community-post-like/http-response.adoc[]
+include::{snippets}/community-post-like/http-response.adoc[]
 .Response Fields
-include::{snippets}/create-community-post-like/response-fields.adoc[]
+include::{snippets}/community-post-like/response-fields.adoc[]
 
 ==== 게시글 좋아요 취소
 
 .Request
-include::{snippets}/delete-community-post-like/http-request.adoc[]
+include::{snippets}/community-post-not-like/http-request.adoc[]
 .Request Headers
-include::{snippets}/delete-community-post-like/request-headers.adoc[]
+include::{snippets}/community-post-not-like/request-headers.adoc[]
 .Path Parameters
-include::{snippets}/delete-community-post-like/path-parameters.adoc[]
+include::{snippets}/community-post-not-like/path-parameters.adoc[]
 .Response
-include::{snippets}/delete-community-post-like/http-response.adoc[]
+include::{snippets}/community-post-not-like/http-response.adoc[]
 .Response Fields
-include::{snippets}/delete-community-post-like/response-fields.adoc[]
+include::{snippets}/community-post-not-like/response-fields.adoc[]
+
+
+==== 게시글 싫어요
+
+.Request
+include::{snippets}/community-post-hate/http-request.adoc[]
+.Request Headers
+include::{snippets}/community-post-hate/request-headers.adoc[]
+.Path Parameters
+include::{snippets}/community-post-hate/path-parameters.adoc[]
+.Response
+include::{snippets}/community-post-hate/http-response.adoc[]
+.Response Fields
+include::{snippets}/community-post-hate/response-fields.adoc[]
+
+==== 게시글 싫어요 취소
+
+.Request
+include::{snippets}/community-post-not-hate/http-request.adoc[]
+.Request Headers
+include::{snippets}/community-post-not-hate/request-headers.adoc[]
+.Path Parameters
+include::{snippets}/community-post-not-hate/path-parameters.adoc[]
+.Response
+include::{snippets}/community-post-not-hate/http-response.adoc[]
+.Response Fields
+include::{snippets}/community-post-not-hate/response-fields.adoc[]
 
 == 에러 코드
 

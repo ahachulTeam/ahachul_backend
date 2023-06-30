@@ -55,7 +55,7 @@ class SearchCommunityPostDto {
         val image: ImageDto?,
     ) {
         companion object {
-            fun of(entity: CommunityPostEntity, image: ImageDto?, views: Int, commentCnt: Int): CommunityPost {
+            fun of(entity: CommunityPostEntity, image: ImageDto?, views: Int, commentCnt: Int,  likeCnt: Int): CommunityPost {
                 return CommunityPost(
                     id = entity.id,
                     title = entity.title,
@@ -63,7 +63,7 @@ class SearchCommunityPostDto {
                     categoryType = entity.categoryType,
                     commentCnt = commentCnt,
                     viewCnt = views,
-                    likeCnt = 0, // TODO
+                    likeCnt = likeCnt,
                     regionType = entity.regionType,
                     createdAt = entity.createdAt,
                     createdBy = entity.createdBy,
