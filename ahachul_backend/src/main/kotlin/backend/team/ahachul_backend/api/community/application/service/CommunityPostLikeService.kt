@@ -46,10 +46,45 @@ class CommunityPostLikeService (
 
     @Transactional
     override fun notLike(postId: Long) {
-        val memberId = RequestUtils.getAttribute("memberId")!!
-        communityPostLikeWriter.delete(
-            postId = postId,
-            memberId = memberId.toLong()
+        val memberId = RequestUtils.getAttribute("memberId")!!.toLong()
+        communityPostLikeReader.find(postId, memberId)?.let {
+            if (it.isLike == YNType.N) {
+                throw CommonException(ResponseCode.REJECT_BY_HATE_STATUS)
+            }
+        } ?: throw CommonException(ResponseCode.BAD_REQUEST)
+
+        communityPostLikeWriter.delete(postId, memberId)
+    }
+
+    @Transactional
+    override fun hate(postId: Long) {
+        val memberId = RequestUtils.getAttribute("memberId")!!.toLong()
+        val postLike = communityPostLikeReader.find(postId, memberId)
+        if (postLike?.isLike == YNType.N) {
+            throw CommonException(ResponseCode.ALREADY_HATED_POST)
+        }
+        if (postLike?.isLike == YNType.Y) {
+            postLike.hate()
+            return
+        }
+        communityPostLikeWriter.save(
+            CommunityPostLikeEntity.of(
+                communityPost = communityPostReader.getCommunityPost(postId),
+                member = memberReader.getMember(memberId),
+                YNType.Y
+            )
         )
+    }
+
+    @Transactional
+    override fun notHate(postId: Long) {
+        val memberId = RequestUtils.getAttribute("memberId")!!.toLong()
+        communityPostLikeReader.find(postId, memberId)?.let {
+            if (it.isLike == YNType.Y) {
+                throw CommonException(ResponseCode.REJECT_BY_LIKE_STATUS)
+            }
+        } ?: throw CommonException(ResponseCode.BAD_REQUEST)
+
+        communityPostLikeWriter.delete(postId, memberId)
     }
 }

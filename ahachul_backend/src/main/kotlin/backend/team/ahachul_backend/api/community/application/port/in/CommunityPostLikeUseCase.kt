@@ -5,4 +5,8 @@ interface CommunityPostLikeUseCase {
     fun like(postId: Long)
 
     fun notLike(postId: Long)
+
+    fun hate(postId: Long)
+
+    fun notHate(postId: Long)
 }

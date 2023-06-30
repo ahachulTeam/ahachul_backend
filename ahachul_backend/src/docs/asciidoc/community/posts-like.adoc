@@ -30,4 +30,7 @@ include::{snippets}/delete-community-post-like/response-fields.adoc[]
 |===
 |Code|Message|HttpStatus
 |400|이미 좋아요한 게시물입니다.|400
+|401|이미 싫어요한 게시물입니다.|400
+|402|좋아요 누른 상태입니다.|400
+|403|싫어요 누른 상태입니다.|400
 |===

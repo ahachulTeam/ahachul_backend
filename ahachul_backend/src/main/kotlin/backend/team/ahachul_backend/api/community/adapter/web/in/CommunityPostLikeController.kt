@@ -28,4 +28,18 @@ class CommunityPostLikeController(
         communityPostLikeUseCase.notLike(postId)
         return CommonResponse.success()
     }
+
+    @Authentication
+    @PostMapping("/v1/community-posts/{postId}/hate")
+    fun hate(@PathVariable postId: Long): CommonResponse<*> {
+        communityPostLikeUseCase.like(postId)
+        return CommonResponse.success()
+    }
+
+    @Authentication
+    @DeleteMapping("/v1/community-posts/{postId}/hate")
+    fun notHate(@PathVariable postId: Long): CommonResponse<*> {
+        communityPostLikeUseCase.notLike(postId)
+        return CommonResponse.success()
+    }
 }

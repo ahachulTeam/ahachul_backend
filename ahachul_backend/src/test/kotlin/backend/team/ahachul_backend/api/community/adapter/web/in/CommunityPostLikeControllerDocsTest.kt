@@ -24,7 +24,7 @@ class CommunityPostLikeControllerDocsTest: CommonDocsTestConfig() {
     lateinit var communityPostLikeUseCase: CommunityPostLikeUseCase
 
     @Test
-    fun createCommunityPostLikeTest() {
+    fun communityPostLikeTest() {
         // given
         willDoNothing().given(communityPostLikeUseCase).like(anyLong())
 
@@ -40,7 +40,7 @@ class CommunityPostLikeControllerDocsTest: CommonDocsTestConfig() {
         result.andExpect(MockMvcResultMatchers.status().isOk)
             .andDo(
                 MockMvcRestDocumentation.document(
-                    "create-community-post-like",
+                    "community-post-like",
                     getDocsRequest(),
                     getDocsResponse(),
                     HeaderDocumentation.requestHeaders(
@@ -58,7 +58,7 @@ class CommunityPostLikeControllerDocsTest: CommonDocsTestConfig() {
     }
 
     @Test
-    fun deleteCommunityPostLikeTest() {
+    fun communityPostNotLikeTest() {
         // given
         willDoNothing().given(communityPostLikeUseCase).notLike(anyLong())
 
@@ -74,7 +74,7 @@ class CommunityPostLikeControllerDocsTest: CommonDocsTestConfig() {
         result.andExpect(MockMvcResultMatchers.status().isOk)
             .andDo(
                 MockMvcRestDocumentation.document(
-                    "delete-community-post-like",
+                    "community-post-not-like",
                     getDocsRequest(),
                     getDocsResponse(),
                     HeaderDocumentation.requestHeaders(
@@ -82,6 +82,74 @@ class CommunityPostLikeControllerDocsTest: CommonDocsTestConfig() {
                     ),
                     RequestDocumentation.pathParameters(
                         parameterWithName("postId").description("좋아요 해제할 게시물 아이디")
+                    ),
+                    PayloadDocumentation.responseFields(
+                        *commonResponseFields(),
+                        fieldWithPath("result").optional().description("X")
+                    )
+                )
+            )
+    }
+
+    @Test
+    fun communityPostHateTest() {
+        // given
+        willDoNothing().given(communityPostLikeUseCase).like(anyLong())
+
+        // when
+        val result = mockMvc.perform(
+            RestDocumentationRequestBuilders.post("/v1/community-posts/{postId}/hate", 1)
+                .header("Authorization", "Bearer <Access Token>")
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON)
+        )
+
+        // then
+        result.andExpect(MockMvcResultMatchers.status().isOk)
+            .andDo(
+                MockMvcRestDocumentation.document(
+                    "community-post-hate",
+                    getDocsRequest(),
+                    getDocsResponse(),
+                    HeaderDocumentation.requestHeaders(
+                        HeaderDocumentation.headerWithName("Authorization").description("엑세스 토큰")
+                    ),
+                    RequestDocumentation.pathParameters(
+                        parameterWithName("postId").description("싫어요 할 게시물 아이디")
+                    ),
+                    PayloadDocumentation.responseFields(
+                        *commonResponseFields(),
+                        fieldWithPath("result").optional().description("X")
+                    )
+                )
+            )
+    }
+
+    @Test
+    fun communityPostNotHateTest() {
+        // given
+        willDoNothing().given(communityPostLikeUseCase).notLike(anyLong())
+
+        // when
+        val result = mockMvc.perform(
+            RestDocumentationRequestBuilders.delete("/v1/community-posts/{postId}/hate", 1)
+                .header("Authorization", "Bearer <Access Token>")
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON)
+        )
+
+        // then
+        result.andExpect(MockMvcResultMatchers.status().isOk)
+            .andDo(
+                MockMvcRestDocumentation.document(
+                    "community-post-not-hate",
+                    getDocsRequest(),
+                    getDocsResponse(),
+                    HeaderDocumentation.requestHeaders(
+                        HeaderDocumentation.headerWithName("Authorization").description("엑세스 토큰")
+                    ),
+                    RequestDocumentation.pathParameters(
+                        parameterWithName("postId").description("싫어요 해제할 게시물 아이디")
                     ),
                     PayloadDocumentation.responseFields(
                         *commonResponseFields(),

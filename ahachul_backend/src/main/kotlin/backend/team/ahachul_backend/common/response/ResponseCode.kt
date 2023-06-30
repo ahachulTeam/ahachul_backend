@@ -31,4 +31,7 @@ enum class ResponseCode(
     EXTERNAL_REPORT_REQUEST("305", "외부 유실물 게시물은 신고할 수 없습니다.", HttpStatus.BAD_REQUEST),
 
     ALREADY_LIKED_POST("400", "이미 좋아요한 게시물입니다.", HttpStatus.BAD_REQUEST),
+    ALREADY_HATED_POST("401", "이미 싫어요한 게시물입니다.", HttpStatus.BAD_REQUEST),
+    REJECT_BY_LIKE_STATUS("402", "좋아요 누른 상태입니다.", HttpStatus.BAD_REQUEST),
+    REJECT_BY_HATE_STATUS("403", "싫어요 누른 상태입니다.", HttpStatus.BAD_REQUEST),
 }
