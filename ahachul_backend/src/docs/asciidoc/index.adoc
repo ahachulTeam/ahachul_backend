@@ -27,6 +27,8 @@ include::member/error.adoc[]
 
 include::community/posts.adoc[]
 
+include::community/posts-like.adoc[]
+
 include::community/comments.adoc[]
 
 == lost

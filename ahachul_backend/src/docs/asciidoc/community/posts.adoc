@@ -13,6 +13,8 @@ include::{snippets}/search-community-posts/response-fields.adoc[]
 
 ==== 게시글 상세 조회
 
+- `likeYn`, `hateYn` 는 동시에 true 일 수 없다.
+
 .Request
 include::{snippets}/get-community-post/http-request.adoc[]
 .Path Parameters

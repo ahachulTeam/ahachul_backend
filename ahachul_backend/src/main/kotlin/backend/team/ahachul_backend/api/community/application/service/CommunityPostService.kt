@@ -7,6 +7,7 @@ import backend.team.ahachul_backend.api.community.domain.entity.CommunityPostEnt
 import backend.team.ahachul_backend.api.community.domain.entity.CommunityPostFileEntity
 import backend.team.ahachul_backend.api.member.application.port.out.MemberReader
 import backend.team.ahachul_backend.common.dto.ImageDto
+import backend.team.ahachul_backend.common.model.YNType
 import backend.team.ahachul_backend.common.persistence.SubwayLineReader
 import backend.team.ahachul_backend.common.support.ViewsSupport
 import backend.team.ahachul_backend.common.utils.RequestUtils
@@ -24,6 +25,7 @@ class CommunityPostService(
     private val communityPostHashTagReader: CommunityPostHashTagReader,
     private val communityPostFileReader: CommunityPostFileReader,
     private val communityCommentReader: CommunityCommentReader,
+    private val communityPostLikeReader: CommunityPostLikeReader,
 
     private val communityPostHashTagService: CommunityPostHashTagService,
     private val communityPostFileService: CommunityPostFileService,
@@ -40,7 +42,8 @@ class CommunityPostService(
                     entity = it,
                     image = file?.let { it1 -> ImageDto.of(it1.id, file.filePath) },
                     views = viewsSupport.get(it.id),
-                    commentCnt = communityCommentReader.count(it.id)
+                    commentCnt = communityCommentReader.count(it.id),
+                    likeCnt = communityPostLikeReader.count(it.id, YNType.Y)
                 )
             }.toList()
 
@@ -51,7 +54,7 @@ class CommunityPostService(
     }
 
     override fun getCommunityPost(command: GetCommunityPostCommand): GetCommunityPostDto.Response {
-        val communityPost = communityPostReader.getCommunityPost(command.id)
+        val communityPost = communityPostReader.getByCustom(command.id, RequestUtils.getAttribute("memberId"))
         val views = viewsSupport.increase(command.id)
         val hashTags = communityPostHashTagReader.findAllByPostId(communityPost.id).map { it.hashTag.name }
         val communityPostFiles = communityPostFileReader.findAllByPostId(communityPost.id)
