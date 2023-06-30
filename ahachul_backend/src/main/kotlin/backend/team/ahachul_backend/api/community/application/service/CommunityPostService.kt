@@ -2,10 +2,7 @@ package backend.team.ahachul_backend.api.community.application.service
 
 import backend.team.ahachul_backend.api.community.adapter.web.`in`.dto.post.*
 import backend.team.ahachul_backend.api.community.application.port.`in`.CommunityPostUseCase
-import backend.team.ahachul_backend.api.community.application.port.out.CommunityPostFileReader
-import backend.team.ahachul_backend.api.community.application.port.out.CommunityPostHashTagReader
-import backend.team.ahachul_backend.api.community.application.port.out.CommunityPostReader
-import backend.team.ahachul_backend.api.community.application.port.out.CommunityPostWriter
+import backend.team.ahachul_backend.api.community.application.port.out.*
 import backend.team.ahachul_backend.api.community.domain.entity.CommunityPostEntity
 import backend.team.ahachul_backend.api.community.domain.entity.CommunityPostFileEntity
 import backend.team.ahachul_backend.api.member.application.port.out.MemberReader
@@ -26,6 +23,7 @@ class CommunityPostService(
     private val subwayLineReader: SubwayLineReader,
     private val communityPostHashTagReader: CommunityPostHashTagReader,
     private val communityPostFileReader: CommunityPostFileReader,
+    private val communityCommentReader: CommunityCommentReader,
 
     private val communityPostHashTagService: CommunityPostHashTagService,
     private val communityPostFileService: CommunityPostFileService,
@@ -41,7 +39,8 @@ class CommunityPostService(
                 SearchCommunityPostDto.CommunityPost.of(
                     entity = it,
                     image = file?.let { it1 -> ImageDto.of(it1.id, file.filePath) },
-                    views = viewsSupport.get(it.id)
+                    views = viewsSupport.get(it.id),
+                    commentCnt = communityCommentReader.count(it.id)
                 )
             }.toList()
 

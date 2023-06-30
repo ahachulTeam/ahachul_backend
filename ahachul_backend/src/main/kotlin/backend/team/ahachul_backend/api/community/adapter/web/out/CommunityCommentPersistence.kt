@@ -28,4 +28,8 @@ class CommunityCommentPersistence(
     override fun findAllByPostId(postId: Long): List<CommunityCommentEntity> {
         return repository.findAllByCommunityPostId(postId)
     }
+
+    override fun count(postId: Long): Int {
+        return repository.countByCommunityPostId(postId)
+    }
 }

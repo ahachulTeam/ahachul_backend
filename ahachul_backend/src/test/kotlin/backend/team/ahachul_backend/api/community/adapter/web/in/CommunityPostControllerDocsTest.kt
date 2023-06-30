@@ -36,16 +36,18 @@ class CommunityPostControllerDocsTest : CommonDocsTestConfig() {
             true,
             listOf(
                 SearchCommunityPostDto.CommunityPost(
-                    1,
-                    "제목",
-                    CommunityCategoryType.ISSUE,
-                    0,
-                    0,
-                    RegionType.METROPOLITAN,
-                    LocalDateTime.now(),
-                    "작성자 ID",
-                    "작성자 닉네임",
-                    ImageDto.of(1L, "url1")
+                    id = 1,
+                    title = "제목",
+                    content = "내용",
+                    categoryType = CommunityCategoryType.ISSUE,
+                    commentCnt = 0,
+                    viewCnt = 0,
+                    likeCnt = 0,
+                    regionType = RegionType.METROPOLITAN,
+                    createdAt = LocalDateTime.now(),
+                    createdBy = "작성자 ID",
+                    writer = "작성자 닉네임",
+                    image = ImageDto.of(1L, "url1")
                 )
             )
         )
@@ -79,7 +81,7 @@ class CommunityPostControllerDocsTest : CommonDocsTestConfig() {
                         parameterWithName("content").description("검색하고자 하는 내용").optional(),
                         parameterWithName("hashTag").description("검색하고자 하는 해시 태그").optional(),
                         parameterWithName("page").description("현재 페이지"),
-                        parameterWithName("size").description("페이지 노출 데이터 수"),
+                        parameterWithName("size").description("페이지 노출 데이터 수. index 0부터 시작"),
                         parameterWithName("sort").description("정렬 조건").attributes(getFormatAttribute("(likes|createdAt|views),(asc|desc)")),
                     ),
                     responseFields(
@@ -87,10 +89,12 @@ class CommunityPostControllerDocsTest : CommonDocsTestConfig() {
                         fieldWithPath("result.hasNext").type(JsonFieldType.BOOLEAN).description("다음 페이지 존재 여부"),
                         fieldWithPath("result.posts[].id").type(JsonFieldType.NUMBER).description("게시글 아이디"),
                         fieldWithPath("result.posts[].title").type(JsonFieldType.STRING).description("게시글 제목"),
+                        fieldWithPath("result.posts[].content").type(JsonFieldType.STRING).description("게시글 내용"),
                         fieldWithPath("result.posts[].categoryType").type("CategoryType").description("카테고리 타입").attributes(getFormatAttribute("FREE, INSIGHT, ISSUE, HUMOR")),
-                        fieldWithPath("result.posts[].views").type(JsonFieldType.NUMBER).description("조회수"),
-                        fieldWithPath("result.posts[].likes").type(JsonFieldType.NUMBER).description("좋아요 수"),
-                        fieldWithPath("result.posts[].region").type("RegionType").description("지역").attributes(getFormatAttribute("METROPOLITAN")),
+                        fieldWithPath("result.posts[].commentCnt").type(JsonFieldType.NUMBER).description("댓글 수"),
+                        fieldWithPath("result.posts[].viewCnt").type(JsonFieldType.NUMBER).description("조회수"),
+                        fieldWithPath("result.posts[].likeCnt").type(JsonFieldType.NUMBER).description("좋아요 수"),
+                        fieldWithPath("result.posts[].regionType").type("RegionType").description("지역").attributes(getFormatAttribute("METROPOLITAN")),
                         fieldWithPath("result.posts[].createdAt").type("LocalDateTime").description("작성일자"),
                         fieldWithPath("result.posts[].createdBy").type(JsonFieldType.STRING).description("작성자 ID"),
                         fieldWithPath("result.posts[].writer").type(JsonFieldType.STRING).description("작성자 닉네임"),
