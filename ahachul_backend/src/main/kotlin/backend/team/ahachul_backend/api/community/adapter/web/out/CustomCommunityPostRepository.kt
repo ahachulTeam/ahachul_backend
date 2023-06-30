@@ -29,56 +29,67 @@ class CustomCommunityPostRepository(
 ) {
 
     fun getByCustom(postId: Long, memberId: String?): CommunityPost? {
-        return queryFactory.select(Projections.constructor(CommunityPost::class.java,
-            communityPostEntity.id,
-            communityPostEntity.title,
-            communityPostEntity.content,
-            communityPostEntity.categoryType,
-            ExpressionUtils.`as`(
-                JPAExpressions.select(count(communityPostLikeEntity.id))
-                    .from(communityPostLikeEntity)
-                    .where(communityPostLikeEntity.communityPost.id.eq(postId).and(communityPostLikeEntity.likeYn.eq(YNType.Y))),
-                "likeCnt"
-            ),
-            ExpressionUtils.`as`(
-                JPAExpressions.select(count(communityPostLikeEntity.id))
-                    .from(communityPostLikeEntity)
-                    .where(communityPostLikeEntity.communityPost.id.eq(postId).and(communityPostLikeEntity.likeYn.eq(YNType.N))),
-                "hateCnt"
-            ),
-            if (memberId != null) {
+        return queryFactory.select(
+            Projections.constructor(
+                CommunityPost::class.java,
+                communityPostEntity.id,
+                communityPostEntity.title,
+                communityPostEntity.content,
+                communityPostEntity.categoryType,
                 ExpressionUtils.`as`(
-                    JPAExpressions.select(JPAExpressions.selectOne())
+                    JPAExpressions.select(count(communityPostLikeEntity.id))
+                        .from(communityPostLikeEntity)
+                        .where(
+                            communityPostLikeEntity.communityPost.id.eq(postId)
+                                .and(communityPostLikeEntity.likeYn.eq(YNType.Y))
+                        ),
+                    "likeCnt"
+                ),
+                ExpressionUtils.`as`(
+                    JPAExpressions.select(count(communityPostLikeEntity.id))
                         .from(communityPostLikeEntity)
                         .where(
                             communityPostLikeEntity.communityPost.id.eq(postId)
                                 .and(communityPostLikeEntity.likeYn.eq(YNType.N))
-                                .and(communityPostLikeEntity.member.id.eq(memberId.toLong()))
-                        )
-                        .exists(),
-                    "likeYn"
-                )
-            } else {
-                Expressions.constant(false)
-            },
-            if (memberId != null) {
-                ExpressionUtils.`as`(
-                    JPAExpressions.select(JPAExpressions.selectOne())
-                        .from(communityPostLikeEntity)
-                        .where(communityPostLikeEntity.communityPost.id.eq(postId)
-                            .and(communityPostLikeEntity.likeYn.eq(YNType.N))
-                            .and(communityPostLikeEntity.member.id.eq(memberId.toLong())))
-                        .exists(),
-                    "hateYn"
-                )
-            } else {
-                   Expressions.constant(false)
-            },
-            communityPostEntity.regionType,
-            communityPostEntity.createdAt,
-            communityPostEntity.createdBy,
-            communityPostEntity.member.nickname.`as`("writer"),
-            ))
+                        ),
+                    "hateCnt"
+                ),
+                if (memberId != null) {
+                    ExpressionUtils.`as`(
+                        JPAExpressions.select(JPAExpressions.selectOne())
+                            .from(communityPostLikeEntity)
+                            .where(
+                                communityPostLikeEntity.communityPost.id.eq(postId)
+                                    .and(communityPostLikeEntity.likeYn.eq(YNType.N))
+                                    .and(communityPostLikeEntity.member.id.eq(memberId.toLong()))
+                            )
+                            .exists(),
+                        "likeYn"
+                    )
+                } else {
+                    Expressions.constant(false)
+                },
+                if (memberId != null) {
+                    ExpressionUtils.`as`(
+                        JPAExpressions.select(JPAExpressions.selectOne())
+                            .from(communityPostLikeEntity)
+                            .where(
+                                communityPostLikeEntity.communityPost.id.eq(postId)
+                                    .and(communityPostLikeEntity.likeYn.eq(YNType.N))
+                                    .and(communityPostLikeEntity.member.id.eq(memberId.toLong()))
+                            )
+                            .exists(),
+                        "hateYn"
+                    )
+                } else {
+                    Expressions.constant(false)
+                },
+                communityPostEntity.regionType,
+                communityPostEntity.createdAt,
+                communityPostEntity.createdBy,
+                communityPostEntity.member.nickname.`as`("writer"),
+            )
+        )
             .from(communityPostEntity)
             .join(communityPostEntity.member, memberEntity)
             .fetchOne()
@@ -139,10 +150,12 @@ class CustomCommunityPostRepository(
 
     private fun hashTagEqWithSubQuery(hashTag: String?) =
         hashTag?.let {
-            communityPostEntity.`in`(JPAExpressions.select(communityPostHashTagEntity.communityPost)
-                .from(communityPostHashTagEntity)
-                .join(communityPostHashTagEntity.hashTag, hashTagEntity)
-                .where(hashTagEntity.name.eq(hashTag)))
+            communityPostEntity.`in`(
+                JPAExpressions.select(communityPostHashTagEntity.communityPost)
+                    .from(communityPostHashTagEntity)
+                    .join(communityPostHashTagEntity.hashTag, hashTagEntity)
+                    .where(hashTagEntity.name.eq(hashTag))
+            )
         }
 
     private fun titleOrContentContains(content: String?) =
