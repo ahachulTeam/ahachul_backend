@@ -1,0 +1,33 @@
+==== 게시글 좋아요
+
+.Request
+include::{snippets}/create-community-post-like/http-request.adoc[]
+.Request Headers
+include::{snippets}/create-community-post-like/request-headers.adoc[]
+.Path Parameters
+include::{snippets}/create-community-post-like/path-parameters.adoc[]
+.Response
+include::{snippets}/create-community-post-like/http-response.adoc[]
+.Response Fields
+include::{snippets}/create-community-post-like/response-fields.adoc[]
+
+==== 게시글 좋아요 취소
+
+.Request
+include::{snippets}/delete-community-post-like/http-request.adoc[]
+.Request Headers
+include::{snippets}/delete-community-post-like/request-headers.adoc[]
+.Path Parameters
+include::{snippets}/delete-community-post-like/path-parameters.adoc[]
+.Response
+include::{snippets}/delete-community-post-like/http-response.adoc[]
+.Response Fields
+include::{snippets}/delete-community-post-like/response-fields.adoc[]
+
+== 에러 코드
+
+[%header%autowidth]
+|===
+|Code|Message|HttpStatus
+|400|이미 좋아요한 게시물입니다.|400
+|===

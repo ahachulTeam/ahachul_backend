@@ -1,0 +1,31 @@
+package backend.team.ahachul_backend.api.community.adapter.web.`in`
+
+import backend.team.ahachul_backend.api.community.adapter.web.`in`.dto.*
+import backend.team.ahachul_backend.api.community.adapter.web.`in`.dto.post.*
+import backend.team.ahachul_backend.api.community.application.port.`in`.CommunityPostLikeUseCase
+import backend.team.ahachul_backend.common.annotation.Authentication
+import backend.team.ahachul_backend.common.response.CommonResponse
+import org.springframework.web.bind.annotation.DeleteMapping
+import org.springframework.web.bind.annotation.PathVariable
+import org.springframework.web.bind.annotation.PostMapping
+import org.springframework.web.bind.annotation.RestController
+
+@RestController
+class CommunityPostLikeController(
+    private val communityPostLikeUseCase: CommunityPostLikeUseCase
+) {
+
+    @Authentication
+    @PostMapping("/v1/community-posts/{postId}/like")
+    fun createCommunityPostLike(@PathVariable postId: Long): CommonResponse<*> {
+        communityPostLikeUseCase.createCommunityPostLike(postId)
+        return CommonResponse.success()
+    }
+
+    @Authentication
+    @DeleteMapping("/v1/community-posts/{postId}/like")
+    fun deleteCommunityPostLike(@PathVariable postId: Long): CommonResponse<*> {
+        communityPostLikeUseCase.deleteCommunityPostLike(postId)
+        return CommonResponse.success()
+    }
+}
