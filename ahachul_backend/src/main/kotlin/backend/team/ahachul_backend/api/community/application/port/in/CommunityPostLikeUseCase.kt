@@ -2,7 +2,7 @@ package backend.team.ahachul_backend.api.community.application.port.`in`
 
 interface CommunityPostLikeUseCase {
 
-    fun createCommunityPostLike(postId: Long)
+    fun like(postId: Long)
 
-    fun deleteCommunityPostLike(postId: Long)
+    fun notLike(postId: Long)
 }

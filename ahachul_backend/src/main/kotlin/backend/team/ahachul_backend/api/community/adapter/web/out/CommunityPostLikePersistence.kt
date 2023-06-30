@@ -18,6 +18,10 @@ class CommunityPostLikePersistence(
         repository.deleteByCommunityPostIdAndMemberId(postId, memberId)
     }
 
+    override fun find(postId: Long, memberId: Long): CommunityPostLikeEntity? {
+        return repository.findByCommunityPostIdAndMemberId(postId, memberId)
+    }
+
     override fun exist(postId: Long, memberId: Long): Boolean {
         return repository.existsByCommunityPostIdAndMemberId(postId, memberId)
     }

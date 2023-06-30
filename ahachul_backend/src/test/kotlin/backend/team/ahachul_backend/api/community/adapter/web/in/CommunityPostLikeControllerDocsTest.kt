@@ -26,7 +26,7 @@ class CommunityPostLikeControllerDocsTest: CommonDocsTestConfig() {
     @Test
     fun createCommunityPostLikeTest() {
         // given
-        willDoNothing().given(communityPostLikeUseCase).createCommunityPostLike(anyLong())
+        willDoNothing().given(communityPostLikeUseCase).like(anyLong())
 
         // when
         val result = mockMvc.perform(
@@ -60,7 +60,7 @@ class CommunityPostLikeControllerDocsTest: CommonDocsTestConfig() {
     @Test
     fun deleteCommunityPostLikeTest() {
         // given
-        willDoNothing().given(communityPostLikeUseCase).deleteCommunityPostLike(anyLong())
+        willDoNothing().given(communityPostLikeUseCase).notLike(anyLong())
 
         // when
         val result = mockMvc.perform(

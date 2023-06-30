@@ -17,15 +17,15 @@ class CommunityPostLikeController(
 
     @Authentication
     @PostMapping("/v1/community-posts/{postId}/like")
-    fun createCommunityPostLike(@PathVariable postId: Long): CommonResponse<*> {
-        communityPostLikeUseCase.createCommunityPostLike(postId)
+    fun like(@PathVariable postId: Long): CommonResponse<*> {
+        communityPostLikeUseCase.like(postId)
         return CommonResponse.success()
     }
 
     @Authentication
     @DeleteMapping("/v1/community-posts/{postId}/like")
-    fun deleteCommunityPostLike(@PathVariable postId: Long): CommonResponse<*> {
-        communityPostLikeUseCase.deleteCommunityPostLike(postId)
+    fun notLike(@PathVariable postId: Long): CommonResponse<*> {
+        communityPostLikeUseCase.notLike(postId)
         return CommonResponse.success()
     }
 }

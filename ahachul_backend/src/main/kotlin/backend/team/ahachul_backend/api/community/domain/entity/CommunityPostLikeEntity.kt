@@ -2,6 +2,7 @@ package backend.team.ahachul_backend.api.community.domain.entity
 
 import backend.team.ahachul_backend.api.member.domain.entity.MemberEntity
 import backend.team.ahachul_backend.common.entity.BaseEntity
+import backend.team.ahachul_backend.common.model.YNType
 import jakarta.persistence.*
 
 @Entity
@@ -10,6 +11,9 @@ class CommunityPostLikeEntity(
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "community_post_like_id")
     val id: Long = 0,
+
+    @Enumerated(EnumType.STRING)
+    var isLike: YNType,
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "community_post_id")
@@ -23,11 +27,20 @@ class CommunityPostLikeEntity(
 
         companion object {
 
-            fun of(communityPost: CommunityPostEntity, member: MemberEntity): CommunityPostLikeEntity {
+            fun of(communityPost: CommunityPostEntity, member: MemberEntity, isLike: YNType): CommunityPostLikeEntity {
                 return CommunityPostLikeEntity(
                     communityPost = communityPost,
+                    isLike = isLike,
                     member = member,
                 )
             }
         }
+
+    fun like() {
+        isLike = YNType.Y
+    }
+
+    fun hate() {
+        isLike = YNType.N
+    }
 }

@@ -5,6 +5,8 @@ import org.springframework.data.jpa.repository.JpaRepository
 
 interface CommunityPostLikeRepository: JpaRepository<CommunityPostLikeEntity, Long> {
 
+    fun findByCommunityPostIdAndMemberId(postId: Long, memberId: Long): CommunityPostLikeEntity?
+
     fun deleteByCommunityPostIdAndMemberId(postId: Long, memberId: Long)
 
     fun existsByCommunityPostIdAndMemberId(postId: Long, memberId: Long): Boolean
