@@ -2,6 +2,7 @@ package backend.team.ahachul_backend.api.lost.application.service
 
 import backend.team.ahachul_backend.api.lost.adapter.web.`in`.dto.*
 import backend.team.ahachul_backend.api.lost.application.port.`in`.LostPostUseCase
+import backend.team.ahachul_backend.api.lost.application.port.out.LostPostFileReader
 import backend.team.ahachul_backend.api.lost.application.port.out.LostPostReader
 import backend.team.ahachul_backend.api.lost.application.port.out.LostPostWriter
 import backend.team.ahachul_backend.api.lost.application.service.command.CreateLostPostCommand
@@ -9,7 +10,9 @@ import backend.team.ahachul_backend.api.lost.application.service.command.GetSlic
 import backend.team.ahachul_backend.api.lost.application.service.command.SearchLostPostCommand
 import backend.team.ahachul_backend.api.lost.application.service.command.UpdateLostPostCommand
 import backend.team.ahachul_backend.api.lost.domain.entity.LostPostEntity
+import backend.team.ahachul_backend.api.lost.domain.entity.LostPostFileEntity
 import backend.team.ahachul_backend.api.member.application.port.out.MemberReader
+import backend.team.ahachul_backend.common.dto.ImageDto
 import backend.team.ahachul_backend.common.persistence.SubwayLineReader
 import backend.team.ahachul_backend.common.utils.RequestUtils
 import org.springframework.stereotype.Service
@@ -21,6 +24,7 @@ import java.time.format.DateTimeFormatter
 class LostPostService(
     private val lostPostWriter: LostPostWriter,
     private val lostPostReader: LostPostReader,
+    private val lostPostFileReader: LostPostFileReader,
     private val subwayLineReader: SubwayLineReader,
     private val memberReader: MemberReader,
     private val lostPostFileService: LostPostFileService
@@ -28,7 +32,8 @@ class LostPostService(
 
     override fun getLostPost(id: Long): GetLostPostDto.Response {
         val entity = lostPostReader.getLostPost(id)
-        return GetLostPostDto.Response.from(entity)
+        val files = lostPostFileReader.findAllByPostId(id)
+        return GetLostPostDto.Response.from(entity, convertToImageDto(files))
     }
 
     override fun searchLostPosts(command: SearchLostPostCommand): SearchLostPostsDto.Response {
@@ -36,6 +41,7 @@ class LostPostService(
         val sliceObject = lostPostReader.getLostPosts(GetSliceLostPostsCommand.from(command, subwayLine))
 
         val lostPosts = sliceObject.content.map {
+            val file = lostPostFileReader.findByPostId(it.id)?.file
             SearchLostPostsDto.SearchLost(
                 id = it.id,
                 title = it.title,
@@ -44,7 +50,8 @@ class LostPostService(
                 createdBy = it.createdBy,
                 date = it.date.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")),
                 subwayLine = it.subwayLine?.id,
-                status = it.status
+                status = it.status,
+                image = file?.let { f-> ImageDto(f.id, f.filePath) }
             )
         }
         return SearchLostPostsDto.Response(hasNext = sliceObject.hasNext(), posts = lostPosts)
@@ -102,5 +109,14 @@ class LostPostService(
         entity.checkMe(memberId)
         entity.delete()
         return DeleteLostPostDto.Response.from(entity)
+    }
+
+    private fun convertToImageDto(lostPostFiles: List<LostPostFileEntity>): List<ImageDto> {
+        return lostPostFiles.map {
+            ImageDto.of(
+                imageId = it.id,
+                imageUrl = it.file!!.filePath
+            )
+        }
     }
 }

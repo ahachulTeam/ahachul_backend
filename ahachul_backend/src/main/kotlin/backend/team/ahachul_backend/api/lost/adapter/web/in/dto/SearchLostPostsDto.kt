@@ -4,6 +4,7 @@ import backend.team.ahachul_backend.api.lost.application.service.command.SearchL
 import backend.team.ahachul_backend.api.lost.domain.model.LostOrigin
 import backend.team.ahachul_backend.api.lost.domain.model.LostStatus
 import backend.team.ahachul_backend.api.lost.domain.model.LostType
+import backend.team.ahachul_backend.common.dto.ImageDto
 import org.springframework.data.domain.Pageable
 
 class SearchLostPostsDto {
@@ -38,6 +39,6 @@ class SearchLostPostsDto {
         val subwayLine: Long?,
         val chats: Int = 0,
         val status: LostStatus,
-        val imgUrl: String = ""
+        val image: ImageDto?,
     )
 }
