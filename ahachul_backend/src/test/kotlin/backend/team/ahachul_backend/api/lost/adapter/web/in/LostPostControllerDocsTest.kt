@@ -153,7 +153,7 @@ class LostPostControllerDocsTest: CommonDocsTestConfig() {
         // given
         val response = CreateLostPostDto.Response(
             id = 1,
-            images = listOf(ImageDto.of(1L, "url1"), ImageDto.of(2L, "url2")))
+            images = listOf(ImageDto.of(1L, "url1")))
 
         given(lostPostUseCase.createLostPost(any()))
             .willReturn(response)
@@ -168,21 +168,21 @@ class LostPostControllerDocsTest: CommonDocsTestConfig() {
         val mapper = ObjectMapper()
         val requestFile = MockMultipartFile(
             "dto",
-            "dto",
+            "",
             MediaType.APPLICATION_JSON_VALUE,
             mapper.writeValueAsString(request).toByteArray())
 
         val imageFile = MockMultipartFile(
             "files",
-            "file.txt",
-            MediaType.TEXT_PLAIN_VALUE,
-            "File Content".toByteArray())
+            "image.png",
+            MediaType.IMAGE_PNG_VALUE,
+            "<< png data >>".toByteArray())
 
         // when
         val result = mockMvc.perform(
             multipart("/v1/lost-posts")
-                .file("dto", requestFile.bytes)
-                .file("files", imageFile.bytes)
+                .file(requestFile)
+                .file(imageFile)
                 .header("Authorization", "Bearer <Access Token>")
                 .contentType(MediaType.MULTIPART_FORM_DATA)
                 .accept(MediaType.APPLICATION_JSON)
@@ -196,16 +196,22 @@ class LostPostControllerDocsTest: CommonDocsTestConfig() {
                     requestHeaders(
                         headerWithName("Authorization").description("엑세스 토큰")
                     ),
-                    requestFields(
+                    requestParts(
+                        partWithName("files").description("업로드할 이미지"),
+                        partWithName("dto").description("request dto")
+                    ),
+                    requestPartFields(
+                        "dto",
                         fieldWithPath("title").type(JsonFieldType.STRING).description("유실물 제목"),
                         fieldWithPath("content").type(JsonFieldType.STRING).description("유실물 내용"),
                         fieldWithPath("subwayLine").type(JsonFieldType.NUMBER).description("유실 호선 ID"),
-                        fieldWithPath("images").type(JsonFieldType.ARRAY).description("유실물 이미지 리스트").optional(),
                         fieldWithPath("lostType").type(JsonFieldType.STRING).description("유실물 타입").attributes(getFormatAttribute("LOST(유실) / ACQUIRE(습득)"))
                     ),
                     responseFields(
                         *commonResponseFields(),
                         fieldWithPath("result.id").type(JsonFieldType.NUMBER).description("저장한 유실물 아이디"),
+                        fieldWithPath("result.images[].imageId").type(JsonFieldType.NUMBER).description("유실물 이미지 번호").optional(),
+                        fieldWithPath("result.images[].imageUrl").type(JsonFieldType.STRING).description("유실물 이미지 경로").optional(),
                     )
                 ))
     }
@@ -228,17 +234,31 @@ class LostPostControllerDocsTest: CommonDocsTestConfig() {
             id = 1,
             title = "title",
             content = "content",
-            imgUrls = arrayListOf("url1", "url2"),
             subwayLine = 1,
-            status = LostStatus.COMPLETE
+            status = LostStatus.COMPLETE,
+            removeFileIds = arrayListOf(1, 2, 3)
         )
+
+        val mapper = ObjectMapper()
+        val requestFile = MockMultipartFile(
+            "dto",
+            "dto",
+            MediaType.APPLICATION_JSON_VALUE,
+            mapper.writeValueAsString(request).toByteArray())
+
+        val imageFile = MockMultipartFile(
+            "files",
+            "file.txt",
+            MediaType.TEXT_PLAIN_VALUE,
+            "File Content".toByteArray())
 
         // when
         val result = mockMvc.perform(
-            patch("/v1/lost-posts/{lostId}", 1)
+            multipart("/v1/lost-posts/{lostId}", 1)
+                .file(requestFile)
+                .file(imageFile)
                 .header("Authorization", "Bearer <Access Token>")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(request))
+                .contentType(MediaType.MULTIPART_FORM_DATA)
                 .accept(MediaType.APPLICATION_JSON)
         )
 
@@ -253,14 +273,20 @@ class LostPostControllerDocsTest: CommonDocsTestConfig() {
                 pathParameters(
                     parameterWithName("lostId").description("유실물 아이디")
                 ),
-                requestFields(
+                requestParts(
+                    partWithName("files").description("업로드할 이미지"),
+                    partWithName("dto").description("요청 DTO")
+                ),
+                requestPartFields(
+                    "dto",
                     fieldWithPath("id").type(JsonFieldType.NUMBER).description("유실물 아이디").optional().attributes(getFormatAttribute("사용 X 필드")),
                     fieldWithPath("title").type(JsonFieldType.STRING).description("유실물 제목").optional(),
                     fieldWithPath("content").type(JsonFieldType.STRING).description("유실물 내용").optional(),
                     fieldWithPath("imgUrls").type(JsonFieldType.ARRAY).description("유실물 이미지 리스트").optional(),
                     fieldWithPath("subwayLine").type(JsonFieldType.NUMBER).description("유실 호선 ID").optional(),
                     fieldWithPath("status").type(JsonFieldType.STRING).description("유실물 찾기 완료 상태")
-                        .attributes(getFormatAttribute( "PROGRESS / COMPLETE")).optional()
+                        .attributes(getFormatAttribute( "PROGRESS / COMPLETE")).optional(),
+                    fieldWithPath("removeFileIds").type(JsonFieldType.ARRAY).description("삭제할 유실물 이미지 번호 리스트")
                 ),
                 responseFields(
                     *commonResponseFields(),

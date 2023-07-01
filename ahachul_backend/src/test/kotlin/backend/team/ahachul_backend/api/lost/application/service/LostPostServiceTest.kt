@@ -159,7 +159,7 @@ class LostPostServiceTest(
         assertThat(entity.content).isEqualTo("내용")
         assertThat(entity.lostType).isEqualTo(LostType.LOST)
         assertThat(entity.type).isEqualTo(LostPostType.CREATED)
-        assertThat(response.images.size).isEqualTo(2)
+        assertThat(response.images!!.size).isEqualTo(2)
     }
 
     @Test
@@ -174,7 +174,6 @@ class LostPostServiceTest(
             title = null,
             content = "수정한 내용",
             subwayLine = subwayLine!!.id,
-            imgUrls = null,
             status = LostStatus.COMPLETE
         )
 
@@ -200,7 +199,6 @@ class LostPostServiceTest(
             title = null,
             content = "수정한 내용",
             subwayLine = null,
-            imgUrls = null,
             status = LostStatus.COMPLETE
         )
 

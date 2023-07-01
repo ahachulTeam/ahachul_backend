@@ -64,7 +64,9 @@ class LostPostService(
             )
         )
 
-        val images = lostPostFileService.createLostPostFiles(entity, command.imageFiles)
+        val images = command.imageFiles?.let {
+            lostPostFileService.createLostPostFiles(entity, command.imageFiles!!)
+        }
         return CreateLostPostDto.Response.from(entity.id, images)
     }
 
@@ -77,9 +79,20 @@ class LostPostService(
         val subwayLine = command.subwayLine?.let {
             subwayLineReader.getSubwayLine(it)
         }
+        entity.update(command, subwayLine)
 
-        entity.update(command = command, subwayLine = subwayLine)
+        updateFiles(command, entity)
         return UpdateLostPostDto.Response.from(entity)
+    }
+
+    private fun updateFiles(command: UpdateLostPostCommand, post: LostPostEntity) {
+        command.imageFiles?.let {
+            lostPostFileService.createLostPostFiles(post, it)
+        }
+
+        command.removeFileIds?.let {
+            lostPostFileService.deleteLostPostFiles(it)
+        }
     }
 
     @Transactional

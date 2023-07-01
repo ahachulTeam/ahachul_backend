@@ -1,6 +1,7 @@
 package backend.team.ahachul_backend.api.lost.application.service.command
 
 import backend.team.ahachul_backend.api.lost.domain.model.LostStatus
+import org.springframework.web.multipart.MultipartFile
 
 class UpdateLostPostCommand (
     val id: Long,
@@ -8,6 +9,7 @@ class UpdateLostPostCommand (
     val content: String?,
     val subwayLine: Long?,
     val status: LostStatus?,
-    val imgUrls: List<String>?,
+    val imageFiles: List<MultipartFile>? = arrayListOf(),
+    val removeFileIds: List<Long>? = arrayListOf()
 ) {
 }

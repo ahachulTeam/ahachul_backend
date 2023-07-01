@@ -18,7 +18,20 @@ class LostPostFileEntity (
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "file_id")
-    var file: FileEntity
+    var file: FileEntity? = null
 
 ): BaseEntity() {
+
+    companion object {
+        fun from(lostPost: LostPostEntity, file: FileEntity): LostPostFileEntity {
+            val entity = LostPostFileEntity(lostPost = lostPost)
+            entity.addFile(file)
+            return entity
+        }
+    }
+
+    fun addFile(file: FileEntity) {
+        this.file = file
+        file.lostPostFiles.add(this)
+    }
 }

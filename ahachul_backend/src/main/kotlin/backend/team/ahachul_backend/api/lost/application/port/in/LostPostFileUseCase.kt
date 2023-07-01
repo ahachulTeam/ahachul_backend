@@ -7,4 +7,6 @@ import org.springframework.web.multipart.MultipartFile
 interface LostPostFileUseCase {
 
     fun createLostPostFiles(post: LostPostEntity, files: List<MultipartFile>): List<ImageDto>
+
+    fun deleteLostPostFiles(fileIds: List<Long>)
 }

@@ -7,6 +7,7 @@ import backend.team.ahachul_backend.api.lost.domain.entity.LostPostFileEntity
 import backend.team.ahachul_backend.common.client.AwsS3Client
 import backend.team.ahachul_backend.common.domain.entity.FileEntity
 import backend.team.ahachul_backend.common.dto.ImageDto
+import backend.team.ahachul_backend.common.persistence.FileReader
 import backend.team.ahachul_backend.common.persistence.FileWriter
 import backend.team.ahachul_backend.common.utils.AwsS3Utils
 import org.springframework.stereotype.Service
@@ -16,6 +17,7 @@ import org.springframework.web.multipart.MultipartFile
 class LostPostFileService(
     private val lostPostFileWriter: LostPostFileWriter,
     private val fileWriter: FileWriter,
+    private val fileReader: FileReader,
     private val s3Client: AwsS3Client,
     private val s3Utils: AwsS3Utils,
 ): LostPostFileUseCase {
@@ -30,13 +32,17 @@ class LostPostFileService(
                     filePath = s3FileUrl
                 )
             )
-            lostPostFileWriter.save(
-                LostPostFileEntity(
-                    file = file,
-                    lostPost = post
-                )
-            )
+
+            lostPostFileWriter.save(LostPostFileEntity.from(post, file))
             ImageDto.of(file.id, s3FileUrl)
+        }
+    }
+
+    override fun deleteLostPostFiles(fileIds: List<Long>) {
+        val files = fileReader.findAllIdIn(fileIds)
+        files.forEach {
+            fileWriter.delete(it.id)
+            s3Client.delete(it.fileName)
         }
     }
 }

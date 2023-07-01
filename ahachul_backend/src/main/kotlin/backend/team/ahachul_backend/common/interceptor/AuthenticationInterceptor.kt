@@ -69,6 +69,7 @@ class AuthenticationInterceptor(
         return jwtToken.substring(AUTH_PREFIX.length)
     }
 
+    @Deprecated("Admin function is not supported")
     private fun isBlockedMember(memberId: String): Boolean {
         return !redisClient.get("blocked-member:${memberId}").isNullOrEmpty()
     }

@@ -6,7 +6,8 @@ import backend.team.ahachul_backend.common.dto.ImageDto
 import org.jetbrains.annotations.NotNull
 import org.springframework.web.multipart.MultipartFile
 
-class CreateLostPostDto{
+class
+CreateLostPostDto{
 
     data class Request(
         @NotNull val title: String,
@@ -14,7 +15,7 @@ class CreateLostPostDto{
         @NotNull val subwayLine: Long,
         @NotNull val lostType: LostType
     ) {
-        fun toCommand(imageFiles: List<MultipartFile>): CreateLostPostCommand {
+        fun toCommand(imageFiles: List<MultipartFile>?): CreateLostPostCommand {
             return CreateLostPostCommand(
                 title = title,
                 content = content,
@@ -27,10 +28,10 @@ class CreateLostPostDto{
 
     data class Response(
         val id: Long,
-        val images: List<ImageDto>
+        val images: List<ImageDto>?
     ) {
         companion object {
-            fun from(id: Long, images: List<ImageDto>): Response {
+            fun from(id: Long, images: List<ImageDto>?): Response {
                 return Response(
                     id = id,
                     images = images)

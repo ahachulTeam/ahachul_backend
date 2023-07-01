@@ -31,16 +31,19 @@ class LostPostController(
     @PostMapping("/v1/lost-posts")
     fun createLostPost(
         @RequestPart(value = "dto") request: CreateLostPostDto.Request,
-        @RequestPart(value = "files", required = false) files: List<MultipartFile>
+        @RequestPart(value = "files", required = false) files: List<MultipartFile>?
     ): CommonResponse<CreateLostPostDto.Response> {
         return CommonResponse.success(lostPostService.createLostPost(request.toCommand(files)))
     }
 
     @Authentication
-    @PatchMapping("/v1/lost-posts/{lostId}")
-    fun updateLostPost(@PathVariable("lostId") lostId: Long,
-                       @RequestBody request: UpdateLostPostDto.Request): CommonResponse<UpdateLostPostDto.Response> {
-        return CommonResponse.success(lostPostService.updateLostPost(request.toCommand(lostId)))
+    @PostMapping("/v1/lost-posts/{lostId}")
+    fun updateLostPost(
+        @PathVariable("lostId") lostId: Long,
+        @RequestPart(value = "dto") request: UpdateLostPostDto.Request,
+        @RequestPart(value = "files", required = false) files: List<MultipartFile>?
+    ): CommonResponse<UpdateLostPostDto.Response> {
+        return CommonResponse.success(lostPostService.updateLostPost(request.toCommand(lostId, files)))
     }
 
     @Authentication

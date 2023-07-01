@@ -3,6 +3,7 @@ package backend.team.ahachul_backend.api.lost.adapter.web.`in`.dto
 import backend.team.ahachul_backend.api.lost.application.service.command.UpdateLostPostCommand
 import backend.team.ahachul_backend.api.lost.domain.entity.LostPostEntity
 import backend.team.ahachul_backend.api.lost.domain.model.LostStatus
+import org.springframework.web.multipart.MultipartFile
 
 class UpdateLostPostDto {
 
@@ -10,18 +11,19 @@ class UpdateLostPostDto {
         val id: Long,
         val title: String?,
         val content: String?,
-        val imgUrls: List<String>?,
         val subwayLine: Long?,
-        val status: LostStatus?
+        val status: LostStatus?,
+        val removeFileIds: List<Long>? = arrayListOf()
     ) {
-        fun toCommand(id: Long): UpdateLostPostCommand {
+        fun toCommand(id: Long, imageFiles: List<MultipartFile>?): UpdateLostPostCommand {
             return UpdateLostPostCommand(
                 id = id,
                 title = title,
                 content = content,
-                imgUrls = imgUrls,
                 subwayLine = subwayLine,
-                status = status
+                status = status,
+                imageFiles = imageFiles,
+                removeFileIds = removeFileIds
             )
         }
     }
