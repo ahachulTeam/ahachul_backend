@@ -15,7 +15,7 @@ class FileEntity(
 
     var filePath: String,
 
-    @OneToMany(mappedBy = "file", cascade = [CascadeType.ALL])
+    @OneToMany(mappedBy = "file", orphanRemoval = true, cascade = [CascadeType.ALL])
     var lostPostFiles: MutableList<LostPostFileEntity> = mutableListOf()
 
 ): BaseEntity() {

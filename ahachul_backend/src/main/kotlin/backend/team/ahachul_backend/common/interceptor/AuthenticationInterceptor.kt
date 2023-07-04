@@ -36,10 +36,6 @@ class AuthenticationInterceptor(
             val verifiedJwtToken = jwtUtils.verify(jwtTokenExcludePrefix)
             val authenticatedMemberId = verifiedJwtToken.body.subject
 
-            if (isBlockedMember(authenticatedMemberId)) {
-                throw CommonException(ResponseCode.BLOCKED_MEMBER)
-            }
-
             RequestUtils.setAttribute("memberId", authenticatedMemberId)
         } catch (e: Exception) {
             when (e) {
