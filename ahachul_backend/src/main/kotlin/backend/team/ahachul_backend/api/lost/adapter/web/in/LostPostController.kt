@@ -30,20 +30,20 @@ class LostPostController(
     @Authentication
     @PostMapping("/v1/lost-posts")
     fun createLostPost(
-        @RequestPart(value = "dto") request: CreateLostPostDto.Request,
-        @RequestPart(value = "files", required = false) files: List<MultipartFile>?
+        @RequestPart(value = "content") request: CreateLostPostDto.Request,
+        @RequestPart(value = "files", required = false) imageFiles: List<MultipartFile>?
     ): CommonResponse<CreateLostPostDto.Response> {
-        return CommonResponse.success(lostPostService.createLostPost(request.toCommand(files)))
+        return CommonResponse.success(lostPostService.createLostPost(request.toCommand(imageFiles)))
     }
 
     @Authentication
     @PostMapping("/v1/lost-posts/{lostId}")
     fun updateLostPost(
         @PathVariable("lostId") lostId: Long,
-        @RequestPart(value = "dto") request: UpdateLostPostDto.Request,
-        @RequestPart(value = "files", required = false) files: List<MultipartFile>?
+        @RequestPart(value = "content") request: UpdateLostPostDto.Request,
+        @RequestPart(value = "files", required = false) imageFiles: List<MultipartFile>?
     ): CommonResponse<UpdateLostPostDto.Response> {
-        return CommonResponse.success(lostPostService.updateLostPost(request.toCommand(lostId, files)))
+        return CommonResponse.success(lostPostService.updateLostPost(request.toCommand(lostId, imageFiles)))
     }
 
     @Authentication

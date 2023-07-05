@@ -171,7 +171,7 @@ class LostPostControllerDocsTest: CommonDocsTestConfig() {
 
         val mapper = ObjectMapper()
         val requestFile = MockMultipartFile(
-            "dto",
+            "content",
             "",
             MediaType.APPLICATION_JSON_VALUE,
             mapper.writeValueAsString(request).toByteArray())
@@ -202,10 +202,10 @@ class LostPostControllerDocsTest: CommonDocsTestConfig() {
                     ),
                     requestParts(
                         partWithName("files").description("업로드할 이미지"),
-                        partWithName("dto").description("request dto")
+                        partWithName("content").description("request dto")
                     ),
                     requestPartFields(
-                        "dto",
+                        "content",
                         fieldWithPath("title").type(JsonFieldType.STRING).description("유실물 제목"),
                         fieldWithPath("content").type(JsonFieldType.STRING).description("유실물 내용"),
                         fieldWithPath("subwayLine").type(JsonFieldType.NUMBER).description("유실 호선 ID"),
@@ -245,7 +245,7 @@ class LostPostControllerDocsTest: CommonDocsTestConfig() {
 
         val mapper = ObjectMapper()
         val requestFile = MockMultipartFile(
-            "dto",
+            "content",
             "dto",
             MediaType.APPLICATION_JSON_VALUE,
             mapper.writeValueAsString(request).toByteArray())
@@ -279,10 +279,10 @@ class LostPostControllerDocsTest: CommonDocsTestConfig() {
                 ),
                 requestParts(
                     partWithName("files").description("업로드할 이미지"),
-                    partWithName("dto").description("요청 DTO")
+                    partWithName("content").description("요청 DTO")
                 ),
                 requestPartFields(
-                    "dto",
+                    "content",
                     fieldWithPath("id").type(JsonFieldType.NUMBER).description("유실물 아이디").optional().attributes(getFormatAttribute("사용 X 필드")),
                     fieldWithPath("title").type(JsonFieldType.STRING).description("유실물 제목").optional(),
                     fieldWithPath("content").type(JsonFieldType.STRING).description("유실물 내용").optional(),
