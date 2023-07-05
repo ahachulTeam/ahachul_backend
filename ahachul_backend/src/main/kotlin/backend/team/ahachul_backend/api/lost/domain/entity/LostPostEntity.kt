@@ -31,7 +31,7 @@ class LostPostEntity(
     @JoinColumn(name = "subway_line_id")
     var subwayLine: SubwayLineEntity?,
 
-    @OneToMany(mappedBy = "lostPost", orphanRemoval = true, cascade = [CascadeType.REMOVE])
+    @OneToMany(mappedBy = "lostPost")
     var lostPostReports: MutableList<ReportEntity> = mutableListOf(),
 
     var title: String,
