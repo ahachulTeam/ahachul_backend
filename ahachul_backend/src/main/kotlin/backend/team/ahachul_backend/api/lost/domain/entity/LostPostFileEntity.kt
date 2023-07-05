@@ -24,14 +24,10 @@ class LostPostFileEntity (
 
     companion object {
         fun from(lostPost: LostPostEntity, file: FileEntity): LostPostFileEntity {
-            val entity = LostPostFileEntity(lostPost = lostPost)
-            entity.addFile(file)
-            return entity
+            return LostPostFileEntity(
+                lostPost = lostPost,
+                file = file
+            )
         }
-    }
-
-    fun addFile(file: FileEntity) {
-        this.file = file
-        file.lostPostFiles.add(this)
     }
 }

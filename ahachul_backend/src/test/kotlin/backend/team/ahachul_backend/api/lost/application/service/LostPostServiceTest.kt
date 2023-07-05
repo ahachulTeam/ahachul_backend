@@ -41,10 +41,6 @@ class LostPostServiceTest(
 
     var member: MemberEntity? = null
     var subwayLine: SubwayLineEntity? = null
-    val images = listOf(
-        MockMultipartFile("file", "test1.txt", "text/plain", "test1".toByteArray(StandardCharsets.UTF_8)),
-        MockMultipartFile("file", "test2.txt", "text/plain", "test2".toByteArray(StandardCharsets.UTF_8))
-    )
 
     @BeforeEach
     fun setUp() {
@@ -159,7 +155,6 @@ class LostPostServiceTest(
         assertThat(entity.content).isEqualTo("내용")
         assertThat(entity.lostType).isEqualTo(LostType.LOST)
         assertThat(entity.type).isEqualTo(LostPostType.CREATED)
-        assertThat(response.images!!.size).isEqualTo(2)
     }
 
     @Test

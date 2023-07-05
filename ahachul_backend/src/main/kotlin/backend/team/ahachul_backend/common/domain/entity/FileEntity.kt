@@ -28,4 +28,9 @@ class FileEntity(
             )
         }
     }
+
+    fun addLostPostFile(lostPostFile: LostPostFileEntity) {
+        lostPostFiles.add(lostPostFile)
+        lostPostFile.file = this
+    }
 }
