@@ -12,6 +12,7 @@ import backend.team.ahachul_backend.api.member.domain.model.MemberStatusType
 import backend.team.ahachul_backend.api.member.domain.model.ProviderType
 import backend.team.ahachul_backend.api.report.application.port.`in`.ReportUseCase
 import backend.team.ahachul_backend.common.domain.entity.SubwayLineEntity
+import backend.team.ahachul_backend.common.dto.ImageDto
 import backend.team.ahachul_backend.common.exception.DomainException
 import backend.team.ahachul_backend.common.model.RegionType
 import backend.team.ahachul_backend.common.persistence.SubwayLineRepository
@@ -145,12 +146,11 @@ class LostPostReportServiceTest(
 
     private fun createLostPost(): LostPostEntity {
         return LostPostEntity.of(
-            command =  CreateLostPostCommand(
+            command = CreateLostPostCommand(
                 title = "지갑",
                 content = "내용",
                 subwayLine = subwayLine!!.id,
-                lostType = LostType.LOST,
-                imgUrls = listOf("11", "22")
+                lostType = LostType.LOST
             ),
             member = otherMember!!,
             subwayLine = subwayLine!!

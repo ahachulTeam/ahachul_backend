@@ -36,10 +36,6 @@ class AuthenticationInterceptor(
             val verifiedJwtToken = jwtUtils.verify(jwtTokenExcludePrefix)
             val authenticatedMemberId = verifiedJwtToken.body.subject
 
-            if (isBlockedMember(authenticatedMemberId)) {
-                throw CommonException(ResponseCode.BLOCKED_MEMBER)
-            }
-
             RequestUtils.setAttribute("memberId", authenticatedMemberId)
         } catch (e: Exception) {
             when (e) {
@@ -69,6 +65,7 @@ class AuthenticationInterceptor(
         return jwtToken.substring(AUTH_PREFIX.length)
     }
 
+    @Deprecated("Admin function is not supported")
     private fun isBlockedMember(memberId: String): Boolean {
         return !redisClient.get("blocked-member:${memberId}").isNullOrEmpty()
     }

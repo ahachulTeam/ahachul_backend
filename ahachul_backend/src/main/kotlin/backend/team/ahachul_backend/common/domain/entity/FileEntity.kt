@@ -1,5 +1,6 @@
 package backend.team.ahachul_backend.common.domain.entity
 
+import backend.team.ahachul_backend.api.lost.domain.entity.LostPostFileEntity
 import backend.team.ahachul_backend.common.entity.BaseEntity
 import jakarta.persistence.*
 
@@ -12,7 +13,11 @@ class FileEntity(
 
     var fileName: String,
 
-    var filePath: String
+    var filePath: String,
+
+    @OneToMany(mappedBy = "file", orphanRemoval = true, cascade = [CascadeType.ALL])
+    var lostPostFiles: MutableList<LostPostFileEntity> = mutableListOf()
+
 ): BaseEntity() {
 
     companion object {
@@ -22,5 +27,10 @@ class FileEntity(
                 filePath = filePath
             )
         }
+    }
+
+    fun addLostPostFile(lostPostFile: LostPostFileEntity) {
+        lostPostFiles.add(lostPostFile)
+        lostPostFile.file = this
     }
 }

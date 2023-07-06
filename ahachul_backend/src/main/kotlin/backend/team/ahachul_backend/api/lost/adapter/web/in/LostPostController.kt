@@ -6,6 +6,7 @@ import backend.team.ahachul_backend.common.annotation.Authentication
 import backend.team.ahachul_backend.common.response.CommonResponse
 import org.springframework.data.domain.Pageable
 import org.springframework.web.bind.annotation.*
+import org.springframework.web.multipart.MultipartFile
 
 
 @RestController
@@ -28,15 +29,21 @@ class LostPostController(
 
     @Authentication
     @PostMapping("/v1/lost-posts")
-    fun createLostPost(@RequestBody request: CreateLostPostDto.Request): CommonResponse<CreateLostPostDto.Response> {
-        return CommonResponse.success(lostPostService.createLostPost(request.toCommand()))
+    fun createLostPost(
+        @RequestPart(value = "content") request: CreateLostPostDto.Request,
+        @RequestPart(value = "files", required = false) imageFiles: List<MultipartFile>?
+    ): CommonResponse<CreateLostPostDto.Response> {
+        return CommonResponse.success(lostPostService.createLostPost(request.toCommand(imageFiles)))
     }
 
     @Authentication
-    @PatchMapping("/v1/lost-posts/{lostId}")
-    fun updateLostPost(@PathVariable("lostId") lostId: Long,
-                       @RequestBody request: UpdateLostPostDto.Request): CommonResponse<UpdateLostPostDto.Response> {
-        return CommonResponse.success(lostPostService.updateLostPost(request.toCommand(lostId)))
+    @PostMapping("/v1/lost-posts/{lostId}")
+    fun updateLostPost(
+        @PathVariable("lostId") lostId: Long,
+        @RequestPart(value = "content") request: UpdateLostPostDto.Request,
+        @RequestPart(value = "files", required = false) imageFiles: List<MultipartFile>?
+    ): CommonResponse<UpdateLostPostDto.Response> {
+        return CommonResponse.success(lostPostService.updateLostPost(request.toCommand(lostId, imageFiles)))
     }
 
     @Authentication

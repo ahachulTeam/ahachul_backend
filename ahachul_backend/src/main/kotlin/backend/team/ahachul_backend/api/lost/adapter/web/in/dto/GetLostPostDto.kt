@@ -2,6 +2,7 @@ package backend.team.ahachul_backend.api.lost.adapter.web.`in`.dto
 
 import backend.team.ahachul_backend.api.lost.domain.entity.LostPostEntity
 import backend.team.ahachul_backend.api.lost.domain.model.LostStatus
+import backend.team.ahachul_backend.common.dto.ImageDto
 import java.time.format.DateTimeFormatter
 
 class GetLostPostDto {
@@ -16,13 +17,13 @@ class GetLostPostDto {
         val subwayLine: Long?,
         val chats: Int = 0,
         val status: LostStatus,
-        val imgUrls: List<String>? = listOf(),
         val storage: String?,
         val storageNumber: String?,
-        val pageUrl: String?
+        val pageUrl: String?,
+        val images: List<ImageDto>?
     ) {
         companion object {
-            fun from(entity: LostPostEntity): Response {
+            fun from(entity: LostPostEntity, images: List<ImageDto>): Response {
                 return Response(
                     id = entity.id,
                     title = entity.title,
@@ -34,7 +35,8 @@ class GetLostPostDto {
                     status = entity.status,
                     storage = entity.storage,
                     storageNumber = entity.storageNumber,
-                    pageUrl = entity.pageUrl
+                    pageUrl = entity.pageUrl,
+                    images = images
                 )
             }
         }
