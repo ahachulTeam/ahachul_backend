@@ -71,7 +71,7 @@ class CommunityPostLikeService (
             CommunityPostLikeEntity.of(
                 communityPost = communityPostReader.getCommunityPost(postId),
                 member = memberReader.getMember(memberId),
-                YNType.Y
+                YNType.N
             )
         )
     }
