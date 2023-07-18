@@ -27,6 +27,7 @@ class CommunityPostController(
         return CommonResponse.success(communityPostUseCase.searchCommunityPosts(request.toCommand(pageable)))
     }
 
+    @Authentication(required = false)
     @GetMapping("/v1/community-posts/{postId}")
     fun getCommunityPost(@PathVariable postId: Long): CommonResponse<GetCommunityPostDto.Response> {
         return CommonResponse.success(communityPostUseCase.getCommunityPost(GetCommunityPostCommand(postId)))
