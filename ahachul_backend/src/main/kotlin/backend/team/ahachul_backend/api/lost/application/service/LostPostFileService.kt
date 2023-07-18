@@ -22,7 +22,7 @@ class LostPostFileService(
 
     override fun saveLostPostFileUrl(post: LostPostEntity, fileUrl: String) {
         val file = FileEntity.of(
-            fileName = fileUrl,
+            fileName = LOST112_FILE_NAME,
             filePath = fileUrl
         )
         saveFile(post, file)
@@ -54,5 +54,9 @@ class LostPostFileService(
         val lostPostFile = LostPostFileEntity.from(post, file)
         file.addLostPostFile(lostPostFile)
         fileWriter.save(file)
+    }
+
+    companion object {
+        private const val LOST112_FILE_NAME = "lost112"
     }
 }
