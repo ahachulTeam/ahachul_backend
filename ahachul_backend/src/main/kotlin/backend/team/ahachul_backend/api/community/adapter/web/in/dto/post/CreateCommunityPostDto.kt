@@ -13,7 +13,7 @@ class CreateCommunityPostDto {
         val content: String,
         val categoryType: CommunityCategoryType,
         val hashTags: List<String> = listOf(),
-        val subwayLineId: String,
+        val subwayLineId: Long,
         val imageFiles: List<MultipartFile> = listOf()
     ) {
         fun toCommand(): CreateCommunityPostCommand {
@@ -21,8 +21,8 @@ class CreateCommunityPostDto {
                 title = title,
                 content = content,
                 categoryType = categoryType,
-                hashTags = arrayListOf(),
-                subwayLineId = 1,
+                hashTags = hashTags,
+                subwayLineId = subwayLineId,
                 imageFiles = imageFiles
             )
         }
