@@ -29,9 +29,9 @@ class MemberService(
         command.gender?.let { member.changeGender(it) }
         command.ageRange?.let { member.changeAgeRange(it) }
         return UpdateMemberDto.Response.of(
-                nickname = member.nickname!!,
-                gender = member.gender!!,
-                ageRange = member.ageRange!!
+                nickname = member.nickname,
+                gender = member.gender,
+                ageRange = member.ageRange
         )
     }
 
