@@ -60,7 +60,7 @@ class CustomCommunityPostRepository(
                             .from(communityPostLikeEntity)
                             .where(
                                 communityPostLikeEntity.communityPost.id.eq(postId)
-                                    .and(communityPostLikeEntity.likeYn.eq(YNType.N))
+                                    .and(communityPostLikeEntity.likeYn.eq(YNType.Y))
                                     .and(communityPostLikeEntity.member.id.eq(memberId.toLong()))
                             )
                             .exists(),
