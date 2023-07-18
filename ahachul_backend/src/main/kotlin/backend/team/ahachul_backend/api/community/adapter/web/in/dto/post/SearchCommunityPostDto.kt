@@ -28,12 +28,14 @@ class SearchCommunityPostDto {
 
     data class Response(
         val hasNext: Boolean,
+        val nextPageNum: Int?,
         val posts: List<CommunityPost>,
     ) {
         companion object {
-            fun of(hasNext: Boolean, posts: List<CommunityPost>): Response {
+            fun of(hasNext: Boolean, posts: List<CommunityPost>, currentPageNum: Int): Response {
                 return Response(
                     hasNext = hasNext,
+                    nextPageNum = if (hasNext) currentPageNum + 1 else null,
                     posts = posts
                 )
             }

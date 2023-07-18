@@ -45,7 +45,8 @@ class CommunityPostService(
 
         return SearchCommunityPostDto.Response.of(
             hasNext = searchCommunityPosts.hasNext(),
-            posts = posts
+            posts = posts,
+            command.pageable.pageNumber,
         )
     }
 
