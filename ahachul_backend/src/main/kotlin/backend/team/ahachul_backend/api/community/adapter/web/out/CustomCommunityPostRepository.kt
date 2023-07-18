@@ -1,8 +1,9 @@
 package backend.team.ahachul_backend.api.community.adapter.web.out
 
 import backend.team.ahachul_backend.api.community.adapter.web.`in`.dto.post.SearchCommunityPostCommand
-import backend.team.ahachul_backend.api.community.domain.CommunityPost
-import backend.team.ahachul_backend.api.community.domain.entity.CommunityPostEntity
+import backend.team.ahachul_backend.api.community.domain.GetCommunityPost
+import backend.team.ahachul_backend.api.community.domain.SearchCommunityPost
+import backend.team.ahachul_backend.api.community.domain.entity.QCommunityCommentEntity.communityCommentEntity
 import backend.team.ahachul_backend.api.community.domain.entity.QCommunityPostEntity.communityPostEntity
 import backend.team.ahachul_backend.api.community.domain.entity.QCommunityPostHashTagEntity.communityPostHashTagEntity
 import backend.team.ahachul_backend.api.community.domain.entity.QCommunityPostLikeEntity.communityPostLikeEntity
@@ -16,6 +17,7 @@ import com.querydsl.core.types.ExpressionUtils.count
 import com.querydsl.core.types.OrderSpecifier
 import com.querydsl.core.types.Projections
 import com.querydsl.core.types.dsl.Expressions
+import com.querydsl.core.types.dsl.NumberPath
 import com.querydsl.jpa.JPAExpressions
 import com.querydsl.jpa.impl.JPAQueryFactory
 import org.springframework.data.domain.Pageable
@@ -28,10 +30,10 @@ class CustomCommunityPostRepository(
     private val queryFactory: JPAQueryFactory
 ) {
 
-    fun getByCustom(postId: Long, memberId: String?): CommunityPost? {
+    fun getByCustom(postId: Long, memberId: String?): GetCommunityPost? {
         return queryFactory.select(
             Projections.constructor(
-                CommunityPost::class.java,
+                GetCommunityPost::class.java,
                 communityPostEntity.id,
                 communityPostEntity.title,
                 communityPostEntity.content,
@@ -98,11 +100,40 @@ class CustomCommunityPostRepository(
             .fetchOne()
     }
 
-    fun searchCommunityPosts(command: SearchCommunityPostCommand): Slice<CommunityPostEntity> {
+    fun searchCommunityPosts(command: SearchCommunityPostCommand): Slice<SearchCommunityPost> {
         val pageable = command.pageable
-        var result = queryFactory.selectFrom(communityPostEntity)
-            .join(communityPostEntity.member, memberEntity).fetchJoin()
-            .join(communityPostEntity.subwayLineEntity, subwayLineEntity).fetchJoin()
+
+        var result = queryFactory.select(
+            Projections.constructor(
+                SearchCommunityPost::class.java,
+                communityPostEntity.id,
+                communityPostEntity.title,
+                communityPostEntity.content,
+                communityPostEntity.categoryType,
+                communityPostEntity.regionType,
+                communityPostEntity.subwayLineEntity.id,
+                ExpressionUtils.`as`(
+                    JPAExpressions.select(count(communityPostLikeEntity.id))
+                        .from(communityPostLikeEntity)
+                        .where(
+                            communityPostLikeEntity.communityPost.id.eq(communityPostEntity.id)
+                                .and(communityPostLikeEntity.likeYn.eq(YNType.Y))
+                        ),
+                    "likeCnt"
+                ),
+                JPAExpressions.select(communityCommentEntity.id.count())
+                    .from(communityCommentEntity)
+                    .where(
+                        communityCommentEntity.communityPost.id.eq(communityPostEntity.id)
+                    ),
+                communityPostEntity.createdAt,
+                communityPostEntity.createdBy,
+                communityPostEntity.member.nickname,
+            )
+        )
+            .from(communityPostEntity)
+            .join(communityPostEntity.member, memberEntity)
+            .join(communityPostEntity.subwayLineEntity, subwayLineEntity)
             .where(
                 categoryTypeEq(command.categoryType),
                 subwayLineIdEq(command.subwayLineId),
@@ -126,7 +157,7 @@ class CustomCommunityPostRepository(
         val property = pageable.sort.toList()[0].property
         val direction = pageable.sort.toList()[0].direction
         val path = when (property) {
-//            "likes" -> TODO
+            "likes" -> Expressions.numberPath(Long::class.java, "likeCnt")
             "createdAt" -> communityPostEntity.createdAt
             "views" -> communityPostEntity.views
             else -> communityPostEntity.createdAt
@@ -141,7 +172,7 @@ class CustomCommunityPostRepository(
         }
     }
 
-    private fun hasNext(result: MutableList<CommunityPostEntity>, pageable: Pageable): Boolean {
+    private fun hasNext(result: MutableList<SearchCommunityPost>, pageable: Pageable): Boolean {
         return result.size > pageable.pageSize
     }
 

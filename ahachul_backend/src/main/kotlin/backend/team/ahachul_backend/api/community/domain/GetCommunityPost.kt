@@ -4,7 +4,7 @@ import backend.team.ahachul_backend.api.community.domain.model.CommunityCategory
 import backend.team.ahachul_backend.common.model.RegionType
 import java.time.LocalDateTime
 
-data class CommunityPost(
+data class GetCommunityPost(
     val id: Long,
     val title: String,
     val content: String,
