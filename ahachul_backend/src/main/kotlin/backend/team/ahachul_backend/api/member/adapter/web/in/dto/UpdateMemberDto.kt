@@ -19,12 +19,12 @@ class UpdateMemberDto {
     }
 
     data class Response(
-            val nickname: String,
-            val gender: GenderType,
-            val ageRange: String,
+            val nickname: String?,
+            val gender: GenderType?,
+            val ageRange: String?,
     ) {
         companion object {
-            fun of(nickname: String, gender: GenderType, ageRange: String): Response {
+            fun of(nickname: String?, gender: GenderType?, ageRange: String?): Response {
                 return Response(
                         nickname = nickname,
                         gender = gender,

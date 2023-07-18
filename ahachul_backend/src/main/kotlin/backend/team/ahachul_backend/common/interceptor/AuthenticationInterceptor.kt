@@ -29,7 +29,9 @@ class AuthenticationInterceptor(
 
     override fun preHandle(request: HttpServletRequest, response: HttpServletResponse, handler: Any): Boolean {
         if (handler !is HandlerMethod) return true
-        handler.getMethodAnnotation(Authentication::class.java) ?: return true
+
+        val authentication = handler.getMethodAnnotation(Authentication::class.java)
+        authentication ?: return true
 
         try {
             val jwtTokenExcludePrefix = parseJwtToken(request)
@@ -38,6 +40,9 @@ class AuthenticationInterceptor(
 
             RequestUtils.setAttribute("memberId", authenticatedMemberId)
         } catch (e: Exception) {
+            if (!authentication.required) {
+                return true
+            }
             when (e) {
                 is SignatureException, is UnsupportedJwtException, is IllegalArgumentException, is MalformedJwtException -> {
                     throw CommonException(ResponseCode.INVALID_ACCESS_TOKEN)
