@@ -1,6 +1,6 @@
 package backend.team.ahachul_backend.api.community.adapter.web.`in`.dto.post
 
-import backend.team.ahachul_backend.api.community.domain.entity.CommunityPostEntity
+import backend.team.ahachul_backend.api.community.domain.SearchCommunityPost
 import backend.team.ahachul_backend.api.community.domain.model.CommunityCategoryType
 import backend.team.ahachul_backend.common.dto.ImageDto
 import backend.team.ahachul_backend.common.model.RegionType
@@ -28,12 +28,14 @@ class SearchCommunityPostDto {
 
     data class Response(
         val hasNext: Boolean,
+        val nextPageNum: Int?,
         val posts: List<CommunityPost>,
     ) {
         companion object {
-            fun of(hasNext: Boolean, posts: List<CommunityPost>): Response {
+            fun of(hasNext: Boolean, posts: List<CommunityPost>, currentPageNum: Int): Response {
                 return Response(
                     hasNext = hasNext,
+                    nextPageNum = if (hasNext) currentPageNum + 1 else null,
                     posts = posts
                 )
             }
@@ -46,9 +48,9 @@ class SearchCommunityPostDto {
         val content: String,
         val categoryType: CommunityCategoryType,
         val hashTags: List<String>,
-        val commentCnt: Int,
+        val commentCnt: Long,
         val viewCnt: Int,
-        val likeCnt: Int,
+        val likeCnt: Long,
         val regionType: RegionType,
         val subwayLineId: Long,
         val createdAt: LocalDateTime,
@@ -57,21 +59,21 @@ class SearchCommunityPostDto {
         val image: ImageDto?,
     ) {
         companion object {
-            fun of(entity: CommunityPostEntity, image: ImageDto?, views: Int, commentCnt: Int,  likeCnt: Int): CommunityPost {
+            fun of(searchCommunityPost: SearchCommunityPost, image: ImageDto?, views: Int, hashTags: List<String>): CommunityPost {
                 return CommunityPost(
-                    id = entity.id,
-                    title = entity.title,
-                    content = entity.content,
-                    categoryType = entity.categoryType,
-                    hashTags = entity.communityPostHashTags.map { it.hashTag.name },
-                    commentCnt = commentCnt,
+                    id = searchCommunityPost.id,
+                    title = searchCommunityPost.title,
+                    content = searchCommunityPost.content,
+                    categoryType = searchCommunityPost.categoryType,
+                    hashTags = hashTags,
+                    commentCnt = searchCommunityPost.commentCnt,
                     viewCnt = views,
-                    likeCnt = likeCnt,
-                    regionType = entity.regionType,
-                    subwayLineId = entity.subwayLineEntity.id,
-                    createdAt = entity.createdAt,
-                    createdBy = entity.createdBy,
-                    writer = entity.member!!.nickname!!,
+                    likeCnt = searchCommunityPost.likeCnt,
+                    regionType = searchCommunityPost.regionType,
+                    subwayLineId = searchCommunityPost.subwayLineId,
+                    createdAt = searchCommunityPost.createdAt,
+                    createdBy = searchCommunityPost.createdBy,
+                    writer = searchCommunityPost.writer,
                     image = image,
                 )
             }

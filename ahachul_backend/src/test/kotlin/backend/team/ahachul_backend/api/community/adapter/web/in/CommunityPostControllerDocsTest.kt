@@ -35,6 +35,7 @@ class CommunityPostControllerDocsTest : CommonDocsTestConfig() {
         // given
         val response = SearchCommunityPostDto.Response(
             true,
+            1,
             listOf(
                 SearchCommunityPostDto.CommunityPost(
                     id = 1,
@@ -90,6 +91,7 @@ class CommunityPostControllerDocsTest : CommonDocsTestConfig() {
                     responseFields(
                         *commonResponseFields(),
                         fieldWithPath("result.hasNext").type(JsonFieldType.BOOLEAN).description("다음 페이지 존재 여부"),
+                        fieldWithPath("result.nextPageNum").type(JsonFieldType.NUMBER).description("다음 페이지 인덱스"),
                         fieldWithPath("result.posts[].id").type(JsonFieldType.NUMBER).description("게시글 아이디"),
                         fieldWithPath("result.posts[].title").type(JsonFieldType.STRING).description("게시글 제목"),
                         fieldWithPath("result.posts[].content").type(JsonFieldType.STRING).description("게시글 내용"),

@@ -1,6 +1,6 @@
 package backend.team.ahachul_backend.api.community.adapter.web.`in`.dto.post
 
-import backend.team.ahachul_backend.api.community.domain.CommunityPost
+import backend.team.ahachul_backend.api.community.domain.GetCommunityPost
 import backend.team.ahachul_backend.api.community.domain.model.CommunityCategoryType
 import backend.team.ahachul_backend.common.dto.ImageDto
 import backend.team.ahachul_backend.common.model.RegionType
@@ -28,23 +28,23 @@ class GetCommunityPostDto {
         val images: List<ImageDto>
     ) {
         companion object {
-            fun of(communityPost: CommunityPost, hashTags: List<String>, views: Int, images: List<ImageDto>): Response {
+            fun of(getCommunityPost: GetCommunityPost, hashTags: List<String>, views: Int, images: List<ImageDto>): Response {
                 return Response(
-                    id = communityPost.id,
-                    title = communityPost.title,
-                    content = communityPost.content,
-                    categoryType = communityPost.categoryType,
+                    id = getCommunityPost.id,
+                    title = getCommunityPost.title,
+                    content = getCommunityPost.content,
+                    categoryType = getCommunityPost.categoryType,
                     hashTags = hashTags,
                     viewCnt = views,
-                    likeCnt = communityPost.likeCnt.toInt(),
-                    hateCnt = communityPost.hateCnt.toInt(),
-                    likeYn = YNType.convert(communityPost.likeYn),
-                    hateYn = YNType.convert(communityPost.hateYn),
-                    regionType = communityPost.regionType,
-                    subwayLineId = communityPost.subwayLineId,
-                    createdAt = communityPost.createdAt,
-                    createdBy = communityPost.createdBy,
-                    writer = communityPost.writer,
+                    likeCnt = getCommunityPost.likeCnt.toInt(),
+                    hateCnt = getCommunityPost.hateCnt.toInt(),
+                    likeYn = YNType.convert(getCommunityPost.likeYn),
+                    hateYn = YNType.convert(getCommunityPost.hateYn),
+                    regionType = getCommunityPost.regionType,
+                    subwayLineId = getCommunityPost.subwayLineId,
+                    createdAt = getCommunityPost.createdAt,
+                    createdBy = getCommunityPost.createdBy,
+                    writer = getCommunityPost.writer,
                     images = images
                 )
             }
