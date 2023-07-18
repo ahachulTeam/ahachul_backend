@@ -85,6 +85,7 @@ class CustomCommunityPostRepository(
                     Expressions.constant(false)
                 },
                 communityPostEntity.regionType,
+                communityPostEntity.subwayLineEntity.id,
                 communityPostEntity.createdAt,
                 communityPostEntity.createdBy,
                 communityPostEntity.member.nickname.`as`("writer"),
@@ -92,6 +93,7 @@ class CustomCommunityPostRepository(
         )
             .from(communityPostEntity)
             .join(communityPostEntity.member, memberEntity)
+            .join(communityPostEntity.subwayLineEntity, subwayLineEntity)
             .where(communityPostEntity.id.eq(postId))
             .fetchOne()
     }

@@ -14,6 +14,7 @@ data class CommunityPost(
     val likeYn: Boolean,
     val hateYn: Boolean,
     val regionType: RegionType,
+    val subwayLineId: Long,
     val createdAt: LocalDateTime,
     val createdBy: String,
     val writer: String,
