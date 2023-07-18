@@ -42,6 +42,9 @@ class CommunityPostEntity(
     @JoinColumn(name = "subway_line_id")
     var subwayLineEntity: SubwayLineEntity,
 
+    @OneToMany(mappedBy = "communityPost", fetch = FetchType.EAGER)
+    var communityPostHashTags: MutableList<CommunityPostHashTagEntity> = mutableListOf(),
+
     @OneToMany(mappedBy = "communityPost")
     var communityPostReports: MutableList<ReportEntity> = mutableListOf(),
 
