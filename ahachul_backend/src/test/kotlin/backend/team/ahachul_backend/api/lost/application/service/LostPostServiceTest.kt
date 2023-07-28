@@ -14,7 +14,6 @@ import backend.team.ahachul_backend.api.member.domain.model.GenderType
 import backend.team.ahachul_backend.api.member.domain.model.MemberStatusType
 import backend.team.ahachul_backend.api.member.domain.model.ProviderType
 import backend.team.ahachul_backend.common.domain.entity.SubwayLineEntity
-import backend.team.ahachul_backend.common.dto.ImageDto
 import backend.team.ahachul_backend.common.exception.CommonException
 import backend.team.ahachul_backend.common.model.RegionType
 import backend.team.ahachul_backend.common.persistence.SubwayLineRepository
@@ -28,8 +27,6 @@ import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.domain.PageRequest
-import org.springframework.mock.web.MockMultipartFile
-import java.nio.charset.StandardCharsets
 
 
 class LostPostServiceTest(
@@ -243,7 +240,8 @@ class LostPostServiceTest(
             title = "지갑",
             content = content,
             subwayLine = subwayLineId,
-            lostType = LostType.LOST
+            lostType = LostType.LOST,
+            categoryName = "휴대폰"
         )
     }
 

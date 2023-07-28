@@ -166,7 +166,8 @@ class LostPostControllerDocsTest: CommonDocsTestConfig() {
             title = "title",
             content = "content",
             subwayLine = 1,
-            lostType = LostType.LOST
+            lostType = LostType.LOST,
+            categoryName = "휴대폰"
         )
 
         val mapper = ObjectMapper()
@@ -209,7 +210,8 @@ class LostPostControllerDocsTest: CommonDocsTestConfig() {
                         fieldWithPath("title").type(JsonFieldType.STRING).description("유실물 제목"),
                         fieldWithPath("content").type(JsonFieldType.STRING).description("유실물 내용"),
                         fieldWithPath("subwayLine").type(JsonFieldType.NUMBER).description("유실 호선 ID"),
-                        fieldWithPath("lostType").type(JsonFieldType.STRING).description("유실물 타입").attributes(getFormatAttribute("LOST(유실) / ACQUIRE(습득)"))
+                        fieldWithPath("lostType").type(JsonFieldType.STRING).description("유실물 타입").attributes(getFormatAttribute("LOST(유실) / ACQUIRE(습득)")),
+                        fieldWithPath("categoryName").type(JsonFieldType.STRING).description("카테고리 이름"),
                     ),
                     responseFields(
                         *commonResponseFields(),

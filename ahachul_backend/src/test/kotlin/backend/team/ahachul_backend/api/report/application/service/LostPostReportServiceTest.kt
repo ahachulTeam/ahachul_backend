@@ -1,7 +1,9 @@
 package backend.team.ahachul_backend.api.report.application.service
 
+import backend.team.ahachul_backend.api.lost.adapter.web.out.CategoryRepository
 import backend.team.ahachul_backend.api.lost.adapter.web.out.LostPostRepository
 import backend.team.ahachul_backend.api.lost.application.service.command.CreateLostPostCommand
+import backend.team.ahachul_backend.api.lost.domain.entity.CategoryEntity
 import backend.team.ahachul_backend.api.lost.domain.entity.LostPostEntity
 import backend.team.ahachul_backend.api.lost.domain.model.LostPostType
 import backend.team.ahachul_backend.api.lost.domain.model.LostType
@@ -29,10 +31,12 @@ class LostPostReportServiceTest(
     @Autowired val lostPostReportService: ReportUseCase,
     @Autowired val memberRepository: MemberRepository,
     @Autowired val lostPostRepository: LostPostRepository,
-    @Autowired val subwayLineRepository: SubwayLineRepository
+    @Autowired val subwayLineRepository: SubwayLineRepository,
+    @Autowired val categoryRepository: CategoryRepository
 ): CommonServiceTestConfig() {
 
     private var subwayLine: SubwayLineEntity? = null
+    private var category: CategoryEntity? = null
     private var member: MemberEntity? = null
     private var otherMember: MemberEntity? = null
     private var manager: MemberEntity? = null
@@ -44,6 +48,7 @@ class LostPostReportServiceTest(
         manager = memberRepository.save(createMember("관리자"))
         member!!.id.let { RequestUtils.setAttribute("memberId", it) }
         subwayLine = createSubwayLine()
+        category = categoryRepository.save(CategoryEntity(name = "핸드폰"))
     }
 
     @Test
@@ -150,10 +155,12 @@ class LostPostReportServiceTest(
                 title = "지갑",
                 content = "내용",
                 subwayLine = subwayLine!!.id,
-                lostType = LostType.LOST
+                lostType = LostType.LOST,
+                categoryName = "지갑"
             ),
             member = otherMember!!,
-            subwayLine = subwayLine!!
+            subwayLine = subwayLine!!,
+            category = category!!
         )
     }
 }

@@ -2,6 +2,7 @@ package backend.team.ahachul_backend.api.lost.application.service
 
 import backend.team.ahachul_backend.api.lost.adapter.web.`in`.dto.*
 import backend.team.ahachul_backend.api.lost.application.port.`in`.LostPostUseCase
+import backend.team.ahachul_backend.api.lost.application.port.out.CategoryReader
 import backend.team.ahachul_backend.api.lost.application.port.out.LostPostFileReader
 import backend.team.ahachul_backend.api.lost.application.port.out.LostPostReader
 import backend.team.ahachul_backend.api.lost.application.port.out.LostPostWriter
@@ -25,9 +26,10 @@ class LostPostService(
     private val lostPostWriter: LostPostWriter,
     private val lostPostReader: LostPostReader,
     private val lostPostFileReader: LostPostFileReader,
+    private val lostPostFileService: LostPostFileService,
     private val subwayLineReader: SubwayLineReader,
     private val memberReader: MemberReader,
-    private val lostPostFileService: LostPostFileService
+    private val categoryReader: CategoryReader
 ): LostPostUseCase {
 
     override fun getLostPost(id: Long): GetLostPostDto.Response {
@@ -62,12 +64,14 @@ class LostPostService(
         val memberId = RequestUtils.getAttribute("memberId")!!
         val member = memberReader.getMember(memberId.toLong())
         val subwayLine = subwayLineReader.getSubwayLine(command.subwayLine)
+        val category = categoryReader.getCategoryByName(command.categoryName)
 
         val entity = lostPostWriter.save(
             LostPostEntity.of(
                 command = command,
                 member = member,
-                subwayLine = subwayLine
+                subwayLine = subwayLine,
+                category = category
             )
         )
 

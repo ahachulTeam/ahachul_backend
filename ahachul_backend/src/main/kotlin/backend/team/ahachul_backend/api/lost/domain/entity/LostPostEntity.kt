@@ -34,6 +34,9 @@ class LostPostEntity(
     @OneToMany(mappedBy = "lostPost")
     var lostPostReports: MutableList<ReportEntity> = mutableListOf(),
 
+    @OneToOne
+    var category: CategoryEntity,
+
     var title: String,
 
     var content: String,
@@ -63,17 +66,20 @@ class LostPostEntity(
     companion object {
         const val MIN_BLOCK_REPORT_COUNT = 5
 
-        fun of(command: CreateLostPostCommand, member: MemberEntity, subwayLine: SubwayLineEntity): LostPostEntity {
+        fun of(command: CreateLostPostCommand, member: MemberEntity,
+               subwayLine: SubwayLineEntity, category: CategoryEntity
+        ): LostPostEntity {
             return LostPostEntity(
                 title = command.title,
                 content = command.content,
                 subwayLine = subwayLine,
                 lostType = command.lostType,
-                member = member
+                member = member,
+                category = category
             )
         }
 
-        fun ofLost112(data: Lost112Data, subwayLine: SubwayLineEntity?): LostPostEntity {
+        fun ofLost112(data: Lost112Data, subwayLine: SubwayLineEntity?, category: CategoryEntity): LostPostEntity {
             return LostPostEntity(
                 title = data.title,
                 content = data.context,
@@ -84,7 +90,8 @@ class LostPostEntity(
                 subwayLine = subwayLine,
                 pageUrl = data.page,
                 receivedDate = LocalDateTime.parse(data.getDate,
-                    DateTimeFormatter.ofPattern("yyyy-MM-dd HH시경"))
+                    DateTimeFormatter.ofPattern("yyyy-MM-dd HH시경")),
+                category = category
             )
         }
     }
