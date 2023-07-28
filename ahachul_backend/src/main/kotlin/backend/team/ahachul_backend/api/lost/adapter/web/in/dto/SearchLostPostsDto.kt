@@ -1,11 +1,13 @@
 package backend.team.ahachul_backend.api.lost.adapter.web.`in`.dto
 
 import backend.team.ahachul_backend.api.lost.application.service.command.SearchLostPostCommand
+import backend.team.ahachul_backend.api.lost.domain.entity.LostPostEntity
 import backend.team.ahachul_backend.api.lost.domain.model.LostOrigin
 import backend.team.ahachul_backend.api.lost.domain.model.LostStatus
 import backend.team.ahachul_backend.api.lost.domain.model.LostType
 import backend.team.ahachul_backend.common.dto.ImageDto
 import org.springframework.data.domain.Pageable
+import java.time.format.DateTimeFormatter
 
 class SearchLostPostsDto {
 
@@ -40,5 +42,6 @@ class SearchLostPostsDto {
         val chats: Int = 0,
         val status: LostStatus,
         val image: ImageDto?,
+        val categoryName: String
     )
 }

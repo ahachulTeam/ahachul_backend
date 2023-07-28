@@ -45,7 +45,8 @@ class LostPostControllerDocsTest: CommonDocsTestConfig() {
             storage = "우리집",
             storageNumber = "02-2222-3333",
             pageUrl = "http://lost112",
-            images = listOf(ImageDto(1, "https://img.png"))
+            images = listOf(ImageDto(1, "https://img.png")),
+            categoryName = "휴대폰"
         )
 
         given(lostPostUseCase.getLostPost(anyLong()))
@@ -79,6 +80,7 @@ class LostPostControllerDocsTest: CommonDocsTestConfig() {
                     fieldWithPath("result.storage" ).type(JsonFieldType.STRING).description("보관 장소").attributes(getFormatAttribute("Lost112 데이터")),
                     fieldWithPath("result.storageNumber").type(JsonFieldType.STRING).description("보관 장소 전화번호").attributes(getFormatAttribute("Lost112 데이터")),
                     fieldWithPath("result.pageUrl" ).type(JsonFieldType.STRING).description("외부 유실물 데이터 페이지 링크"),
+                    fieldWithPath("result.categoryName" ).type(JsonFieldType.STRING).description("카테고리 이름"),
                     fieldWithPath("result.images[]").type(JsonFieldType.ARRAY).description("등록된 이미지 목록"),
                     fieldWithPath("result.images[].imageId").type(JsonFieldType.NUMBER).description("등록된 이미지 ID"),
                     fieldWithPath("result.images[].imageUrl").type(JsonFieldType.STRING).description("등록된 이미지 URI"),
@@ -102,7 +104,8 @@ class LostPostControllerDocsTest: CommonDocsTestConfig() {
                     subwayLine = 1,
                     chats = 1,
                     status = LostStatus.PROGRESS,
-                    image = ImageDto(1, "https://img.png")
+                    image = ImageDto(1, "https://img.png"),
+                    categoryName = "휴대폰"
                 )
             )
         )
@@ -145,6 +148,7 @@ class LostPostControllerDocsTest: CommonDocsTestConfig() {
                     fieldWithPath("result.posts[].subwayLine").type(JsonFieldType.NUMBER).description("유실 호선 ID"),
                     fieldWithPath("result.posts[].chats").type(JsonFieldType.NUMBER).description("유실물 쪽지 개수"),
                     fieldWithPath("result.posts[].status").type(JsonFieldType.STRING).description("유실물 찾기 완료 여부").attributes(getFormatAttribute( "PROGRESS / COMPLETE")),
+                    fieldWithPath("result.categoryName" ).type(JsonFieldType.STRING).description("카테고리 이름"),
                     fieldWithPath("result.posts[].image").type(JsonFieldType.OBJECT).description("등록된 이미지"),
                     fieldWithPath("result.posts[].image.imageId").type(JsonFieldType.NUMBER).description("등록된 첫 번쨰 이미지 ID"),
                     fieldWithPath("result.posts[].image.imageUrl").type(JsonFieldType.STRING).description("등록된 첫 번째 이미지 URI"),

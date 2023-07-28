@@ -53,7 +53,8 @@ class LostPostService(
                 date = it.date.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")),
                 subwayLine = it.subwayLine?.id,
                 status = it.status,
-                image = file?.let { f-> ImageDto(f.id, f.filePath) }
+                image = file?.let { f-> ImageDto(f.id, f.filePath) },
+                categoryName = it.category.name
             )
         }
         return SearchLostPostsDto.Response(hasNext = sliceObject.hasNext(), posts = lostPosts)
@@ -90,13 +91,13 @@ class LostPostService(
         val subwayLine = command.subwayLine?.let {
             subwayLineReader.getSubwayLine(it)
         }
-        entity.update(command, subwayLine)
 
-        updateFiles(command, entity)
+        entity.update(command, subwayLine)
+        updateImageFiles(command, entity)
         return UpdateLostPostDto.Response.from(entity)
     }
 
-    private fun updateFiles(command: UpdateLostPostCommand, post: LostPostEntity) {
+    private fun updateImageFiles(command: UpdateLostPostCommand, post: LostPostEntity) {
         command.imageFiles?.let {
             lostPostFileService.createLostPostFiles(post, it)
         }
