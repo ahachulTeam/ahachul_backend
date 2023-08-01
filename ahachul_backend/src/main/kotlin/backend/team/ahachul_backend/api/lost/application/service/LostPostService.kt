@@ -6,10 +6,7 @@ import backend.team.ahachul_backend.api.lost.application.port.out.CategoryReader
 import backend.team.ahachul_backend.api.lost.application.port.out.LostPostFileReader
 import backend.team.ahachul_backend.api.lost.application.port.out.LostPostReader
 import backend.team.ahachul_backend.api.lost.application.port.out.LostPostWriter
-import backend.team.ahachul_backend.api.lost.application.service.command.CreateLostPostCommand
-import backend.team.ahachul_backend.api.lost.application.service.command.GetSliceLostPostsCommand
-import backend.team.ahachul_backend.api.lost.application.service.command.SearchLostPostCommand
-import backend.team.ahachul_backend.api.lost.application.service.command.UpdateLostPostCommand
+import backend.team.ahachul_backend.api.lost.application.service.command.*
 import backend.team.ahachul_backend.api.lost.domain.entity.LostPostEntity
 import backend.team.ahachul_backend.api.lost.domain.entity.LostPostFileEntity
 import backend.team.ahachul_backend.api.member.application.port.out.MemberReader
@@ -35,7 +32,38 @@ class LostPostService(
     override fun getLostPost(id: Long): GetLostPostDto.Response {
         val entity = lostPostReader.getLostPost(id)
         val files = lostPostFileReader.findAllByPostId(id)
-        return GetLostPostDto.Response.from(entity, convertToImageDto(files))
+        val recommendPosts = getRecommendPosts(entity)
+        val recommendPostsDto = mapRecommendPostsDto(recommendPosts)
+        return GetLostPostDto.Response.from(entity, convertToImageDto(files), recommendPostsDto)
+    }
+
+    private fun getRecommendPosts(entity: LostPostEntity): List<LostPostEntity> {
+        val command = GetRecommendLostPostsCommand.from(DEFAULT_RECOMMEND_SIZE, entity.subwayLine, entity.category)
+        val recommendPosts = lostPostReader.getRecommendLostPosts(command)
+
+        if (recommendPosts.size >= DEFAULT_RECOMMEND_SIZE) {
+            return recommendPosts
+        }
+
+        val randomCommand = GetRecommendLostPostsCommand.from(
+            DEFAULT_RECOMMEND_SIZE - recommendPosts.size, entity.subwayLine, entity.category
+        )
+        val randomPosts = lostPostReader.getRandomLostPosts(randomCommand)
+        return recommendPosts.plus(randomPosts)
+    }
+
+    private fun mapRecommendPostsDto(recommendPosts: List<LostPostEntity>): List<GetLostPostDto.RecommendResponse> {
+        val recommendPostsDto = recommendPosts.map { post ->
+            val file = lostPostFileReader.findByPostId(post.id)?.file
+            GetLostPostDto.RecommendResponse(
+                id = post.id,
+                title = post.title,
+                writer = post.createdBy,
+                imgUrl = file?.filePath,
+                date = post.date.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")),
+            )
+        }
+        return recommendPostsDto
     }
 
     override fun searchLostPosts(command: SearchLostPostCommand): SearchLostPostsDto.Response {
@@ -53,7 +81,7 @@ class LostPostService(
                 date = it.date.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")),
                 subwayLine = it.subwayLine?.id,
                 status = it.status,
-                image = file?.let { f-> ImageDto(f.id, f.filePath) },
+                image = file?.let { f -> ImageDto(f.id, f.filePath) },
                 categoryName = it.category.name
             )
         }
@@ -123,5 +151,9 @@ class LostPostService(
                 imageUrl = it.file!!.filePath
             )
         }
+    }
+
+    companion object {
+        const val DEFAULT_RECOMMEND_SIZE = 12L
     }
 }

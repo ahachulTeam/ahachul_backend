@@ -61,7 +61,7 @@ class LostPostServiceTest(
     @DisplayName("유실물 상세 조회 테스트")
     fun getLostPost() {
         // given
-        val createCommand = createLostPostCommand(subwayLine!!.id, "내용")
+        val createCommand = createLostPostCommand(subwayLine!!.id, "내용", "휴대폰")
         val entity = lostPostUseCase.createLostPost(createCommand)
 
         // when
@@ -75,12 +75,12 @@ class LostPostServiceTest(
         assertThat(response.status).isEqualTo(LostStatus.PROGRESS)
     }
 
-//    @Test
+    @Test
     @DisplayName("유실물 전체 조회 페이징 테스트 - 필터링 X")
     fun searchLostPostPaging() {
         // given
         for(i: Int in 1.. 5) {
-            val createCommand = createLostPostCommand(subwayLine!!.id, "유실물$i")
+            val createCommand = createLostPostCommand(subwayLine!!.id, "유실물$i", "휴대폰")
             lostPostUseCase.createLostPost(createCommand)
         }
 
@@ -100,7 +100,7 @@ class LostPostServiceTest(
             .isEqualTo((5 downTo 3).map { "유실물$it" })
 
         assertThat(response2.hasNext).isEqualTo(false)
-        assertThat(response2.posts.size).isEqualTo(2)
+        assertThat(response2.posts.size).isEqualTo(2) // 1개가 나옴
         assertThat(response2.posts)
             .extracting("content")
             .usingRecursiveComparison()
@@ -115,8 +115,8 @@ class LostPostServiceTest(
         val subwayLine2 = createSubwayLine("2호선")
 
         for(i: Int in 1.. 5) {
-            val createCommand1 = createLostPostCommand(subwayLine1.id, "유실물$i")
-            val createCommand2 = createLostPostCommand(subwayLine2.id, "유실물$i")
+            val createCommand1 = createLostPostCommand(subwayLine1.id, "유실물$i", "휴대폰")
+            val createCommand2 = createLostPostCommand(subwayLine2.id, "유실물$i", "휴대폰")
 
             lostPostUseCase.createLostPost(createCommand1)
             lostPostUseCase.createLostPost(createCommand2)
@@ -139,7 +139,7 @@ class LostPostServiceTest(
     @DisplayName("유실물 저장 테스트")
     fun createLostPost() {
         //given
-        val createCommand = createLostPostCommand(subwayLine!!.id, "내용")
+        val createCommand = createLostPostCommand(subwayLine!!.id, "내용", "휴대폰")
 
         // when
         val response = lostPostUseCase.createLostPost(createCommand)
@@ -158,7 +158,7 @@ class LostPostServiceTest(
     @DisplayName("유실물 수정 테스트 - 권한이 있는 경우")
     fun updateLostPost() {
         // given
-        val createCommand = createLostPostCommand(subwayLine!!.id, "내용")
+        val createCommand = createLostPostCommand(subwayLine!!.id, "내용", "휴대폰")
         val entity = lostPostUseCase.createLostPost(createCommand)
 
         val updateCommand = UpdateLostPostCommand(
@@ -183,7 +183,7 @@ class LostPostServiceTest(
     @DisplayName("유실물 수정 테스트 - 권한이 없는 경우")
     fun updateLostPostUnAuthorized() {
         // given
-        val createCommand = createLostPostCommand(subwayLine!!.id, "내용")
+        val createCommand = createLostPostCommand(subwayLine!!.id, "내용", "휴대폰")
         val entity = lostPostUseCase.createLostPost(createCommand)
 
         val updateCommand = UpdateLostPostCommand(
@@ -208,7 +208,7 @@ class LostPostServiceTest(
     @DisplayName("유실물 삭제 테스트 - 권한이 있는 경우")
     fun deleteLostPost() {
         // given
-        val createCommand = createLostPostCommand(subwayLine!!.id, "내용")
+        val createCommand = createLostPostCommand(subwayLine!!.id, "내용", "휴대폰")
         val entity = lostPostUseCase.createLostPost(createCommand)
 
         // when
@@ -222,7 +222,7 @@ class LostPostServiceTest(
     @DisplayName("유실물 삭제 테스트 - 권한이 없는 경우")
     fun deleteLostPostUnAuthorized() {
         // given
-        val createCommand = createLostPostCommand(subwayLine!!.id, "내용")
+        val createCommand = createLostPostCommand(subwayLine!!.id, "내용", "휴대폰")
         val entity = lostPostUseCase.createLostPost(createCommand)
 
         // when, then
@@ -234,14 +234,39 @@ class LostPostServiceTest(
             .isExactlyInstanceOf(CommonException::class.java)
             .hasMessage(ResponseCode.INVALID_AUTH.message)
     }
+
+    @Test
+    @DisplayName("추천되는 유실물에는 중복이 없어야 한다.")
+    fun getRecommendLostPost() {
+        // given
+        for(i: Int in 1.. 8) {
+            val createCommand = createLostPostCommand(subwayLine!!.id, "유실물$i", "휴대폰")
+            lostPostUseCase.createLostPost(createCommand)
+        }
+
+        for(i: Int in 1.. 3) {
+            val createCommand = createLostPostCommand(subwayLine!!.id, "유실물$i", "지갑")
+            lostPostUseCase.createLostPost(createCommand)
+        }
+
+        for(i: Int in 1.. 3) {
+            val createCommand = createLostPostCommand(subwayLine!!.id, "유실물$i", "컴퓨터")
+            lostPostUseCase.createLostPost(createCommand)
+        }
+
+        // when
+        val response = lostPostUseCase.getLostPost(1)
+        val recommendPosts = response.recommendPosts
+        assertThat(recommendPosts.map { it.id }.toSet().size).isEqualTo(12)
+    }
     
-    private fun createLostPostCommand(subwayLineId: Long, content: String): CreateLostPostCommand {
+    private fun createLostPostCommand(subwayLineId: Long, content: String, categoryName: String): CreateLostPostCommand {
         return CreateLostPostCommand(
             title = "지갑",
             content = content,
             subwayLine = subwayLineId,
-            lostType = LostType.LOST,
-            categoryName = "휴대폰"
+            lostType = LostType.ACQUIRE,
+            categoryName = categoryName
         )
     }
 
@@ -257,7 +282,7 @@ class LostPostServiceTest(
     private fun createSearchLostPostCommand(page: Int, subwayLine: SubwayLineEntity): SearchLostPostCommand {
         return SearchLostPostCommand.of(
             PageRequest.of(page, 3),
-            LostType.LOST,
+            LostType.ACQUIRE,
             subwayLine.id,
             null
         )

@@ -83,7 +83,7 @@ class LostPostEntity(
             return LostPostEntity(
                 title = data.title,
                 content = data.context,
-                lostType = LostType.LOST,
+                lostType = LostType.ACQUIRE,
                 origin = LostOrigin.LOST112,
                 storageNumber = data.phone,
                 storage = data.storagePlace,

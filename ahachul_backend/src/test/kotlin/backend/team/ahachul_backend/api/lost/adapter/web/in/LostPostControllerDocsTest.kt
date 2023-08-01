@@ -32,6 +32,14 @@ class LostPostControllerDocsTest: CommonDocsTestConfig() {
     @Test
     fun getLostPost() {
         // given
+        val recommendPost = GetLostPostDto.RecommendResponse(
+            id = 2,
+            title = "title",
+            writer = "writer",
+            date = "2023/01/23",
+            imgUrl = "https://img.png"
+        )
+
         val response = GetLostPostDto.Response(
             id = 1,
             title = "title",
@@ -46,7 +54,8 @@ class LostPostControllerDocsTest: CommonDocsTestConfig() {
             storageNumber = "02-2222-3333",
             pageUrl = "http://lost112",
             images = listOf(ImageDto(1, "https://img.png")),
-            categoryName = "휴대폰"
+            categoryName = "휴대폰",
+            recommendPosts = listOf(recommendPost)
         )
 
         given(lostPostUseCase.getLostPost(anyLong()))
@@ -84,6 +93,11 @@ class LostPostControllerDocsTest: CommonDocsTestConfig() {
                     fieldWithPath("result.images[]").type(JsonFieldType.ARRAY).description("등록된 이미지 목록"),
                     fieldWithPath("result.images[].imageId").type(JsonFieldType.NUMBER).description("등록된 이미지 ID"),
                     fieldWithPath("result.images[].imageUrl").type(JsonFieldType.STRING).description("등록된 이미지 URI"),
+                    fieldWithPath("result.recommendPosts[].id").type(JsonFieldType.NUMBER).description("추천 유실물 아이디"),
+                    fieldWithPath("result.recommendPosts[].title").type(JsonFieldType.STRING).description("추천 유실물 제목"),
+                    fieldWithPath("result.recommendPosts[].writer").type(JsonFieldType.STRING).description("추천 유실물 작성자"),
+                    fieldWithPath("result.recommendPosts[].date").type(JsonFieldType.STRING).description("추천 유실물 생성 일자"),
+                    fieldWithPath("result.recommendPosts[].imgUrl").type(JsonFieldType.STRING).description("추천 유실물 썸네일 경로"),
                 )
             ))
     }
@@ -132,7 +146,7 @@ class LostPostControllerDocsTest: CommonDocsTestConfig() {
                 queryParameters(
                     parameterWithName("page").description("현재 페이지"),
                     parameterWithName("size").description("페이지 노출 데이터 수"),
-                    parameterWithName("lostType").description("유실물 카테고리").attributes(getFormatAttribute("LOST(유실) / ACQUIRE(습득)")),
+                    parameterWithName("lostType").description("유실물 카테고리").attributes(getFormatAttribute("LOST(유실물) / ACQUIRE(습득물 + Lost112)")),
                     parameterWithName("subwayLineId").description("유실물 호선").optional(),
                     parameterWithName("origin").description("유실물 출처").attributes(getFormatAttribute( "LOST112 / APP")).optional()
                 ),
