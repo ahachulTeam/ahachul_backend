@@ -90,6 +90,7 @@ class CustomCommunityPostRepository(
                 } else {
                     Expressions.constant(false)
                 },
+                communityPostEntity.hotPostYn,
                 communityPostEntity.regionType,
                 communityPostEntity.subwayLineEntity.id,
                 communityPostEntity.createdAt,

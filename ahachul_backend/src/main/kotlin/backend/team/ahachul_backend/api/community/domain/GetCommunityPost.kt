@@ -2,6 +2,7 @@ package backend.team.ahachul_backend.api.community.domain
 
 import backend.team.ahachul_backend.api.community.domain.model.CommunityCategoryType
 import backend.team.ahachul_backend.common.model.RegionType
+import backend.team.ahachul_backend.common.model.YNType
 import java.time.LocalDateTime
 
 data class GetCommunityPost(
@@ -13,6 +14,7 @@ data class GetCommunityPost(
     val hateCnt: Long,
     val likeYn: Boolean,
     val hateYn: Boolean,
+    val hotPostYn: YNType,
     val regionType: RegionType,
     val subwayLineId: Long,
     val createdAt: LocalDateTime,

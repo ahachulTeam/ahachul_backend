@@ -67,6 +67,7 @@ class CommunityPostControllerDocsTest : CommonDocsTestConfig() {
                 .param("subwayLineId", "1")
                 .param("content", "내용")
                 .param("hashTag", "여행")
+                .param("hotPostYn", "Y")
                 .param("page", "1")
                 .param("size", "10")
                 .param("sort", "createdAt,desc")
@@ -130,6 +131,7 @@ class CommunityPostControllerDocsTest : CommonDocsTestConfig() {
             0,
             YNType.Y,
             YNType.N,
+            YNType.Y,
             RegionType.METROPOLITAN,
             1L,
             LocalDateTime.now(),
@@ -169,6 +171,7 @@ class CommunityPostControllerDocsTest : CommonDocsTestConfig() {
                         fieldWithPath("result.hateCnt").type(JsonFieldType.NUMBER).description("싫어요 수"),
                         fieldWithPath("result.likeYn").type("YNType").description("좋아요 눌렀는지 여부").attributes(getFormatAttribute("Y, N")),
                         fieldWithPath("result.hateYn").type("YNType").description("싫어요 눌렀는지 여부").attributes(getFormatAttribute("Y, N")),
+                        fieldWithPath("result.hotPostYn").type("YNType").description("핫 게시글 여부").attributes(getFormatAttribute("Y, N")),
                         fieldWithPath("result.regionType").type("RegionType").description("지역").attributes(getFormatAttribute("METROPOLITAN")),
                         fieldWithPath("result.subwayLineId").type(JsonFieldType.NUMBER).description("지하철 노선 ID"),
                         fieldWithPath("result.createdAt").type("LocalDateTime").description("작성일자"),
