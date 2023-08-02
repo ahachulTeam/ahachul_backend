@@ -12,6 +12,7 @@ import backend.team.ahachul_backend.common.response.ResponseCode
 import backend.team.ahachul_backend.common.utils.RequestUtils
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import java.time.LocalDateTime
 
 @Service
 @Transactional(readOnly = true)
@@ -24,6 +25,10 @@ class CommunityPostLikeService (
 
 ): CommunityPostLikeUseCase {
 
+    companion object {
+        const val HOT_SELECTED_LIMIT = 20
+    }
+
     @Transactional
     override fun like(postId: Long) {
         val memberId = RequestUtils.getAttribute("memberId")!!.toLong()
@@ -35,13 +40,19 @@ class CommunityPostLikeService (
             postLike.like()
             return
         }
+        val communityPost = communityPostReader.getCommunityPost(postId)
         communityPostLikeWriter.save(
             CommunityPostLikeEntity.of(
-                communityPost = communityPostReader.getCommunityPost(postId),
+                communityPost = communityPost,
                 member = memberReader.getMember(memberId),
                 YNType.Y
             )
         )
+
+        if (communityPostLikeReader.count(postId, YNType.Y) >= HOT_SELECTED_LIMIT && communityPost.hotPostYn.isN()) {
+            communityPost.hotPostYn = YNType.Y
+            communityPost.hotPostSelectedDate = LocalDateTime.now()
+        }
     }
 
     @Transactional
