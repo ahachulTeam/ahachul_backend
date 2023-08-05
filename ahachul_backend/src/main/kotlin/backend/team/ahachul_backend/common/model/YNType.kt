@@ -11,4 +11,12 @@ enum class YNType {
             }
         }
     }
+
+    fun isY(): Boolean {
+        return this == Y
+    }
+
+    fun isN(): Boolean {
+        return this == N
+    }
 }
