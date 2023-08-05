@@ -23,11 +23,9 @@ class CommunityPostLikeService (
     private val communityPostReader: CommunityPostReader,
     private val memberReader: MemberReader,
 
-): CommunityPostLikeUseCase {
+    private val communityPostLikeSupport: CommunityPostLikeSupport,
 
-    companion object {
-        const val HOT_SELECTED_LIMIT = 20
-    }
+): CommunityPostLikeUseCase {
 
     @Transactional
     override fun like(postId: Long) {
@@ -49,7 +47,7 @@ class CommunityPostLikeService (
             )
         )
 
-        if (communityPostLikeReader.count(postId, YNType.Y) >= HOT_SELECTED_LIMIT && communityPost.hotPostYn.isN()) {
+        if (communityPostLikeSupport.isPossibleHotPost(communityPost)) {
             communityPost.hotPostYn = YNType.Y
             communityPost.hotPostSelectedDate = LocalDateTime.now()
         }
