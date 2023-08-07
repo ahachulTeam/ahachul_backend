@@ -7,11 +7,15 @@ import backend.team.ahachul_backend.api.lost.application.port.out.LostPostFileRe
 import backend.team.ahachul_backend.api.lost.application.port.out.LostPostReader
 import backend.team.ahachul_backend.api.lost.application.port.out.LostPostWriter
 import backend.team.ahachul_backend.api.lost.application.service.command.*
+import backend.team.ahachul_backend.api.lost.domain.entity.CategoryEntity
 import backend.team.ahachul_backend.api.lost.domain.entity.LostPostEntity
 import backend.team.ahachul_backend.api.lost.domain.entity.LostPostFileEntity
 import backend.team.ahachul_backend.api.member.application.port.out.MemberReader
+import backend.team.ahachul_backend.common.domain.entity.SubwayLineEntity
 import backend.team.ahachul_backend.common.dto.ImageDto
+import backend.team.ahachul_backend.common.exception.BusinessException
 import backend.team.ahachul_backend.common.persistence.SubwayLineReader
+import backend.team.ahachul_backend.common.response.ResponseCode
 import backend.team.ahachul_backend.common.utils.RequestUtils
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -32,24 +36,33 @@ class LostPostService(
     override fun getLostPost(id: Long): GetLostPostDto.Response {
         val entity = lostPostReader.getLostPost(id)
         val files = lostPostFileReader.findAllByPostId(id)
-        val recommendPosts = getRecommendPosts(entity)
+        val recommendPosts = getRecommendPosts(entity.subwayLine, entity.category)
         val recommendPostsDto = mapRecommendPostsDto(recommendPosts)
-        return GetLostPostDto.Response.from(entity, convertToImageDto(files), recommendPostsDto)
+        return GetLostPostDto.Response.of(entity, convertToImageDto(files), recommendPostsDto)
     }
 
-    private fun getRecommendPosts(entity: LostPostEntity): List<LostPostEntity> {
-        val command = GetRecommendLostPostsCommand.from(DEFAULT_RECOMMEND_SIZE, entity.subwayLine, entity.category)
+    private fun getRecommendPosts(subwayLine: SubwayLineEntity?, category:CategoryEntity): List<LostPostEntity> {
+        if (subwayLine === null ) {
+            throw BusinessException(ResponseCode.IMPOSSIBLE_RECOMMEND_LOST_POST)
+        }
+
+        val command = GetRecommendLostPostsCommand.from(DEFAULT_RECOMMEND_SIZE, subwayLine, category)
         val recommendPosts = lostPostReader.getRecommendLostPosts(command)
 
         if (recommendPosts.size >= DEFAULT_RECOMMEND_SIZE) {
             return recommendPosts
         }
 
-        val randomCommand = GetRecommendLostPostsCommand.from(
-            DEFAULT_RECOMMEND_SIZE - recommendPosts.size, entity.subwayLine, entity.category
-        )
-        val randomPosts = lostPostReader.getRandomLostPosts(randomCommand)
+        val randomPosts = getRandomPostIfNotDefaultSize(recommendPosts.size, subwayLine, category)
         return recommendPosts.plus(randomPosts)
+    }
+
+    private fun getRandomPostIfNotDefaultSize(recommendPostSize: Int,
+                                              subwayLine: SubwayLineEntity?, category: CategoryEntity): List<LostPostEntity> {
+        val randomCommand = GetRecommendLostPostsCommand.from(
+            DEFAULT_RECOMMEND_SIZE - recommendPostSize, subwayLine, category
+        )
+        return lostPostReader.getRandomLostPosts(randomCommand)
     }
 
     private fun mapRecommendPostsDto(recommendPosts: List<LostPostEntity>): List<GetLostPostDto.RecommendResponse> {

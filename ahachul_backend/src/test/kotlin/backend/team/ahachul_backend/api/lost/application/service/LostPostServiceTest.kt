@@ -100,7 +100,7 @@ class LostPostServiceTest(
             .isEqualTo((5 downTo 3).map { "유실물$it" })
 
         assertThat(response2.hasNext).isEqualTo(false)
-        assertThat(response2.posts.size).isEqualTo(2) // 1개가 나옴
+        assertThat(response2.posts.size).isEqualTo(2)
         assertThat(response2.posts)
             .extracting("content")
             .usingRecursiveComparison()
@@ -234,6 +234,19 @@ class LostPostServiceTest(
             .isExactlyInstanceOf(CommonException::class.java)
             .hasMessage(ResponseCode.INVALID_AUTH.message)
     }
+
+//    @Test
+//    @DisplayName("해당 유실물에 노선 정보가 없다면 연관 유실물을 추천할 수 없다.")
+//    fun getRecommendLostPostSubwayLineNull() {
+//        val createCommand = createLostPostCommand(null, "유실물1", "휴대폰")
+//        lostPostUseCase.createLostPost(createCommand)
+//
+//        assertThatThrownBy {
+//            lostPostUseCase.getLostPost(1)
+//        }
+//            .isExactlyInstanceOf(BusinessException::class.java)
+//            .hasMessage(ResponseCode.IMPOSSIBLE_RECOMMEND_LOST_POST.message)
+//    }
 
     @Test
     @DisplayName("추천되는 유실물에는 중복이 없어야 한다.")

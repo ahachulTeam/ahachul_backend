@@ -26,8 +26,7 @@ class CustomLostPostRepository(
             .where(
                 lostOriginEq(command.lostOrigin),
                 subwayLineEq(command.subwayLine),
-                lostTypeEq(command.lostType),
-                categoryEq(command.category)
+                lostTypeEq(command.lostType)
             )
             .orderBy(lostPostEntity.createdAt.desc())
             .offset(getOffset(pageable).toLong())
@@ -49,7 +48,7 @@ class CustomLostPostRepository(
             .fetch()
     }
 
-    fun searchRandomPost(command: GetRecommendLostPostsCommand): List<LostPostEntity> {
+    fun searchRandomPostNotEqualCategory(command: GetRecommendLostPostsCommand): List<LostPostEntity> {
         return queryFactory.selectFrom(lostPostEntity)
             .where(
                 lostTypeEq(command.lostType),

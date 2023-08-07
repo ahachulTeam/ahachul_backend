@@ -25,7 +25,7 @@ class GetLostPostDto {
         val recommendPosts: List<RecommendResponse>
     ) {
         companion object {
-            fun from(entity: LostPostEntity, images: List<ImageDto>, recommendPosts: List<RecommendResponse>): Response {
+            fun of(entity: LostPostEntity, images: List<ImageDto>, recommendPosts: List<RecommendResponse>): Response {
                 return Response(
                     id = entity.id,
                     title = entity.title,
