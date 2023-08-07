@@ -96,11 +96,12 @@ class LostPostEntity(
         }
     }
 
-    fun update(command: UpdateLostPostCommand, subwayLine: SubwayLineEntity?) {
+    fun update(command: UpdateLostPostCommand, subwayLine: SubwayLineEntity?, category: CategoryEntity?) {
         command.title?.let { this.title = it }
         command.content?.let { this.content = it }
         command.status?.let { this.status= it }
         subwayLine?.let { this.subwayLine = subwayLine }
+        category?.let { this.category = category }
     }
 
     fun delete() {

@@ -13,7 +13,8 @@ class UpdateLostPostDto {
         val content: String?,
         val subwayLine: Long?,
         val status: LostStatus?,
-        val removeFileIds: List<Long>? = arrayListOf()
+        val removeFileIds: List<Long>? = arrayListOf(),
+        val categoryName: String?
     ) {
         fun toCommand(id: Long, imageFiles: List<MultipartFile>?): UpdateLostPostCommand {
             return UpdateLostPostCommand(
@@ -23,7 +24,8 @@ class UpdateLostPostDto {
                 subwayLine = subwayLine,
                 status = status,
                 imageFiles = imageFiles,
-                removeFileIds = removeFileIds
+                removeFileIds = removeFileIds,
+                categoryName = categoryName
             )
         }
     }
@@ -33,6 +35,7 @@ class UpdateLostPostDto {
         val title: String,
         val content: String,
         val subwayLine: Long?,
+        val categoryName: String,
         val status: LostStatus
     ) {
         companion object {
@@ -42,6 +45,7 @@ class UpdateLostPostDto {
                     title = entity.title,
                     content = entity.content,
                     subwayLine = entity.subwayLine?.id,
+                    categoryName = entity.category.name,
                     status = entity.status
                 )
             }

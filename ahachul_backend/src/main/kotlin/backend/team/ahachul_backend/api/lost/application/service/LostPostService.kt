@@ -133,7 +133,11 @@ class LostPostService(
             subwayLineReader.getSubwayLine(it)
         }
 
-        entity.update(command, subwayLine)
+        val category = command.categoryName?.let {
+            categoryReader.getCategoryByName(it)
+        }
+
+        entity.update(command, subwayLine, category)
         updateImageFiles(command, entity)
         return UpdateLostPostDto.Response.from(entity)
     }
