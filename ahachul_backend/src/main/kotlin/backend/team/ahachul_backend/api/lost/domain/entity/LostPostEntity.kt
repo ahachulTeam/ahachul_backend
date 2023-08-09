@@ -35,7 +35,7 @@ class LostPostEntity(
     var lostPostReports: MutableList<ReportEntity> = mutableListOf(),
 
     @OneToOne(fetch = FetchType.LAZY)
-    var category: CategoryEntity,
+    var category: CategoryEntity?,
 
     var title: String,
 
@@ -79,7 +79,7 @@ class LostPostEntity(
             )
         }
 
-        fun ofLost112(data: Lost112Data, subwayLine: SubwayLineEntity?, category: CategoryEntity): LostPostEntity {
+        fun ofLost112(data: Lost112Data, subwayLine: SubwayLineEntity?, category: CategoryEntity?): LostPostEntity {
             return LostPostEntity(
                 title = data.title,
                 content = data.context,

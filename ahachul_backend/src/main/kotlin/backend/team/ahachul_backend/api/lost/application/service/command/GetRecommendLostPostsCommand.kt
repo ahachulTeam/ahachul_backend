@@ -8,11 +8,11 @@ data class GetRecommendLostPostsCommand(
     val size: Long,
     val lostType: LostType = LostType.ACQUIRE,
     val subwayLine: SubwayLineEntity?,
-    val category: CategoryEntity
+    val category: CategoryEntity?
 ) {
 
     companion object {
-        fun from(size: Long, subwayLine: SubwayLineEntity?, category: CategoryEntity): GetRecommendLostPostsCommand{
+        fun from(size: Long, subwayLine: SubwayLineEntity?, category: CategoryEntity?): GetRecommendLostPostsCommand{
             return GetRecommendLostPostsCommand(
                 size = size,
                 subwayLine = subwayLine,

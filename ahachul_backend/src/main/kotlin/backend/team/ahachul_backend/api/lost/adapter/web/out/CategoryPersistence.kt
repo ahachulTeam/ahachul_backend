@@ -20,4 +20,8 @@ class CategoryPersistence(
         return categoryRepository.findByName(name)
             ?: throw AdapterException(ResponseCode.INVALID_DOMAIN)
     }
+
+    override fun getCategories(): List<CategoryEntity> {
+        return categoryRepository.findAll()
+    }
 }
