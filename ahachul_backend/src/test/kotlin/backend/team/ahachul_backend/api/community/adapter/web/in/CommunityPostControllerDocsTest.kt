@@ -46,6 +46,7 @@ class CommunityPostControllerDocsTest : CommonDocsTestConfig() {
                     commentCnt = 0,
                     viewCnt = 0,
                     likeCnt = 0,
+                    hotPostYn = YNType.Y,
                     regionType = RegionType.METROPOLITAN,
                     subwayLineId = 1L,
                     createdAt = LocalDateTime.now(),
@@ -66,6 +67,7 @@ class CommunityPostControllerDocsTest : CommonDocsTestConfig() {
                 .param("subwayLineId", "1")
                 .param("content", "내용")
                 .param("hashTag", "여행")
+                .param("hotPostYn", "Y")
                 .param("page", "1")
                 .param("size", "10")
                 .param("sort", "createdAt,desc")
@@ -84,6 +86,7 @@ class CommunityPostControllerDocsTest : CommonDocsTestConfig() {
                         parameterWithName("subwayLineId").description("노선 ID").optional(),
                         parameterWithName("content").description("검색하고자 하는 내용").optional(),
                         parameterWithName("hashTag").description("검색하고자 하는 해시 태그").optional(),
+                        parameterWithName("hotPostYn").description("검색하고자 하는 핫 게시글 여부").optional(),
                         parameterWithName("page").description("현재 페이지"),
                         parameterWithName("size").description("페이지 노출 데이터 수. index 0부터 시작"),
                         parameterWithName("sort").description("정렬 조건").attributes(getFormatAttribute("(likes|createdAt|views),(asc|desc)")),
@@ -100,6 +103,7 @@ class CommunityPostControllerDocsTest : CommonDocsTestConfig() {
                         fieldWithPath("result.posts[].commentCnt").type(JsonFieldType.NUMBER).description("댓글 수"),
                         fieldWithPath("result.posts[].viewCnt").type(JsonFieldType.NUMBER).description("조회수"),
                         fieldWithPath("result.posts[].likeCnt").type(JsonFieldType.NUMBER).description("좋아요 수"),
+                        fieldWithPath("result.posts[].hotPostYn").type("YNType").description("핫 게시글 여부").attributes(getFormatAttribute("Y, N")),
                         fieldWithPath("result.posts[].regionType").type("RegionType").description("지역").attributes(getFormatAttribute("METROPOLITAN")),
                         fieldWithPath("result.posts[].subwayLineId").type(JsonFieldType.NUMBER).description("지하철 노선 ID"),
                         fieldWithPath("result.posts[].createdAt").type("LocalDateTime").description("작성일자"),
@@ -127,6 +131,7 @@ class CommunityPostControllerDocsTest : CommonDocsTestConfig() {
             0,
             YNType.Y,
             YNType.N,
+            YNType.Y,
             RegionType.METROPOLITAN,
             1L,
             LocalDateTime.now(),
@@ -164,8 +169,9 @@ class CommunityPostControllerDocsTest : CommonDocsTestConfig() {
                         fieldWithPath("result.viewCnt").type(JsonFieldType.NUMBER).description("조회수"),
                         fieldWithPath("result.likeCnt").type(JsonFieldType.NUMBER).description("좋아요 수"),
                         fieldWithPath("result.hateCnt").type(JsonFieldType.NUMBER).description("싫어요 수"),
-                        fieldWithPath("result.likeYn").type("YNType").description("좋아요 눌렀는지 여부"),
-                        fieldWithPath("result.hateYn").type("YNType").description("싫어요 눌렀는지 여부"),
+                        fieldWithPath("result.likeYn").type("YNType").description("좋아요 눌렀는지 여부").attributes(getFormatAttribute("Y, N")),
+                        fieldWithPath("result.hateYn").type("YNType").description("싫어요 눌렀는지 여부").attributes(getFormatAttribute("Y, N")),
+                        fieldWithPath("result.hotPostYn").type("YNType").description("핫 게시글 여부").attributes(getFormatAttribute("Y, N")),
                         fieldWithPath("result.regionType").type("RegionType").description("지역").attributes(getFormatAttribute("METROPOLITAN")),
                         fieldWithPath("result.subwayLineId").type(JsonFieldType.NUMBER).description("지하철 노선 ID"),
                         fieldWithPath("result.createdAt").type("LocalDateTime").description("작성일자"),

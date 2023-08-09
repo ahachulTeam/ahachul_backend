@@ -10,7 +10,10 @@ import backend.team.ahachul_backend.api.report.domain.ReportEntity
 import backend.team.ahachul_backend.common.domain.entity.SubwayLineEntity
 import backend.team.ahachul_backend.common.entity.BaseEntity
 import backend.team.ahachul_backend.common.model.RegionType
+import backend.team.ahachul_backend.common.model.YNType
 import jakarta.persistence.*
+import java.time.LocalDateTime
+import java.util.Date
 
 @Entity
 class CommunityPostEntity(
@@ -34,6 +37,10 @@ class CommunityPostEntity(
     @Enumerated(EnumType.STRING)
     var regionType: RegionType = RegionType.METROPOLITAN,
 
+    var hotPostYn: YNType = YNType.N,
+
+    var hotPostSelectedDate: LocalDateTime? = null,
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
     var member: MemberEntity? = null,
@@ -47,6 +54,7 @@ class CommunityPostEntity(
 
     @OneToMany(mappedBy = "communityPost")
     var communityPostReports: MutableList<ReportEntity> = mutableListOf(),
+
 
     ): BaseEntity() {
 

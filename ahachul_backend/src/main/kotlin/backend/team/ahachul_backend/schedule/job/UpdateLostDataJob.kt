@@ -1,5 +1,6 @@
 package backend.team.ahachul_backend.schedule.job
 
+import backend.team.ahachul_backend.api.lost.application.port.out.CategoryReader
 import backend.team.ahachul_backend.api.lost.application.port.out.LostPostWriter
 import backend.team.ahachul_backend.api.lost.application.service.LostPostFileService
 import backend.team.ahachul_backend.api.lost.domain.entity.CategoryEntity

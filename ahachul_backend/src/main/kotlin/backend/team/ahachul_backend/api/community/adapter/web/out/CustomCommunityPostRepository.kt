@@ -17,18 +17,22 @@ import com.querydsl.core.types.ExpressionUtils.count
 import com.querydsl.core.types.OrderSpecifier
 import com.querydsl.core.types.Projections
 import com.querydsl.core.types.dsl.Expressions
-import com.querydsl.core.types.dsl.NumberPath
 import com.querydsl.jpa.JPAExpressions
 import com.querydsl.jpa.impl.JPAQueryFactory
 import org.springframework.data.domain.Pageable
 import org.springframework.data.domain.Slice
 import org.springframework.data.domain.SliceImpl
 import org.springframework.stereotype.Repository
+import java.time.LocalDateTime
 
 @Repository
 class CustomCommunityPostRepository(
     private val queryFactory: JPAQueryFactory
 ) {
+
+    companion object {
+        const val HOT_POST_LIMIT_DAYS = 7L
+    }
 
     fun getByCustom(postId: Long, memberId: String?): GetCommunityPost? {
         return queryFactory.select(
@@ -86,6 +90,7 @@ class CustomCommunityPostRepository(
                 } else {
                     Expressions.constant(false)
                 },
+                communityPostEntity.hotPostYn,
                 communityPostEntity.regionType,
                 communityPostEntity.subwayLineEntity.id,
                 communityPostEntity.createdAt,
@@ -126,6 +131,7 @@ class CustomCommunityPostRepository(
                     .where(
                         communityCommentEntity.communityPost.id.eq(communityPostEntity.id)
                     ),
+                communityPostEntity.hotPostYn,
                 communityPostEntity.createdAt,
                 communityPostEntity.createdBy,
                 communityPostEntity.member.nickname,
@@ -139,6 +145,7 @@ class CustomCommunityPostRepository(
                 subwayLineIdEq(command.subwayLineId),
                 hashTagEqWithSubQuery(command.hashTag),
                 titleOrContentContains(command.content),
+                hotPostYnEq(command.hotPostYn)
             )
             .orderBy(getOrder(pageable))
             .offset(getOffset(pageable).toLong())
@@ -181,6 +188,10 @@ class CustomCommunityPostRepository(
 
     private fun subwayLineIdEq(subwayLineId: Long?) =
         subwayLineId?.let { communityPostEntity.subwayLineEntity.id.eq(subwayLineId) }
+
+    private fun hotPostYnEq(hotPostYn: YNType?) =
+        hotPostYn?.let { communityPostEntity.hotPostYn.eq(hotPostYn)
+            .and(communityPostEntity.hotPostSelectedDate.after(LocalDateTime.now().minusDays(HOT_POST_LIMIT_DAYS))) }
 
     private fun hashTagEqWithSubQuery(hashTag: String?) =
         hashTag?.let {

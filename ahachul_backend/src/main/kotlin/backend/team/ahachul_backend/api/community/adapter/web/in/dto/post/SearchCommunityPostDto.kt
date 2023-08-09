@@ -4,6 +4,7 @@ import backend.team.ahachul_backend.api.community.domain.SearchCommunityPost
 import backend.team.ahachul_backend.api.community.domain.model.CommunityCategoryType
 import backend.team.ahachul_backend.common.dto.ImageDto
 import backend.team.ahachul_backend.common.model.RegionType
+import backend.team.ahachul_backend.common.model.YNType
 import org.springframework.data.domain.Pageable
 import java.time.LocalDateTime
 
@@ -14,6 +15,7 @@ class SearchCommunityPostDto {
         val subwayLineId: Long?,
         val content: String?,
         val hashTag: String?,
+        val hotPostYn: YNType?,
     ) {
         fun toCommand(pageable: Pageable): SearchCommunityPostCommand {
             return SearchCommunityPostCommand(
@@ -21,6 +23,7 @@ class SearchCommunityPostDto {
                 subwayLineId = subwayLineId,
                 content = content,
                 hashTag = hashTag,
+                hotPostYn = hotPostYn,
                 pageable = pageable
             )
         }
@@ -51,6 +54,7 @@ class SearchCommunityPostDto {
         val commentCnt: Long,
         val viewCnt: Int,
         val likeCnt: Long,
+        val hotPostYn: YNType,
         val regionType: RegionType,
         val subwayLineId: Long,
         val createdAt: LocalDateTime,
@@ -69,6 +73,7 @@ class SearchCommunityPostDto {
                     commentCnt = searchCommunityPost.commentCnt,
                     viewCnt = views,
                     likeCnt = searchCommunityPost.likeCnt,
+                    hotPostYn = searchCommunityPost.hotPostYn,
                     regionType = searchCommunityPost.regionType,
                     subwayLineId = searchCommunityPost.subwayLineId,
                     createdAt = searchCommunityPost.createdAt,
