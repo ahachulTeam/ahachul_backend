@@ -20,10 +20,12 @@ class GetLostPostDto {
         val storage: String?,
         val storageNumber: String?,
         val pageUrl: String?,
-        val images: List<ImageDto>?
+        val images: List<ImageDto>?,
+        val categoryName: String,
+        val recommendPosts: List<RecommendResponse>
     ) {
         companion object {
-            fun from(entity: LostPostEntity, images: List<ImageDto>): Response {
+            fun of(entity: LostPostEntity, images: List<ImageDto>, recommendPosts: List<RecommendResponse>): Response {
                 return Response(
                     id = entity.id,
                     title = entity.title,
@@ -36,9 +38,19 @@ class GetLostPostDto {
                     storage = entity.storage,
                     storageNumber = entity.storageNumber,
                     pageUrl = entity.pageUrl,
-                    images = images
+                    images = images,
+                    categoryName = entity.category.name,
+                    recommendPosts = recommendPosts
                 )
             }
         }
     }
+
+    data class RecommendResponse(
+        val id: Long,
+        val title: String,
+        val writer: String,
+        val imgUrl: String?,
+        val date: String
+    )
 }

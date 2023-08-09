@@ -13,7 +13,8 @@ CreateLostPostDto{
         @NotNull val title: String,
         @NotNull val content: String,
         @NotNull val subwayLine: Long,
-        @NotNull val lostType: LostType
+        @NotNull val lostType: LostType,
+        @NotNull val categoryName: String
     ) {
         fun toCommand(imageFiles: List<MultipartFile>?): CreateLostPostCommand {
             return CreateLostPostCommand(
@@ -21,7 +22,8 @@ CreateLostPostDto{
                 content = content,
                 subwayLine = subwayLine,
                 lostType = lostType,
-                imageFiles = imageFiles
+                imageFiles = imageFiles,
+                categoryName = categoryName
             )
         }
     }

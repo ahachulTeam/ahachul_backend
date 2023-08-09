@@ -7,7 +7,8 @@ data class Lost112Data(
     val title: String = "",
     val getDate: String = "",
     val getPlace: String = "",
-    val type: String = "",
+    @field:JsonProperty("type")
+    val categoryName: String = "",
     val receiptPlace: String = "",
     val storagePlace: String = "",
     val lostStatus: String = "",

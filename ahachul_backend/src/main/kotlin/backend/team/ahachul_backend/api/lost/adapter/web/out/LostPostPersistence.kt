@@ -2,6 +2,7 @@ package backend.team.ahachul_backend.api.lost.adapter.web.out
 
 import backend.team.ahachul_backend.api.lost.application.port.out.LostPostReader
 import backend.team.ahachul_backend.api.lost.application.port.out.LostPostWriter
+import backend.team.ahachul_backend.api.lost.application.service.command.GetRecommendLostPostsCommand
 import backend.team.ahachul_backend.api.lost.application.service.command.GetSliceLostPostsCommand
 import backend.team.ahachul_backend.api.lost.domain.entity.LostPostEntity
 import backend.team.ahachul_backend.common.exception.AdapterException
@@ -26,5 +27,13 @@ class LostPostPersistence(
 
     override fun getLostPosts(command: GetSliceLostPostsCommand): Slice<LostPostEntity> {
         return customLostPostRepository.searchLostPosts(command)
+    }
+
+    override fun getRecommendLostPosts(command: GetRecommendLostPostsCommand): List<LostPostEntity> {
+        return customLostPostRepository.searchRecommendPost(command)
+    }
+
+    override fun getRandomLostPosts(command: GetRecommendLostPostsCommand): List<LostPostEntity> {
+        return customLostPostRepository.searchRandomPostNotEqualCategory(command)
     }
 }

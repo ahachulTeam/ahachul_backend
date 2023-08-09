@@ -8,6 +8,7 @@ class CreateLostPostCommand(
     val content: String,
     val subwayLine: Long,
     val lostType: LostType,
+    val categoryName: String,
     var imageFiles: List<MultipartFile>? = listOf()
 ) {
 }

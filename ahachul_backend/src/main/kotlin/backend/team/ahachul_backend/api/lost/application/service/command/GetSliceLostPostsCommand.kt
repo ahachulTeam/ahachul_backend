@@ -17,7 +17,7 @@ class GetSliceLostPostsCommand(
                 pageable = command.pageable,
                 lostType = command.lostType,
                 lostOrigin = command.lostOrigin,
-                subwayLine = subwayLine
+                subwayLine = subwayLine,
             )
         }
     }
