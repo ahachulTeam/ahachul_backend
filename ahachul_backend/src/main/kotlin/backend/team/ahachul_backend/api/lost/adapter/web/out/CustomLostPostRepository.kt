@@ -26,7 +26,8 @@ class CustomLostPostRepository(
             .where(
                 lostOriginEq(command.lostOrigin),
                 subwayLineEq(command.subwayLine),
-                lostTypeEq(command.lostType)
+                lostTypeEq(command.lostType),
+                titleAndContentLike(command.keyword),
             )
             .orderBy(lostPostEntity.createdAt.desc())
             .offset(getOffset(pageable).toLong())
@@ -91,4 +92,10 @@ class CustomLostPostRepository(
 
     private fun categoryNotEq(category: CategoryEntity?) =
         category?.let { lostPostEntity.category.ne(category) }
+
+    private fun titleAndContentLike(keyword: String?) =
+        keyword?.let {
+            lostPostEntity.title.contains(keyword)
+                .or(lostPostEntity.content.contains(keyword))
+        }
 }

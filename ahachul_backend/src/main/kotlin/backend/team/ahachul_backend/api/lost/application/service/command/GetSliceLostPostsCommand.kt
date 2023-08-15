@@ -9,7 +9,8 @@ class GetSliceLostPostsCommand(
     val pageable: Pageable,
     val lostType: LostType,
     val lostOrigin: LostOrigin?,
-    val subwayLine: SubwayLineEntity?
+    val subwayLine: SubwayLineEntity?,
+    val keyword: String?,
 ) {
     companion object {
         fun from(command: SearchLostPostCommand, subwayLine: SubwayLineEntity?): GetSliceLostPostsCommand{
@@ -18,6 +19,7 @@ class GetSliceLostPostsCommand(
                 lostType = command.lostType,
                 lostOrigin = command.lostOrigin,
                 subwayLine = subwayLine,
+                keyword = command.keyword
             )
         }
     }

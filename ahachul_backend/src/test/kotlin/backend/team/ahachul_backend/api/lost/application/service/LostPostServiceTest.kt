@@ -84,8 +84,8 @@ class LostPostServiceTest(
             lostPostUseCase.createLostPost(createCommand)
         }
 
-        val searchCommand1 = createSearchLostPostCommand(0, subwayLine!!)
-        val searchCommand2 = createSearchLostPostCommand(1, subwayLine!!)
+        val searchCommand1 = createSearchLostPostCommand(0, subwayLine!!.id, "키워드")
+        val searchCommand2 = createSearchLostPostCommand(1, subwayLine!!.id, "키워드")
 
         // when
         val response1 = lostPostUseCase.searchLostPosts(searchCommand1)
@@ -122,7 +122,7 @@ class LostPostServiceTest(
             lostPostUseCase.createLostPost(createCommand2)
         }
 
-        val searchCommand = createSearchLostPostCommand(0, subwayLine1)
+        val searchCommand = createSearchLostPostCommand(0, subwayLine1.id, "키워드")
 
         // when
         val response = lostPostUseCase.searchLostPosts(searchCommand)
@@ -262,10 +262,29 @@ class LostPostServiceTest(
         val recommendPosts = response.recommendPosts
         assertThat(recommendPosts.map { it.id }.toSet().size).isEqualTo(12)
     }
+
+    @Test
+    @DisplayName("제목이나 내용에 검색 키워드가 포함된 유실물을 반환한다.")
+    fun searchLostPostByKeyword() {
+        // given
+        val createCommand1 = createLostPostCommand(subwayLine!!.id, "오늘 1호선에서 지갑을 주웠어요", "휴대폰")
+        val createCommand2 = createLostPostCommand(subwayLine!!.id, "2호선에서 분실물 주웠는데 찾아가세요", "휴대폰")
+        val entity1 = lostPostUseCase.createLostPost(createCommand1)
+        val entity2 = lostPostUseCase.createLostPost(createCommand2)
+        val searchCommand = createSearchLostPostCommand(0, subwayLine!!.id, "지갑")
+
+        // when
+        val response = lostPostUseCase.searchLostPosts(searchCommand)
+
+        // then
+        assertThat(response.posts.size).isEqualTo(2)
+        assertThat(response.posts[0].id).isEqualTo(entity2.id)
+        assertThat(response.posts[1].id).isEqualTo(entity1.id)
+    }
     
     private fun createLostPostCommand(subwayLineId: Long, content: String, categoryName: String): CreateLostPostCommand {
         return CreateLostPostCommand(
-            title = "지갑",
+            title = "지갑 주인 찾아요",
             content = content,
             subwayLine = subwayLineId,
             lostType = LostType.ACQUIRE,
@@ -282,12 +301,13 @@ class LostPostServiceTest(
         )
     }
 
-    private fun createSearchLostPostCommand(page: Int, subwayLine: SubwayLineEntity): SearchLostPostCommand {
-        return SearchLostPostCommand.of(
-            PageRequest.of(page, 3),
-            LostType.ACQUIRE,
-            subwayLine.id,
-            null
+    private fun createSearchLostPostCommand(page: Int, subwayLineId:Long, keyword:String): SearchLostPostCommand {
+        return SearchLostPostCommand(
+            pageable = PageRequest.of(page, 3),
+            lostType = LostType.ACQUIRE,
+            subwayLineId = subwayLineId,
+            lostOrigin = null,
+            keyword = keyword
         )
     }
 }

@@ -12,5 +12,4 @@ class UpdateLostPostCommand (
     val imageFiles: List<MultipartFile>? = arrayListOf(),
     val removeFileIds: List<Long>? = arrayListOf(),
     val categoryName: String?
-) {
-}
+)

@@ -8,16 +8,6 @@ class SearchLostPostCommand(
     val pageable: Pageable,
     val lostType: LostType,
     val lostOrigin: LostOrigin?,
-    val subwayLineId: Long?
-){
-    companion object {
-        fun of(pageable: Pageable, lostType: LostType, line: Long?, origin: LostOrigin?): SearchLostPostCommand {
-            return SearchLostPostCommand(
-                pageable = pageable,
-                lostType = lostType,
-                lostOrigin = origin,
-                subwayLineId = line,
-            )
-        }
-    }
-}
+    val subwayLineId: Long?,
+    val keyword: String?
+)
