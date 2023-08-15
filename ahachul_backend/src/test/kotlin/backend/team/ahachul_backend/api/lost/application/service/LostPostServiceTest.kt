@@ -2,9 +2,9 @@ package backend.team.ahachul_backend.api.lost.application.service
 
 import backend.team.ahachul_backend.api.lost.adapter.web.out.LostPostRepository
 import backend.team.ahachul_backend.api.lost.application.port.`in`.LostPostUseCase
-import backend.team.ahachul_backend.api.lost.application.service.command.CreateLostPostCommand
-import backend.team.ahachul_backend.api.lost.application.service.command.SearchLostPostCommand
-import backend.team.ahachul_backend.api.lost.application.service.command.UpdateLostPostCommand
+import backend.team.ahachul_backend.api.lost.application.service.command.`in`.CreateLostPostCommand
+import backend.team.ahachul_backend.api.lost.application.service.command.`in`.SearchLostPostCommand
+import backend.team.ahachul_backend.api.lost.application.service.command.`in`.UpdateLostPostCommand
 import backend.team.ahachul_backend.api.lost.domain.model.LostPostType
 import backend.team.ahachul_backend.api.lost.domain.model.LostStatus
 import backend.team.ahachul_backend.api.lost.domain.model.LostType

@@ -1,7 +1,7 @@
 package backend.team.ahachul_backend.api.lost.domain.entity
 
-import backend.team.ahachul_backend.api.lost.application.service.command.CreateLostPostCommand
-import backend.team.ahachul_backend.api.lost.application.service.command.UpdateLostPostCommand
+import backend.team.ahachul_backend.api.lost.application.service.command.`in`.CreateLostPostCommand
+import backend.team.ahachul_backend.api.lost.application.service.command.`in`.UpdateLostPostCommand
 import backend.team.ahachul_backend.api.lost.domain.model.LostOrigin
 import backend.team.ahachul_backend.api.lost.domain.model.LostPostType
 import backend.team.ahachul_backend.api.lost.domain.model.LostStatus

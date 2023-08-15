@@ -2,7 +2,7 @@ package backend.team.ahachul_backend.api.report.application.service
 
 import backend.team.ahachul_backend.api.lost.adapter.web.out.CategoryRepository
 import backend.team.ahachul_backend.api.lost.adapter.web.out.LostPostRepository
-import backend.team.ahachul_backend.api.lost.application.service.command.CreateLostPostCommand
+import backend.team.ahachul_backend.api.lost.application.service.command.`in`.CreateLostPostCommand
 import backend.team.ahachul_backend.api.lost.domain.entity.CategoryEntity
 import backend.team.ahachul_backend.api.lost.domain.entity.LostPostEntity
 import backend.team.ahachul_backend.api.lost.domain.model.LostPostType
@@ -14,7 +14,6 @@ import backend.team.ahachul_backend.api.member.domain.model.MemberStatusType
 import backend.team.ahachul_backend.api.member.domain.model.ProviderType
 import backend.team.ahachul_backend.api.report.application.port.`in`.ReportUseCase
 import backend.team.ahachul_backend.common.domain.entity.SubwayLineEntity
-import backend.team.ahachul_backend.common.dto.ImageDto
 import backend.team.ahachul_backend.common.exception.DomainException
 import backend.team.ahachul_backend.common.model.RegionType
 import backend.team.ahachul_backend.common.persistence.SubwayLineRepository
