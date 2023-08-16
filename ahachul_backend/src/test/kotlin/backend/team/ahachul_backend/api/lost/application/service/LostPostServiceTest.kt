@@ -150,7 +150,7 @@ class LostPostServiceTest(
 
         assertThat(entity.title).isEqualTo("지갑")
         assertThat(entity.content).isEqualTo("내용")
-        assertThat(entity.lostType).isEqualTo(LostType.LOST)
+        assertThat(entity.lostType).isEqualTo(LostType.ACQUIRE)
         assertThat(entity.type).isEqualTo(LostPostType.CREATED)
     }
 
