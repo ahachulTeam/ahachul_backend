@@ -37,6 +37,7 @@ class CommunityPostEntity(
     @Enumerated(EnumType.STRING)
     var regionType: RegionType = RegionType.METROPOLITAN,
 
+    @Enumerated(EnumType.STRING)
     var hotPostYn: YNType = YNType.N,
 
     var hotPostSelectedDate: LocalDateTime? = null,
