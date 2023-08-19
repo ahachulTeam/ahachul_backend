@@ -14,6 +14,8 @@ class SubwayLineEntity (
 
     var name: String,
 
+    var phoneNumber: String = "",
+
     @Enumerated(EnumType.STRING)
     var regionType: RegionType
 
