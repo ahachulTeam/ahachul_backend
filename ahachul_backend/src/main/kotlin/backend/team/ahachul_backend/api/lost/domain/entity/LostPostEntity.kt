@@ -34,6 +34,7 @@ class LostPostEntity(
     @OneToMany(mappedBy = "lostPost")
     var lostPostReports: MutableList<ReportEntity> = mutableListOf(),
 
+    @JoinColumn(name = "category_id")
     @OneToOne(fetch = FetchType.LAZY)
     var category: CategoryEntity?,
 
