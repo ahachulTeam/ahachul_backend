@@ -21,3 +21,15 @@ ALTER TABLE tb_complaint_message_history
 
 ALTER TABLE tb_complaint_message_history
     MODIFY updated_by VARCHAR(50) DEFAULT 'SYSTEM';
+
+ALTER TABLE tb_category
+    MODIFY created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP;
+
+ALTER TABLE tb_category
+    MODIFY updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP;
+
+ALTER TABLE tb_category
+    MODIFY created_by VARCHAR(50) DEFAULT 'SYSTEM';
+
+ALTER TABLE tb_category
+    MODIFY updated_by VARCHAR(50) DEFAULT 'SYSTEM';
