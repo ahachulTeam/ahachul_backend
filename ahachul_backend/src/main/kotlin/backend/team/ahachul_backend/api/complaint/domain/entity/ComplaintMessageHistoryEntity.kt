@@ -23,6 +23,6 @@ class ComplaintMessageHistoryEntity(
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "sent_subway_line_id")
-    var subwayLine: SubwayLineEntity,
+    val subwayLine: SubwayLineEntity,
 ): BaseEntity() {
 }
