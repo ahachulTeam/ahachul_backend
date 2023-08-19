@@ -46,7 +46,7 @@ class ComplaintControllerDocsTest: CommonDocsTestConfig() {
         result.andExpect(MockMvcResultMatchers.status().isOk)
             .andDo(
                 MockMvcRestDocumentation.document(
-                    "post-complaints-messages",
+                    "send-complaint-message",
                     getDocsRequest(),
                     getDocsResponse(),
                     HeaderDocumentation.requestHeaders(
