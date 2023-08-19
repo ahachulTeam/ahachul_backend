@@ -14,6 +14,7 @@ class TrainEntity(
     val prefixTrainNo: String,
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "subway_line_id")
     var subwayLine: SubwayLineEntity,
 ): BaseEntity() {
 }
