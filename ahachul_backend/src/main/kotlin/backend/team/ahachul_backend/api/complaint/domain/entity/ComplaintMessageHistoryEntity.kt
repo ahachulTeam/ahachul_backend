@@ -4,6 +4,7 @@ import backend.team.ahachul_backend.api.member.domain.entity.MemberEntity
 import backend.team.ahachul_backend.common.domain.entity.SubwayLineEntity
 import backend.team.ahachul_backend.common.entity.BaseEntity
 import jakarta.persistence.*
+
 @Entity
 class ComplaintMessageHistoryEntity(
     @Id
