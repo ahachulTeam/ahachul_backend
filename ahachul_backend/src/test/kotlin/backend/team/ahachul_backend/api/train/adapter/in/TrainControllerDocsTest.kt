@@ -31,7 +31,7 @@ class TrainControllerDocsTest : CommonDocsTestConfig() {
             id = 1L,
             GetTrainDto.SubwayLine(1L, "1호선"),
             location = 3,
-            organizationTrainNo = 52
+            organizationTrainNo = "52"
         )
 
         BDDMockito.given(trainUseCase.getTrain(any()))
@@ -60,10 +60,10 @@ class TrainControllerDocsTest : CommonDocsTestConfig() {
                     PayloadDocumentation.responseFields(
                         *commonResponseFields(),
                         PayloadDocumentation.fieldWithPath("result.id").type(JsonFieldType.NUMBER).description("열차 식별 번호"),
-                        PayloadDocumentation.fieldWithPath("result.subwayLine.id").type(JsonFieldType.NUMBER).description("노선 식별 번호").optional(),
-                        PayloadDocumentation.fieldWithPath("result.subwayLine.name").type(JsonFieldType.STRING).description("노선 이름").optional(),
-                        PayloadDocumentation.fieldWithPath("result.location").type(JsonFieldType.NUMBER).description("열차 내 현재 위치").optional(),
-                        PayloadDocumentation.fieldWithPath("result.organizationTrainNo").type(JsonFieldType.NUMBER).description("열차 편대 번호").attributes(getFormatAttribute("MALE, FEMALE")).optional(),
+                        PayloadDocumentation.fieldWithPath("result.subwayLine.id").type(JsonFieldType.NUMBER).description("노선 식별 번호"),
+                        PayloadDocumentation.fieldWithPath("result.subwayLine.name").type(JsonFieldType.STRING).description("노선 이름"),
+                        PayloadDocumentation.fieldWithPath("result.location").type(JsonFieldType.NUMBER).description("열차 내 현재 위치"),
+                        PayloadDocumentation.fieldWithPath("result.organizationTrainNo").type(JsonFieldType.STRING).description("열차 편대 번호"),
                     )
                 )
             )

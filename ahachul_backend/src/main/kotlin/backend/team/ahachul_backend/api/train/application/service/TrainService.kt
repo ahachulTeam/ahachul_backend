@@ -36,11 +36,11 @@ class TrainService(
         )
     }
 
-    private fun decompositionTrainNo(trainNo: String): Triple<String, Int, Int> {
+    private fun decompositionTrainNo(trainNo: String): Triple<String, Int, String> {
         return Triple(
             trainNo.dropLast(3),
             trainNo[trainNo.length - 3].digitToInt(),
-            trainNo.takeLast(2).toInt(),
+            trainNo.takeLast(2),
         )
     }
 }

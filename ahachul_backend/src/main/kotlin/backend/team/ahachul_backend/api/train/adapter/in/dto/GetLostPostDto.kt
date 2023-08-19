@@ -9,11 +9,11 @@ class GetTrainDto {
         val id: Long,
         val subwayLine: SubwayLine,
         val location: Int,
-        val organizationTrainNo: Int,
+        val organizationTrainNo: String,
     ) {
 
         companion object {
-            fun of(train: TrainEntity, location: Int, organizationTrainNo: Int): Response {
+            fun of(train: TrainEntity, location: Int, organizationTrainNo: String): Response {
                 return Response(
                     id = train.id,
                     subwayLine = SubwayLine.of(train.subwayLine),
