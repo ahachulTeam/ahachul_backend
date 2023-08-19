@@ -31,10 +31,24 @@ include::community/posts-like.adoc[]
 
 include::community/comments.adoc[]
 
-== lost
+== Lost
 
 include::lost/posts.adoc[]
 
-== report
+== Report
 
 include::report/reports.adoc[]
+
+== SubwayLine
+
+include::subway/subways.adoc[]
+
+== Train
+
+include::train/trains.adoc[]
+
+include::train/error.adoc[]
+
+== Complaint
+
+include::complaint/complaints.adoc[]

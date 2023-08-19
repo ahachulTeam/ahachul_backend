@@ -1,0 +1,15 @@
+=== /trains
+
+==== 열차 번호 메타 데이터 추출
+
+.Request
+include::{snippets}/get-train/http-request.adoc[]
+.Request Headers
+include::{snippets}/get-train/request-headers.adoc[]
+.Path Parameters
+include::{snippets}/get-train/path-parameters.adoc[]
+.Response
+include::{snippets}/get-train/http-response.adoc[]
+.Response Fields
+include::{snippets}/get-train/response-fields.adoc[]
+
