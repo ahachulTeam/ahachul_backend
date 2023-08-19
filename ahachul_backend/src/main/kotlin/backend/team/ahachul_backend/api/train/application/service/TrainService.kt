@@ -4,6 +4,7 @@ import backend.team.ahachul_backend.api.train.adapter.`in`.dto.GetTrainDto
 import backend.team.ahachul_backend.api.train.application.port.`in`.TrainUseCase
 import backend.team.ahachul_backend.api.train.application.port.out.TrainReader
 import backend.team.ahachul_backend.api.train.domain.entity.TrainEntity
+import backend.team.ahachul_backend.common.exception.AdapterException
 import backend.team.ahachul_backend.common.exception.BusinessException
 import backend.team.ahachul_backend.common.logging.Logger
 import backend.team.ahachul_backend.common.response.ResponseCode
@@ -23,7 +24,7 @@ class TrainService(
         val train: TrainEntity
         try {
              train = trainReader.getTrain(prefixTrainNo)
-        } catch (e: Exception) {
+        } catch (e: AdapterException) {
             logger.info("prefixTrainNo is no matching train. prefixTrainNo : {}".format(prefixTrainNo))
             throw BusinessException(ResponseCode.INVALID_PREFIX_TRAIN_NO)
         }
