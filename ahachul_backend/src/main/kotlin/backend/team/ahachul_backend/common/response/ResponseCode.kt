@@ -37,5 +37,8 @@ enum class ResponseCode(
     REJECT_BY_HATE_STATUS("403", "싫어요 누른 상태입니다.", HttpStatus.BAD_REQUEST),
 
     // POST
-    IMPOSSIBLE_RECOMMEND_LOST_POST("600", "추천할 수 없는 습득물 게시물입니다.", HttpStatus.BAD_REQUEST)
+    IMPOSSIBLE_RECOMMEND_LOST_POST("600", "추천할 수 없는 습득물 게시물입니다.", HttpStatus.BAD_REQUEST),
+
+    // TRAIN
+    INVALID_PREFIX_TRAIN_NO("700", "유효하지 않은 열차 번호입니다.", HttpStatus.BAD_REQUEST),
 }
