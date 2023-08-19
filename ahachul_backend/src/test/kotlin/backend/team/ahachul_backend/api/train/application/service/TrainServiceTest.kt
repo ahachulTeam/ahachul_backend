@@ -46,7 +46,7 @@ class TrainServiceTest(
         assertThat(result.subwayLine.id).isEqualTo(subwayLine.id)
         assertThat(result.subwayLine.name).isEqualTo(subwayLine.name)
         assertThat(result.location).isEqualTo(3)
-        assertThat(result.organizationTrainNo).isEqualTo(42)
+        assertThat(result.organizationTrainNo).isEqualTo("42")
     }
 
     @Test
