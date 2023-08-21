@@ -42,6 +42,6 @@ class SearchLostPostsDto {
         val chats: Int = 0,
         val status: LostStatus,
         val image: ImageDto?,
-        val categoryName: String
+        val categoryName: String?
     )
 }

@@ -21,7 +21,7 @@ class GetLostPostDto {
         val storageNumber: String?,
         val pageUrl: String?,
         val images: List<ImageDto>?,
-        val categoryName: String,
+        val categoryName: String?,
         val recommendPosts: List<RecommendResponse>
     ) {
         companion object {
@@ -39,7 +39,7 @@ class GetLostPostDto {
                     storageNumber = entity.storageNumber,
                     pageUrl = entity.pageUrl,
                     images = images,
-                    categoryName = entity.category.name,
+                    categoryName = entity.category?.name,
                     recommendPosts = recommendPosts
                 )
             }

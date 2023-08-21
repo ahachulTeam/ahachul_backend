@@ -68,7 +68,7 @@ class LostPostServiceTest(
         val response = lostPostUseCase.getLostPost(entity.id)
 
         // then
-        assertThat(response.title).isEqualTo("지갑")
+        assertThat(response.title).isEqualTo("지갑 주인 찾아요")
         assertThat(response.content).isEqualTo("내용")
         assertThat(response.writer).isEqualTo("nickname")
         assertThat(response.subwayLine).isEqualTo(subwayLine!!.id)
@@ -84,8 +84,8 @@ class LostPostServiceTest(
             lostPostUseCase.createLostPost(createCommand)
         }
 
-        val searchCommand1 = createSearchLostPostCommand(0, subwayLine!!.id, "키워드")
-        val searchCommand2 = createSearchLostPostCommand(1, subwayLine!!.id, "키워드")
+        val searchCommand1 = createSearchLostPostCommand(0, subwayLine!!.id, null)
+        val searchCommand2 = createSearchLostPostCommand(1, subwayLine!!.id, null)
 
         // when
         val response1 = lostPostUseCase.searchLostPosts(searchCommand1)
@@ -122,7 +122,7 @@ class LostPostServiceTest(
             lostPostUseCase.createLostPost(createCommand2)
         }
 
-        val searchCommand = createSearchLostPostCommand(0, subwayLine1.id, "키워드")
+        val searchCommand = createSearchLostPostCommand(0, subwayLine1.id, null)
 
         // when
         val response = lostPostUseCase.searchLostPosts(searchCommand)
@@ -148,9 +148,9 @@ class LostPostServiceTest(
         // then
         val entity = lostPostRepository.findById(response.id).get()
 
-        assertThat(entity.title).isEqualTo("지갑")
+        assertThat(entity.title).isEqualTo("지갑 주인 찾아요")
         assertThat(entity.content).isEqualTo("내용")
-        assertThat(entity.lostType).isEqualTo(LostType.LOST)
+        assertThat(entity.lostType).isEqualTo(LostType.ACQUIRE)
         assertThat(entity.type).isEqualTo(LostPostType.CREATED)
     }
 
@@ -239,12 +239,38 @@ class LostPostServiceTest(
     }
 
     @Test
+    @DisplayName("같은 카테고리의 유실물을 추천해야 한다.")
+    fun getSameCategoryRecommendLostPost() {
+        // given
+        val lostPostIds: MutableList<Long> = mutableListOf()
+
+        for(i: Int in 1.. 8) {
+            val createCommand = createLostPostCommand(subwayLine!!.id, "유실물$i", "휴대폰")
+            lostPostIds.add(lostPostUseCase.createLostPost(createCommand).id)
+        }
+
+        for(i: Int in 1.. 4) {
+            val createCommand = createLostPostCommand(subwayLine!!.id, "유실물$i", "지갑")
+            lostPostUseCase.createLostPost(createCommand)
+        }
+
+        // when
+        val response = lostPostUseCase.getLostPost(lostPostIds[0])
+        val recommendPosts = response.recommendPosts
+        assertThat(recommendPosts.map { it.id }.toSet().size).isEqualTo(12)
+        assertThat(recommendPosts.map { it.id }.containsAll(lostPostIds))
+    }
+
+
+    @Test
     @DisplayName("추천되는 유실물에는 중복이 없어야 한다.")
     fun getRecommendLostPost() {
         // given
+        var lostPostId: Long = 0
+
         for(i: Int in 1.. 8) {
             val createCommand = createLostPostCommand(subwayLine!!.id, "유실물$i", "휴대폰")
-            lostPostUseCase.createLostPost(createCommand)
+            lostPostId = lostPostUseCase.createLostPost(createCommand).id
         }
 
         for(i: Int in 1.. 3) {
@@ -252,13 +278,13 @@ class LostPostServiceTest(
             lostPostUseCase.createLostPost(createCommand)
         }
 
-        for(i: Int in 1.. 3) {
+        for(i: Int in 1.. 2) {
             val createCommand = createLostPostCommand(subwayLine!!.id, "유실물$i", "컴퓨터")
             lostPostUseCase.createLostPost(createCommand)
         }
 
         // when
-        val response = lostPostUseCase.getLostPost(1)
+        val response = lostPostUseCase.getLostPost(lostPostId)
         val recommendPosts = response.recommendPosts
         assertThat(recommendPosts.map { it.id }.toSet().size).isEqualTo(12)
     }
@@ -301,7 +327,7 @@ class LostPostServiceTest(
         )
     }
 
-    private fun createSearchLostPostCommand(page: Int, subwayLineId:Long, keyword:String): SearchLostPostCommand {
+    private fun createSearchLostPostCommand(page: Int, subwayLineId:Long, keyword:String?): SearchLostPostCommand {
         return SearchLostPostCommand(
             pageable = PageRequest.of(page, 3),
             lostType = LostType.ACQUIRE,

@@ -89,7 +89,7 @@ class LostPostControllerDocsTest: CommonDocsTestConfig() {
                     fieldWithPath("result.storage" ).type(JsonFieldType.STRING).description("보관 장소").attributes(getFormatAttribute("Lost112 데이터")),
                     fieldWithPath("result.storageNumber").type(JsonFieldType.STRING).description("보관 장소 전화번호").attributes(getFormatAttribute("Lost112 데이터")),
                     fieldWithPath("result.pageUrl" ).type(JsonFieldType.STRING).description("외부 유실물 데이터 페이지 링크"),
-                    fieldWithPath("result.categoryName" ).type(JsonFieldType.STRING).description("카테고리 이름"),
+                    fieldWithPath("result.categoryName" ).type(JsonFieldType.STRING).description("카테고리 이름").optional(),
                     fieldWithPath("result.images[]").type(JsonFieldType.ARRAY).description("등록된 이미지 목록"),
                     fieldWithPath("result.images[].imageId").type(JsonFieldType.NUMBER).description("등록된 이미지 ID"),
                     fieldWithPath("result.images[].imageUrl").type(JsonFieldType.STRING).description("등록된 이미지 URI"),
@@ -164,7 +164,7 @@ class LostPostControllerDocsTest: CommonDocsTestConfig() {
                     fieldWithPath("result.posts[].subwayLine").type(JsonFieldType.NUMBER).description("유실 호선 ID"),
                     fieldWithPath("result.posts[].chats").type(JsonFieldType.NUMBER).description("유실물 쪽지 개수"),
                     fieldWithPath("result.posts[].status").type(JsonFieldType.STRING).description("유실물 찾기 완료 여부").attributes(getFormatAttribute( "PROGRESS / COMPLETE")),
-                    fieldWithPath("result.posts[].categoryName" ).type(JsonFieldType.STRING).description("카테고리 이름"),
+                    fieldWithPath("result.posts[].categoryName" ).type(JsonFieldType.STRING).description("카테고리 이름").optional(),
                     fieldWithPath("result.posts[].image").type(JsonFieldType.OBJECT).description("등록된 이미지"),
                     fieldWithPath("result.posts[].image.imageId").type(JsonFieldType.NUMBER).description("등록된 첫 번쨰 이미지 ID"),
                     fieldWithPath("result.posts[].image.imageUrl").type(JsonFieldType.STRING).description("등록된 첫 번째 이미지 URI"),
@@ -231,7 +231,7 @@ class LostPostControllerDocsTest: CommonDocsTestConfig() {
                         fieldWithPath("content").type(JsonFieldType.STRING).description("유실물 내용"),
                         fieldWithPath("subwayLine").type(JsonFieldType.NUMBER).description("유실 호선 ID"),
                         fieldWithPath("lostType").type(JsonFieldType.STRING).description("유실물 타입").attributes(getFormatAttribute("LOST(유실) / ACQUIRE(습득)")),
-                        fieldWithPath("categoryName").type(JsonFieldType.STRING).description("카테고리 이름"),
+                        fieldWithPath("categoryName").type(JsonFieldType.STRING).description("카테고리 이름").optional(),
                     ),
                     responseFields(
                         *commonResponseFields(),
@@ -315,7 +315,7 @@ class LostPostControllerDocsTest: CommonDocsTestConfig() {
                     fieldWithPath("status").type(JsonFieldType.STRING).description("유실물 찾기 완료 상태")
                         .attributes(getFormatAttribute( "PROGRESS / COMPLETE")).optional(),
                     fieldWithPath("removeFileIds").type(JsonFieldType.ARRAY).description("삭제할 유실물 이미지 번호 리스트"),
-                    fieldWithPath("categoryName").type(JsonFieldType.STRING).description("카테고리 이름")
+                    fieldWithPath("categoryName").type(JsonFieldType.STRING).description("카테고리 이름").optional()
                 ),
                 responseFields(
                     *commonResponseFields(),

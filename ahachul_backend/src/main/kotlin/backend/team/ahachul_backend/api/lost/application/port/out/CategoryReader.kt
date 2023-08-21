@@ -7,4 +7,6 @@ interface CategoryReader {
     fun getCategory(id: Long): CategoryEntity
 
     fun getCategoryByName(name: String): CategoryEntity
+
+    fun getCategories(): List<CategoryEntity>
 }

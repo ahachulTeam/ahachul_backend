@@ -45,8 +45,8 @@ class LostPostService(
         return GetLostPostDto.Response.of(entity, convertToImageDto(files), recommendPostsDto)
     }
 
-    private fun getRecommendPosts(subwayLine: SubwayLineEntity?, category:CategoryEntity): List<LostPostEntity> {
-        if (subwayLine === null ) {
+    private fun getRecommendPosts(subwayLine: SubwayLineEntity?, category:CategoryEntity?): List<LostPostEntity> {
+        if (subwayLine === null || category === null) {
             throw BusinessException(ResponseCode.IMPOSSIBLE_RECOMMEND_LOST_POST)
         }
 
@@ -99,7 +99,7 @@ class LostPostService(
                 subwayLine = it.subwayLine?.id,
                 status = it.status,
                 image = file?.let { f -> ImageDto(f.id, f.filePath) },
-                categoryName = it.category.name
+                categoryName = it.category?.name
             )
         }
         return SearchLostPostsDto.Response(hasNext = sliceObject.hasNext(), posts = lostPosts)

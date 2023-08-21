@@ -7,4 +7,6 @@ interface SubwayLineReader {
     fun getSubwayLine(id: Long): SubwayLineEntity
 
     fun getByName(name: String): SubwayLineEntity
+
+    fun getSubwayLines(): List<SubwayLineEntity>
 }

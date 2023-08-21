@@ -20,6 +20,10 @@ class SubwayLinePersistence(
         return subwayLineRepository.findByName(name) ?: throw AdapterException(ResponseCode.INVALID_DOMAIN)
     }
 
+    override fun getSubwayLines(): List<SubwayLineEntity> {
+        return subwayLineRepository.findAll()
+    }
+
     override fun save(subwayLineEntity: SubwayLineEntity): SubwayLineEntity {
         return subwayLineRepository.save(subwayLineEntity)
     }

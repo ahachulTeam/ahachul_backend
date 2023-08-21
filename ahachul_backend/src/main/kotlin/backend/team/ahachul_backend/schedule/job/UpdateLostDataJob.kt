@@ -6,7 +6,8 @@ import backend.team.ahachul_backend.api.lost.application.service.LostPostFileSer
 import backend.team.ahachul_backend.api.lost.domain.entity.CategoryEntity
 import backend.team.ahachul_backend.api.lost.domain.entity.LostPostEntity
 import backend.team.ahachul_backend.common.domain.entity.SubwayLineEntity
-import backend.team.ahachul_backend.common.persistence.SubwayLineReader
+import backend.team.ahachul_backend.common.storage.CategoryStorage
+import backend.team.ahachul_backend.common.storage.SubwayLineStorage
 import backend.team.ahachul_backend.common.utils.FileUtils
 import backend.team.ahachul_backend.schedule.Lost112Data
 import org.quartz.JobExecutionContext
@@ -17,8 +18,8 @@ import org.springframework.stereotype.Component
 @Component
 class UpdateLostDataJob(
     private val lostPostWriter: LostPostWriter,
-    private val subwayLineReader: SubwayLineReader,
-    private val categoryReader: CategoryReader,
+    private val subwayLineStorage: SubwayLineStorage,
+    private val categoryStorage: CategoryStorage,
     private val lostPostFileService: LostPostFileService
 ): QuartzJobBean() {
 
@@ -42,27 +43,13 @@ class UpdateLostDataJob(
     }
 
     private fun getSubwayLineEntity(receivedPlace: String): SubwayLineEntity? {
-        val subwayLineName = extractSubwayLine(receivedPlace)
-        return runCatching {
-            subwayLineReader.getByName(subwayLineName)
-        }.getOrNull()
+        val subwayLineName = subwayLineStorage.extractSubWayLine(receivedPlace)
+        return subwayLineStorage.getSubwayLineEntityByName(subwayLineName)
     }
 
-    private fun getCategory(categoryName: String): CategoryEntity {
+    private fun getCategory(categoryName: String): CategoryEntity? {
         val idx = categoryName.trim().indexOf(">")
         val primaryCategoryName = categoryName.substring(0, idx)
-        return categoryReader.getCategoryByName(primaryCategoryName)
-    }
-
-
-    private fun extractSubwayLine(place: String): String {
-        if (!place.endsWith(')')) return place
-
-        val res = StringBuilder()
-        for (i: Int in place.length - 2 downTo 0) {
-            if (place[i] == '(') break
-            res.append(place[i])
-        }
-        return res.reverse().toString()
+        return categoryStorage.getCategoryByName(primaryCategoryName)
     }
 }
