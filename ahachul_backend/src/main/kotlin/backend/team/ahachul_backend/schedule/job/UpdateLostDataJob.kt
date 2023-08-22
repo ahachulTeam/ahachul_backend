@@ -48,8 +48,7 @@ class UpdateLostDataJob(
     }
 
     private fun getCategory(categoryName: String): CategoryEntity? {
-        val idx = categoryName.trim().indexOf(">")
-        val primaryCategoryName = categoryName.substring(0, idx)
+        val primaryCategoryName = categoryStorage.extractPrimaryCategory(categoryName)
         return categoryStorage.getCategoryByName(primaryCategoryName)
     }
 }

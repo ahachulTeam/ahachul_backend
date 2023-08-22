@@ -14,6 +14,12 @@ class CategoryStorage(
         categories = categoryReader.getCategories()
     }
 
+    fun extractPrimaryCategory(categoryName: String): String{
+        val idx = categoryName.indexOf(">")
+        val primaryCategory = categoryName.substring(0, idx)
+        return primaryCategory.trim()
+    }
+
     fun getCategoryByName(categoryName: String): CategoryEntity? {
         return runCatching {
             categories.first { category -> category.name == categoryName }
