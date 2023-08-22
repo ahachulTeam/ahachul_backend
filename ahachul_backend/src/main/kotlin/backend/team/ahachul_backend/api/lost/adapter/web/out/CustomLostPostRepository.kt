@@ -1,7 +1,7 @@
 package backend.team.ahachul_backend.api.lost.adapter.web.out
 
-import backend.team.ahachul_backend.api.lost.application.service.command.GetRecommendLostPostsCommand
-import backend.team.ahachul_backend.api.lost.application.service.command.GetSliceLostPostsCommand
+import backend.team.ahachul_backend.api.lost.application.service.command.out.GetRecommendLostPostsCommand
+import backend.team.ahachul_backend.api.lost.application.service.command.out.GetSliceLostPostsCommand
 import backend.team.ahachul_backend.api.lost.domain.entity.CategoryEntity
 import backend.team.ahachul_backend.api.lost.domain.entity.LostPostEntity
 import backend.team.ahachul_backend.api.lost.domain.entity.QLostPostEntity.lostPostEntity
@@ -26,7 +26,8 @@ class CustomLostPostRepository(
             .where(
                 lostOriginEq(command.lostOrigin),
                 subwayLineEq(command.subwayLine),
-                lostTypeEq(command.lostType)
+                lostTypeEq(command.lostType),
+                titleAndContentLike(command.keyword),
             )
             .orderBy(lostPostEntity.createdAt.desc())
             .offset(getOffset(pageable).toLong())
@@ -91,4 +92,10 @@ class CustomLostPostRepository(
 
     private fun categoryNotEq(category: CategoryEntity?) =
         category?.let { lostPostEntity.category.ne(category) }
+
+    private fun titleAndContentLike(keyword: String?) =
+        keyword?.let {
+            lostPostEntity.title.contains(keyword)
+                .or(lostPostEntity.content.contains(keyword))
+        }
 }

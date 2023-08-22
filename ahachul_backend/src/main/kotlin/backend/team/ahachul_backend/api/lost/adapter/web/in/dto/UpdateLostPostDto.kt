@@ -1,6 +1,6 @@
 package backend.team.ahachul_backend.api.lost.adapter.web.`in`.dto
 
-import backend.team.ahachul_backend.api.lost.application.service.command.UpdateLostPostCommand
+import backend.team.ahachul_backend.api.lost.application.service.command.`in`.UpdateLostPostCommand
 import backend.team.ahachul_backend.api.lost.domain.entity.LostPostEntity
 import backend.team.ahachul_backend.api.lost.domain.model.LostStatus
 import org.springframework.web.multipart.MultipartFile
