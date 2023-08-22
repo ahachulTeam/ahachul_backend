@@ -10,7 +10,7 @@ import backend.team.ahachul_backend.api.member.domain.entity.MemberEntity
 import backend.team.ahachul_backend.api.report.domain.ReportEntity
 import backend.team.ahachul_backend.common.domain.entity.SubwayLineEntity
 import backend.team.ahachul_backend.common.entity.BaseEntity
-import backend.team.ahachul_backend.schedule.Lost112Data
+import backend.team.ahachul_backend.schedule.domain.Lost112Data
 import jakarta.persistence.*
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter

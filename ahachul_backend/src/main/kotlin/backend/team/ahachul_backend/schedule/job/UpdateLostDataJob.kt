@@ -1,6 +1,5 @@
 package backend.team.ahachul_backend.schedule.job
 
-import backend.team.ahachul_backend.api.lost.application.port.out.CategoryReader
 import backend.team.ahachul_backend.api.lost.application.port.out.LostPostWriter
 import backend.team.ahachul_backend.api.lost.application.service.LostPostFileService
 import backend.team.ahachul_backend.api.lost.domain.entity.CategoryEntity
@@ -9,7 +8,7 @@ import backend.team.ahachul_backend.common.domain.entity.SubwayLineEntity
 import backend.team.ahachul_backend.common.storage.CategoryStorage
 import backend.team.ahachul_backend.common.storage.SubwayLineStorage
 import backend.team.ahachul_backend.common.utils.FileUtils
-import backend.team.ahachul_backend.schedule.Lost112Data
+import backend.team.ahachul_backend.schedule.domain.Lost112Data
 import org.quartz.JobExecutionContext
 import org.springframework.scheduling.quartz.QuartzJobBean
 import org.springframework.stereotype.Component
