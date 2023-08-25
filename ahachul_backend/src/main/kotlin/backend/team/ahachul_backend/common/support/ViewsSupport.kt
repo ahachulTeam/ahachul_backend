@@ -7,7 +7,7 @@ import org.springframework.stereotype.Component
 @Component
 class ViewsSupport(
     private val redisClient: RedisClient,
-    private val postReader: CommunityPostReader,
+    private val postReader: CommunityPostReader
 ) {
 
     companion object {

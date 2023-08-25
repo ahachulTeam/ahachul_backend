@@ -6,6 +6,7 @@ import backend.team.ahachul_backend.api.community.application.port.out.*
 import backend.team.ahachul_backend.api.community.domain.entity.CommunityPostEntity
 import backend.team.ahachul_backend.api.community.domain.entity.CommunityPostFileEntity
 import backend.team.ahachul_backend.api.member.application.port.out.MemberReader
+import backend.team.ahachul_backend.api.rank.application.service.HashTagRankService
 import backend.team.ahachul_backend.common.dto.ImageDto
 import backend.team.ahachul_backend.common.persistence.SubwayLineReader
 import backend.team.ahachul_backend.common.support.ViewsSupport
@@ -28,9 +29,14 @@ class CommunityPostService(
     private val communityPostFileService: CommunityPostFileService,
 
     private val viewsSupport: ViewsSupport,
+    private val hashTagRankingService: HashTagRankService
 ): CommunityPostUseCase {
 
     override fun searchCommunityPosts(command: SearchCommunityPostCommand): SearchCommunityPostDto.Response {
+        if (isHashTagSearchCond(command.hashTag, command.content)) {
+            hashTagRankingService.increaseCount(command.hashTag!!)
+        }
+
         val searchCommunityPosts = communityPostReader.searchCommunityPosts(command)
         val posts = searchCommunityPosts
             .map {
@@ -48,6 +54,10 @@ class CommunityPostService(
             posts = posts,
             command.pageable.pageNumber,
         )
+    }
+
+    private fun isHashTagSearchCond(hashTag: String?, content: String?): Boolean {
+        return !hashTag.isNullOrEmpty() && content.isNullOrEmpty()
     }
 
     override fun getCommunityPost(command: GetCommunityPostCommand): GetCommunityPostDto.Response {
