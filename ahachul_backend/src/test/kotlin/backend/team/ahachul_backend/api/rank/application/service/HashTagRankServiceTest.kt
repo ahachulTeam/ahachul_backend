@@ -4,8 +4,10 @@ import backend.team.ahachul_backend.api.community.adapter.web.`in`.dto.post.Sear
 import backend.team.ahachul_backend.api.community.application.port.out.CommunityPostReader
 import backend.team.ahachul_backend.api.community.application.service.CommunityPostService
 import backend.team.ahachul_backend.api.community.domain.SearchCommunityPost
+import backend.team.ahachul_backend.common.client.RedisClient
 import backend.team.ahachul_backend.config.controller.CommonServiceTestConfig
 import org.assertj.core.api.Assertions.assertThat
+import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.mockito.BDDMockito.given
 import org.springframework.beans.factory.annotation.Autowired
@@ -19,11 +21,18 @@ import java.util.concurrent.Executors
 
 class HashTagRankServiceTest(
     @Autowired val hashTagRankService: HashTagRankService,
-    @Autowired val communityPostService: CommunityPostService
+    @Autowired val communityPostService: CommunityPostService,
+    @Autowired val redisClient: RedisClient
 ): CommonServiceTestConfig() {
 
-     @MockBean(name = "communityPostReader")
-     lateinit var communityPostReader: CommunityPostReader
+    @MockBean(name = "communityPostReader")
+    lateinit var communityPostReader: CommunityPostReader
+
+    @BeforeEach
+    fun init() {
+        val key = HashTagRankService.KEY
+        redisClient.delete(key)
+    }
 
     @Test
     fun 해시태그_내림차순_랭킹을_반환한다() {
@@ -47,9 +56,10 @@ class HashTagRankServiceTest(
     @Test
     fun 해시태그_검색시_비동기로_조회수가_증가한다() {
         // given
+        val hashTagName = "1호선"
         val response: Slice<SearchCommunityPost> = SliceImpl(listOf())
         val searchCommand = SearchCommunityPostCommand(
-            hashTag = "1호선",
+            hashTag = hashTagName,
             pageable = PageRequest.of(0, 3)
         )
 
@@ -64,24 +74,25 @@ class HashTagRankServiceTest(
         Thread.sleep(1000)
 
         // then
-        val result = hashTagRankService.get("1호선")
+        val result = hashTagRankService.get(hashTagName)
         assertThat(result).isEqualTo(2.0)
     }
 
     @Test
     fun 조회수_증가_동시성_테스트() {
+        val hashTagName = "1호선"
         val executorService: ExecutorService = Executors.newFixedThreadPool(10)
         val countDownLatch = CountDownLatch(10)
 
         for (i in 1..10) {
             executorService.execute {
-                hashTagRankService.increaseCount("1호선")
+                hashTagRankService.increaseCount(hashTagName)
                 countDownLatch.countDown()
             }
         }
 
         countDownLatch.await()
-        val result = hashTagRankService.get("1호선")
+        val result = hashTagRankService.get(hashTagName)
         assertThat(result).isEqualTo(10.0)
     }
 }
