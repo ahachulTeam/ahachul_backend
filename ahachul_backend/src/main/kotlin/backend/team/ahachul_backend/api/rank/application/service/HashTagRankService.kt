@@ -11,14 +11,11 @@ class HashTagRankService(
 
     fun increaseCount(hashTagName: String) {
         val setOperations = redisClient.getZSetOps()
-
-        val data = setOperations.score(KEY, hashTagName)?.toInt()
-        setOperations.add(KEY, hashTagName, ((data ?: DEFAULT_VALUE) + INCREASE_CNT).toDouble())
+        setOperations.incrementScore(KEY, hashTagName, INCREASE_CNT.toDouble())
     }
 
     fun getRank(): GetHashTagRankDto.Response {
         val setOperations = redisClient.getZSetOps()
-
         val responseSet = setOperations.reverseRange(KEY, 0, LIMIT)
         val response = responseSet?.toList() ?: listOf()
         return GetHashTagRankDto.Response(response)
@@ -31,7 +28,6 @@ class HashTagRankService(
 
     companion object {
         const val KEY = "hashtags"
-        const val DEFAULT_VALUE = 0
         const val INCREASE_CNT = 1
         const val LIMIT = 10L
     }
