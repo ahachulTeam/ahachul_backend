@@ -33,7 +33,7 @@ class SubwayLineService(
         return stations.map {
             Station(
                 id = it.id,
-                name = it.stationName
+                name = it.name
             )
         }
     }

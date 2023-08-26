@@ -10,9 +10,10 @@ class StationEntity(
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "station_id")
     var id: Long = 0,
 
-    var stationName: String,
+    var name: String,
 
     var identity: Long = 0,
 
