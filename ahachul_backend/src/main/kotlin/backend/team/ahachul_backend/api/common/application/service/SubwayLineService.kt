@@ -1,10 +1,10 @@
 package backend.team.ahachul_backend.api.common.application.service
 
 import backend.team.ahachul_backend.api.common.adapter.`in`.dto.SearchSubwayLineDto
+import backend.team.ahachul_backend.api.common.adapter.`in`.dto.StationDto
 import backend.team.ahachul_backend.api.common.adapter.`in`.dto.SubwayLine
 import backend.team.ahachul_backend.api.common.application.port.`in`.SubwayLineUseCase
 import backend.team.ahachul_backend.api.common.application.port.out.StationReader
-import backend.team.ahachul_backend.api.common.application.port.out.StationRepository
 import backend.team.ahachul_backend.common.domain.entity.SubwayLineEntity
 import backend.team.ahachul_backend.common.persistence.SubwayLineRepository
 import org.springframework.stereotype.Service
@@ -26,10 +26,13 @@ class SubwayLineService(
         )
     }
 
-    private fun getStations(subwayLine: SubwayLineEntity): List<String> {
+    private fun getStations(subwayLine: SubwayLineEntity): List<StationDto> {
         val stations = stationReader.findAllBySubwayLine(subwayLine)
         return stations.map {
-            it.stationName
+            StationDto(
+                id = it.id,
+                name = it.stationName
+            )
         }
     }
 }
