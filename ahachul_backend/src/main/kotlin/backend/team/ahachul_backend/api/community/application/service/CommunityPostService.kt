@@ -7,10 +7,12 @@ import backend.team.ahachul_backend.api.community.domain.entity.CommunityPostEnt
 import backend.team.ahachul_backend.api.community.domain.entity.CommunityPostFileEntity
 import backend.team.ahachul_backend.api.member.application.port.out.MemberReader
 import backend.team.ahachul_backend.api.rank.application.service.HashTagRankService
+import backend.team.ahachul_backend.api.rank.event.HashTagSearchEvent
 import backend.team.ahachul_backend.common.dto.ImageDto
 import backend.team.ahachul_backend.common.persistence.SubwayLineReader
 import backend.team.ahachul_backend.common.support.ViewsSupport
 import backend.team.ahachul_backend.common.utils.RequestUtils
+import org.springframework.context.ApplicationEventPublisher
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
@@ -29,14 +31,10 @@ class CommunityPostService(
     private val communityPostFileService: CommunityPostFileService,
 
     private val viewsSupport: ViewsSupport,
-    private val hashTagRankingService: HashTagRankService
+    private val publisher: ApplicationEventPublisher
 ): CommunityPostUseCase {
 
     override fun searchCommunityPosts(command: SearchCommunityPostCommand): SearchCommunityPostDto.Response {
-        if (isHashTagSearchCond(command.hashTag, command.content)) {
-            hashTagRankingService.increaseCount(command.hashTag!!)
-        }
-
         val searchCommunityPosts = communityPostReader.searchCommunityPosts(command)
         val posts = searchCommunityPosts
             .map {
@@ -48,6 +46,11 @@ class CommunityPostService(
                     hashTags = communityPostHashTagReader.findAllByPostId(it.id).map { it.hashTag.name }
                 )
             }.toList()
+
+        if (isHashTagSearchCond(command.hashTag, command.content)) {
+            val searchEvent = HashTagSearchEvent(hashTagName = command.hashTag!!)
+            publisher.publishEvent(searchEvent)
+        }
 
         return SearchCommunityPostDto.Response.of(
             hasNext = searchCommunityPosts.hasNext(),
