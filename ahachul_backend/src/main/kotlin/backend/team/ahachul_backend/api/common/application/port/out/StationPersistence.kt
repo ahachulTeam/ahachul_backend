@@ -12,7 +12,7 @@ class StationPersistence(
 ): StationReader {
 
     override fun findAllBySubwayLine(subwayLine: SubwayLineEntity): List<StationEntity> {
-        return stationRepository.findAllBySubwayLineEntity(subwayLine) ?:
+        return stationRepository.findAllBySubwayLineEntityOrderByIdentity(subwayLine) ?:
             throw DomainException(ResponseCode.INVALID_DOMAIN)
     }
 }

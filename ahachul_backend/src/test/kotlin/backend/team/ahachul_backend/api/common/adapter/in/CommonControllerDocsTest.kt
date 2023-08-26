@@ -1,11 +1,10 @@
 package backend.team.ahachul_backend.api.common.adapter.`in`
 
 import backend.team.ahachul_backend.api.common.adapter.`in`.dto.SearchSubwayLineDto
-import backend.team.ahachul_backend.api.common.adapter.`in`.dto.StationDto
+import backend.team.ahachul_backend.api.common.adapter.`in`.dto.Station
 import backend.team.ahachul_backend.api.common.adapter.`in`.dto.SubwayLine
 import backend.team.ahachul_backend.api.common.application.port.`in`.SubwayLineUseCase
 import backend.team.ahachul_backend.config.controller.CommonDocsTestConfig
-import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
 import org.mockito.BDDMockito
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest
@@ -14,7 +13,6 @@ import org.springframework.http.MediaType
 import org.springframework.restdocs.mockmvc.MockMvcRestDocumentation
 import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders
 import org.springframework.restdocs.payload.JsonFieldType
-import org.springframework.restdocs.payload.PayloadDocumentation
 import org.springframework.restdocs.payload.PayloadDocumentation.*
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers
 
@@ -27,12 +25,12 @@ class CommonControllerDocsTest: CommonDocsTestConfig() {
     @Test
     fun searchSubwayLines() {
         // given
-        val station1 = StationDto(
+        val station1 = Station(
             id = 1,
             name = "인천역"
         )
 
-        val station2 = StationDto(
+        val station2 = Station(
             id = 3,
             name = "신림역"
         )

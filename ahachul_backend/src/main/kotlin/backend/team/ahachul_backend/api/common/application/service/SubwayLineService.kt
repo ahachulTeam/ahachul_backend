@@ -1,7 +1,7 @@
 package backend.team.ahachul_backend.api.common.application.service
 
 import backend.team.ahachul_backend.api.common.adapter.`in`.dto.SearchSubwayLineDto
-import backend.team.ahachul_backend.api.common.adapter.`in`.dto.StationDto
+import backend.team.ahachul_backend.api.common.adapter.`in`.dto.Station
 import backend.team.ahachul_backend.api.common.adapter.`in`.dto.SubwayLine
 import backend.team.ahachul_backend.api.common.application.port.`in`.SubwayLineUseCase
 import backend.team.ahachul_backend.api.common.application.port.out.StationReader
@@ -28,10 +28,10 @@ class SubwayLineService(
         )
     }
 
-    private fun getStations(subwayLine: SubwayLineEntity): List<StationDto> {
+    private fun getStations(subwayLine: SubwayLineEntity): List<Station> {
         val stations = stationReader.findAllBySubwayLine(subwayLine)
         return stations.map {
-            StationDto(
+            Station(
                 id = it.id,
                 name = it.stationName
             )
