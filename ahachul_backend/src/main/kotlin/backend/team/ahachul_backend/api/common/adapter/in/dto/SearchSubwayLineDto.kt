@@ -13,14 +13,16 @@ data class SubwayLine(
     val id: Long,
     val name: String,
     val phoneNumber: String,
+    val stations: List<String>
 ) {
 
     companion object {
-        fun of(subwayLine: SubwayLineEntity): SubwayLine {
+        fun of(subwayLine: SubwayLineEntity, stations: List<String>): SubwayLine {
             return SubwayLine(
                 id = subwayLine.id,
                 name = subwayLine.name,
                 phoneNumber = subwayLine.phoneNumber,
+                stations = stations
             )
         }
     }

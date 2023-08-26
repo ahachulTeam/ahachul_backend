@@ -30,12 +30,14 @@ class CommonControllerDocsTest: CommonDocsTestConfig() {
                 SubwayLine(
                     id = 1L,
                     name = "1호선",
-                    phoneNumber = "02-111-1111"
+                    phoneNumber = "02-111-1111",
+                    stations = listOf("인천역", "서울역")
                 ),
                 SubwayLine(
                     id = 2L,
                     name = "2호선",
-                    phoneNumber = "02-222-2222"
+                    phoneNumber = "02-222-2222",
+                    stations = listOf("신림역", "영등포구청역")
                 )
             )
         )
@@ -62,6 +64,7 @@ class CommonControllerDocsTest: CommonDocsTestConfig() {
                         PayloadDocumentation.fieldWithPath("result.subwayLines[].id").type(JsonFieldType.NUMBER).description("노선 ID"),
                         PayloadDocumentation.fieldWithPath("result.subwayLines[].name").type(JsonFieldType.STRING).description("노선 이름"),
                         PayloadDocumentation.fieldWithPath("result.subwayLines[].phoneNumber").type(JsonFieldType.STRING).description("노선 전화 번호"),
+                        PayloadDocumentation.fieldWithPath("result.subwayLines[].stations").type(JsonFieldType.ARRAY).description("노선에 해당하는 모든 역 이름 배열"),
                     )
                 )
             )
