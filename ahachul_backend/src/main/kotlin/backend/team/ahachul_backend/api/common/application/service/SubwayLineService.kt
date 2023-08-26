@@ -7,6 +7,7 @@ import backend.team.ahachul_backend.api.common.application.port.`in`.SubwayLineU
 import backend.team.ahachul_backend.api.common.application.port.out.StationReader
 import backend.team.ahachul_backend.common.domain.entity.SubwayLineEntity
 import backend.team.ahachul_backend.common.persistence.SubwayLineRepository
+import org.springframework.cache.annotation.Cacheable
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
@@ -17,6 +18,7 @@ class SubwayLineService(
     private val stationReader: StationReader
 ): SubwayLineUseCase {
 
+    @Cacheable("subwayLines")
     override fun searchSubwayLines(): SearchSubwayLineDto.Response {
         return SearchSubwayLineDto.Response(
             subwayLineRepository.findAll()
