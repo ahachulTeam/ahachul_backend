@@ -2,7 +2,7 @@ CREATE TABLE tb_station
 (
     station_id             BIGINT auto_increment NOT NULL,
     station_name           VARCHAR(100) NOT NULL,
-    identifier             BIGINT NOT NULL,
+    identity               BIGINT NOT NULL,
     subway_line_id         BIGINT NOT NULL,
     created_at             TIMESTAMP NOT NULL,
     created_by             VARCHAR(50) NOT NULL,
