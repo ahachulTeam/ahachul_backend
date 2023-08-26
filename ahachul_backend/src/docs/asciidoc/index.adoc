@@ -52,3 +52,7 @@ include::train/error.adoc[]
 == Complaint
 
 include::complaint/complaints.adoc[]
+
+== Rank
+
+include::rank/ranks.adoc[]
