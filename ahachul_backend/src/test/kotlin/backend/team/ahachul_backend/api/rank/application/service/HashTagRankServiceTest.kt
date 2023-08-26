@@ -5,7 +5,7 @@ import backend.team.ahachul_backend.api.community.application.port.out.Community
 import backend.team.ahachul_backend.api.community.application.service.CommunityPostService
 import backend.team.ahachul_backend.api.community.domain.SearchCommunityPost
 import backend.team.ahachul_backend.config.controller.CommonServiceTestConfig
-import org.assertj.core.api.Assertions
+import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.mockito.BDDMockito.given
 import org.springframework.beans.factory.annotation.Autowired
@@ -13,6 +13,9 @@ import org.springframework.boot.test.mock.mockito.MockBean
 import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Slice
 import org.springframework.data.domain.SliceImpl
+import java.util.concurrent.CountDownLatch
+import java.util.concurrent.ExecutorService
+import java.util.concurrent.Executors
 
 class HashTagRankServiceTest(
     @Autowired val hashTagRankService: HashTagRankService,
@@ -37,8 +40,8 @@ class HashTagRankServiceTest(
         val result = hashTagRankService.getRank()
 
         // then
-        Assertions.assertThat(result.ranks.size).isEqualTo(2)
-        Assertions.assertThat(result.ranks).isEqualTo(listOf("2호선", "1호선"))
+        assertThat(result.ranks.size).isEqualTo(2)
+        assertThat(result.ranks).isEqualTo(listOf("2호선", "1호선"))
     }
 
     @Test
@@ -62,6 +65,23 @@ class HashTagRankServiceTest(
 
         // then
         val result = hashTagRankService.get("1호선")
-        Assertions.assertThat(result).isEqualTo(2.0)
+        assertThat(result).isEqualTo(2.0)
+    }
+
+    @Test
+    fun 조회수_증가_동시성_테스트() {
+        val executorService: ExecutorService = Executors.newFixedThreadPool(10)
+        val countDownLatch = CountDownLatch(10)
+
+        for (i in 1..10) {
+            executorService.execute {
+                hashTagRankService.increaseCount("1호선")
+                countDownLatch.countDown()
+            }
+        }
+
+        countDownLatch.await()
+        val result = hashTagRankService.get("1호선")
+        assertThat(result).isEqualTo(10.0)
     }
 }
