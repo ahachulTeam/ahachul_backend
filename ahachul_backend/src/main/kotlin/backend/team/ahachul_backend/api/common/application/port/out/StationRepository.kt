@@ -6,5 +6,5 @@ import org.springframework.data.jpa.repository.JpaRepository
 
 interface StationRepository: JpaRepository<StationEntity, Long> {
 
-    fun findAllBySubwayLineEntityOrderByIdentity(subwayLine: SubwayLineEntity): List<StationEntity>?
+    fun findAllBySubwayLineEntityOrderByName(subwayLine: SubwayLineEntity): List<StationEntity>?
 }
