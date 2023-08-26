@@ -14,7 +14,7 @@ class StationEntity(
 
     var stationName: String,
 
-    var identity: Long = 0,
+    var stationIdentity: Long = 0,
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "subway_line_id")

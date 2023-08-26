@@ -2,7 +2,7 @@ CREATE TABLE tb_station
 (
     station_id             BIGINT auto_increment NOT NULL,
     station_name           VARCHAR(100) NOT NULL,
-    identity               BIGINT NOT NULL,
+    station_identity               BIGINT NOT NULL,
     subway_line_id         BIGINT NOT NULL,
     created_at             TIMESTAMP NOT NULL,
     created_by             VARCHAR(50) NOT NULL,
@@ -11,4 +11,4 @@ CREATE TABLE tb_station
     PRIMARY KEY (station_id)
 );
 
-ALTER TABLE tb_subway_line ADD identifier BIGINT NOT NULL;
+ALTER TABLE tb_subway_line ADD subway_line_identity BIGINT NOT NULL;
