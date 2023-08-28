@@ -67,7 +67,7 @@ class CommunityPostService(
     override fun createCommunityPost(command: CreateCommunityPostCommand): CreateCommunityPostDto.Response {
         val memberId = RequestUtils.getAttribute("memberId")!!
         val member = memberReader.getMember(memberId.toLong())
-        val subwayLine = subwayLineReader.getSubwayLine(command.subwayLineId)
+        val subwayLine = subwayLineReader.getById(command.subwayLineId)
         val communityPost = communityPostWriter.save(CommunityPostEntity.of(command, member, subwayLine))
         communityPostHashTagService.createCommunityPostHashTag(communityPost, command.hashTags)
         val images = communityPostFileService.createCommunityPostFiles(communityPost, command.imageFiles)

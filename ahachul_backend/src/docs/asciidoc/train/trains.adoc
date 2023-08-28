@@ -13,3 +13,15 @@ include::{snippets}/get-train/http-response.adoc[]
 .Response Fields
 include::{snippets}/get-train/response-fields.adoc[]
 
+==== 특정 정류장 열차 실시간 데이터 조회
+
+.Request
+include::{snippets}/get-train-real-times/http-request.adoc[]
+.Request Headers
+include::{snippets}/get-train-real-times/request-headers.adoc[]
+.Query Parameters
+include::{snippets}/get-train-real-times/query-parameters.adoc[]
+.Response
+include::{snippets}/get-train-real-times/http-response.adoc[]
+.Response Fields
+include::{snippets}/get-train-real-times/response-fields.adoc[]

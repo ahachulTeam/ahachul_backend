@@ -84,7 +84,7 @@ class LostPostService(
     }
 
     override fun searchLostPosts(command: SearchLostPostCommand): SearchLostPostsDto.Response {
-        val subwayLine = command.subwayLineId?.let { subwayLineReader.getSubwayLine(it) }
+        val subwayLine = command.subwayLineId?.let { subwayLineReader.getById(it) }
         val sliceObject = lostPostReader.getLostPosts(GetSliceLostPostsCommand.from(command, subwayLine))
 
         val lostPosts = sliceObject.content.map {
@@ -109,7 +109,7 @@ class LostPostService(
     override fun createLostPost(command: CreateLostPostCommand): CreateLostPostDto.Response {
         val memberId = RequestUtils.getAttribute("memberId")!!
         val member = memberReader.getMember(memberId.toLong())
-        val subwayLine = subwayLineReader.getSubwayLine(command.subwayLine)
+        val subwayLine = subwayLineReader.getById(command.subwayLine)
         val category = categoryReader.getCategoryByName(command.categoryName)
 
         val entity = lostPostWriter.save(
@@ -134,7 +134,7 @@ class LostPostService(
         entity.checkMe(memberId)
 
         val subwayLine = command.subwayLine?.let {
-            subwayLineReader.getSubwayLine(it)
+            subwayLineReader.getById(it)
         }
 
         val category = command.categoryName?.let {
