@@ -2,6 +2,7 @@ package backend.team.ahachul_backend.common.client
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import org.springframework.data.redis.core.StringRedisTemplate
+import org.springframework.data.redis.core.ZSetOperations
 import org.springframework.stereotype.Component
 import java.util.concurrent.TimeUnit
 
@@ -35,5 +36,9 @@ class RedisClient(
 
     fun delete(key: String) {
         redisTemplate.delete(key)
+    }
+
+    fun getZSetOps(): ZSetOperations<String, String> {
+        return redisTemplate.opsForZSet()
     }
 }

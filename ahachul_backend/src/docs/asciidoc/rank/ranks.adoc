@@ -1,0 +1,10 @@
+=== /ranks/hashtag
+
+==== 해시태그 랭킹 조회
+
+.Request
+include::{snippets}/save-report-community-post/http-request.adoc[]
+.Response
+include::{snippets}/save-report-community-post/http-response.adoc[]
+.Response Fields
+include::{snippets}/save-report-community-post/response-fields.adoc[]
