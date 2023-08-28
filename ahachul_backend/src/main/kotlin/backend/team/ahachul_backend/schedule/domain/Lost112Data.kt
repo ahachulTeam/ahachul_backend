@@ -1,4 +1,4 @@
-package backend.team.ahachul_backend.schedule
+package backend.team.ahachul_backend.schedule.domain
 
 import com.fasterxml.jackson.annotation.JsonProperty
 
