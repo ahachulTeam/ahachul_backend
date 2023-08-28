@@ -3,6 +3,7 @@ package backend.team.ahachul_backend.api.train.adapter.`in`
 import backend.team.ahachul_backend.api.train.adapter.`in`.dto.GetTrainDto
 import backend.team.ahachul_backend.api.train.adapter.`in`.dto.GetTrainRealTimesDto
 import backend.team.ahachul_backend.api.train.application.port.`in`.TrainUseCase
+import backend.team.ahachul_backend.api.train.domain.model.TrainArrivalCode
 import backend.team.ahachul_backend.api.train.domain.model.UpDownType
 import backend.team.ahachul_backend.config.controller.CommonDocsTestConfig
 import org.junit.jupiter.api.Assertions.*
@@ -83,14 +84,16 @@ class TrainControllerDocsTest : CommonDocsTestConfig() {
                     nextStationDirection = "신대방방면",
                     destinationStationDirection = "성수행",
                     trainNum = "2234",
-                    currentLocation = "전역 도착"
+                    currentLocation = "전역 도착",
+                    currentTrainArrivalCode = TrainArrivalCode.BEFORE_STATION_ARRIVE
                 ),
                 GetTrainRealTimesDto.TrainRealTime(
                     upDownType = UpDownType.UP,
                     nextStationDirection = "봉천방면",
                     destinationStationDirection = "성수행",
                     trainNum = "2236",
-                    currentLocation = "6분"
+                    currentLocation = "6분",
+                    currentTrainArrivalCode = TrainArrivalCode.RUNNING
                 )
             )
         )
@@ -131,6 +134,7 @@ class TrainControllerDocsTest : CommonDocsTestConfig() {
                         PayloadDocumentation.fieldWithPath("result.trainRealTimes[].destinationStationDirection").type(JsonFieldType.STRING).description("목적지 방향"),
                         PayloadDocumentation.fieldWithPath("result.trainRealTimes[].trainNum").type(JsonFieldType.STRING).description("해당 열차 ID"),
                         PayloadDocumentation.fieldWithPath("result.trainRealTimes[].currentLocation").type(JsonFieldType.STRING).description("해당 열차 현재 위치"),
+                        PayloadDocumentation.fieldWithPath("result.trainRealTimes[].currentTrainArrivalCode").type(JsonFieldType.STRING).description("해당 열차 현재 위치 코드").attributes(getFormatAttribute("ENTER(진입), ARRIVE(도착), DEPARTURE(출발), BEFORE_STATION_DEPARTURE(전역출발), BEFORE_STATION_ENTER(전역진입), BEFORE_STATION_ARRIVE(전역도착), RUNNING(운행중)")),
                     )
                 )
             )

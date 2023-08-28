@@ -19,7 +19,7 @@ data class RealtimeArrivalListDTO(
     val recptnDt: String?,
     val arvlMsg2: String,
     val arvlMsg3: String?,
-    val arvlCd: String?
+    val arvlCd: String
 )
 
 data class ErrorMessageDTO(

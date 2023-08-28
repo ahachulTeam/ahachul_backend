@@ -1,5 +1,6 @@
 package backend.team.ahachul_backend.api.train.adapter.`in`.dto
 
+import backend.team.ahachul_backend.api.train.domain.model.TrainArrivalCode
 import backend.team.ahachul_backend.api.train.domain.model.UpDownType
 
 class GetTrainRealTimesDto {
@@ -23,6 +24,7 @@ class GetTrainRealTimesDto {
         val destinationStationDirection: String,
         val trainNum: String,
         val currentLocation: String,
+        val currentTrainArrivalCode: TrainArrivalCode,
     ) {
     }
 }
