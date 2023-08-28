@@ -4,9 +4,10 @@ import backend.team.ahachul_backend.common.exception.DomainException
 import backend.team.ahachul_backend.common.response.ResponseCode.INVALID_ENUM
 
 enum class TrainArrivalCode(
-    val code: String
+    val code: String,
+    val priority: Int
 ) {
-    ENTER("0"), ARRIVE("1"), DEPARTURE("2"), BEFORE_STATION_DEPARTURE("3"), BEFORE_STATION_ENTER("4"), BEFORE_STATION_ARRIVE("5"), RUNNING("99");
+    ENTER("0", 2), ARRIVE("1", 1), DEPARTURE("2", 0), BEFORE_STATION_DEPARTURE("3", 3), BEFORE_STATION_ENTER("4", 5), BEFORE_STATION_ARRIVE("5", 4), RUNNING("99", 6);
 
     companion object {
         fun from(code: String): TrainArrivalCode {

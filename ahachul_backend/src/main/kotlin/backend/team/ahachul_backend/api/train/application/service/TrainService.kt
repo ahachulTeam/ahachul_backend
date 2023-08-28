@@ -71,10 +71,14 @@ class TrainService(
                 subwayLineIdentity = subwayLine.identity,
             ))
         }
+
+        if (result.size == 0) throw BusinessException(ResponseCode.NOT_EXIST_ARRIVAL_TRAIN)
+
         val sortedResult = result.sortedWith(
-            compareBy<GetTrainRealTimesDto.TrainRealTime> { it.currentTrainArrivalCode.code }
+            compareBy<GetTrainRealTimesDto.TrainRealTime> { it.currentTrainArrivalCode.priority }
                 .thenBy { it.currentLocation }
         )
+
         return GetTrainRealTimesDto.Response(subwayLineId, stationId, sortedResult)
     }
 
