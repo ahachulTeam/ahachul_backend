@@ -23,7 +23,7 @@ class ComplaintService(
         complaintWriter.save(
             command.toEntity(
                 memberReader.getMember(memberId.toLong()),
-                subwayLineReader.getSubwayLine(command.subwayLineId))
+                subwayLineReader.getById(command.subwayLineId))
         )
     }
 }

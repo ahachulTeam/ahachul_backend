@@ -41,4 +41,5 @@ enum class ResponseCode(
 
     // TRAIN
     INVALID_PREFIX_TRAIN_NO("700", "유효하지 않은 열차 번호입니다.", HttpStatus.BAD_REQUEST),
+    NOT_EXIST_ARRIVAL_TRAIN("701", "열차 도착 정보가 없습니다.", HttpStatus.BAD_REQUEST),
 }

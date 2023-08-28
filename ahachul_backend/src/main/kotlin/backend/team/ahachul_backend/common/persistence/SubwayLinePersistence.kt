@@ -10,7 +10,7 @@ class SubwayLinePersistence(
     private val subwayLineRepository: SubwayLineRepository
 ): SubwayLineReader, SubwayLineWriter {
 
-    override fun getSubwayLine(id: Long): SubwayLineEntity {
+    override fun getById(id: Long): SubwayLineEntity {
         return subwayLineRepository.findById(id).orElseThrow {
             throw AdapterException(ResponseCode.INVALID_DOMAIN)
         }
