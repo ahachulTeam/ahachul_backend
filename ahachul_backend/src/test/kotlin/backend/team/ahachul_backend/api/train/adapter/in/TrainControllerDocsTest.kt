@@ -129,6 +129,7 @@ class TrainControllerDocsTest : CommonDocsTestConfig() {
                         fieldWithPath("result.congestions[]").type(JsonFieldType.ARRAY).description("열차 혼잡도 배열"),
                         fieldWithPath("result.congestions[].carNo").type(JsonFieldType.NUMBER).description("칸 번호"),
                         fieldWithPath("result.congestions[].congestionColor").type(JsonFieldType.STRING).description("칸 혼잡도 색깔")
+                            .attributes(getFormatAttribute("GREEN, YELLOW, ORANGE, RED"))
                     )
                 )
             )
