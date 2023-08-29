@@ -10,10 +10,10 @@ class TrainCongestionDto(
     class Train(
         val subwayLine: String,
         val trainY: String,
-        val congestionResult: Car
+        val congestionResult: Section
     )
 
-    class Car(
+    class Section(
         val congestionTrain: String,
         val congestionCar: String,
         val congestionType: Int

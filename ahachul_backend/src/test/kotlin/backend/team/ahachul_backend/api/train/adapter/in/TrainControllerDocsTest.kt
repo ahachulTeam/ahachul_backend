@@ -4,25 +4,19 @@ import backend.team.ahachul_backend.api.train.adapter.`in`.dto.GetCongestionDto
 import backend.team.ahachul_backend.api.train.adapter.`in`.dto.GetTrainDto
 import backend.team.ahachul_backend.api.train.application.port.`in`.TrainUseCase
 import backend.team.ahachul_backend.api.train.application.service.TrainCongestionService
-import backend.team.ahachul_backend.api.train.domain.CongestionColor
+import backend.team.ahachul_backend.api.train.domain.Congestion
 import backend.team.ahachul_backend.config.controller.CommonDocsTestConfig
-import com.fasterxml.jackson.databind.ObjectMapper
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
-import org.mockito.ArgumentMatchers
 import org.mockito.ArgumentMatchers.*
-import org.mockito.BDDMockito
 import org.mockito.BDDMockito.*
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest
 import org.springframework.boot.test.mock.mockito.MockBean
 import org.springframework.http.MediaType
 import org.springframework.restdocs.headers.HeaderDocumentation
-import org.springframework.restdocs.mockmvc.MockMvcRestDocumentation
 import org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.*
-import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders
 import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.*
 import org.springframework.restdocs.payload.JsonFieldType
-import org.springframework.restdocs.payload.PayloadDocumentation
 import org.springframework.restdocs.payload.PayloadDocumentation.*
 import org.springframework.restdocs.request.RequestDocumentation.*
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers
@@ -88,12 +82,12 @@ class TrainControllerDocsTest : CommonDocsTestConfig() {
             trainNo = 2023,
             congestions =
                 listOf(
-                    GetCongestionDto.Car(
-                        carNo = 1,
-                        congestionColor = CongestionColor.GREEN.name),
-                    GetCongestionDto.Car(
-                        carNo = 2,
-                        congestionColor = CongestionColor.YELLOW.name)
+                    GetCongestionDto.Section(
+                        sectionNo = 1,
+                        congestionColor = Congestion.CONGESTED.name),
+                    GetCongestionDto.Section(
+                        sectionNo = 2,
+                        congestionColor = Congestion.MODERATE.name)
                 )
         )
 
@@ -127,9 +121,9 @@ class TrainControllerDocsTest : CommonDocsTestConfig() {
                         *commonResponseFields(),
                         fieldWithPath("result.trainNo").type(JsonFieldType.NUMBER).description("열차 식별 번호"),
                         fieldWithPath("result.congestions[]").type(JsonFieldType.ARRAY).description("열차 혼잡도 배열"),
-                        fieldWithPath("result.congestions[].carNo").type(JsonFieldType.NUMBER).description("칸 번호"),
-                        fieldWithPath("result.congestions[].congestionColor").type(JsonFieldType.STRING).description("칸 혼잡도 색깔")
-                            .attributes(getFormatAttribute("GREEN, YELLOW, ORANGE, RED"))
+                        fieldWithPath("result.congestions[].sectionNo").type(JsonFieldType.NUMBER).description("칸 번호"),
+                        fieldWithPath("result.congestions[].congestionColor").type(JsonFieldType.STRING).description("칸 혼잡도 정도")
+                            .attributes(getFormatAttribute("SMOOTH(원활), MODERATE(보통), CONGESTED(혼잡), VERY_CONGESTED(매우 혼잡)"))
                     )
                 )
             )

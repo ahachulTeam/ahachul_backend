@@ -31,12 +31,12 @@ class TrainCongestionService(
     }
 
     private fun mapCongestionDto(success: Boolean, trainCongestion: TrainCongestionDto.Train
-    ): List<GetCongestionDto.Car>  {
-        var congestion = listOf<GetCongestionDto.Car>()
+    ): List<GetCongestionDto.Section>  {
+        var congestion = listOf<GetCongestionDto.Section>()
         if (success) {
             val congestionList = parse(trainCongestion.congestionResult.congestionCar)
             congestion = congestionList.mapIndexed {
-                    idx, it -> GetCongestionDto.Car.from(idx + 1, it)
+                    idx, it -> GetCongestionDto.Section.from(idx + 1, it)
             }
         }
         return congestion
