@@ -25,3 +25,16 @@ include::{snippets}/get-train-real-times/query-parameters.adoc[]
 include::{snippets}/get-train-real-times/http-response.adoc[]
 .Response Fields
 include::{snippets}/get-train-real-times/response-fields.adoc[]
+
+==== 열차 혼잡도
+
+.Request
+include::{snippets}/get-train-congestion/http-request.adoc[]
+.Request Headers
+include::{snippets}/get-train-congestion/request-headers.adoc[]
+.Query Parameters
+include::{snippets}/get-train-congestion/query-parameters.adoc[]
+.Response
+include::{snippets}/get-train-congestion/http-response.adoc[]
+.Response Fields
+include::{snippets}/get-train-congestion/response-fields.adoc[]

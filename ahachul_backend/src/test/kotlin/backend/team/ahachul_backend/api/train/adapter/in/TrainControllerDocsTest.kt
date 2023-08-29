@@ -1,8 +1,16 @@
 package backend.team.ahachul_backend.api.train.adapter.`in`
 
+import backend.team.ahachul_backend.api.train.adapter.`in`.dto.GetCongestionDto
 import backend.team.ahachul_backend.api.train.adapter.`in`.dto.GetTrainDto
 import backend.team.ahachul_backend.api.train.adapter.`in`.dto.GetTrainRealTimesDto
 import backend.team.ahachul_backend.api.train.application.port.`in`.TrainUseCase
+import backend.team.ahachul_backend.api.train.application.service.TrainCongestionService
+import backend.team.ahachul_backend.api.train.domain.Congestion
+import backend.team.ahachul_backend.config.controller.CommonDocsTestConfig
+import org.junit.jupiter.api.Assertions.*
+import org.junit.jupiter.api.Test
+import org.mockito.ArgumentMatchers.*
+import org.mockito.BDDMockito.*
 import backend.team.ahachul_backend.api.train.domain.model.TrainArrivalCode
 import backend.team.ahachul_backend.api.train.domain.model.UpDownType
 import backend.team.ahachul_backend.config.controller.CommonDocsTestConfig
@@ -14,9 +22,10 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest
 import org.springframework.boot.test.mock.mockito.MockBean
 import org.springframework.http.MediaType
 import org.springframework.restdocs.headers.HeaderDocumentation
-import org.springframework.restdocs.mockmvc.MockMvcRestDocumentation
-import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders
+import org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.*
+import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.*
 import org.springframework.restdocs.payload.JsonFieldType
+import org.springframework.restdocs.payload.PayloadDocumentation.*
 import org.springframework.restdocs.payload.PayloadDocumentation
 import org.springframework.restdocs.request.RequestDocumentation.*
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers
@@ -26,6 +35,9 @@ class TrainControllerDocsTest : CommonDocsTestConfig() {
 
     @MockBean
     lateinit var trainUseCase: TrainUseCase
+
+    @MockBean
+    lateinit var trainCongestionService: TrainCongestionService
 
     @Test
     fun getTrainTest() {
@@ -37,12 +49,12 @@ class TrainControllerDocsTest : CommonDocsTestConfig() {
             organizationTrainNo = "52"
         )
 
-        BDDMockito.given(trainUseCase.getTrain(any()))
+        given(trainUseCase.getTrain(any()))
             .willReturn(response)
 
         // when
         val result = mockMvc.perform(
-            RestDocumentationRequestBuilders.get("/v1/trains/{trainNo}", 1)
+            get("/v1/trains/{trainNo}", 1)
                 .header("Authorization", "Bearer <Access Token>")
                 .accept(MediaType.APPLICATION_JSON)
         )
@@ -50,7 +62,7 @@ class TrainControllerDocsTest : CommonDocsTestConfig() {
         // then
         result.andExpect(MockMvcResultMatchers.status().isOk)
             .andDo(
-                MockMvcRestDocumentation.document(
+                document(
                     "get-train",
                     getDocsRequest(),
                     getDocsResponse(),
@@ -60,18 +72,72 @@ class TrainControllerDocsTest : CommonDocsTestConfig() {
                     HeaderDocumentation.requestHeaders(
                         HeaderDocumentation.headerWithName("Authorization").description("엑세스 토큰")
                     ),
-                    PayloadDocumentation.responseFields(
+                    responseFields(
                         *commonResponseFields(),
-                        PayloadDocumentation.fieldWithPath("result.id").type(JsonFieldType.NUMBER).description("열차 식별 번호"),
-                        PayloadDocumentation.fieldWithPath("result.subwayLine.id").type(JsonFieldType.NUMBER).description("노선 식별 번호"),
-                        PayloadDocumentation.fieldWithPath("result.subwayLine.name").type(JsonFieldType.STRING).description("노선 이름"),
-                        PayloadDocumentation.fieldWithPath("result.location").type(JsonFieldType.NUMBER).description("열차 내 현재 위치"),
-                        PayloadDocumentation.fieldWithPath("result.organizationTrainNo").type(JsonFieldType.STRING).description("열차 편대 번호"),
+                        fieldWithPath("result.id").type(JsonFieldType.NUMBER).description("열차 식별 번호"),
+                        fieldWithPath("result.subwayLine.id").type(JsonFieldType.NUMBER).description("노선 식별 번호"),
+                        fieldWithPath("result.subwayLine.name").type(JsonFieldType.STRING).description("노선 이름"),
+                        fieldWithPath("result.location").type(JsonFieldType.NUMBER).description("열차 내 현재 위치"),
+                        fieldWithPath("result.organizationTrainNo").type(JsonFieldType.STRING).description("열차 편대 번호"),
                     )
                 )
             )
     }
 
+    @Test
+    fun getTrainCongestionTest() {
+        // given
+        val response = GetCongestionDto.Response(
+            trainNo = 2023,
+            congestions =
+                listOf(
+                    GetCongestionDto.Section(
+                        sectionNo = 1,
+                        congestionColor = Congestion.CONGESTED.name),
+                    GetCongestionDto.Section(
+                        sectionNo = 2,
+                        congestionColor = Congestion.MODERATE.name)
+                )
+        )
+
+        given(trainCongestionService.getTrainCongestion(anyInt(), anyInt()))
+            .willReturn(response)
+
+        // when
+        val result = mockMvc.perform(
+            get("/v1/trains/real-times/congestion")
+                .header("Authorization", "Bearer <Access Token>")
+                .queryParam("subwayLine", "2")
+                .queryParam("trainNo", "2023")
+                .accept(MediaType.APPLICATION_JSON)
+        )
+
+        // then
+        result.andExpect(MockMvcResultMatchers.status().isOk)
+            .andDo(
+                document(
+                    "get-train-congestion",
+                    getDocsRequest(),
+                    getDocsResponse(),
+                    HeaderDocumentation.requestHeaders(
+                        HeaderDocumentation.headerWithName("Authorization").description("엑세스 토큰")
+                    ),
+                    queryParameters(
+                        parameterWithName("subwayLine").description("지하철 노선 이름"),
+                        parameterWithName("trainNo").description("열차 식별 번호")
+                    ),
+                    responseFields(
+                        *commonResponseFields(),
+                        fieldWithPath("result.trainNo").type(JsonFieldType.NUMBER).description("열차 식별 번호"),
+                        fieldWithPath("result.congestions[]").type(JsonFieldType.ARRAY).description("열차 혼잡도 배열"),
+                        fieldWithPath("result.congestions[].sectionNo").type(JsonFieldType.NUMBER).description("칸 번호"),
+                        fieldWithPath("result.congestions[].congestionColor").type(JsonFieldType.STRING).description("칸 혼잡도 정도")
+                            .attributes(getFormatAttribute("SMOOTH(원활), MODERATE(보통), CONGESTED(혼잡), VERY_CONGESTED(매우 혼잡)"))
+                    )
+                )
+            )
+    }
+    
     @Test
     fun getTrainRealTimesTest() {
         // given
