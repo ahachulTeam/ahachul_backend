@@ -7,5 +7,5 @@ interface TrainUseCase {
 
     fun getTrain(trainNo: String): GetTrainDto.Response
 
-    fun getTrainRealTimes(subwayLineId: Long, stationId: Long): GetTrainRealTimesDto.Response
+    fun getTrainRealTimes(stationId: Long): List<GetTrainRealTimesDto.TrainRealTime>
 }

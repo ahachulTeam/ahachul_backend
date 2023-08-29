@@ -8,7 +8,7 @@ data class TrainRealTimeDto(
 }
 
 data class RealtimeArrivalListDTO(
-    val subwayId: String?,
+    val subwayId: String,
     val updnLine: String,
     val trainLineNm: String,
     val statnNm: String?,
