@@ -79,4 +79,4 @@ jobs:
     steps:
       - name: Remove inactive images
         run: |
-          docker rmi $(docker images -q)
+          sudo docker images | grep "<none>" | awk "{print \$3}" | xargs -r sudo docker rmi

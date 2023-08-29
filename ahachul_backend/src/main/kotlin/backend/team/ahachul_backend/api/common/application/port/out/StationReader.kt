@@ -5,5 +5,7 @@ import backend.team.ahachul_backend.common.domain.entity.SubwayLineEntity
 
 interface StationReader {
 
+    fun getById(id: Long): StationEntity
+
     fun findAllBySubwayLine(subwayLine: SubwayLineEntity): List<StationEntity>
 }
