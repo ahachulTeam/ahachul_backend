@@ -16,12 +16,16 @@ class RedisClient(
         redisTemplate.opsForValue().set(key, value)
     }
 
+    fun set(key: String, value: String, timeout: Long, timeUnit: TimeUnit) {
+        redisTemplate.opsForValue().set(key, value, timeout, timeUnit)
+    }
+
     fun set(key: String, value: Any) {
         redisTemplate.opsForValue().set(key, objectMapper.writeValueAsString(value))
     }
 
-    fun set(key: String, value: String, timeout: Long, timeUnit: TimeUnit) {
-        redisTemplate.opsForValue().set(key, value, timeout, timeUnit)
+    fun set(key: String, value: Any, timeout: Long, timeUnit: TimeUnit) {
+        redisTemplate.opsForValue().set(key, objectMapper.writeValueAsString(value), timeout, timeUnit)
     }
 
     fun get(key: String): String? {

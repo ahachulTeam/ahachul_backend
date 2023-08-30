@@ -19,7 +19,7 @@ class StationEntity(
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "subway_line_id")
-    var subwayLineEntity: SubwayLineEntity
+    var subwayLine: SubwayLineEntity
 
 ): BaseEntity() {
 

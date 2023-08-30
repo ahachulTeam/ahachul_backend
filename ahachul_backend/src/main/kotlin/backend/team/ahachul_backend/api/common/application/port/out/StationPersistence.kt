@@ -18,7 +18,7 @@ class StationPersistence(
     }
 
     override fun findAllBySubwayLine(subwayLine: SubwayLineEntity): List<StationEntity> {
-        return stationRepository.findAllBySubwayLineEntityOrderByName(subwayLine) ?:
+        return stationRepository.findAllBySubwayLineOrderByName(subwayLine) ?:
             throw DomainException(ResponseCode.INVALID_DOMAIN)
     }
 }
