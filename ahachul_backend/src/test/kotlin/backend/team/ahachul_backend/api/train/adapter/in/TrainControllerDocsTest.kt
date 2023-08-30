@@ -139,6 +139,7 @@ class TrainControllerDocsTest : CommonDocsTestConfig() {
         val trainRealTimes = listOf(
             GetTrainRealTimesDto.TrainRealTime(
                 subwayId = "",
+                stationOrder = 1,
                 upDownType = UpDownType.DOWN,
                 nextStationDirection = "신대방방면",
                 destinationStationDirection = "성수행",
@@ -148,6 +149,7 @@ class TrainControllerDocsTest : CommonDocsTestConfig() {
             ),
             GetTrainRealTimesDto.TrainRealTime(
                 subwayId = "",
+                stationOrder = 1,
                 upDownType = UpDownType.UP,
                 nextStationDirection = "봉천방면",
                 destinationStationDirection = "성수행",

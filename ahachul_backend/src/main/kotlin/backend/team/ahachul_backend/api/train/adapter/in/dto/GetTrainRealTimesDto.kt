@@ -18,7 +18,9 @@ class GetTrainRealTimesDto {
 
     data class TrainRealTime(
         @JsonIgnore
-        val subwayId: String,
+        val subwayId: String?,
+        @JsonIgnore
+        val stationOrder: Int?,
         val upDownType: UpDownType,
         val nextStationDirection: String,
         val destinationStationDirection: String,
