@@ -73,13 +73,18 @@ class TrainService(
         cachedData?.let {
             return objectMapper.readValue(
                 cachedData,
-                objectMapper.typeFactory.constructCollectionType(List::class.java, GetTrainRealTimesDto.TrainRealTime::class.java)
+                objectMapper.typeFactory
+                    .constructCollectionType(List::class.java, GetTrainRealTimesDto.TrainRealTime::class.java)
             )
         }
 
         val trainRealTimeMap = requestTrainRealTimesAndSorting(station.name)
         trainRealTimeMap.forEach {
-            redisClient.set("$TRAIN_REAL_TIME_REDIS_PREFIX${it.key}-$stationId", it.value, TRAIN_REAL_TIME_REDIS_EXPIRE_SEC, TimeUnit.SECONDS)
+            redisClient.set(
+                "$TRAIN_REAL_TIME_REDIS_PREFIX${it.key}-$stationId", it.value,
+                TRAIN_REAL_TIME_REDIS_EXPIRE_SEC,
+                TimeUnit.SECONDS
+            )
         }
 
         return trainRealTimeMap.getOrElse(subwayLine.identity.toString()) { emptyList() }
@@ -100,7 +105,8 @@ class TrainService(
 
         if (trainRealTimes.size == 0) throw BusinessException(ResponseCode.NOT_EXIST_ARRIVAL_TRAIN)
 
-        return trainRealTimes.groupBy { it.subwayId!! }
+        return trainRealTimes
+            .groupBy { it.subwayId!! }
             .mapValues { (_, trainRealTimes) ->
                 trainRealTimes.sortedWith(
                     compareBy<GetTrainRealTimesDto.TrainRealTime> { it.currentTrainArrivalCode.priority }
@@ -114,7 +120,7 @@ class TrainService(
             ?.map {
                 val trainDirection = it.trainLineNm.split("-")
                 GetTrainRealTimesDto.TrainRealTime(
-                    subwayId = it.subwayId,
+                    subwayId = it.subwayId,  // 1002
                     stationOrder = extractStationOrder(it.arvlMsg2),
                     upDownType = UpDownType.from(it.updnLine),
                     nextStationDirection = trainDirection[1].trim(),
@@ -128,12 +134,11 @@ class TrainService(
     }
 
     private fun extractStationOrder(destinationMessage: String): Int {
-        val ret = if (destinationMessage.startsWith("[")) {
+        return if (destinationMessage.startsWith("[")) {
             val pattern = "\\[(\\d+)]".toRegex()
             pattern.find(destinationMessage)?.groupValues?.getOrNull(1)?.toInt() ?: Int.MAX_VALUE
         } else {
             Int.MAX_VALUE
         }
-        return ret
     }
 }

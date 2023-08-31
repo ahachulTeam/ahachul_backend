@@ -17,7 +17,7 @@ class TrainCongestionClient(
     private val publicDataProperties: PublicDataProperties
 ) {
 
-    fun getCongestions(subwayLine: Int, trainNo: Int): TrainCongestionDto {
+    fun getCongestions(subwayLine: Long, trainNo: Int): TrainCongestionDto {
         val url = "${publicDataProperties.realTimeCongestionUrl}/$subwayLine/$trainNo"
 
         try {

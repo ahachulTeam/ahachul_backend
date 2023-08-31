@@ -30,9 +30,9 @@ class TrainController(
     }
 
     @Authentication
-    @GetMapping("/v1/trains/real-times/congestion")
-    fun getCongestion(request: GetCongestionDto.Request): CommonResponse<GetCongestionDto.Response> {
-        val result = trainCongestionService.getTrainCongestion(request.subwayLine, request.trainNo)
+    @GetMapping("/v1/trains/real-times/congestion/{stationId}")
+    fun getCongestion(@PathVariable("stationId") stationId: Long): CommonResponse<GetCongestionDto.Response> {
+        val result = trainCongestionService.getTrainCongestion(stationId)
         return CommonResponse.success(result)
     }
 }
