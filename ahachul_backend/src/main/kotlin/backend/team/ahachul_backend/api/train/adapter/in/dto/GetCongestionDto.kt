@@ -1,12 +1,13 @@
 package backend.team.ahachul_backend.api.train.adapter.`in`.dto
 
-import backend.team.ahachul_backend.api.train.domain.Congestion
+import backend.team.ahachul_backend.api.train.domain.model.Congestion
+import backend.team.ahachul_backend.api.train.domain.model.UpDownType
 
 class GetCongestionDto {
 
     data class Request(
-        val subwayLine: Int,
-        val trainNo: Int
+        val stationId: Long,
+        val upDownType: UpDownType
     )
 
     data class Response(

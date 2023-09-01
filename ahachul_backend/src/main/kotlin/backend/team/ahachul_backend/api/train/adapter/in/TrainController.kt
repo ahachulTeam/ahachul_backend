@@ -8,6 +8,7 @@ import backend.team.ahachul_backend.common.annotation.Authentication
 import backend.team.ahachul_backend.common.response.CommonResponse
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
+import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
 
 @RestController
@@ -28,9 +29,9 @@ class TrainController(
     }
 
     @Authentication
-    @GetMapping("/v1/trains/real-times/congestion/{stationId}")
-    fun getCongestion(@PathVariable("stationId") stationId: Long): CommonResponse<GetCongestionDto.Response> {
-        val result = trainUseCase.getTrainCongestion(stationId)
+    @GetMapping("/v1/trains/real-times/congestion")
+    fun getCongestion(request: GetCongestionDto.Request): CommonResponse<GetCongestionDto.Response> {
+        val result = trainUseCase.getTrainCongestion(request)
         return CommonResponse.success(result)
     }
 }

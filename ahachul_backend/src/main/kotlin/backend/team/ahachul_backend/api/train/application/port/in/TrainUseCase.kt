@@ -10,5 +10,5 @@ interface TrainUseCase {
 
     fun getTrainRealTimes(stationId: Long): List<GetTrainRealTimesDto.TrainRealTime>
 
-    fun getTrainCongestion(stationId: Long): GetCongestionDto.Response
+    fun getTrainCongestion(request: GetCongestionDto.Request): GetCongestionDto.Response
 }

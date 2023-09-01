@@ -106,7 +106,7 @@ class TrainService(
             ?.map {
                 val trainDirection = it.trainLineNm.split("-")
                 GetTrainRealTimesDto.TrainRealTime(
-                    subwayId = it.subwayId,  // 1002
+                    subwayId = it.subwayId,
                     stationOrder = extractStationOrder(it.arvlMsg2),
                     upDownType = UpDownType.from(it.updnLine),
                     nextStationDirection = trainDirection[1].trim(),
@@ -130,16 +130,20 @@ class TrainService(
         }
     }
 
-    override fun getTrainCongestion(stationId: Long): GetCongestionDto.Response {
-        val station = stationReader.getById(stationId)
+    override fun getTrainCongestion(request: GetCongestionDto.Request): GetCongestionDto.Response {
+        val station = stationReader.getById(request.stationId)
         val subwayLine = station.subwayLine
 
         if (isInValidSubwayLine(subwayLine.id)) {
             throw BusinessException(ResponseCode.INVALID_SUBWAY_LINE)
         }
 
-        val trains = getCachedTrainOrRequestExternal(subwayLine.identity, stationId)
-        val latestTrainNo = trains[0].trainNum.toInt()
+        val trains = getCachedTrainOrRequestExternal(subwayLine.identity, station.id)
+        val directionFilteredTrains = trains.filter {
+                x -> x.upDownType == request.upDownType
+        }
+        val latestTrainNo = directionFilteredTrains[0].trainNum.toInt()
+
         val response = trainCongestionClient.getCongestions(subwayLine.id, latestTrainNo)
         val trainCongestion = response.data!!
         val congestions = mapCongestionDto(response.success, trainCongestion)

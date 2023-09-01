@@ -4,7 +4,7 @@ import backend.team.ahachul_backend.api.train.adapter.`in`.dto.GetCongestionDto
 import backend.team.ahachul_backend.api.train.adapter.`in`.dto.GetTrainDto
 import backend.team.ahachul_backend.api.train.adapter.`in`.dto.GetTrainRealTimesDto
 import backend.team.ahachul_backend.api.train.application.port.`in`.TrainUseCase
-import backend.team.ahachul_backend.api.train.domain.Congestion
+import backend.team.ahachul_backend.api.train.domain.model.Congestion
 import backend.team.ahachul_backend.api.train.domain.model.TrainArrivalCode
 import backend.team.ahachul_backend.api.train.domain.model.UpDownType
 import backend.team.ahachul_backend.config.controller.CommonDocsTestConfig
@@ -91,12 +91,14 @@ class TrainControllerDocsTest : CommonDocsTestConfig() {
                 )
         )
 
-        given(trainUseCase.getTrainCongestion(anyLong()))
+        given(trainUseCase.getTrainCongestion(any()))
             .willReturn(response)
 
         // when
         val result = mockMvc.perform(
-            get("/v1/trains/real-times/congestion/{stationId}", 1)
+            get("/v1/trains/real-times/congestion")
+                .queryParam("stationId", "1")
+                .queryParam("upDownType", "UP")
                 .header("Authorization", "Bearer <Access Token>")
                 .accept(MediaType.APPLICATION_JSON)
         )
@@ -108,8 +110,9 @@ class TrainControllerDocsTest : CommonDocsTestConfig() {
                     "get-train-congestion",
                     getDocsRequest(),
                     getDocsResponse(),
-                    pathParameters(
-                        parameterWithName("stationId").description("정류장 고유 번호")
+                    queryParameters(
+                        parameterWithName("stationId").description("정류장 고유 번호"),
+                        parameterWithName("upDownType").description("상행(UP)/하행(DOWN) 여부"),
                     ),
                     requestHeaders(
                         headerWithName("Authorization").description("엑세스 토큰")

@@ -7,10 +7,11 @@ import backend.team.ahachul_backend.api.member.domain.entity.MemberEntity
 import backend.team.ahachul_backend.api.member.domain.model.GenderType
 import backend.team.ahachul_backend.api.member.domain.model.MemberStatusType
 import backend.team.ahachul_backend.api.member.domain.model.ProviderType
+import backend.team.ahachul_backend.api.train.adapter.`in`.dto.GetCongestionDto
 import backend.team.ahachul_backend.api.train.adapter.`in`.dto.GetTrainRealTimesDto
 import backend.team.ahachul_backend.api.train.adapter.out.TrainRepository
 import backend.team.ahachul_backend.api.train.application.port.`in`.TrainUseCase
-import backend.team.ahachul_backend.api.train.domain.Congestion
+import backend.team.ahachul_backend.api.train.domain.model.Congestion
 import backend.team.ahachul_backend.api.train.domain.entity.TrainEntity
 import backend.team.ahachul_backend.api.train.domain.model.TrainArrivalCode
 import backend.team.ahachul_backend.api.train.domain.model.UpDownType
@@ -31,6 +32,7 @@ import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 import org.mockito.ArgumentMatchers
 import org.mockito.BDDMockito
+import org.mockito.BDDMockito.given
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.mock.mockito.MockBean
 
@@ -123,14 +125,14 @@ class TrainServiceTest(
                 )
             )
         )
-        BDDMockito.given(trainCongestionClient.getCongestions(ArgumentMatchers.anyLong(), ArgumentMatchers.anyInt())).willReturn(congestionResult)
+        given(trainCongestionClient.getCongestions(ArgumentMatchers.anyLong(), ArgumentMatchers.anyInt())).willReturn(congestionResult)
 
         val realTimeTrainData = listOf(
             createTrainRealTime(1, "2236", "6분", TrainArrivalCode.RUNNING),
             createTrainRealTime(2, "2238", "전역 도착", TrainArrivalCode.BEFORE_STATION_ARRIVE),
             createTrainRealTime(1, "2234", "전역 도착", TrainArrivalCode.BEFORE_STATION_ARRIVE)
         )
-        BDDMockito.given(trainCacheUtils.getCache(ArgumentMatchers.anyLong(), ArgumentMatchers.anyLong())).willReturn(realTimeTrainData)
+        given(trainCacheUtils.getCache(ArgumentMatchers.anyLong(), ArgumentMatchers.anyLong())).willReturn(realTimeTrainData)
 
         val subwayLine = SubwayLineEntity(
             id = 2,
@@ -145,10 +147,15 @@ class TrainServiceTest(
             subwayLine = subwayLine
         )
 
-        BDDMockito.given(stationReader.getById(ArgumentMatchers.anyLong())).willReturn(station)
+        given(stationReader.getById(ArgumentMatchers.anyLong())).willReturn(station)
 
         // when
-        val result = trainUseCase.getTrainCongestion(station.id)
+        val result = trainUseCase.getTrainCongestion(
+            GetCongestionDto.Request(
+                stationId = station.id,
+                upDownType = UpDownType.DOWN
+            )
+        )
 
         // then
         val expected = listOf(
@@ -186,11 +193,16 @@ class TrainServiceTest(
             subwayLine = subwayLine
         )
 
-        BDDMockito.given(stationReader.getById(ArgumentMatchers.anyLong())).willReturn(station)
+        given(stationReader.getById(ArgumentMatchers.anyLong())).willReturn(station)
 
         // when + then
-        Assertions.assertThatThrownBy {
-            trainUseCase.getTrainCongestion(station.id)
+        assertThatThrownBy {
+            trainUseCase.getTrainCongestion(
+                GetCongestionDto.Request(
+                    stationId = station.id,
+                    upDownType = UpDownType.DOWN
+                )
+            )
         }
             .isExactlyInstanceOf(BusinessException::class.java)
             .hasMessage(ResponseCode.INVALID_SUBWAY_LINE.message)
