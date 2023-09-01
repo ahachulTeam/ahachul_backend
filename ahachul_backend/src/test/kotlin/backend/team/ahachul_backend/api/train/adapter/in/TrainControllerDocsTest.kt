@@ -4,7 +4,6 @@ import backend.team.ahachul_backend.api.train.adapter.`in`.dto.GetCongestionDto
 import backend.team.ahachul_backend.api.train.adapter.`in`.dto.GetTrainDto
 import backend.team.ahachul_backend.api.train.adapter.`in`.dto.GetTrainRealTimesDto
 import backend.team.ahachul_backend.api.train.application.port.`in`.TrainUseCase
-import backend.team.ahachul_backend.api.train.application.service.TrainCongestionService
 import backend.team.ahachul_backend.api.train.domain.Congestion
 import backend.team.ahachul_backend.api.train.domain.model.TrainArrivalCode
 import backend.team.ahachul_backend.api.train.domain.model.UpDownType
@@ -30,9 +29,6 @@ class TrainControllerDocsTest : CommonDocsTestConfig() {
 
     @MockBean
     lateinit var trainUseCase: TrainUseCase
-
-    @MockBean
-    lateinit var trainCongestionService: TrainCongestionService
 
     @Test
     fun getTrainTest() {
@@ -95,7 +91,7 @@ class TrainControllerDocsTest : CommonDocsTestConfig() {
                 )
         )
 
-        given(trainCongestionService.getTrainCongestion(anyLong()))
+        given(trainUseCase.getTrainCongestion(anyLong()))
             .willReturn(response)
 
         // when

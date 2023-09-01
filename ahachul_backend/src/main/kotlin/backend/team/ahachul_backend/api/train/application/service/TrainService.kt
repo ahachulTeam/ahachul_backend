@@ -1,6 +1,7 @@
 package backend.team.ahachul_backend.api.train.application.service
 
 import backend.team.ahachul_backend.api.common.application.port.out.StationReader
+import backend.team.ahachul_backend.api.train.adapter.`in`.dto.GetCongestionDto
 import backend.team.ahachul_backend.api.train.adapter.`in`.dto.GetTrainDto
 import backend.team.ahachul_backend.api.train.adapter.`in`.dto.GetTrainRealTimesDto
 import backend.team.ahachul_backend.api.train.application.port.`in`.TrainUseCase
@@ -9,6 +10,8 @@ import backend.team.ahachul_backend.api.train.domain.entity.TrainEntity
 import backend.team.ahachul_backend.api.train.domain.model.TrainArrivalCode
 import backend.team.ahachul_backend.api.train.domain.model.UpDownType
 import backend.team.ahachul_backend.common.client.SeoulTrainClient
+import backend.team.ahachul_backend.common.client.TrainCongestionClient
+import backend.team.ahachul_backend.common.client.dto.TrainCongestionDto
 import backend.team.ahachul_backend.common.dto.TrainRealTimeDto
 import backend.team.ahachul_backend.common.exception.AdapterException
 import backend.team.ahachul_backend.common.exception.BusinessException
@@ -25,7 +28,9 @@ class TrainService(
 
     private val seoulTrainClient: SeoulTrainClient,
 
-    private val trainCacheUtils: TrainCacheUtils
+    private val trainCacheUtils: TrainCacheUtils,
+    private val trainCongestionClient: TrainCongestionClient,
+    private val stationReader: StationReader,
 ): TrainUseCase {
 
     private val logger: Logger = Logger(javaClass)
@@ -69,9 +74,7 @@ class TrainService(
         trainRealTimeMap.forEach {
             trainCacheUtils.setCache(it.key.toLong(), stationId, it.value)
         }
-
-        return trainRealTimeMap
-            .getOrElse(subwayLineIdentity.toString()) { emptyList() }
+        return trainRealTimeMap.getOrElse(subwayLineIdentity.toString()) { emptyList() }
     }
 
     private fun requestTrainRealTimesAndSorting(stationName: String): Map<String, List<GetTrainRealTimesDto.TrainRealTime>> {
@@ -127,7 +130,57 @@ class TrainService(
         }
     }
 
+    override fun getTrainCongestion(stationId: Long): GetCongestionDto.Response {
+        val station = stationReader.getById(stationId)
+        val subwayLine = station.subwayLine
+
+        if (isInValidSubwayLine(subwayLine.id)) {
+            throw BusinessException(ResponseCode.INVALID_SUBWAY_LINE)
+        }
+
+        val trains = getCachedTrainOrRequestExternal(subwayLine.identity, stationId)
+        val latestTrainNo = trains[0].trainNum.toInt()
+        val response = trainCongestionClient.getCongestions(subwayLine.id, latestTrainNo)
+        val trainCongestion = response.data!!
+        val congestions = mapCongestionDto(response.success, trainCongestion)
+
+        return GetCongestionDto.Response(
+            trainNo = trainCongestion.trainY.toInt(),
+            congestions = congestions
+        )
+    }
+
+    private fun isInValidSubwayLine(subwayLine: Long): Boolean {
+        return !ALLOWED_SUBWAY_LINE.contains(subwayLine)
+    }
+
+    private fun getCachedTrainOrRequestExternal(
+        subwayLineIdentity: Long, stationId: Long
+    ): List<GetTrainRealTimesDto.TrainRealTime> {
+        return trainCacheUtils.getCache(subwayLineIdentity, stationId)
+            ?: getTrainRealTimes(stationId)
+    }
+
+    private fun mapCongestionDto(
+        success: Boolean, trainCongestion: TrainCongestionDto.Train
+    ): List<GetCongestionDto.Section>  {
+        if (success) {
+            val congestionList = parse(trainCongestion.congestionResult.congestionCar)
+            return congestionList.mapIndexed {
+                    idx, it -> GetCongestionDto.Section.from(idx + 1, it)
+            }
+        }
+        return emptyList()
+    }
+
+    private fun parse(congestion: String): List<Int> {
+        val congestions = congestion.trim().split(DELIMITER)
+        return congestions.map { it.toInt() }
+    }
+
     companion object {
+        val ALLOWED_SUBWAY_LINE = listOf(2L, 3L)
+        const val DELIMITER = "|"
         val pattern = "\\[(\\d+)]".toRegex()
     }
 }
