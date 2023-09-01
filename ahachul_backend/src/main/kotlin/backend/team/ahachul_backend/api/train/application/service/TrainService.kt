@@ -8,17 +8,14 @@ import backend.team.ahachul_backend.api.train.application.port.out.TrainReader
 import backend.team.ahachul_backend.api.train.domain.entity.TrainEntity
 import backend.team.ahachul_backend.api.train.domain.model.TrainArrivalCode
 import backend.team.ahachul_backend.api.train.domain.model.UpDownType
-import backend.team.ahachul_backend.common.client.RedisClient
 import backend.team.ahachul_backend.common.client.SeoulTrainClient
 import backend.team.ahachul_backend.common.dto.TrainRealTimeDto
 import backend.team.ahachul_backend.common.exception.AdapterException
 import backend.team.ahachul_backend.common.exception.BusinessException
 import backend.team.ahachul_backend.common.logging.Logger
 import backend.team.ahachul_backend.common.response.ResponseCode
-import com.fasterxml.jackson.databind.ObjectMapper
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
-import java.util.concurrent.TimeUnit
 
 @Service
 @Transactional(readOnly = true)
@@ -28,17 +25,10 @@ class TrainService(
 
     private val seoulTrainClient: SeoulTrainClient,
 
-    private val redisClient: RedisClient,
-
-    private val objectMapper: ObjectMapper,
+    private val trainCacheUtils: TrainCacheUtils
 ): TrainUseCase {
 
     private val logger: Logger = Logger(javaClass)
-
-    companion object {
-        const val TRAIN_REAL_TIME_REDIS_PREFIX = "TRAIN_TIME:"
-        const val TRAIN_REAL_TIME_REDIS_EXPIRE_SEC = 25L
-    }
 
     override fun getTrain(trainNo: String): GetTrainDto.Response {
         val (prefixTrainNo, location, organizationTrainNo) = decompositionTrainNo(trainNo)
@@ -68,26 +58,20 @@ class TrainService(
     override fun getTrainRealTimes(stationId: Long): List<GetTrainRealTimesDto.TrainRealTime> {
         val station = stationLineReader.getById(stationId)
         val subwayLine = station.subwayLine
+        val subwayLineIdentity = subwayLine.identity
 
-        val cachedData = redisClient.get("$TRAIN_REAL_TIME_REDIS_PREFIX${subwayLine.identity}-${stationId}")
+        val cachedData = trainCacheUtils.getCache(subwayLineIdentity, stationId)
         cachedData?.let {
-            return objectMapper.readValue(
-                cachedData,
-                objectMapper.typeFactory
-                    .constructCollectionType(List::class.java, GetTrainRealTimesDto.TrainRealTime::class.java)
-            )
+            return cachedData
         }
 
         val trainRealTimeMap = requestTrainRealTimesAndSorting(station.name)
         trainRealTimeMap.forEach {
-            redisClient.set(
-                "$TRAIN_REAL_TIME_REDIS_PREFIX${it.key}-$stationId", it.value,
-                TRAIN_REAL_TIME_REDIS_EXPIRE_SEC,
-                TimeUnit.SECONDS
-            )
+            trainCacheUtils.setCache(it.key.toLong(), stationId, it.value)
         }
 
-        return trainRealTimeMap.getOrElse(subwayLine.identity.toString()) { emptyList() }
+        return trainRealTimeMap
+            .getOrElse(subwayLineIdentity.toString()) { emptyList() }
     }
 
     private fun requestTrainRealTimesAndSorting(stationName: String): Map<String, List<GetTrainRealTimesDto.TrainRealTime>> {
@@ -103,15 +87,14 @@ class TrainService(
             trainRealTimes.addAll(generateTrainRealTimeList(trainRealTimesPublicData))
         }
 
-        if (trainRealTimes.size == 0) throw BusinessException(ResponseCode.NOT_EXIST_ARRIVAL_TRAIN)
+        if (trainRealTimes.size == 0) {
+            throw BusinessException(ResponseCode.NOT_EXIST_ARRIVAL_TRAIN)
+        }
 
         return trainRealTimes
             .groupBy { it.subwayId!! }
-            .mapValues { (_, trainRealTimes) ->
-                trainRealTimes.sortedWith(
-                    compareBy<GetTrainRealTimesDto.TrainRealTime> { it.currentTrainArrivalCode.priority }
-                        .thenBy { it.stationOrder }
-                )
+            .mapValues {
+                trainCacheUtils.getSortedData( it.value )
             }
     }
 
@@ -135,10 +118,16 @@ class TrainService(
 
     private fun extractStationOrder(destinationMessage: String): Int {
         return if (destinationMessage.startsWith("[")) {
-            val pattern = "\\[(\\d+)]".toRegex()
-            pattern.find(destinationMessage)?.groupValues?.getOrNull(1)?.toInt() ?: Int.MAX_VALUE
+            pattern.find(destinationMessage)?.groupValues
+                ?.getOrNull(1)
+                ?.toInt()
+                ?: Int.MAX_VALUE
         } else {
             Int.MAX_VALUE
         }
+    }
+
+    companion object {
+        val pattern = "\\[(\\d+)]".toRegex()
     }
 }

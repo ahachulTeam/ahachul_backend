@@ -3,21 +3,18 @@ package backend.team.ahachul_backend.api.train.application.service
 import backend.team.ahachul_backend.api.common.application.port.out.StationReader
 import backend.team.ahachul_backend.api.train.adapter.`in`.dto.GetCongestionDto
 import backend.team.ahachul_backend.api.train.adapter.`in`.dto.GetTrainRealTimesDto
-import backend.team.ahachul_backend.common.client.RedisClient
 import backend.team.ahachul_backend.common.client.TrainCongestionClient
 import backend.team.ahachul_backend.common.client.dto.TrainCongestionDto
 import backend.team.ahachul_backend.common.exception.BusinessException
 import backend.team.ahachul_backend.common.response.ResponseCode
-import com.fasterxml.jackson.core.type.TypeReference
-import com.fasterxml.jackson.databind.ObjectMapper
 import org.springframework.stereotype.Service
 
 @Service
 class TrainCongestionService(
     private val trainCongestionClient: TrainCongestionClient,
     private val stationReader: StationReader,
-    private val redisClient: RedisClient,
-    private val objectMapper: ObjectMapper
+    private val trainCacheUtils: TrainCacheUtils,
+    private val trainService: TrainService // TODO: 의존성 제거
 ) {
 
     fun getTrainCongestion(stationId: Long): GetCongestionDto.Response {
@@ -27,10 +24,10 @@ class TrainCongestionService(
         if (isInValidSubwayLine(subwayLine.id)) {
             throw BusinessException(ResponseCode.INVALID_SUBWAY_LINE)
         }
-
-        val cachedTrain = getCachedTrain(subwayLine.identity, station.id)!!
-        val trainNo = extractLatestTrainNo(cachedTrain)
-        val response = trainCongestionClient.getCongestions(subwayLine.id, trainNo)
+        
+        val trains = getCachedTrainOrRequestExternal(subwayLine.identity, stationId)
+        val latestTrainNo = trains[0].trainNum.toInt()
+        val response = trainCongestionClient.getCongestions(subwayLine.id, latestTrainNo)
         val trainCongestion = response.data!!
         val congestions = mapCongestionDto(response.success, trainCongestion)
 
@@ -39,40 +36,28 @@ class TrainCongestionService(
             congestions = congestions
         )
     }
-
+    
+    private fun getCachedTrainOrRequestExternal(
+        subwayLineIdentity: Long, stationId: Long
+    ): List<GetTrainRealTimesDto.TrainRealTime> {
+        return trainCacheUtils.getCache(subwayLineIdentity, stationId)
+            ?: trainService.getTrainRealTimes(stationId)
+    }
+    
     private fun isInValidSubwayLine(subwayLine: Long): Boolean {
         return !ALLOWED_SUBWAY_LINE.contains(subwayLine)
-    }
-
-    private fun getCachedTrain(subwayLineIdentity: Long, stationId: Long): List<GetTrainRealTimesDto.TrainRealTime>? {
-        val key = "${TrainService.TRAIN_REAL_TIME_REDIS_PREFIX}${subwayLineIdentity}-$stationId"
-        val cachedData = redisClient.get(key)
-
-        return cachedData?.let {
-            val typeRef = object : TypeReference<List<GetTrainRealTimesDto.TrainRealTime>>() {}
-            objectMapper.readValue(it, typeRef)
-        }
-    }
-
-    private fun extractLatestTrainNo(trainRealTimes: List<GetTrainRealTimesDto.TrainRealTime>): Int {
-        val sortedTrains = trainRealTimes.sortedWith(compareBy(
-            { it.currentTrainArrivalCode.priority },
-            { it.stationOrder }
-        ))
-        return sortedTrains[0].trainNum.toInt()
     }
 
     private fun mapCongestionDto(
         success: Boolean, trainCongestion: TrainCongestionDto.Train
     ): List<GetCongestionDto.Section>  {
-        var congestion = listOf<GetCongestionDto.Section>()
         if (success) {
             val congestionList = parse(trainCongestion.congestionResult.congestionCar)
-            congestion = congestionList.mapIndexed {
+            return congestionList.mapIndexed {
                     idx, it -> GetCongestionDto.Section.from(idx + 1, it)
             }
         }
-        return congestion
+        return emptyList()
     }
 
     private fun parse(congestion: String): List<Int> {
