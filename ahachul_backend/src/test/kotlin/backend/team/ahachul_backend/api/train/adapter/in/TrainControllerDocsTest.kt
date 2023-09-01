@@ -6,22 +6,22 @@ import backend.team.ahachul_backend.api.train.adapter.`in`.dto.GetTrainRealTimes
 import backend.team.ahachul_backend.api.train.application.port.`in`.TrainUseCase
 import backend.team.ahachul_backend.api.train.application.service.TrainCongestionService
 import backend.team.ahachul_backend.api.train.domain.Congestion
-import backend.team.ahachul_backend.config.controller.CommonDocsTestConfig
-import org.junit.jupiter.api.Assertions.*
-import org.junit.jupiter.api.Test
-import org.mockito.ArgumentMatchers.*
-import org.mockito.BDDMockito.*
 import backend.team.ahachul_backend.api.train.domain.model.TrainArrivalCode
 import backend.team.ahachul_backend.api.train.domain.model.UpDownType
+import backend.team.ahachul_backend.config.controller.CommonDocsTestConfig
+import org.junit.jupiter.api.Test
 import org.mockito.ArgumentMatchers.anyLong
+import org.mockito.BDDMockito.given
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest
 import org.springframework.boot.test.mock.mockito.MockBean
 import org.springframework.http.MediaType
-import org.springframework.restdocs.headers.HeaderDocumentation
-import org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.*
-import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.*
+import org.springframework.restdocs.headers.HeaderDocumentation.headerWithName
+import org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders
+import org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document
+import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get
 import org.springframework.restdocs.payload.JsonFieldType
-import org.springframework.restdocs.payload.PayloadDocumentation.*
+import org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath
+import org.springframework.restdocs.payload.PayloadDocumentation.responseFields
 import org.springframework.restdocs.request.RequestDocumentation.*
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers
 
@@ -64,8 +64,8 @@ class TrainControllerDocsTest : CommonDocsTestConfig() {
                     pathParameters(
                         parameterWithName("trainNo").description("열차 번호")
                     ),
-                    HeaderDocumentation.requestHeaders(
-                        HeaderDocumentation.headerWithName("Authorization").description("엑세스 토큰")
+                    requestHeaders(
+                        headerWithName("Authorization").description("엑세스 토큰")
                     ),
                     responseFields(
                         *commonResponseFields(),
@@ -95,15 +95,13 @@ class TrainControllerDocsTest : CommonDocsTestConfig() {
                 )
         )
 
-        given(trainCongestionService.getTrainCongestion(anyInt(), anyInt()))
+        given(trainCongestionService.getTrainCongestion(anyLong()))
             .willReturn(response)
 
         // when
         val result = mockMvc.perform(
-            get("/v1/trains/real-times/congestion")
+            get("/v1/trains/real-times/congestion/{stationId}", 1)
                 .header("Authorization", "Bearer <Access Token>")
-                .queryParam("subwayLine", "2")
-                .queryParam("trainNo", "2023")
                 .accept(MediaType.APPLICATION_JSON)
         )
 
@@ -114,12 +112,11 @@ class TrainControllerDocsTest : CommonDocsTestConfig() {
                     "get-train-congestion",
                     getDocsRequest(),
                     getDocsResponse(),
-                    HeaderDocumentation.requestHeaders(
-                        HeaderDocumentation.headerWithName("Authorization").description("엑세스 토큰")
+                    pathParameters(
+                        parameterWithName("stationId").description("정류장 고유 번호")
                     ),
-                    queryParameters(
-                        parameterWithName("subwayLine").description("지하철 노선 이름"),
-                        parameterWithName("trainNo").description("열차 식별 번호")
+                    requestHeaders(
+                        headerWithName("Authorization").description("엑세스 토큰")
                     ),
                     responseFields(
                         *commonResponseFields(),
@@ -177,8 +174,8 @@ class TrainControllerDocsTest : CommonDocsTestConfig() {
                     "get-train-real-times",
                     getDocsRequest(),
                     getDocsResponse(),
-                    HeaderDocumentation.requestHeaders(
-                        HeaderDocumentation.headerWithName("Authorization").description("엑세스 토큰")
+                    requestHeaders(
+                        headerWithName("Authorization").description("엑세스 토큰")
                     ),
                     queryParameters(
                         parameterWithName("stationId").description("정류장 ID")
