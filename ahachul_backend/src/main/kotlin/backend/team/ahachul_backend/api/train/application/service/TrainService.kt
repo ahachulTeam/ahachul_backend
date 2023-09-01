@@ -142,9 +142,9 @@ class TrainService(
         val directionFilteredTrains = trains.filter {
                 x -> x.upDownType == request.upDownType
         }
-        val latestTrainNo = directionFilteredTrains[0].trainNum.toInt()
+        val latestTrainNo = subwayLine.processCorrectTrainNo(directionFilteredTrains[0].trainNum)
 
-        val response = trainCongestionClient.getCongestions(subwayLine.id, latestTrainNo)
+        val response = trainCongestionClient.getCongestions(subwayLine.id, latestTrainNo.toInt())
         val trainCongestion = response.data!!
         val congestions = mapCongestionDto(response.success, trainCongestion)
 

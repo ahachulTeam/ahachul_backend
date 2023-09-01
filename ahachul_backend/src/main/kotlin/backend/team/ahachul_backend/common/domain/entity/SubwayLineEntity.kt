@@ -22,4 +22,12 @@ class SubwayLineEntity (
     var identity: Long = 0
 
 ): BaseEntity() {
+
+    fun processCorrectTrainNo(trainNo: String): String {
+        val idx = 0
+        if (trainNo[idx] != id.toString()[idx]) {
+            return id.toString() + trainNo.substring(idx + 1, trainNo.length)
+        }
+        return trainNo
+    }
 }
