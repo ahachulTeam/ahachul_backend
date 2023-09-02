@@ -1,18 +1,28 @@
 package backend.team.ahachul_backend.api.train.adapter.`in`.dto
 
-import backend.team.ahachul_backend.api.train.domain.Congestion
+import backend.team.ahachul_backend.api.train.domain.model.Congestion
+import backend.team.ahachul_backend.api.train.domain.model.UpDownType
 
 class GetCongestionDto {
 
     data class Request(
-        val subwayLine: Int,
-        val trainNo: Int
+        val stationId: Long,
+        val upDownType: UpDownType
     )
 
     data class Response(
         val trainNo: Int,
         val congestions : List<Section>
-    )
+    ) {
+        companion object {
+            fun from(trainNo: Int, congestions: List<Section>): Response {
+                return Response(
+                    trainNo = trainNo,
+                    congestions = congestions
+                )
+            }
+        }
+    }
 
     data class Section(
         val sectionNo: Int,

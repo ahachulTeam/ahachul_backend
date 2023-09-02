@@ -1,4 +1,4 @@
-package backend.team.ahachul_backend.api.train.domain
+package backend.team.ahachul_backend.api.train.domain.model
 
 import backend.team.ahachul_backend.common.exception.DomainException
 import backend.team.ahachul_backend.common.response.ResponseCode

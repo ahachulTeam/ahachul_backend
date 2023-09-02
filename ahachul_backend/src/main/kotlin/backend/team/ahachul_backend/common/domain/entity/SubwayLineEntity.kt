@@ -22,4 +22,8 @@ class SubwayLineEntity (
     var identity: Long = 0
 
 ): BaseEntity() {
+
+    fun isCorrectTrainNo(trainNo: String): Boolean {
+        return trainNo[0] != id.toString()[0]
+    }
 }
