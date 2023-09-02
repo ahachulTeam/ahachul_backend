@@ -125,14 +125,16 @@ class TrainServiceTest(
                 )
             )
         )
-        given(trainCongestionClient.getCongestions(ArgumentMatchers.anyLong(), ArgumentMatchers.anyInt())).willReturn(congestionResult)
+        given(trainCongestionClient.getCongestions(ArgumentMatchers.anyLong(), ArgumentMatchers.anyInt()))
+            .willReturn(congestionResult)
 
         val realTimeTrainData = listOf(
-            createTrainRealTime(1, "2236", "6분", TrainArrivalCode.RUNNING),
+            createTrainRealTime(1, "8236", "6분", TrainArrivalCode.RUNNING),
             createTrainRealTime(2, "2238", "전역 도착", TrainArrivalCode.BEFORE_STATION_ARRIVE),
             createTrainRealTime(1, "2234", "전역 도착", TrainArrivalCode.BEFORE_STATION_ARRIVE)
         )
-        given(trainCacheUtils.getCache(ArgumentMatchers.anyLong(), ArgumentMatchers.anyLong())).willReturn(realTimeTrainData)
+        given(trainCacheUtils.getCache(ArgumentMatchers.anyLong(), ArgumentMatchers.anyLong()))
+            .willReturn(realTimeTrainData)
 
         val subwayLine = SubwayLineEntity(
             id = 2,
@@ -172,7 +174,7 @@ class TrainServiceTest(
         )
         assertThat(result.congestions.size).isEqualTo(10)
         for (i: Int in 0 ..9) {
-            assertThat(result.congestions[i].sectionNo).isEqualTo(i+1)
+            assertThat(result.congestions[i].sectionNo).isEqualTo(i)
             assertThat(result.congestions[i].congestionColor).isEqualTo(expected[i])
         }
     }

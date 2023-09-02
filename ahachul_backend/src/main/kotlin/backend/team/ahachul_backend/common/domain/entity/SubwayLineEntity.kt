@@ -23,11 +23,7 @@ class SubwayLineEntity (
 
 ): BaseEntity() {
 
-    fun processCorrectTrainNo(trainNo: String): String {
-        val idx = 0
-        if (trainNo[idx] != id.toString()[idx]) {
-            return id.toString() + trainNo.substring(idx + 1, trainNo.length)
-        }
-        return trainNo
+    fun isCorrectTrainNo(trainNo: String): Boolean {
+        return trainNo[0] != id.toString()[0]
     }
 }

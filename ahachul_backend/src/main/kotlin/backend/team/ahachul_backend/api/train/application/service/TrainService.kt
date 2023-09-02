@@ -12,6 +12,7 @@ import backend.team.ahachul_backend.api.train.domain.model.UpDownType
 import backend.team.ahachul_backend.common.client.SeoulTrainClient
 import backend.team.ahachul_backend.common.client.TrainCongestionClient
 import backend.team.ahachul_backend.common.client.dto.TrainCongestionDto
+import backend.team.ahachul_backend.common.domain.entity.SubwayLineEntity
 import backend.team.ahachul_backend.common.dto.TrainRealTimeDto
 import backend.team.ahachul_backend.common.exception.AdapterException
 import backend.team.ahachul_backend.common.exception.BusinessException
@@ -139,19 +140,15 @@ class TrainService(
         }
 
         val trains = getCachedTrainOrRequestExternal(subwayLine.identity, station.id)
-        val directionFilteredTrains = trains.filter {
-                x -> x.upDownType == request.upDownType
+        if (trains.isEmpty()) {
+            return GetCongestionDto.Response.from(-1, emptyList())
         }
-        val latestTrainNo = subwayLine.processCorrectTrainNo(directionFilteredTrains[0].trainNum)
 
+        val latestTrainNo = getLatestTrainNo(trains, subwayLine, request.upDownType)
         val response = trainCongestionClient.getCongestions(subwayLine.id, latestTrainNo.toInt())
         val trainCongestion = response.data!!
         val congestions = mapCongestionDto(response.success, trainCongestion)
-
-        return GetCongestionDto.Response(
-            trainNo = trainCongestion.trainY.toInt(),
-            congestions = congestions
-        )
+        return GetCongestionDto.Response.from(trainCongestion.trainY.toInt(), congestions)
     }
 
     private fun isInValidSubwayLine(subwayLine: Long): Boolean {
@@ -165,13 +162,24 @@ class TrainService(
             ?: getTrainRealTimes(stationId)
     }
 
+    private fun getLatestTrainNo(
+        trains: List<GetTrainRealTimesDto.TrainRealTime>,
+        subwayLine: SubwayLineEntity,
+        upDownType: UpDownType
+    ): String {
+        val latestTrainNo = trains.first { it.upDownType == upDownType }.trainNum
+        return when (subwayLine.isCorrectTrainNo(latestTrainNo)) {
+            false -> "${subwayLine.id}${latestTrainNo.substring(1, latestTrainNo.length)}"
+            true -> latestTrainNo
+        }
+    }
+
     private fun mapCongestionDto(
-        success: Boolean, trainCongestion: TrainCongestionDto.Train
-    ): List<GetCongestionDto.Section>  {
+        success: Boolean, trainCongestion: TrainCongestionDto.Train): List<GetCongestionDto.Section>  {
         if (success) {
             val congestionList = parse(trainCongestion.congestionResult.congestionCar)
             return congestionList.mapIndexed {
-                    idx, it -> GetCongestionDto.Section.from(idx + 1, it)
+                    idx, it -> GetCongestionDto.Section.from(idx, it)
             }
         }
         return emptyList()
