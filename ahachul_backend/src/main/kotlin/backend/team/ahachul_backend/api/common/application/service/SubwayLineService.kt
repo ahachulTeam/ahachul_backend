@@ -21,10 +21,10 @@ class SubwayLineService(
     @Cacheable("subwayLines")
     override fun searchSubwayLines(): SearchSubwayLineDto.Response {
         return SearchSubwayLineDto.Response(
-            subwayLineRepository.findAll()
-                .stream()
-                .map { subwayLine -> SubwayLine.of(subwayLine, getStations(subwayLine)) }
-                .toList()
+                    subwayLineRepository.findAll()
+                    .stream()
+                    .map { subwayLine -> SubwayLine.of(subwayLine, getStations(subwayLine)) }
+                    .toList()
         )
     }
 
