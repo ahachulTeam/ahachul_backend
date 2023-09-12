@@ -1,4 +1,4 @@
-=== /ranks/hashtag
+=== /ranks/hashtags
 
 ==== 해시태그 랭킹 조회
 

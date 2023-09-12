@@ -61,14 +61,14 @@ INSERT INTO tb_train(prefix_train_no, subway_line_id) values('D22', 10);
 INSERT INTO tb_train(prefix_train_no, subway_line_id) values('D23', 10);
 
 -- # 수인분당선
-INSERT IGNORE INTO tb_train(prefix_train_no, subway_line_id) values('351', 11);
+INSERT INTO tb_train(prefix_train_no, subway_line_id) values('351', 11);
 
 -- # 경의중앙선
-INSERT IGNORE INTO tb_train(prefix_train_no, subway_line_id) values('321', 12);
-INSERT IGNORE INTO tb_train(prefix_train_no, subway_line_id) values('331', 12);
+INSERT INTO tb_train(prefix_train_no, subway_line_id) values('321', 12);
+INSERT INTO tb_train(prefix_train_no, subway_line_id) values('331', 12);
 
 -- # 우이신설선
-INSERT IGNORE INTO tb_train(prefix_train_no, subway_line_id) values('UL', 13);
+INSERT INTO tb_train(prefix_train_no, subway_line_id) values('UL', 13);
 
 INSERT INTO tb_category(name) values('가방');
 INSERT INTO tb_category(name) values('귀금속');
