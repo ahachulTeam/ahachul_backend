@@ -1,10 +1,12 @@
 package backend.team.ahachul_backend.api.lost.application.service
 
+import backend.team.ahachul_backend.api.lost.adapter.web.out.CategoryRepository
 import backend.team.ahachul_backend.api.lost.adapter.web.out.LostPostRepository
 import backend.team.ahachul_backend.api.lost.application.port.`in`.LostPostUseCase
 import backend.team.ahachul_backend.api.lost.application.service.command.`in`.CreateLostPostCommand
 import backend.team.ahachul_backend.api.lost.application.service.command.`in`.SearchLostPostCommand
 import backend.team.ahachul_backend.api.lost.application.service.command.`in`.UpdateLostPostCommand
+import backend.team.ahachul_backend.api.lost.domain.entity.CategoryEntity
 import backend.team.ahachul_backend.api.lost.domain.model.LostPostType
 import backend.team.ahachul_backend.api.lost.domain.model.LostStatus
 import backend.team.ahachul_backend.api.lost.domain.model.LostType
@@ -33,11 +35,13 @@ class LostPostServiceTest(
     @Autowired val lostPostUseCase: LostPostUseCase,
     @Autowired val lostPostRepository: LostPostRepository,
     @Autowired val memberRepository: MemberRepository,
-    @Autowired val subwayLineRepository: SubwayLineRepository
+    @Autowired val subwayLineRepository: SubwayLineRepository,
+    @Autowired val categoryRepository: CategoryRepository
 ): CommonServiceTestConfig() {
 
-    var member: MemberEntity? = null
-    var subwayLine: SubwayLineEntity? = null
+    lateinit var member: MemberEntity
+    lateinit var subwayLine: SubwayLineEntity
+    lateinit var category: CategoryEntity
 
     @BeforeEach
     fun setUp() {
@@ -52,9 +56,9 @@ class LostPostServiceTest(
                 status = MemberStatusType.ACTIVE
             )
         )
-        member!!.id.let { RequestUtils.setAttribute("memberId", it)}
-
+        member.id.let { RequestUtils.setAttribute("memberId", it)}
         subwayLine = createSubwayLine("1호선")
+        category = createCategory("휴대폰")
     }
 
     @Test
@@ -71,7 +75,7 @@ class LostPostServiceTest(
         assertThat(response.title).isEqualTo("지갑 주인 찾아요")
         assertThat(response.content).isEqualTo("내용")
         assertThat(response.writer).isEqualTo("nickname")
-        assertThat(response.subwayLine).isEqualTo(subwayLine!!.id)
+        assertThat(response.subwayLine).isEqualTo(subwayLine.id)
         assertThat(response.status).isEqualTo(LostStatus.PROGRESS)
     }
 
@@ -80,12 +84,12 @@ class LostPostServiceTest(
     fun searchLostPostPaging() {
         // given
         for(i: Int in 1.. 5) {
-            val createCommand = createLostPostCommand(subwayLine!!.id, "유실물$i", "휴대폰")
+            val createCommand = createLostPostCommand(subwayLine.id, "유실물$i", "휴대폰")
             lostPostUseCase.createLostPost(createCommand)
         }
 
-        val searchCommand1 = createSearchLostPostCommand(0, subwayLine!!.id, null)
-        val searchCommand2 = createSearchLostPostCommand(1, subwayLine!!.id, null)
+        val searchCommand1 = createSearchLostPostCommand(0, subwayLine.id, null)
+        val searchCommand2 = createSearchLostPostCommand(1, subwayLine.id, null)
 
         // when
         val response1 = lostPostUseCase.searchLostPosts(searchCommand1)
@@ -139,7 +143,7 @@ class LostPostServiceTest(
     @DisplayName("유실물 저장 테스트")
     fun createLostPost() {
         //given
-        val createCommand = createLostPostCommand(subwayLine!!.id, "내용", "휴대폰")
+        val createCommand = createLostPostCommand(subwayLine.id, "내용", "휴대폰")
 
         // when
         val response = lostPostUseCase.createLostPost(createCommand)
@@ -158,14 +162,15 @@ class LostPostServiceTest(
     @DisplayName("유실물 수정 테스트 - 권한이 있는 경우")
     fun updateLostPost() {
         // given
-        val createCommand = createLostPostCommand(subwayLine!!.id, "내용", "휴대폰")
+        val createCommand = createLostPostCommand(subwayLine.id, "내용", "휴대폰")
         val entity = lostPostUseCase.createLostPost(createCommand)
+        createCategory("지갑")
 
         val updateCommand = UpdateLostPostCommand(
             id = entity.id,
             title = null,
             content = "수정한 내용",
-            subwayLine = subwayLine!!.id,
+            subwayLine = subwayLine.id,
             status = LostStatus.COMPLETE,
             categoryName = "지갑"
         )
@@ -176,7 +181,7 @@ class LostPostServiceTest(
         // then
         assertThat(response.id).isNotNull
         assertThat(response.content).isEqualTo("수정한 내용")
-        assertThat(response.subwayLine).isEqualTo(subwayLine!!.id)
+        assertThat(response.subwayLine).isEqualTo(subwayLine.id)
         assertThat(response.categoryName).isEqualTo("지갑")
         assertThat(response.status).isEqualTo(LostStatus.COMPLETE)
     }
@@ -185,7 +190,7 @@ class LostPostServiceTest(
     @DisplayName("유실물 수정 테스트 - 권한이 없는 경우")
     fun updateLostPostUnAuthorized() {
         // given
-        val createCommand = createLostPostCommand(subwayLine!!.id, "내용", "휴대폰")
+        val createCommand = createLostPostCommand(subwayLine.id, "내용", "휴대폰")
         val entity = lostPostUseCase.createLostPost(createCommand)
 
         val updateCommand = UpdateLostPostCommand(
@@ -198,7 +203,7 @@ class LostPostServiceTest(
         )
 
         // when, then
-        RequestUtils.setAttribute("memberId", member!!.id + 1)
+        RequestUtils.setAttribute("memberId", member.id + 1)
 
         assertThatThrownBy {
             lostPostUseCase.updateLostPost(updateCommand)
@@ -211,7 +216,7 @@ class LostPostServiceTest(
     @DisplayName("유실물 삭제 테스트 - 권한이 있는 경우")
     fun deleteLostPost() {
         // given
-        val createCommand = createLostPostCommand(subwayLine!!.id, "내용", "휴대폰")
+        val createCommand = createLostPostCommand(subwayLine.id, "내용", "휴대폰")
         val entity = lostPostUseCase.createLostPost(createCommand)
 
         // when
@@ -225,11 +230,11 @@ class LostPostServiceTest(
     @DisplayName("유실물 삭제 테스트 - 권한이 없는 경우")
     fun deleteLostPostUnAuthorized() {
         // given
-        val createCommand = createLostPostCommand(subwayLine!!.id, "내용", "휴대폰")
+        val createCommand = createLostPostCommand(subwayLine.id, "내용", "휴대폰")
         val entity = lostPostUseCase.createLostPost(createCommand)
 
         // when, then
-        RequestUtils.setAttribute("memberId", member!!.id + 1)
+        RequestUtils.setAttribute("memberId", member.id + 1)
 
         assertThatThrownBy {
             lostPostUseCase.deleteLostPost(entity.id)
@@ -245,12 +250,13 @@ class LostPostServiceTest(
         val lostPostIds: MutableList<Long> = mutableListOf()
 
         for(i: Int in 1.. 8) {
-            val createCommand = createLostPostCommand(subwayLine!!.id, "유실물$i", "휴대폰")
+            val createCommand = createLostPostCommand(subwayLine.id, "유실물$i", "휴대폰")
             lostPostIds.add(lostPostUseCase.createLostPost(createCommand).id)
         }
 
+        createCategory("지갑")
         for(i: Int in 1.. 4) {
-            val createCommand = createLostPostCommand(subwayLine!!.id, "유실물$i", "지갑")
+            val createCommand = createLostPostCommand(subwayLine.id, "유실물$i", "지갑")
             lostPostUseCase.createLostPost(createCommand)
         }
 
@@ -269,17 +275,19 @@ class LostPostServiceTest(
         var lostPostId: Long = 0
 
         for(i: Int in 1.. 8) {
-            val createCommand = createLostPostCommand(subwayLine!!.id, "유실물$i", "휴대폰")
+            val createCommand = createLostPostCommand(subwayLine.id, "유실물$i", "휴대폰")
             lostPostId = lostPostUseCase.createLostPost(createCommand).id
         }
 
+        createCategory("지갑")
         for(i: Int in 1.. 3) {
-            val createCommand = createLostPostCommand(subwayLine!!.id, "유실물$i", "지갑")
+            val createCommand = createLostPostCommand(subwayLine.id, "유실물$i", "지갑")
             lostPostUseCase.createLostPost(createCommand)
         }
 
+        createCategory("컴퓨터")
         for(i: Int in 1.. 2) {
-            val createCommand = createLostPostCommand(subwayLine!!.id, "유실물$i", "컴퓨터")
+            val createCommand = createLostPostCommand(subwayLine.id, "유실물$i", "컴퓨터")
             lostPostUseCase.createLostPost(createCommand)
         }
 
@@ -293,11 +301,11 @@ class LostPostServiceTest(
     @DisplayName("제목이나 내용에 검색 키워드가 포함된 유실물을 반환한다.")
     fun searchLostPostByKeyword() {
         // given
-        val createCommand1 = createLostPostCommand(subwayLine!!.id, "오늘 1호선에서 지갑을 주웠어요", "휴대폰")
-        val createCommand2 = createLostPostCommand(subwayLine!!.id, "2호선에서 분실물 주웠는데 찾아가세요", "휴대폰")
+        val createCommand1 = createLostPostCommand(subwayLine.id, "오늘 1호선에서 지갑을 주웠어요", "휴대폰")
+        val createCommand2 = createLostPostCommand(subwayLine.id, "2호선에서 분실물 주웠는데 찾아가세요", "휴대폰")
         val entity1 = lostPostUseCase.createLostPost(createCommand1)
         val entity2 = lostPostUseCase.createLostPost(createCommand2)
-        val searchCommand = createSearchLostPostCommand(0, subwayLine!!.id, "지갑")
+        val searchCommand = createSearchLostPostCommand(0, subwayLine.id, "지갑")
 
         // when
         val response = lostPostUseCase.searchLostPosts(searchCommand)
@@ -323,6 +331,14 @@ class LostPostServiceTest(
             SubwayLineEntity(
                 name = name,
                 regionType = RegionType.METROPOLITAN
+            )
+        )
+    }
+
+    private fun createCategory(name: String): CategoryEntity {
+        return categoryRepository.save(
+            CategoryEntity(
+                name = name
             )
         )
     }
