@@ -10,6 +10,7 @@ import backend.team.ahachul_backend.api.lost.domain.model.LostType
 import backend.team.ahachul_backend.common.domain.entity.SubwayLineEntity
 import com.querydsl.core.types.dsl.Expressions
 import com.querydsl.jpa.impl.JPAQueryFactory
+import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Pageable
 import org.springframework.data.domain.Slice
 import org.springframework.data.domain.SliceImpl
@@ -21,20 +22,30 @@ class CustomLostPostRepository(
 ) {
 
     fun searchLostPosts(command: GetSliceLostPostsCommand): Slice<LostPostEntity> {
-        val pageable = command.pageable
+        val pageable = PageRequest.of(0, command.pageSize)
         val response = queryFactory.selectFrom(lostPostEntity)
             .where(
+                ltPostId(command.lostPostId),
                 lostOriginEq(command.lostOrigin),
                 subwayLineEq(command.subwayLine),
                 lostTypeEq(command.lostType),
                 titleAndContentLike(command.keyword),
             )
-            .orderBy(lostPostEntity.createdAt.desc())
-            .offset(getOffset(pageable).toLong())
-            .limit((pageable.pageSize + 1).toLong())
+            .orderBy(lostPostEntity.id.desc())
+            .limit((command.pageSize + 1).toLong())
             .fetch()
 
-        return SliceImpl(response, pageable, hasNext(response, pageable))
+        return SliceImpl(response, pageable, hasNext(response, command.pageSize))
+    }
+
+    private fun hasNext(response: MutableList<LostPostEntity>, pageSize: Int): Boolean {
+        return when {
+            response.size > pageSize -> {
+                response.removeAt(response.size - 1)
+                true
+            }
+            else -> false
+        }
     }
 
     fun searchRecommendPost(command: GetRecommendLostPostsCommand): List<LostPostEntity> {
@@ -61,22 +72,8 @@ class CustomLostPostRepository(
             .fetch()
     }
 
-    private fun getOffset(pageable: Pageable): Int {
-        return when {
-            pageable.pageNumber != 0 -> pageable.pageNumber * pageable.pageSize
-            else -> pageable.pageNumber
-        }
-    }
-
-    private fun hasNext(response: MutableList<LostPostEntity>, pageable: Pageable): Boolean {
-        return when {
-            response.size > pageable.pageSize -> {
-                response.removeAt(response.size - 1)
-                true
-            }
-            else -> false
-        }
-    }
+    private fun ltPostId(postId: Long?) =
+        postId?.let { lostPostEntity.id.lt(postId) }
 
     private fun lostOriginEq(lostOrigin: LostOrigin?) =
         lostOrigin?.let { lostPostEntity.origin.eq(lostOrigin) }
