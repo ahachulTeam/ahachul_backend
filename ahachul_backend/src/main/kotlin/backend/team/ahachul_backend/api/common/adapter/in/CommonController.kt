@@ -3,7 +3,6 @@ package backend.team.ahachul_backend.api.common.adapter.`in`
 import backend.team.ahachul_backend.api.common.adapter.`in`.dto.SearchSubwayLineDto
 import backend.team.ahachul_backend.api.common.application.port.`in`.SubwayLineUseCase
 import backend.team.ahachul_backend.common.response.CommonResponse
-import org.springframework.data.redis.core.StringRedisTemplate
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RestController
 
