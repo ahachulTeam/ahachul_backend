@@ -20,14 +20,6 @@ class LostPostFileService(
     private val s3Utils: AwsS3Utils,
 ): LostPostFileUseCase {
 
-    override fun saveLostPostFileUrl(post: LostPostEntity, fileUrl: String) {
-        val file = FileEntity.of(
-            fileName = LOST112_FILE_NAME,
-            filePath = fileUrl
-        )
-        saveFile(post, file)
-    }
-
     override fun createLostPostFiles(post: LostPostEntity, files: List<MultipartFile>): List<ImageDto> {
         return files.map {
             val uuid = s3Client.upload(it)
@@ -54,9 +46,5 @@ class LostPostFileService(
         val lostPostFile = LostPostFileEntity.from(post, file)
         file.addLostPostFile(lostPostFile)
         fileWriter.save(file)
-    }
-
-    companion object {
-        private const val LOST112_FILE_NAME = "lost112"
     }
 }

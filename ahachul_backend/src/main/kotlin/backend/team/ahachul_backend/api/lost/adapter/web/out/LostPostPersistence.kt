@@ -20,6 +20,10 @@ class LostPostPersistence(
         return lostPostRepository.save(lostPostEntity)
     }
 
+    override fun saveAll(lostPosts: List<LostPostEntity>) {
+        customLostPostRepository.saveAll(lostPosts)
+    }
+
     override fun getLostPost(id: Long): LostPostEntity {
         return lostPostRepository.findById(id)
             .orElseThrow { throw AdapterException(ResponseCode.INVALID_DOMAIN) }
