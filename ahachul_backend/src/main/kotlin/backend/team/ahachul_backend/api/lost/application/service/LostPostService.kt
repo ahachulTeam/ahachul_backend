@@ -14,6 +14,7 @@ import backend.team.ahachul_backend.api.lost.application.service.command.out.Get
 import backend.team.ahachul_backend.api.lost.domain.entity.CategoryEntity
 import backend.team.ahachul_backend.api.lost.domain.entity.LostPostEntity
 import backend.team.ahachul_backend.api.lost.domain.entity.LostPostFileEntity
+import backend.team.ahachul_backend.api.lost.domain.model.LostOrigin
 import backend.team.ahachul_backend.api.member.application.port.out.MemberReader
 import backend.team.ahachul_backend.common.domain.entity.SubwayLineEntity
 import backend.team.ahachul_backend.common.dto.ImageDto
@@ -39,9 +40,14 @@ class LostPostService(
 
     override fun getLostPost(id: Long): GetLostPostDto.Response {
         val entity = lostPostReader.getLostPost(id)
-        val files = lostPostFileReader.findAllByPostId(id)
         val recommendPosts = getRecommendPosts(entity.subwayLine, entity.category)
         val recommendPostsDto = mapRecommendPostsDto(recommendPosts)
+
+        if (entity.origin == LostOrigin.LOST112) {
+            return GetLostPostDto.Response.of(entity, listOf(), recommendPostsDto)
+        }
+
+        val files = lostPostFileReader.findAllByPostId(id)
         return GetLostPostDto.Response.of(entity, convertToImageDto(files), recommendPostsDto)
     }
 
@@ -61,8 +67,9 @@ class LostPostService(
         return recommendPosts.plus(randomPosts)
     }
 
-    private fun getRandomPostIfNotDefaultSize(recommendPostSize: Int,
-                                              subwayLine: SubwayLineEntity?, category: CategoryEntity): List<LostPostEntity> {
+    private fun getRandomPostIfNotDefaultSize(
+        recommendPostSize: Int, subwayLine: SubwayLineEntity?, category: CategoryEntity
+    ): List<LostPostEntity> {
         val randomCommand = GetRecommendLostPostsCommand.from(
             DEFAULT_RECOMMEND_SIZE - recommendPostSize, subwayLine, category
         )
@@ -71,16 +78,24 @@ class LostPostService(
 
     private fun mapRecommendPostsDto(recommendPosts: List<LostPostEntity>): List<GetLostPostDto.RecommendResponse> {
         val recommendPostsDto = recommendPosts.map { post ->
-            val file = lostPostFileReader.findByPostId(post.id)?.file
             GetLostPostDto.RecommendResponse(
                 id = post.id,
                 title = post.title,
                 writer = post.createdBy,
-                imgUrl = file?.filePath,
+                imageUrl = getFileSource(post),
                 date = post.date.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")),
             )
         }
         return recommendPostsDto
+    }
+
+    private fun convertToImageDto(lostPostFiles: List<LostPostFileEntity>): List<ImageDto> {
+        return lostPostFiles.map {
+            ImageDto.of(
+                imageId = it.id,
+                imageUrl = it.file!!.filePath
+            )
+        }
     }
 
     override fun searchLostPosts(command: SearchLostPostCommand): SearchLostPostsDto.Response {
@@ -88,7 +103,6 @@ class LostPostService(
         val sliceObject = lostPostReader.getLostPosts(GetSliceLostPostsCommand.from(command, subwayLine))
 
         val lostPosts = sliceObject.content.map {
-            val file = lostPostFileReader.findByPostId(it.id)?.file
             SearchLostPostsDto.SearchLost(
                 id = it.id,
                 title = it.title,
@@ -98,11 +112,20 @@ class LostPostService(
                 date = it.date.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")),
                 subwayLine = it.subwayLine?.id,
                 status = it.status,
-                image = file?.let { f -> ImageDto(f.id, f.filePath) },
+                imageUrl = getFileSource(it),
                 categoryName = it.category?.name
             )
         }
         return SearchLostPostsDto.Response(hasNext = sliceObject.hasNext(), posts = lostPosts)
+    }
+
+    private fun getFileSource(lostPost: LostPostEntity): String? {
+        if (lostPost.origin == LostOrigin.LOST112) {
+            return lostPost.externalSourceFileUrl
+        }
+
+        val lostPostFile = lostPostFileReader.findByPostId(lostPost.id)
+        return lostPostFile?.file?.filePath
     }
 
     @Transactional
@@ -163,15 +186,6 @@ class LostPostService(
         entity.checkMe(memberId)
         entity.delete()
         return DeleteLostPostDto.Response.from(entity)
-    }
-
-    private fun convertToImageDto(lostPostFiles: List<LostPostFileEntity>): List<ImageDto> {
-        return lostPostFiles.map {
-            ImageDto.of(
-                imageId = it.id,
-                imageUrl = it.file!!.filePath
-            )
-        }
     }
 
     companion object {

@@ -37,7 +37,7 @@ class LostPostControllerDocsTest: CommonDocsTestConfig() {
             title = "title",
             writer = "writer",
             date = "2023/01/23",
-            imgUrl = "https://img.png"
+            imageUrl = "https://img.png"
         )
 
         val response = GetLostPostDto.Response(
@@ -55,6 +55,7 @@ class LostPostControllerDocsTest: CommonDocsTestConfig() {
             pageUrl = "http://lost112",
             images = listOf(ImageDto(1, "https://img.png")),
             categoryName = "휴대폰",
+            externalSourceImageUrl = "http://lost112/image.png",
             recommendPosts = listOf(recommendPost)
         )
 
@@ -90,6 +91,7 @@ class LostPostControllerDocsTest: CommonDocsTestConfig() {
                     fieldWithPath("result.storageNumber").type(JsonFieldType.STRING).description("보관 장소 전화번호").attributes(getFormatAttribute("Lost112 데이터")),
                     fieldWithPath("result.pageUrl" ).type(JsonFieldType.STRING).description("외부 유실물 데이터 페이지 링크"),
                     fieldWithPath("result.categoryName" ).type(JsonFieldType.STRING).description("카테고리 이름").optional(),
+                    fieldWithPath("result.externalSourceImageUrl").type(JsonFieldType.STRING).description("Lost112 이미지 링크").optional(),
                     fieldWithPath("result.images[]").type(JsonFieldType.ARRAY).description("등록된 이미지 목록"),
                     fieldWithPath("result.images[].imageId").type(JsonFieldType.NUMBER).description("등록된 이미지 ID"),
                     fieldWithPath("result.images[].imageUrl").type(JsonFieldType.STRING).description("등록된 이미지 URI"),
@@ -97,7 +99,7 @@ class LostPostControllerDocsTest: CommonDocsTestConfig() {
                     fieldWithPath("result.recommendPosts[].title").type(JsonFieldType.STRING).description("추천 유실물 제목"),
                     fieldWithPath("result.recommendPosts[].writer").type(JsonFieldType.STRING).description("추천 유실물 작성자"),
                     fieldWithPath("result.recommendPosts[].date").type(JsonFieldType.STRING).description("추천 유실물 생성 일자"),
-                    fieldWithPath("result.recommendPosts[].imgUrl").type(JsonFieldType.STRING).description("추천 유실물 썸네일 경로"),
+                    fieldWithPath("result.recommendPosts[].imageUrl").type(JsonFieldType.STRING).description("추천 유실물 썸네일 경로"),
                 )
             ))
     }
@@ -118,7 +120,7 @@ class LostPostControllerDocsTest: CommonDocsTestConfig() {
                     subwayLine = 1,
                     chats = 1,
                     status = LostStatus.PROGRESS,
-                    image = ImageDto(1, "https://img.png"),
+                    imageUrl = "https://img.png",
                     categoryName = "휴대폰"
                 )
             )
@@ -165,9 +167,7 @@ class LostPostControllerDocsTest: CommonDocsTestConfig() {
                     fieldWithPath("result.posts[].chats").type(JsonFieldType.NUMBER).description("유실물 쪽지 개수"),
                     fieldWithPath("result.posts[].status").type(JsonFieldType.STRING).description("유실물 찾기 완료 여부").attributes(getFormatAttribute( "PROGRESS / COMPLETE")),
                     fieldWithPath("result.posts[].categoryName" ).type(JsonFieldType.STRING).description("카테고리 이름").optional(),
-                    fieldWithPath("result.posts[].image").type(JsonFieldType.OBJECT).description("등록된 이미지"),
-                    fieldWithPath("result.posts[].image.imageId").type(JsonFieldType.NUMBER).description("등록된 첫 번쨰 이미지 ID"),
-                    fieldWithPath("result.posts[].image.imageUrl").type(JsonFieldType.STRING).description("등록된 첫 번째 이미지 URI"),
+                    fieldWithPath("result.posts[].imageUrl").type(JsonFieldType.STRING).description("등록된 첫 번째 이미지 URI"),
                 )
             ))
     }

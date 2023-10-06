@@ -22,6 +22,7 @@ class GetLostPostDto {
         val pageUrl: String?,
         val images: List<ImageDto>?,
         val categoryName: String?,
+        val externalSourceImageUrl: String?,
         val recommendPosts: List<RecommendResponse>
     ) {
         companion object {
@@ -40,6 +41,7 @@ class GetLostPostDto {
                     pageUrl = entity.pageUrl,
                     images = images,
                     categoryName = entity.category?.name,
+                    externalSourceImageUrl = entity.externalSourceFileUrl,
                     recommendPosts = recommendPosts
                 )
             }
@@ -50,7 +52,7 @@ class GetLostPostDto {
         val id: Long,
         val title: String,
         val writer: String,
-        val imgUrl: String?,
+        val imageUrl: String?,
         val date: String
     )
 }
