@@ -60,7 +60,9 @@ class LostPostEntity(
 
     var pageUrl: String? = null,
 
-    var receivedDate: LocalDateTime? = null
+    var receivedDate: LocalDateTime? = null,
+
+    var externalSourceFileUrl: String? = null
 
 ): BaseEntity() {
 
@@ -80,7 +82,7 @@ class LostPostEntity(
             )
         }
 
-        fun ofLost112(data: Lost112Data, subwayLine: SubwayLineEntity?, category: CategoryEntity?): LostPostEntity {
+        fun ofLost112(data: Lost112Data, subwayLine: SubwayLineEntity?, category: CategoryEntity?, fileUrl: String?): LostPostEntity {
             return LostPostEntity(
                 title = data.title,
                 content = data.context,
@@ -92,7 +94,8 @@ class LostPostEntity(
                 pageUrl = data.page,
                 receivedDate = LocalDateTime.parse(data.getDate,
                     DateTimeFormatter.ofPattern("yyyy-MM-dd HH시경")),
-                category = category
+                category = category,
+                externalSourceFileUrl = fileUrl
             )
         }
     }
