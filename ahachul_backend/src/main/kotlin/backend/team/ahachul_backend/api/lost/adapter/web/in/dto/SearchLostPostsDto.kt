@@ -14,14 +14,17 @@ class SearchLostPostsDto {
         val subwayLineId: Long?,
         val origin: LostOrigin?,
         val keyword: String?,
+        val lostPostId: Long,
+        val pageSize: Int,
     ) {
-        fun toCommand(pageable: Pageable): SearchLostPostCommand {
+        fun toCommand(): SearchLostPostCommand {
             return SearchLostPostCommand(
-                pageable = pageable,
                 lostType = lostType,
                 subwayLineId = subwayLineId,
                 lostOrigin = origin,
-                keyword = keyword
+                keyword = keyword,
+                lostPostId = lostPostId,
+                pageSize = pageSize
             )
         }
     }

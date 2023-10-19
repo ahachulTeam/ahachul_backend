@@ -21,10 +21,9 @@ class LostPostController(
 
     @GetMapping("/v1/lost-posts")
     fun searchLostPosts(
-        pageable: Pageable,
         request: SearchLostPostsDto.Request
     ): CommonResponse<SearchLostPostsDto.Response> {
-        return CommonResponse.success(lostPostService.searchLostPosts(request.toCommand(pageable)))
+        return CommonResponse.success(lostPostService.searchLostPosts(request.toCommand()))
     }
 
     @Authentication
