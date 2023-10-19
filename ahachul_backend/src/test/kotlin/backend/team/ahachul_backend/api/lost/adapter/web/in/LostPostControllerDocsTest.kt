@@ -132,12 +132,12 @@ class LostPostControllerDocsTest: CommonDocsTestConfig() {
         // when
         val result = mockMvc.perform(
             get("/v1/lost-posts")
-                .queryParam("page", "1")
-                .queryParam("size", "5")
                 .queryParam("lostType", LostType.LOST.name)
                 .queryParam("subwayLineId", "1")
                 .queryParam("origin", LostOrigin.LOST112.name)
                 .queryParam("keyword", "검색 키워드")
+                .queryParam("lostPostId", "100")
+                .queryParam("pageSize", "10" )
                 .accept(MediaType.APPLICATION_JSON)
         )
 
@@ -147,12 +147,12 @@ class LostPostControllerDocsTest: CommonDocsTestConfig() {
                 getDocsRequest(),
                 getDocsResponse(),
                 queryParameters(
-                    parameterWithName("page").description("현재 페이지"),
-                    parameterWithName("size").description("페이지 노출 데이터 수"),
                     parameterWithName("lostType").description("유실물 카테고리").attributes(getFormatAttribute("LOST(유실물) / ACQUIRE(습득물 + Lost112)")),
                     parameterWithName("subwayLineId").description("유실물 호선").optional(),
                     parameterWithName("origin").description("유실물 출처").attributes(getFormatAttribute( "LOST112 / APP")).optional(),
-                    parameterWithName("keyword").description("검색 키워드 명칭").optional()
+                    parameterWithName("keyword").description("검색 키워드 명칭").optional(),
+                    parameterWithName("lostPostId").description("마지막으로 조회한 유실물 데이터의 ID"),
+                    parameterWithName("pageSize").description("한번에 가져올 데이터 개수")
                 ),
                 responseFields(
                     *commonResponseFields(),
