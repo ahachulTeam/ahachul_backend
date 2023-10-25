@@ -23,8 +23,12 @@ class UpdateLostDataJob(
     override fun executeInternal(context: JobExecutionContext) {
         val jobDataMap = context.jobDetail.jobDataMap
         val fileReadPath = jobDataMap.getString("FILE_READ_PATH")
-        val response = FileUtils.readFileData<List<Map<String, Lost112Data>>>(fileReadPath)
-        saveLostPosts(response)
+
+        for (i: Int in 1 .. 10) {
+            val fileFullReadPath = "$fileReadPath$i.json"
+            val response = FileUtils.readFileData<List<Map<String, Lost112Data>>>(fileFullReadPath)
+            response?.let { saveLostPosts(it) }
+        }
     }
 
     private fun saveLostPosts(response: List<Map<String, Lost112Data>>) {

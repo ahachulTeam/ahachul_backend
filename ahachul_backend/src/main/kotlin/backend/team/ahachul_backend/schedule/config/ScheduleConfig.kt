@@ -43,7 +43,7 @@ class ScheduleConfig(
         val jobDataMap = JobDataMap()
         jobDataMap.put("EXECUTION_COUNT", 0)
         jobDataMap.put("MAX_RETRY_COUNT", 3)
-        jobDataMap.put("FILE_READ_PATH", "/home/all.json")
+        jobDataMap.put("FILE_READ_PATH", "/home/")
         return jobDataMap
     }
 

@@ -8,8 +8,9 @@ import org.springframework.stereotype.Service
 class HashTagRankService(
     val redisClient: RedisClient
 ){
-
+    
     fun increaseCount(hashTagName: String) {
+        val key: String = KEY + hashTagName
         val setOperations = redisClient.getZSetOps()
         setOperations.incrementScore(KEY, hashTagName, INCREASE_CNT.toDouble())
     }

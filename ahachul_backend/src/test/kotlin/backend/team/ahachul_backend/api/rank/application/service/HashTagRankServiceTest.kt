@@ -81,10 +81,10 @@ class HashTagRankServiceTest(
     @Test
     fun 조회수_증가_동시성_테스트() {
         val hashTagName = "1호선"
-        val executorService: ExecutorService = Executors.newFixedThreadPool(10)
-        val countDownLatch = CountDownLatch(10)
+        val executorService: ExecutorService = Executors.newFixedThreadPool(100)
+        val countDownLatch = CountDownLatch(100)
 
-        for (i in 1..10) {
+        for (i in 1..100) {
             executorService.execute {
                 hashTagRankService.increaseCount(hashTagName)
                 countDownLatch.countDown()
@@ -93,6 +93,6 @@ class HashTagRankServiceTest(
 
         countDownLatch.await()
         val result = hashTagRankService.get(hashTagName)
-        assertThat(result).isEqualTo(10.0)
+        assertThat(result).isEqualTo(100.0)
     }
 }
