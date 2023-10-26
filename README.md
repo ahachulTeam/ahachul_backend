@@ -1,4 +1,16 @@
-# Ah Hachul Backend Repo
+<div align="center">
+
+# 🚀 AhHachul Backend
+
+**🧜‍♂️ 더욱 쾌적한 지하철을 위한 유저 기반 커뮤니티 플랫폼, ..아... 하철이형! 🧜**
+
+<br />
+
+<img width="1424" alt="image" src="https://github.com/ahachulTeam/ahachul_web/assets/80245801/d29c819c-6b95-4a77-838a-3bdc92a297fb">
+</div>
+
+<br />
+</div>
 
 ## 개발 스택
 
@@ -68,6 +80,6 @@
 - Github Action, AWS, Docker
 
 ## ERD & 클래스 다이어그램
+[ERDCloud 링크](https://www.erdcloud.com/d/6dKc9AeJrWc2ZQRNv)
 
-- 추후 기획
 
