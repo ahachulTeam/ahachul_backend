@@ -4,6 +4,7 @@ import backend.team.ahachul_backend.api.lost.application.port.out.LostPostWriter
 import backend.team.ahachul_backend.api.lost.domain.entity.CategoryEntity
 import backend.team.ahachul_backend.api.lost.domain.entity.LostPostEntity
 import backend.team.ahachul_backend.common.domain.entity.SubwayLineEntity
+import backend.team.ahachul_backend.common.logging.Logger
 import backend.team.ahachul_backend.common.storage.CategoryStorage
 import backend.team.ahachul_backend.common.storage.SubwayLineStorage
 import backend.team.ahachul_backend.common.utils.FileUtils
@@ -20,6 +21,8 @@ class UpdateLostDataJob(
     private val categoryStorage: CategoryStorage
 ): QuartzJobBean() {
 
+    val logger = Logger(javaClass)
+
     override fun executeInternal(context: JobExecutionContext) {
         val jobDataMap = context.jobDetail.jobDataMap
         val fileReadPath = jobDataMap.getString("FILE_READ_PATH")
@@ -27,7 +30,11 @@ class UpdateLostDataJob(
         for (i: Int in 1 .. 10) {
             val fileFullReadPath = "$fileReadPath$i.json"
             val response = FileUtils.readFileData<List<Map<String, Lost112Data>>>(fileFullReadPath)
-            response?.let { saveLostPosts(it) }
+            response?.let {
+                val totalCount = response.size
+                saveLostPosts(it)
+                logger.info("$totalCount 개의 유실물이 $fileFullReadPath 파일에서 수집되었습니다.")
+            }
         }
     }
 
