@@ -52,7 +52,7 @@ class ScheduleConfig(
             .withIdentity(TriggerKey("UPDATE_LOST_DATA_TRIGGER ", "LOST"))
             .startNow()
             .withSchedule(
-                CronScheduleBuilder.cronSchedule("30 24 * ? * *")
+                CronScheduleBuilder.cronSchedule("0 7 * ? * *")
                     .withMisfireHandlingInstructionFireAndProceed()
             )
             .build()
