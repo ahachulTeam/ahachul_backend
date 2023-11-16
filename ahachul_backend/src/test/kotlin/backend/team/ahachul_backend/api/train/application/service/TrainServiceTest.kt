@@ -20,6 +20,7 @@ import backend.team.ahachul_backend.common.client.dto.TrainCongestionDto
 import backend.team.ahachul_backend.common.domain.entity.SubwayLineEntity
 import backend.team.ahachul_backend.common.exception.BusinessException
 import backend.team.ahachul_backend.common.model.RegionType
+import backend.team.ahachul_backend.common.persistence.SubwayLineReader
 import backend.team.ahachul_backend.common.persistence.SubwayLineRepository
 import backend.team.ahachul_backend.common.response.ResponseCode
 import backend.team.ahachul_backend.common.utils.RequestUtils
@@ -32,6 +33,7 @@ import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 import org.mockito.ArgumentMatchers
 import org.mockito.BDDMockito
+import org.mockito.BDDMockito.anyLong
 import org.mockito.BDDMockito.given
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.mock.mockito.MockBean
@@ -48,6 +50,9 @@ class TrainServiceTest(
 
     @MockBean
     lateinit var stationReader: StationReader
+
+    @MockBean
+    lateinit var subwayLineReader: SubwayLineReader
 
     @MockBean
     lateinit var trainCacheUtils: TrainCacheUtils
@@ -144,19 +149,19 @@ class TrainServiceTest(
 
         station = StationEntity(
             id = 1,
-            name = "뚝섬역",
-            identity = 1002000210,
-            subwayLine = subwayLine
+            name = "뚝섬역"
         )
 
         given(stationReader.getById(ArgumentMatchers.anyLong())).willReturn(station)
+        given(subwayLineReader.getById(ArgumentMatchers.anyLong())).willReturn(subwayLine)
 
         // when
         val result = trainUseCase.getTrainCongestion(
             GetCongestionDto.Request(
                 stationId = station.id,
-                upDownType = UpDownType.DOWN
-            )
+                upDownType = UpDownType.DOWN,
+                subwayLineId = subwayLine.id
+            ).toCommand()
         )
 
         // then
@@ -190,20 +195,20 @@ class TrainServiceTest(
 
         station = StationEntity(
             id = 1,
-            name = "서울역",
-            identity = 1002000210,
-            subwayLine = subwayLine
+            name = "서울역"
         )
 
-        given(stationReader.getById(ArgumentMatchers.anyLong())).willReturn(station)
+        given(stationReader.getById(anyLong())).willReturn(station)
+        given(subwayLineReader.getById(anyLong())).willReturn(subwayLine)
 
         // when + then
         assertThatThrownBy {
             trainUseCase.getTrainCongestion(
                 GetCongestionDto.Request(
                     stationId = station.id,
-                    upDownType = UpDownType.DOWN
-                )
+                    upDownType = UpDownType.DOWN,
+                    subwayLineId = subwayLine.id
+                ).toCommand()
             )
         }
             .isExactlyInstanceOf(BusinessException::class.java)

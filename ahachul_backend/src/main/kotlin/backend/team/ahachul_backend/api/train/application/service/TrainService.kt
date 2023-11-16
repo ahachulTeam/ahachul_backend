@@ -5,6 +5,7 @@ import backend.team.ahachul_backend.api.train.adapter.`in`.dto.GetCongestionDto
 import backend.team.ahachul_backend.api.train.adapter.`in`.dto.GetTrainDto
 import backend.team.ahachul_backend.api.train.adapter.`in`.dto.GetTrainRealTimesDto
 import backend.team.ahachul_backend.api.train.application.port.`in`.TrainUseCase
+import backend.team.ahachul_backend.api.train.application.port.`in`.command.GetCongestionCommand
 import backend.team.ahachul_backend.api.train.application.port.out.TrainReader
 import backend.team.ahachul_backend.api.train.domain.entity.TrainEntity
 import backend.team.ahachul_backend.api.train.domain.model.TrainArrivalCode
@@ -17,6 +18,7 @@ import backend.team.ahachul_backend.common.dto.TrainRealTimeDto
 import backend.team.ahachul_backend.common.exception.AdapterException
 import backend.team.ahachul_backend.common.exception.BusinessException
 import backend.team.ahachul_backend.common.logging.Logger
+import backend.team.ahachul_backend.common.persistence.SubwayLineReader
 import backend.team.ahachul_backend.common.response.ResponseCode
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -26,6 +28,7 @@ import org.springframework.transaction.annotation.Transactional
 class TrainService(
     private val trainReader: TrainReader,
     private val stationLineReader: StationReader,
+    private val subwayLineReader: SubwayLineReader,
 
     private val seoulTrainClient: SeoulTrainClient,
 
@@ -61,9 +64,9 @@ class TrainService(
         )
     }
 
-    override fun getTrainRealTimes(stationId: Long): List<GetTrainRealTimesDto.TrainRealTime> {
+    override fun getTrainRealTimes(stationId: Long, subwayLineId: Long): List<GetTrainRealTimesDto.TrainRealTime> {
         val station = stationLineReader.getById(stationId)
-        val subwayLine = station.subwayLine
+        val subwayLine = subwayLineReader.getById(subwayLineId)
         val subwayLineIdentity = subwayLine.identity
 
         val cachedData = trainCacheUtils.getCache(subwayLineIdentity, stationId)
@@ -83,6 +86,7 @@ class TrainService(
         var endIndex = 5
         var totalSize = startIndex
         val trainRealTimes = mutableListOf<GetTrainRealTimesDto.TrainRealTime>()
+
         while (startIndex <= totalSize) {
             val trainRealTimesPublicData = seoulTrainClient.getTrainRealTimes(stationName, startIndex, endIndex)
             totalSize = trainRealTimesPublicData.errorMessage?.total ?: break
@@ -131,20 +135,20 @@ class TrainService(
         }
     }
 
-    override fun getTrainCongestion(request: GetCongestionDto.Request): GetCongestionDto.Response {
-        val station = stationReader.getById(request.stationId)
-        val subwayLine = station.subwayLine
+    override fun getTrainCongestion(command: GetCongestionCommand): GetCongestionDto.Response {
+        val station = stationReader.getById(command.stationId)
+        val subwayLine = subwayLineReader.getById(command.subwayLineId)
 
         if (isInValidSubwayLine(subwayLine.id)) {
             throw BusinessException(ResponseCode.INVALID_SUBWAY_LINE)
         }
 
-        val trains = getCachedTrainOrRequestExternal(subwayLine.identity, station.id)
+        val trains = getCachedTrainOrRequestExternal(subwayLine, station.id)
         if (trains.isEmpty()) {
             return GetCongestionDto.Response.from(-1, emptyList())
         }
 
-        val latestTrainNo = getLatestTrainNo(trains, subwayLine, request.upDownType)
+        val latestTrainNo = getLatestTrainNo(trains, subwayLine, command.upDownType)
         val response = trainCongestionClient.getCongestions(subwayLine.id, latestTrainNo.toInt())
         val trainCongestion = response.data!!
         val congestions = mapCongestionDto(response.success, trainCongestion)
@@ -156,10 +160,11 @@ class TrainService(
     }
 
     private fun getCachedTrainOrRequestExternal(
-        subwayLineIdentity: Long, stationId: Long
+        subwayLine: SubwayLineEntity, stationId: Long
     ): List<GetTrainRealTimesDto.TrainRealTime> {
+        val subwayLineIdentity = subwayLine.identity
         return trainCacheUtils.getCache(subwayLineIdentity, stationId)
-            ?: getTrainRealTimes(stationId)
+                ?: getTrainRealTimes(stationId, subwayLine.id)
     }
 
     private fun getLatestTrainNo(
@@ -175,7 +180,8 @@ class TrainService(
     }
 
     private fun mapCongestionDto(
-        success: Boolean, trainCongestion: TrainCongestionDto.Train): List<GetCongestionDto.Section>  {
+        success: Boolean, trainCongestion: TrainCongestionDto.Train
+    ): List<GetCongestionDto.Section>  {
         if (success) {
             val congestionList = parse(trainCongestion.congestionResult.congestionCar)
             return congestionList.mapIndexed {
