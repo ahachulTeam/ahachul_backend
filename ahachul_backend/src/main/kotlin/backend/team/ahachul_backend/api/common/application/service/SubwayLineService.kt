@@ -5,7 +5,6 @@ import backend.team.ahachul_backend.api.common.adapter.`in`.dto.Station
 import backend.team.ahachul_backend.api.common.adapter.`in`.dto.SubwayLine
 import backend.team.ahachul_backend.api.common.application.port.`in`.SubwayLineUseCase
 import backend.team.ahachul_backend.api.common.application.port.out.LineStationReader
-import backend.team.ahachul_backend.api.common.domain.entity.LineStationEntity
 import org.springframework.cache.annotation.Cacheable
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -21,12 +20,8 @@ class SubwayLineService(
         return SearchSubwayLineDto.Response(
             lineStationReader.findAll()
                 .groupBy { it.subwayLine }
-                .map { SubwayLine.of(it.key, mapStationsDto(it.value)) }
+                .map { SubwayLine.of(it.key, Station.toList(it.value)) }
                 .toList()
         )
-    }
-
-    private fun mapStationsDto(stations: List<LineStationEntity>): List<Station> {
-        return stations.map { Station.of(it.station) }
     }
 }

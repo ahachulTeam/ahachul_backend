@@ -5,11 +5,11 @@ import backend.team.ahachul_backend.common.entity.BaseEntity
 import jakarta.persistence.*
 
 @Entity
-class LineStationEntity(
+class SubwayLineStationEntity(
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "line_station_id")
+    @Column(name = "subway_line_station_id")
     var id: Long = 0,
 
     @ManyToOne(fetch = FetchType.LAZY)

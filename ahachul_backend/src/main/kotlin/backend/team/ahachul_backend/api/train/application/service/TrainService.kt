@@ -143,7 +143,7 @@ class TrainService(
             throw BusinessException(ResponseCode.INVALID_SUBWAY_LINE)
         }
 
-        val trains = getCachedTrainOrRequestExternal(subwayLine, station.id)
+        val trains = getCachedTrainOrRequestExternal(subwayLine.id, subwayLine.identity, station.id)
         if (trains.isEmpty()) {
             return GetCongestionDto.Response.from(-1, emptyList())
         }
@@ -160,11 +160,10 @@ class TrainService(
     }
 
     private fun getCachedTrainOrRequestExternal(
-        subwayLine: SubwayLineEntity, stationId: Long
+        subwayLineId: Long, subwayLineIdentity: Long, stationId: Long
     ): List<GetTrainRealTimesDto.TrainRealTime> {
-        val subwayLineIdentity = subwayLine.identity
         return trainCacheUtils.getCache(subwayLineIdentity, stationId)
-                ?: getTrainRealTimes(stationId, subwayLine.id)
+                ?: getTrainRealTimes(stationId, subwayLineId)
     }
 
     private fun getLatestTrainNo(
