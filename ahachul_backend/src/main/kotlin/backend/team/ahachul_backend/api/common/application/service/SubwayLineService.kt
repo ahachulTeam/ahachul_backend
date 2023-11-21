@@ -17,11 +17,12 @@ class SubwayLineService(
 
     @Cacheable("subwayLines")
     override fun searchSubwayLines(): SearchSubwayLineDto.Response {
-        return SearchSubwayLineDto.Response(
-            lineStationReader.findAll()
-                .groupBy { it.subwayLine }
-                .map { SubwayLine.of(it.key, Station.toList(it.value)) }
-                .toList()
-        )
+        val subwayLines = lineStationReader.findAll()
+                .groupBy { it.subwayLine.id }
+                .map {
+                    SubwayLine.of(it.value[0].subwayLine, Station.toList(it.value))
+                }
+
+        return SearchSubwayLineDto.Response(subwayLines)
     }
 }
