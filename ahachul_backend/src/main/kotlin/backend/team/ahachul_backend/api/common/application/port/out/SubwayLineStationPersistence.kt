@@ -4,12 +4,12 @@ import backend.team.ahachul_backend.api.common.domain.entity.SubwayLineStationEn
 import org.springframework.stereotype.Component
 
 @Component
-class LineStationPersistence(
-    private val lineStationRepository: LineStationRepository
-): LineStationReader {
+class SubwayLineStationPersistence(
+    private val subwayLineStationRepository: SubwayLineStationRepository
+): SubwayLineStationReader {
 
     override fun findAll(): List<SubwayLineStationEntity> {
-        return lineStationRepository.findAll()
+        return subwayLineStationRepository.findAll()
     }
 
 }

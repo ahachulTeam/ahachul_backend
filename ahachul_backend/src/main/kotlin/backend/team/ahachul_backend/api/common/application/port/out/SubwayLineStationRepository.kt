@@ -4,7 +4,7 @@ import backend.team.ahachul_backend.api.common.domain.entity.SubwayLineStationEn
 import org.springframework.data.jpa.repository.EntityGraph
 import org.springframework.data.jpa.repository.JpaRepository
 
-interface LineStationRepository: JpaRepository<SubwayLineStationEntity, Long> {
+interface SubwayLineStationRepository: JpaRepository<SubwayLineStationEntity, Long> {
 
     @EntityGraph(attributePaths = ["station", "subwayLine"])
     override fun findAll(): List<SubwayLineStationEntity>
