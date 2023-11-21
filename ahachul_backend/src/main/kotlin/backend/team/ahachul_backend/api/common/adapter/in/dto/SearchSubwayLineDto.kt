@@ -1,5 +1,7 @@
 package backend.team.ahachul_backend.api.common.adapter.`in`.dto
 
+import backend.team.ahachul_backend.api.common.domain.entity.StationEntity
+import backend.team.ahachul_backend.api.common.domain.entity.SubwayLineStationEntity
 import backend.team.ahachul_backend.common.domain.entity.SubwayLineEntity
 import com.fasterxml.jackson.annotation.JsonProperty
 
@@ -34,4 +36,17 @@ data class SubwayLine(
 data class Station(
     @JsonProperty("id") val id: Long,
     @JsonProperty("name") val name: String
-)
+) {
+    companion object {
+        fun from(station: StationEntity): Station {
+            return Station(
+                id = station.id,
+                name = station.name
+            )
+        }
+
+        fun toList(stations: List<SubwayLineStationEntity>): List<Station> {
+            return stations.map { from(it.station) }
+        }
+    }
+}

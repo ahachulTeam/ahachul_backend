@@ -99,6 +99,7 @@ class TrainControllerDocsTest : CommonDocsTestConfig() {
             get("/v1/trains/real-times/congestion")
                 .queryParam("stationId", "1")
                 .queryParam("upDownType", "UP")
+                .queryParam("subwayLineId", "1")
                 .header("Authorization", "Bearer <Access Token>")
                 .accept(MediaType.APPLICATION_JSON)
         )
@@ -113,6 +114,7 @@ class TrainControllerDocsTest : CommonDocsTestConfig() {
                     queryParameters(
                         parameterWithName("stationId").description("정류장 고유 번호"),
                         parameterWithName("upDownType").description("상행(UP)/하행(DOWN) 여부"),
+                        parameterWithName("subwayLineId").description("지하철 고유 번호"),
                     ),
                     requestHeaders(
                         headerWithName("Authorization").description("엑세스 토큰")
@@ -155,13 +157,14 @@ class TrainControllerDocsTest : CommonDocsTestConfig() {
             )
         )
 
-        given(trainUseCase.getTrainRealTimes(anyLong()))
+        given(trainUseCase.getTrainRealTimes(anyLong(), anyLong()))
             .willReturn(trainRealTimes)
 
         // when
         val result = mockMvc.perform(
             get("/v1/trains/real-times")
                 .queryParam("stationId", "1")
+                .queryParam("subwayLineId", "1")
                 .header("Authorization", "Bearer <Access Token>")
                 .accept(MediaType.APPLICATION_JSON)
         )
@@ -177,7 +180,8 @@ class TrainControllerDocsTest : CommonDocsTestConfig() {
                         headerWithName("Authorization").description("엑세스 토큰")
                     ),
                     queryParameters(
-                        parameterWithName("stationId").description("정류장 ID")
+                        parameterWithName("stationId").description("정류장 ID"),
+                        parameterWithName("subwayLineId").description("지하철 노선 ID")
                     ),
                     responseFields(
                         *commonResponseFields(),
