@@ -10,6 +10,6 @@ interface SubwayLineStationRepository: JpaRepository<SubwayLineStationEntity, Lo
     @EntityGraph(attributePaths = ["station", "subwayLine"])
     override fun findAll(): List<SubwayLineStationEntity>
 
-//    @EntityGraph(attributePaths = ["station", "subwayLine"])
+    @EntityGraph(attributePaths = ["subwayLine"])
     fun findByStation(station: StationEntity): List<SubwayLineStationEntity>
 }
