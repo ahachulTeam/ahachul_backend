@@ -1,5 +1,6 @@
 package backend.team.ahachul_backend.api.member.adapter.web.`in`
 
+import backend.team.ahachul_backend.api.member.adapter.web.`in`.dto.BookmarkStationDto
 import backend.team.ahachul_backend.api.member.adapter.web.`in`.dto.CheckNicknameDto
 import backend.team.ahachul_backend.api.member.adapter.web.`in`.dto.GetMemberDto
 import backend.team.ahachul_backend.api.member.adapter.web.`in`.dto.UpdateMemberDto
@@ -161,5 +162,40 @@ class MemberControllerDocsTest : CommonDocsTestConfig() {
                     )
                 )
             )
+    }
+
+    @Test
+    fun bookmarkStationTest() {
+        // given
+        val response = BookmarkStationDto.Response(listOf(1L, 2L, 3L))
+        given(memberUseCase.bookmarkStation(any()))
+                .willReturn(response)
+
+        val request = BookmarkStationDto.Request(listOf("발산역", "우장산역", "화곡역"))
+
+        // when
+        val result = mockMvc.perform(
+                post("/v1/members/stations")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request))
+                        .accept(MediaType.APPLICATION_JSON)
+        )
+
+        // then
+        result.andExpect(status().isOk)
+                .andDo(
+                        document(
+                                "bookmark-station",
+                                getDocsRequest(),
+                                getDocsResponse(),
+                                requestFields(
+                                        fieldWithPath("stationNames").type(JsonFieldType.ARRAY).description("즐겨찾는 역 이름 리스트"),
+                                ),
+                                responseFields(
+                                        *commonResponseFields(),
+                                        fieldWithPath("result.memberStationIds").type(JsonFieldType.ARRAY).description("즐겨찾는 역 ID 리스트"),
+                                )
+                        )
+                )
     }
 }

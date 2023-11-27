@@ -44,4 +44,7 @@ enum class ResponseCode(
     NOT_EXIST_ARRIVAL_TRAIN("701", "열차 도착 정보가 없습니다.", HttpStatus.BAD_REQUEST),
     INVALID_SUBWAY_LINE("702", "지원하지 않는 호선입니다.", HttpStatus.BAD_REQUEST),
     INVALID_TRAIN_NO("703", "현재 운행하지 않는 열차 번호입니다.", HttpStatus.BAD_REQUEST),
+
+    // STATION
+    EXCEED_MAXIMUM_STATION_COUNT("800", "즐겨찾는 역은 최대 3개까지 가능합니다.", HttpStatus.BAD_REQUEST)
 }

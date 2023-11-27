@@ -1,5 +1,6 @@
 package backend.team.ahachul_backend.api.member.adapter.web.`in`
 
+import backend.team.ahachul_backend.api.member.adapter.web.`in`.dto.BookmarkStationDto
 import backend.team.ahachul_backend.api.member.adapter.web.`in`.dto.CheckNicknameDto
 import backend.team.ahachul_backend.api.member.adapter.web.`in`.dto.GetMemberDto
 import backend.team.ahachul_backend.api.member.adapter.web.`in`.dto.UpdateMemberDto
@@ -25,12 +26,23 @@ class MemberController(
 
     @Authentication
     @PatchMapping("/v1/members")
-    fun updateMember(@RequestBody request: UpdateMemberDto.Request): CommonResponse<UpdateMemberDto.Response> {
+    fun updateMember(
+            @RequestBody request: UpdateMemberDto.Request
+    ): CommonResponse<UpdateMemberDto.Response> {
         return CommonResponse.success(memberUseCase.updateMember(request.toCommand()))
     }
 
     @PostMapping("/v1/members/check-nickname")
-    fun checkNickname(@RequestBody request: CheckNicknameDto.Request): CommonResponse<CheckNicknameDto.Response> {
+    fun checkNickname(
+            @RequestBody request: CheckNicknameDto.Request
+    ): CommonResponse<CheckNicknameDto.Response> {
         return CommonResponse.success(memberUseCase.checkNickname(request.toCommand()))
+    }
+
+    @PostMapping("/v1/members/stations")
+    fun bookmarkStation(
+            @RequestBody request: BookmarkStationDto.Request
+    ): CommonResponse<BookmarkStationDto.Response> {
+        return CommonResponse.success(memberUseCase.bookmarkStation(request.toCommand()))
     }
 }
