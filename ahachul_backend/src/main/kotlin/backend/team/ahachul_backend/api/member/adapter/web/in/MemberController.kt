@@ -1,9 +1,6 @@
 package backend.team.ahachul_backend.api.member.adapter.web.`in`
 
-import backend.team.ahachul_backend.api.member.adapter.web.`in`.dto.BookmarkStationDto
-import backend.team.ahachul_backend.api.member.adapter.web.`in`.dto.CheckNicknameDto
-import backend.team.ahachul_backend.api.member.adapter.web.`in`.dto.GetMemberDto
-import backend.team.ahachul_backend.api.member.adapter.web.`in`.dto.UpdateMemberDto
+import backend.team.ahachul_backend.api.member.adapter.web.`in`.dto.*
 import backend.team.ahachul_backend.api.member.application.port.`in`.MemberUseCase
 import backend.team.ahachul_backend.common.annotation.Authentication
 import backend.team.ahachul_backend.common.response.CommonResponse
@@ -44,5 +41,10 @@ class MemberController(
             @RequestBody request: BookmarkStationDto.Request
     ): CommonResponse<BookmarkStationDto.Response> {
         return CommonResponse.success(memberUseCase.bookmarkStation(request.toCommand()))
+    }
+
+    @GetMapping("/v1/members/stations")
+    fun getBookmarkStation(): CommonResponse<GetBookmarkStationDto.Response> {
+        return CommonResponse.success(memberUseCase.getBookmarkStation())
     }
 }
