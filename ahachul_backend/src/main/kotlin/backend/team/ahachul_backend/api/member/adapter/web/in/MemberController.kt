@@ -36,14 +36,14 @@ class MemberController(
         return CommonResponse.success(memberUseCase.checkNickname(request.toCommand()))
     }
 
-    @PostMapping("/v1/members/stations")
+    @PostMapping("/v1/members/bookmarks/stations")
     fun bookmarkStation(
             @RequestBody request: BookmarkStationDto.Request
     ): CommonResponse<BookmarkStationDto.Response> {
         return CommonResponse.success(memberUseCase.bookmarkStation(request.toCommand()))
     }
 
-    @GetMapping("/v1/members/stations")
+    @GetMapping("/v1/members/bookmarks/stations")
     fun getBookmarkStation(): CommonResponse<GetBookmarkStationDto.Response> {
         return CommonResponse.success(memberUseCase.getBookmarkStation())
     }

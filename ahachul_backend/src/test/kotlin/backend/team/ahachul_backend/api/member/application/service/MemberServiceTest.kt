@@ -1,9 +1,6 @@
 package backend.team.ahachul_backend.api.member.application.service
 
-import backend.team.ahachul_backend.api.common.adapter.`in`.dto.SubwayLine
-import backend.team.ahachul_backend.api.common.application.port.out.StationReader
 import backend.team.ahachul_backend.api.common.application.port.out.StationRepository
-import backend.team.ahachul_backend.api.common.application.port.out.SubwayLineStationReader
 import backend.team.ahachul_backend.api.common.application.port.out.SubwayLineStationRepository
 import backend.team.ahachul_backend.api.common.domain.entity.StationEntity
 import backend.team.ahachul_backend.api.common.domain.entity.SubwayLineStationEntity
@@ -13,8 +10,6 @@ import backend.team.ahachul_backend.api.member.application.port.`in`.MemberUseCa
 import backend.team.ahachul_backend.api.member.application.port.`in`.command.BookmarkStationCommand
 import backend.team.ahachul_backend.api.member.application.port.`in`.command.CheckNicknameCommand
 import backend.team.ahachul_backend.api.member.application.port.`in`.command.UpdateMemberCommand
-import backend.team.ahachul_backend.api.member.application.port.out.MemberStationReader
-import backend.team.ahachul_backend.api.member.application.port.out.MemberStationWriter
 import backend.team.ahachul_backend.api.member.domain.entity.MemberEntity
 import backend.team.ahachul_backend.api.member.domain.entity.MemberStationEntity
 import backend.team.ahachul_backend.api.member.domain.model.GenderType
@@ -27,15 +22,12 @@ import backend.team.ahachul_backend.common.persistence.SubwayLineRepository
 import backend.team.ahachul_backend.common.response.ResponseCode
 import backend.team.ahachul_backend.common.utils.RequestUtils
 import backend.team.ahachul_backend.config.controller.CommonServiceTestConfig
-import org.assertj.core.api.Assertions
 import org.assertj.core.api.Assertions.*
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.boot.test.mock.mockito.MockBean
-import org.springframework.test.annotation.Rollback
 
 class MemberServiceTest(
     @Autowired val memberRepository: MemberRepository,
@@ -119,15 +111,15 @@ class MemberServiceTest(
     @Test
     fun 역_즐겨찾기_테스트() {
         // given
-        val station1 = StationEntity(name = "시청역")
-        val station2 = StationEntity(name = "발산역")
-        val station3 = StationEntity(name = "강남역")
-        stationRepository.save(station1)
-        stationRepository.save(station2)
-        stationRepository.save(station3)
+        val stations = listOf(
+                StationEntity(name = "시청역"),
+                StationEntity(name = "발산역"),
+                StationEntity(name = "강남역")
+        )
+        stations.forEach { stationRepository.save(it) }
 
         val command = BookmarkStationCommand(
-            stationNames = listOf(station1.name, station2.name, station3.name)
+            stationNames = mutableListOf("시청역", "발산역", "강남역")
         )
 
         // when
@@ -138,15 +130,47 @@ class MemberServiceTest(
     }
 
     @Test
-    fun 즐겨찾는_역이_3개_이상이면_실패() {
+    fun 즐겨찾는_역_수정_테스트() {
         // given
-        val command = BookmarkStationCommand(
-            stationNames = listOf("시청역", "발산역", "강남역", "구로역")
+        val stationList = listOf(
+                StationEntity(name = "시청역"),
+                StationEntity(name = "발산역"),
+                StationEntity(name = "강남역"),
+                StationEntity(name = "우장산역")
         )
 
+        stationList.forEach {
+            stationRepository.save(it)
+        }
+
+        stationList.subList(0, 2).forEach {     // origin bookmark
+            memberStationRepository.save(
+                    MemberStationEntity(
+                            member = member!!,
+                            station = it
+                    )
+            )
+        }
+
+        val command = BookmarkStationCommand(
+                stationNames = mutableListOf("발산역", "우장산역")
+        )
+
+        // when
+        val result = memberUseCase.bookmarkStation(command)
+
+        // then
+        assertThat(result.memberStationIds.size).isEqualTo(1)  // new bookmark
+    }
+
+    @Test
+    fun 즐겨찾는_역이_3개_이상이면_실패() {
+        // given
         // when + then
         assertThatThrownBy {
-            memberUseCase.bookmarkStation(command)
+            BookmarkStationCommand(
+                    stationNames = mutableListOf("시청역", "발산역", "강남역", "구로역")
+            )
         }
             .isExactlyInstanceOf(BusinessException::class.java)
             .hasMessage(ResponseCode.EXCEED_MAXIMUM_STATION_COUNT.message)

@@ -11,9 +11,8 @@ import backend.team.ahachul_backend.api.member.application.port.`in`.command.Upd
 import backend.team.ahachul_backend.api.member.application.port.out.MemberReader
 import backend.team.ahachul_backend.api.member.application.port.out.MemberStationReader
 import backend.team.ahachul_backend.api.member.application.port.out.MemberStationWriter
+import backend.team.ahachul_backend.api.member.domain.entity.MemberEntity
 import backend.team.ahachul_backend.api.member.domain.entity.MemberStationEntity
-import backend.team.ahachul_backend.common.exception.BusinessException
-import backend.team.ahachul_backend.common.response.ResponseCode
 import backend.team.ahachul_backend.common.utils.RequestUtils
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -55,13 +54,28 @@ class MemberService(
     @Transactional
     override fun bookmarkStation(command: BookmarkStationCommand): BookmarkStationDto.Response {
         val member = memberReader.getMember(RequestUtils.getAttribute("memberId")!!.toLong())
+        val bookmarkStations = command.stationNames
+        val originMemberStations = memberStationReader.getByMember(member)
 
-        if (command.stationNames.size > 3) {
-            throw BusinessException(ResponseCode.EXCEED_MAXIMUM_STATION_COUNT)
+        originMemberStations.forEach {
+            val stationName = it.station.name
+            if (isAlreadyExists(bookmarkStations, stationName)) {
+                bookmarkStations.remove(stationName)
+            } else {
+                memberStationWriter.delete(it.id)
+            }
         }
 
-        memberStationWriter.deleteByMember(member)
-        val bookmarkStationIds = command.stationNames
+        val bookmarkStationIds = saveNewStations(member, bookmarkStations)
+        return BookmarkStationDto.Response(bookmarkStationIds)
+    }
+
+    private fun isAlreadyExists(newNames: List<String>, originName: String): Boolean {
+        return newNames.contains(originName)
+    }
+
+    private fun saveNewStations(member: MemberEntity, bookmarkStations: List<String>): List<Long> {
+        return bookmarkStations
             .map { stationReader.getByName(it) }
             .map { station ->
                 val memberStation = MemberStationEntity(
@@ -70,8 +84,6 @@ class MemberService(
                 )
                 memberStationWriter.save(memberStation).id
             }
-
-        return BookmarkStationDto.Response(bookmarkStationIds)
     }
 
     override fun getBookmarkStation(): GetBookmarkStationDto.Response {

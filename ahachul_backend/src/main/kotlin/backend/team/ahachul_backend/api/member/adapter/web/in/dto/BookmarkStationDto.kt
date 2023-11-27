@@ -9,7 +9,7 @@ class BookmarkStationDto {
     ) {
         fun toCommand(): BookmarkStationCommand {
             return BookmarkStationCommand(
-                stationNames = stationNames
+                stationNames = stationNames.toMutableList()
             )
         }
     }

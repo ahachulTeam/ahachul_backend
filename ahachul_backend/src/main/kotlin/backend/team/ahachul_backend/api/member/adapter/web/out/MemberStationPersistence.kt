@@ -11,8 +11,8 @@ class MemberStationPersistence (
     private val memberStationRepository: MemberStationRepository
 ): MemberStationReader, MemberStationWriter {
 
-    override fun deleteByMember(member: MemberEntity) {
-        memberStationRepository.deleteAllByMember(member)
+    override fun delete(id: Long) {
+        memberStationRepository.deleteById(id)
     }
 
     override fun save(entity: MemberStationEntity): MemberStationEntity {

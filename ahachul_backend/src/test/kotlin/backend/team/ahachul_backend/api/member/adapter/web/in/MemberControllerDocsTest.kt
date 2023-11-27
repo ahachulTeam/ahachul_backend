@@ -172,7 +172,7 @@ class MemberControllerDocsTest : CommonDocsTestConfig() {
 
         // when
         val result = mockMvc.perform(
-                post("/v1/members/stations")
+                post("/v1/members/bookmarks/stations")
                     .contentType(MediaType.APPLICATION_JSON)
                     .content(objectMapper.writeValueAsString(request))
                     .accept(MediaType.APPLICATION_JSON)
@@ -219,7 +219,7 @@ class MemberControllerDocsTest : CommonDocsTestConfig() {
 
         // when
         val result = mockMvc.perform(
-                get("/v1/members/stations")
+                get("/v1/members/bookmarks/stations")
                     .accept(MediaType.APPLICATION_JSON)
         )
 
