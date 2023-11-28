@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - develop
+      - hotfix
       
 env:
   ECR_REGISTRY: ${{ secrets.AWS_ECR_REGISTRY }}
