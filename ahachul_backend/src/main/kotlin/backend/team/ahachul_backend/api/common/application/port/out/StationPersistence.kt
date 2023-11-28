@@ -16,4 +16,10 @@ class StationPersistence(
             throw AdapterException(ResponseCode.INVALID_DOMAIN)
         }
     }
+
+    override fun getByName(name: String): StationEntity {
+        return stationRepository.findByName(name).orElseThrow {
+            throw AdapterException(ResponseCode.INVALID_DOMAIN)
+        }
+    }
 }
