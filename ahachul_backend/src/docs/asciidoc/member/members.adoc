@@ -34,3 +34,21 @@ include::{snippets}/check-nickname/request-fields.adoc[]
 include::{snippets}/check-nickname/http-response.adoc[]
 .Response Fields
 include::{snippets}/check-nickname/response-fields.adoc[]
+
+==== 역 즐겨찾기
+.Request
+include::{snippets}/bookmark-station/http-request.adoc[]
+.Request Fields
+include::{snippets}/bookmark-station/request-fields.adoc[]
+.Response
+include::{snippets}/bookmark-station/http-response.adoc[]
+.Response Fields
+include::{snippets}/bookmark-station/response-fields.adoc[]
+
+==== 즐겨찾는 역 조회
+.Request
+include::{snippets}/get-bookmark-station/http-request.adoc[]
+.Response
+include::{snippets}/get-bookmark-station/http-response.adoc[]
+.Response Fields
+include::{snippets}/get-bookmark-station/response-fields.adoc[]
