@@ -10,6 +10,7 @@ import backend.team.ahachul_backend.common.response.ResponseCode
 import backend.team.ahachul_backend.common.storage.CategoryStorage
 import backend.team.ahachul_backend.common.storage.SubwayLineStorage
 import backend.team.ahachul_backend.schedule.domain.Lost112Data
+import com.fasterxml.jackson.databind.exc.MismatchedInputException
 import com.google.gson.GsonBuilder
 import org.quartz.JobExecutionContext
 import org.springframework.scheduling.quartz.QuartzJobBean
@@ -18,7 +19,6 @@ import org.springframework.transaction.PlatformTransactionManager
 import org.springframework.transaction.support.DefaultTransactionDefinition
 import java.io.BufferedReader
 import java.io.FileReader
-import java.io.IOException
 
 
 @Component
@@ -39,8 +39,8 @@ class UpdateLostDataJob(
             readFileDataAndSave(fileReadPath)
             transactionManager.commit(transactionStatus)
         } catch (ex: Exception) {
-            logger.error(ex.message)
             transactionManager.rollback(transactionStatus)
+            throw CommonException(ResponseCode.FILE_READ_FAILED, ex)
         }
     }
 
@@ -84,8 +84,8 @@ class UpdateLostDataJob(
                     }
                 }
             }
-        } catch (e: IOException) {
-            throw CommonException(ResponseCode.INTERNAL_SERVER_ERROR, e)
+        } catch (e: MismatchedInputException) {
+            logger.info("no data to read from file : $readPath")
         }
     }
 

@@ -46,5 +46,8 @@ enum class ResponseCode(
     INVALID_TRAIN_NO("703", "현재 운행하지 않는 열차 번호입니다.", HttpStatus.BAD_REQUEST),
 
     // STATION
-    EXCEED_MAXIMUM_STATION_COUNT("800", "즐겨찾는 역은 최대 3개까지 가능합니다.", HttpStatus.BAD_REQUEST)
+    EXCEED_MAXIMUM_STATION_COUNT("800", "즐겨찾는 역은 최대 3개까지 가능합니다.", HttpStatus.BAD_REQUEST),
+
+    // FILE
+    FILE_READ_FAILED("800", "파일 읽기에 실패했습니다.", HttpStatus.INTERNAL_SERVER_ERROR);
 }
