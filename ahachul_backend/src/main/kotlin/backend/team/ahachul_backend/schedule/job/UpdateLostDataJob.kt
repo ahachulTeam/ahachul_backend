@@ -14,6 +14,8 @@ import com.google.gson.GsonBuilder
 import org.quartz.JobExecutionContext
 import org.springframework.scheduling.quartz.QuartzJobBean
 import org.springframework.stereotype.Component
+import org.springframework.transaction.PlatformTransactionManager
+import org.springframework.transaction.support.DefaultTransactionDefinition
 import java.io.BufferedReader
 import java.io.FileReader
 import java.io.IOException
@@ -23,7 +25,8 @@ import java.io.IOException
 class UpdateLostDataJob(
     private val lostPostWriter: LostPostWriter,
     private val subwayLineStorage: SubwayLineStorage,
-    private val categoryStorage: CategoryStorage
+    private val categoryStorage: CategoryStorage,
+    private val transactionManager: PlatformTransactionManager
 ): QuartzJobBean() {
 
     private val logger = Logger(javaClass)
@@ -31,7 +34,14 @@ class UpdateLostDataJob(
     override fun executeInternal(context: JobExecutionContext) {
         val jobDataMap = context.jobDetail.jobDataMap
         val fileReadPath = jobDataMap.getString("FILE_READ_PATH")
-        readFileDataAndSave(fileReadPath)
+        val transactionStatus = transactionManager.getTransaction(DefaultTransactionDefinition())
+        try {
+            readFileDataAndSave(fileReadPath)
+            transactionManager.commit(transactionStatus)
+        } catch (ex: Exception) {
+            logger.error(ex.message)
+            transactionManager.rollback(transactionStatus)
+        }
     }
 
     fun readFileDataAndSave(readPath: String) {
