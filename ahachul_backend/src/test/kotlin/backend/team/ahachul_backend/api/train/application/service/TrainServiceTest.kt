@@ -1,20 +1,15 @@
 package backend.team.ahachul_backend.api.train.application.service
 
-import backend.team.ahachul_backend.api.common.application.port.out.StationReader
-import backend.team.ahachul_backend.api.common.domain.entity.StationEntity
 import backend.team.ahachul_backend.api.member.adapter.web.out.MemberRepository
 import backend.team.ahachul_backend.api.member.domain.entity.MemberEntity
 import backend.team.ahachul_backend.api.member.domain.model.GenderType
 import backend.team.ahachul_backend.api.member.domain.model.MemberStatusType
 import backend.team.ahachul_backend.api.member.domain.model.ProviderType
 import backend.team.ahachul_backend.api.train.adapter.`in`.dto.GetCongestionDto
-import backend.team.ahachul_backend.api.train.adapter.`in`.dto.GetTrainRealTimesDto
 import backend.team.ahachul_backend.api.train.adapter.out.TrainRepository
 import backend.team.ahachul_backend.api.train.application.port.`in`.TrainUseCase
-import backend.team.ahachul_backend.api.train.domain.model.Congestion
 import backend.team.ahachul_backend.api.train.domain.entity.TrainEntity
-import backend.team.ahachul_backend.api.train.domain.model.TrainArrivalCode
-import backend.team.ahachul_backend.api.train.domain.model.UpDownType
+import backend.team.ahachul_backend.api.train.domain.model.Congestion
 import backend.team.ahachul_backend.common.client.TrainCongestionClient
 import backend.team.ahachul_backend.common.client.dto.TrainCongestionDto
 import backend.team.ahachul_backend.common.domain.entity.SubwayLineEntity
@@ -25,14 +20,12 @@ import backend.team.ahachul_backend.common.persistence.SubwayLineRepository
 import backend.team.ahachul_backend.common.response.ResponseCode
 import backend.team.ahachul_backend.common.utils.RequestUtils
 import backend.team.ahachul_backend.config.controller.CommonServiceTestConfig
-import org.assertj.core.api.Assertions
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 import org.mockito.ArgumentMatchers
-import org.mockito.BDDMockito
 import org.mockito.BDDMockito.anyLong
 import org.mockito.BDDMockito.given
 import org.springframework.beans.factory.annotation.Autowired
@@ -49,15 +42,7 @@ class TrainServiceTest(
     lateinit var trainCongestionClient: TrainCongestionClient
 
     @MockBean
-    lateinit var stationReader: StationReader
-
-    @MockBean
     lateinit var subwayLineReader: SubwayLineReader
-
-    @MockBean
-    lateinit var trainCacheUtils: TrainCacheUtils
-
-    lateinit var station: StationEntity
 
     @BeforeEach
     fun setUp() {
