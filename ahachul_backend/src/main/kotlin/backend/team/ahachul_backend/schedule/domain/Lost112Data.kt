@@ -4,6 +4,8 @@ import com.google.gson.annotations.SerializedName
 
 
 data class Lost112Data(
+    @SerializedName("ID")
+    val id: String = "",
     val title: String = "",
     val getDate: String = "",
     val getPlace: String = "",
