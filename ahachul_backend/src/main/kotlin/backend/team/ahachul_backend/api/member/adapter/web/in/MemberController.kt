@@ -36,6 +36,7 @@ class MemberController(
         return CommonResponse.success(memberUseCase.checkNickname(request.toCommand()))
     }
 
+    @Authentication
     @PostMapping("/v1/members/bookmarks/stations")
     fun bookmarkStation(
             @RequestBody request: BookmarkStationDto.Request
@@ -43,6 +44,7 @@ class MemberController(
         return CommonResponse.success(memberUseCase.bookmarkStation(request.toCommand()))
     }
 
+    @Authentication
     @GetMapping("/v1/members/bookmarks/stations")
     fun getBookmarkStation(): CommonResponse<GetBookmarkStationDto.Response> {
         return CommonResponse.success(memberUseCase.getBookmarkStation())

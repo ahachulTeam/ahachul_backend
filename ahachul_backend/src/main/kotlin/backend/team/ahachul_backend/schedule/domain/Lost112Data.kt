@@ -1,22 +1,24 @@
 package backend.team.ahachul_backend.schedule.domain
 
-import com.fasterxml.jackson.annotation.JsonProperty
+import com.google.gson.annotations.SerializedName
 
 
 data class Lost112Data(
+    @SerializedName("ID")
+    val id: String = "",
     val title: String = "",
     val getDate: String = "",
     val getPlace: String = "",
-    @field:JsonProperty("type")
+    @SerializedName("type")
     val categoryName: String = "",
     val receiptPlace: String = "",
     val storagePlace: String = "",
     val lostStatus: String = "",
     val phone: String = "",
     val context: String = "",
-    @field:JsonProperty("image")
+    @SerializedName("image")
     val imageUrl: String = "",
-    @field:JsonProperty("source")
+    @SerializedName("source")
     val origin: String = "",
     val page: String = ""
 )
