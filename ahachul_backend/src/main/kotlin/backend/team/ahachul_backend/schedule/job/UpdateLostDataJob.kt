@@ -57,7 +57,7 @@ class UpdateLostDataJob(
 
                 while (true) {
                     line = it.readLine()
-                    if (totalReadCount == READ_MAX_CNT || line == null) {
+                    if (totalReadCount == BATCH_SIZE || line == null) {
                         saveLostPosts(totalItems)
                         totalReadCount = 0
                         totalItems = mutableListOf()
@@ -111,6 +111,6 @@ class UpdateLostDataJob(
     }
 
     companion object {
-        const val READ_MAX_CNT = 100
+        const val BATCH_SIZE = 100
     }
 }
