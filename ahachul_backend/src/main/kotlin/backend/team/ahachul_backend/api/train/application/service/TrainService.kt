@@ -33,8 +33,8 @@ class TrainService(
     private val seoulTrainClient: SeoulTrainClient,
 
     private val trainCacheUtils: TrainCacheUtils,
+    private val congestionCacheUtils: CongestionCacheUtils,
     private val trainCongestionClient: TrainCongestionClient,
-    private val stationReader: StationReader,
 ): TrainUseCase {
 
     private val logger: Logger = Logger(javaClass)
@@ -136,45 +136,37 @@ class TrainService(
     }
 
     override fun getTrainCongestion(command: GetCongestionCommand): GetCongestionDto.Response {
-        val station = stationReader.getById(command.stationId)
-        val subwayLine = subwayLineReader.getById(command.subwayLineId)
+        val subwayLineId = subwayLineReader.getById(command.subwayLineId).id
+        val trainNo = command.trainNo
 
-        if (isInValidSubwayLine(subwayLine.id)) {
+        if (isInValidSubwayLine(subwayLineId)) {
             throw BusinessException(ResponseCode.INVALID_SUBWAY_LINE)
         }
 
-        val trains = getCachedTrainOrRequestExternal(subwayLine.id, subwayLine.identity, station.id)
-        if (trains.isEmpty()) {
-            return GetCongestionDto.Response.from(-1, emptyList())
+        val cachedData = congestionCacheUtils.getCache(subwayLineId, trainNo)
+        cachedData?.let {
+            return cachedData
         }
 
-        val latestTrainNo = getLatestTrainNo(trains, subwayLine, command.upDownType)
-        val response = trainCongestionClient.getCongestions(subwayLine.id, latestTrainNo.toInt())
+        val validTrainNum = correctTrainNum(subwayLineId, trainNo)
+        val response = trainCongestionClient.getCongestions(subwayLineId, validTrainNum.toInt())
         val trainCongestion = response.data!!
+
         val congestions = mapCongestionDto(response.success, trainCongestion)
-        return GetCongestionDto.Response.from(trainCongestion.trainY.toInt(), congestions)
+        val congestionDto = GetCongestionDto.Response.from(trainCongestion.trainY.toInt(), congestions)
+        congestionCacheUtils.setCache(subwayLineId, validTrainNum, congestionDto)
+        return congestionDto
     }
 
     private fun isInValidSubwayLine(subwayLine: Long): Boolean {
         return !ALLOWED_SUBWAY_LINE.contains(subwayLine)
     }
 
-    private fun getCachedTrainOrRequestExternal(
-        subwayLineId: Long, subwayLineIdentity: Long, stationId: Long
-    ): List<GetTrainRealTimesDto.TrainRealTime> {
-        return trainCacheUtils.getCache(subwayLineIdentity, stationId)
-                ?: getTrainRealTimes(stationId, subwayLineId)
-    }
-
-    private fun getLatestTrainNo(
-        trains: List<GetTrainRealTimesDto.TrainRealTime>,
-        subwayLine: SubwayLineEntity,
-        upDownType: UpDownType
-    ): String {
-        val latestTrainNo = trains.first { it.upDownType == upDownType }.trainNum
-        return when (subwayLine.isCorrectTrainNo(latestTrainNo)) {
-            false -> "${subwayLine.id}${latestTrainNo.substring(1, latestTrainNo.length)}"
-            true -> latestTrainNo
+    private fun correctTrainNum(subwayLineId: Long, trainNo: String): String {
+        // API 자체에서 발생하는 열차 번호 에러 수정
+        return when (trainNo[0] != subwayLineId.toString()[0]) {
+            false -> "${subwayLineId}${trainNo.substring(1, trainNo.length)}"
+            true -> trainNo
         }
     }
 

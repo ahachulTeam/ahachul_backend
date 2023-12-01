@@ -97,9 +97,8 @@ class TrainControllerDocsTest : CommonDocsTestConfig() {
         // when
         val result = mockMvc.perform(
             get("/v1/trains/real-times/congestion")
-                .queryParam("stationId", "1")
-                .queryParam("upDownType", "UP")
                 .queryParam("subwayLineId", "1")
+                .queryParam("trainNo", "1123")
                 .header("Authorization", "Bearer <Access Token>")
                 .accept(MediaType.APPLICATION_JSON)
         )
@@ -112,9 +111,8 @@ class TrainControllerDocsTest : CommonDocsTestConfig() {
                     getDocsRequest(),
                     getDocsResponse(),
                     queryParameters(
-                        parameterWithName("stationId").description("정류장 고유 번호"),
-                        parameterWithName("upDownType").description("상행(UP)/하행(DOWN) 여부"),
                         parameterWithName("subwayLineId").description("지하철 고유 번호"),
+                        parameterWithName("trainNo").description("열차 번호"),
                     ),
                     requestHeaders(
                         headerWithName("Authorization").description("엑세스 토큰")

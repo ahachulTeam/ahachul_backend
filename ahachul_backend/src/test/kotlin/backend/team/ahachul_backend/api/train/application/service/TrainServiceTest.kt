@@ -130,16 +130,9 @@ class TrainServiceTest(
                 )
             )
         )
+
         given(trainCongestionClient.getCongestions(ArgumentMatchers.anyLong(), ArgumentMatchers.anyInt()))
             .willReturn(congestionResult)
-
-        val realTimeTrainData = listOf(
-            createTrainRealTime(1, "8236", "6분", TrainArrivalCode.RUNNING),
-            createTrainRealTime(2, "2238", "전역 도착", TrainArrivalCode.BEFORE_STATION_ARRIVE),
-            createTrainRealTime(1, "2234", "전역 도착", TrainArrivalCode.BEFORE_STATION_ARRIVE)
-        )
-        given(trainCacheUtils.getCache(ArgumentMatchers.anyLong(), ArgumentMatchers.anyLong()))
-            .willReturn(realTimeTrainData)
 
         val subwayLine = SubwayLineEntity(
             id = 2,
@@ -147,20 +140,13 @@ class TrainServiceTest(
             regionType = RegionType.METROPOLITAN
         )
 
-        station = StationEntity(
-            id = 1,
-            name = "뚝섬역"
-        )
-
-        given(stationReader.getById(ArgumentMatchers.anyLong())).willReturn(station)
         given(subwayLineReader.getById(ArgumentMatchers.anyLong())).willReturn(subwayLine)
 
         // when
         val result = trainUseCase.getTrainCongestion(
             GetCongestionDto.Request(
-                stationId = station.id,
-                upDownType = UpDownType.DOWN,
-                subwayLineId = subwayLine.id
+                subwayLineId = subwayLine.id,
+                trainNo = "2034",
             ).toCommand()
         )
 
@@ -193,41 +179,18 @@ class TrainServiceTest(
             regionType = RegionType.METROPOLITAN
         )
 
-        station = StationEntity(
-            id = 1,
-            name = "서울역"
-        )
-
-        given(stationReader.getById(anyLong())).willReturn(station)
         given(subwayLineReader.getById(anyLong())).willReturn(subwayLine)
 
         // when + then
         assertThatThrownBy {
             trainUseCase.getTrainCongestion(
                 GetCongestionDto.Request(
-                    stationId = station.id,
-                    upDownType = UpDownType.DOWN,
-                    subwayLineId = subwayLine.id
+                    subwayLineId = subwayLine.id,
+                    trainNo = "2034",
                 ).toCommand()
             )
         }
             .isExactlyInstanceOf(BusinessException::class.java)
             .hasMessage(ResponseCode.INVALID_SUBWAY_LINE.message)
-    }
-
-    private fun createTrainRealTime(
-        stationOrder: Int, trainNum: String , currentLocation: String, currentTrainArrivalCode: TrainArrivalCode
-    )
-            : GetTrainRealTimesDto.TrainRealTime{
-        return GetTrainRealTimesDto.TrainRealTime(
-            subwayId = "",
-            stationOrder = stationOrder,
-            upDownType = UpDownType.DOWN,
-            nextStationDirection = "신대방방면",
-            destinationStationDirection = "성수행",
-            trainNum = trainNum,
-            currentLocation = currentLocation,
-            currentTrainArrivalCode = currentTrainArrivalCode
-        )
     }
 }
