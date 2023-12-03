@@ -15,10 +15,10 @@ class GetCongestionCommand(
     }
 
     private fun isInValidSubwayLine(subwayLine: Long): Boolean {
-        return !ALLOWED_SUBWAY_LINE.contains(subwayLine)
+        return !ALLOWED_SUBWAY_LINES.contains(subwayLine)
     }
 
     companion object {
-        val ALLOWED_SUBWAY_LINE = listOf(2L, 3L)
+        val ALLOWED_SUBWAY_LINES = listOf(2L, 3L)
     }
 }
