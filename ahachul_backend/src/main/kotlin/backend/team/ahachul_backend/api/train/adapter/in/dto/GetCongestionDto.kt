@@ -18,11 +18,11 @@ class GetCongestionDto {
     }
 
     data class Response(
-        val trainNo: Int,
+        val trainNo: String,
         val congestions : List<Section>
     ) {
         companion object {
-            fun from(trainNo: Int, congestions: List<Section>): Response {
+            fun from(trainNo: String, congestions: List<Section>): Response {
                 return Response(
                     trainNo = trainNo,
                     congestions = congestions
