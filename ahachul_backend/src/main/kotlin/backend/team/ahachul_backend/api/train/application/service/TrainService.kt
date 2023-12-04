@@ -13,7 +13,6 @@ import backend.team.ahachul_backend.api.train.domain.model.UpDownType
 import backend.team.ahachul_backend.common.client.SeoulTrainClient
 import backend.team.ahachul_backend.common.client.TrainCongestionClient
 import backend.team.ahachul_backend.common.client.dto.TrainCongestionDto
-import backend.team.ahachul_backend.common.domain.entity.SubwayLineEntity
 import backend.team.ahachul_backend.common.dto.TrainRealTimeDto
 import backend.team.ahachul_backend.common.exception.AdapterException
 import backend.team.ahachul_backend.common.exception.BusinessException
@@ -33,8 +32,8 @@ class TrainService(
     private val seoulTrainClient: SeoulTrainClient,
 
     private val trainCacheUtils: TrainCacheUtils,
+    private val congestionCacheUtils: CongestionCacheUtils,
     private val trainCongestionClient: TrainCongestionClient,
-    private val stationReader: StationReader,
 ): TrainUseCase {
 
     private val logger: Logger = Logger(javaClass)
@@ -69,10 +68,7 @@ class TrainService(
         val subwayLine = subwayLineReader.getById(subwayLineId)
         val subwayLineIdentity = subwayLine.identity
 
-        val cachedData = trainCacheUtils.getCache(subwayLineIdentity, stationId)
-        cachedData?.let {
-            return cachedData
-        }
+        trainCacheUtils.getCache(subwayLineIdentity, stationId)?.let { return it }
 
         val trainRealTimeMap = requestTrainRealTimesAndSorting(station.name)
         trainRealTimeMap.forEach {
@@ -136,45 +132,28 @@ class TrainService(
     }
 
     override fun getTrainCongestion(command: GetCongestionCommand): GetCongestionDto.Response {
-        val station = stationReader.getById(command.stationId)
-        val subwayLine = subwayLineReader.getById(command.subwayLineId)
+        val subwayLineId = subwayLineReader.getById(command.subwayLineId).id
+        val trainNo = command.trainNo
 
-        if (isInValidSubwayLine(subwayLine.id)) {
-            throw BusinessException(ResponseCode.INVALID_SUBWAY_LINE)
-        }
+        congestionCacheUtils.getCache(subwayLineId, trainNo)?.let { return it }
 
-        val trains = getCachedTrainOrRequestExternal(subwayLine.id, subwayLine.identity, station.id)
-        if (trains.isEmpty()) {
-            return GetCongestionDto.Response.from(-1, emptyList())
-        }
-
-        val latestTrainNo = getLatestTrainNo(trains, subwayLine, command.upDownType)
-        val response = trainCongestionClient.getCongestions(subwayLine.id, latestTrainNo.toInt())
+        val correctTrainNum = getCorrectTrainNum(subwayLineId, trainNo)
+        val response = trainCongestionClient.getCongestions(subwayLineId, correctTrainNum.toInt())
         val trainCongestion = response.data!!
+
         val congestions = mapCongestionDto(response.success, trainCongestion)
-        return GetCongestionDto.Response.from(trainCongestion.trainY.toInt(), congestions)
+        val congestionDto = GetCongestionDto.Response.from(correctTrainNum, congestions)
+        congestionCacheUtils.setCache(subwayLineId, correctTrainNum, congestionDto)
+        return congestionDto
     }
 
-    private fun isInValidSubwayLine(subwayLine: Long): Boolean {
-        return !ALLOWED_SUBWAY_LINE.contains(subwayLine)
-    }
-
-    private fun getCachedTrainOrRequestExternal(
-        subwayLineId: Long, subwayLineIdentity: Long, stationId: Long
-    ): List<GetTrainRealTimesDto.TrainRealTime> {
-        return trainCacheUtils.getCache(subwayLineIdentity, stationId)
-                ?: getTrainRealTimes(stationId, subwayLineId)
-    }
-
-    private fun getLatestTrainNo(
-        trains: List<GetTrainRealTimesDto.TrainRealTime>,
-        subwayLine: SubwayLineEntity,
-        upDownType: UpDownType
-    ): String {
-        val latestTrainNo = trains.first { it.upDownType == upDownType }.trainNum
-        return when (subwayLine.isCorrectTrainNo(latestTrainNo)) {
-            false -> "${subwayLine.id}${latestTrainNo.substring(1, latestTrainNo.length)}"
-            true -> latestTrainNo
+    /**
+     * API 자체에서 발생하는 열차 번호 에러 수정
+     */
+    private fun getCorrectTrainNum(subwayLineId: Long, trainNo: String): String {
+        return when (trainNo[0] != subwayLineId.toString()[0]) {
+            false -> "${subwayLineId}${trainNo.substring(1, trainNo.length)}"
+            true -> trainNo
         }
     }
 
@@ -196,7 +175,6 @@ class TrainService(
     }
 
     companion object {
-        val ALLOWED_SUBWAY_LINE = listOf(2L, 3L)
         const val DELIMITER = "|"
         val pattern = "\\[(\\d+)]".toRegex()
     }

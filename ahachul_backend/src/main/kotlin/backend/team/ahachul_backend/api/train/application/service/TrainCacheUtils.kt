@@ -51,6 +51,6 @@ class TrainCacheUtils(
 
     companion object {
         const val TRAIN_REAL_TIME_REDIS_PREFIX = "TRAIN_TIME:"
-        const val TRAIN_REAL_TIME_REDIS_EXPIRE_SEC = 25L
+        const val TRAIN_REAL_TIME_REDIS_EXPIRE_SEC = 30L
     }
 }

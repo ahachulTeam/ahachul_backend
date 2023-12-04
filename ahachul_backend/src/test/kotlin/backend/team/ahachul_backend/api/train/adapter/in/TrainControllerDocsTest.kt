@@ -79,7 +79,7 @@ class TrainControllerDocsTest : CommonDocsTestConfig() {
     fun getTrainCongestionTest() {
         // given
         val response = GetCongestionDto.Response(
-            trainNo = 2023,
+            trainNo = "2023",
             congestions =
                 listOf(
                     GetCongestionDto.Section(
@@ -97,9 +97,8 @@ class TrainControllerDocsTest : CommonDocsTestConfig() {
         // when
         val result = mockMvc.perform(
             get("/v1/trains/real-times/congestion")
-                .queryParam("stationId", "1")
-                .queryParam("upDownType", "UP")
-                .queryParam("subwayLineId", "1")
+                .queryParam("subwayLineId", "2")
+                .queryParam("trainNo", "2023")
                 .header("Authorization", "Bearer <Access Token>")
                 .accept(MediaType.APPLICATION_JSON)
         )
@@ -112,16 +111,15 @@ class TrainControllerDocsTest : CommonDocsTestConfig() {
                     getDocsRequest(),
                     getDocsResponse(),
                     queryParameters(
-                        parameterWithName("stationId").description("정류장 고유 번호"),
-                        parameterWithName("upDownType").description("상행(UP)/하행(DOWN) 여부"),
                         parameterWithName("subwayLineId").description("지하철 고유 번호"),
+                        parameterWithName("trainNo").description("열차 번호"),
                     ),
                     requestHeaders(
                         headerWithName("Authorization").description("엑세스 토큰")
                     ),
                     responseFields(
                         *commonResponseFields(),
-                        fieldWithPath("result.trainNo").type(JsonFieldType.NUMBER).description("열차 식별 번호"),
+                        fieldWithPath("result.trainNo").type(JsonFieldType.STRING).description("열차 식별 번호"),
                         fieldWithPath("result.congestions[]").type(JsonFieldType.ARRAY).description("열차 혼잡도 배열"),
                         fieldWithPath("result.congestions[].sectionNo").type(JsonFieldType.NUMBER).description("칸 번호"),
                         fieldWithPath("result.congestions[].congestionColor").type(JsonFieldType.STRING).description("칸 혼잡도 정도")
