@@ -8,5 +8,4 @@ class AhachulBackendApplicationTests {
     @Test
     fun contextLoads() {
     }
-
 }

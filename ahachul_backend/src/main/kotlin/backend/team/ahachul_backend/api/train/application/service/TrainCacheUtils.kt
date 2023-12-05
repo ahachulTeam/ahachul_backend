@@ -36,15 +36,6 @@ class TrainCacheUtils(
         }
     }
 
-    fun getSortedData(
-        trainRealTimes: List<GetTrainRealTimesDto.TrainRealTime>
-    ): List<GetTrainRealTimesDto.TrainRealTime> {
-        return trainRealTimes.sortedWith(compareBy(
-            { it.currentTrainArrivalCode.priority },
-            { it.stationOrder }
-        ))
-    }
-
     private fun createKey(subwayLineIdentity: Long, stationId: Long): String {
         return "${TRAIN_REAL_TIME_REDIS_PREFIX}${subwayLineIdentity}-$stationId"
     }

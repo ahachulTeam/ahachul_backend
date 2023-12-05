@@ -2,6 +2,7 @@ package backend.team.ahachul_backend.api.train.adapter.`in`.dto
 
 import backend.team.ahachul_backend.api.train.domain.model.TrainArrivalCode
 import backend.team.ahachul_backend.api.train.domain.model.UpDownType
+import backend.team.ahachul_backend.common.dto.RealtimeArrivalListDTO
 import com.fasterxml.jackson.annotation.JsonIgnore
 
 class GetTrainRealTimesDto {
@@ -26,8 +27,24 @@ class GetTrainRealTimesDto {
         val nextStationDirection: String,
         val destinationStationDirection: String,
         val trainNum: String,
-        val currentLocation: String,
+        val currentArrivalTime: Int = 0,
         val currentTrainArrivalCode: TrainArrivalCode,
     ) {
+
+        companion object {
+            fun from(it: RealtimeArrivalListDTO, stationOrder: Int): TrainRealTime {
+                val trainDirection = it.trainLineNm.split("-")
+                return TrainRealTime(
+                    subwayId = it.subwayId,
+                    stationOrder = stationOrder,
+                    upDownType = UpDownType.from(it.updnLine),
+                    nextStationDirection = trainDirection[1].trim(),
+                    destinationStationDirection = trainDirection[0].trim(),
+                    trainNum = it.btrainNo,
+                    currentArrivalTime = if (stationOrder == Int.MAX_VALUE) { 0 } else stationOrder,
+                    currentTrainArrivalCode = TrainArrivalCode.from(it.arvlCd)
+                )
+            }
+        }
     }
 }

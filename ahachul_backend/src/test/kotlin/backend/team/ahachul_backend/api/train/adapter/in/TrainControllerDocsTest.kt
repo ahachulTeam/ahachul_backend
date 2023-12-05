@@ -140,7 +140,7 @@ class TrainControllerDocsTest : CommonDocsTestConfig() {
                 nextStationDirection = "신대방방면",
                 destinationStationDirection = "성수행",
                 trainNum = "2234",
-                currentLocation = "전역 도착",
+                currentArrivalTime = 0,
                 currentTrainArrivalCode = TrainArrivalCode.BEFORE_STATION_ARRIVE
             ),
             GetTrainRealTimesDto.TrainRealTime(
@@ -150,7 +150,7 @@ class TrainControllerDocsTest : CommonDocsTestConfig() {
                 nextStationDirection = "봉천방면",
                 destinationStationDirection = "성수행",
                 trainNum = "2236",
-                currentLocation = "6분",
+                currentArrivalTime = 6,
                 currentTrainArrivalCode = TrainArrivalCode.RUNNING
             )
         )
@@ -188,7 +188,7 @@ class TrainControllerDocsTest : CommonDocsTestConfig() {
                         fieldWithPath("result.trainRealTimes[].nextStationDirection").type(JsonFieldType.STRING).description("다음 정류장 방향"),
                         fieldWithPath("result.trainRealTimes[].destinationStationDirection").type(JsonFieldType.STRING).description("목적지 방향"),
                         fieldWithPath("result.trainRealTimes[].trainNum").type(JsonFieldType.STRING).description("해당 열차 ID"),
-                        fieldWithPath("result.trainRealTimes[].currentLocation").type(JsonFieldType.STRING).description("해당 열차 현재 위치"),
+                        fieldWithPath("result.trainRealTimes[].currentArrivalTime").type(JsonFieldType.NUMBER).description("열차 도착 시간(몇분 후)"),
                         fieldWithPath("result.trainRealTimes[].currentTrainArrivalCode").type(JsonFieldType.STRING).description("해당 열차 현재 위치 코드").attributes(getFormatAttribute("ENTER(진입), ARRIVE(도착), DEPARTURE(출발), BEFORE_STATION_DEPARTURE(전역출발), BEFORE_STATION_ENTER(전역진입), BEFORE_STATION_ARRIVE(전역도착), RUNNING(운행중)")),
                     )
                 )
