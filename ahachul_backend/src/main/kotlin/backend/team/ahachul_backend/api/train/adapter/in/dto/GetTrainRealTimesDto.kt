@@ -27,7 +27,7 @@ class GetTrainRealTimesDto {
         val nextStationDirection: String,
         val destinationStationDirection: String,
         val trainNum: String,
-        val currentArrivalTime: Int = 0,
+        val currentArrivalTime: Int,
         val currentTrainArrivalCode: TrainArrivalCode,
     ) {
 
