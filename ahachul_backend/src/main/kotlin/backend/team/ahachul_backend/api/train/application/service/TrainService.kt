@@ -107,7 +107,7 @@ class TrainService(
             ?.groupBy { it.updnLine }
             ?.entries?.forEach { map ->
                 val lis = map.value.map { dto ->
-                    GetTrainRealTimesDto.TrainRealTime.from(dto, extractStationOrder(dto.arvlMsg2)) }
+                    GetTrainRealTimesDto.TrainRealTime.of(dto, extractStationOrder(dto.arvlMsg2)) }
                     .sortedWith( compareBy(
                             { it.currentTrainArrivalCode.priority },
                             { it.stationOrder }
@@ -175,7 +175,6 @@ class TrainService(
 
     companion object {
         const val DELIMITER = "|"
-        val pattern = "[\\d+]".toRegex()
-//        val pattern = "\\[(\\d+)]".toRegex()
+        val pattern = "\\d+".toRegex()
     }
 }

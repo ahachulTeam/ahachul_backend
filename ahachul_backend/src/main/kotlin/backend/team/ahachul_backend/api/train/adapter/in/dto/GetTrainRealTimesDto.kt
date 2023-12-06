@@ -32,7 +32,7 @@ class GetTrainRealTimesDto {
     ) {
 
         companion object {
-            fun from(it: RealtimeArrivalListDTO, stationOrder: Int): TrainRealTime {
+            fun of(it: RealtimeArrivalListDTO, stationOrder: Int): TrainRealTime {
                 val trainDirection = it.trainLineNm.split("-")
                 return TrainRealTime(
                     subwayId = it.subwayId,
