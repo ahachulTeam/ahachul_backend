@@ -8,12 +8,10 @@ import backend.team.ahachul_backend.api.train.application.port.`in`.TrainUseCase
 import backend.team.ahachul_backend.api.train.application.port.`in`.command.GetCongestionCommand
 import backend.team.ahachul_backend.api.train.application.port.out.TrainReader
 import backend.team.ahachul_backend.api.train.domain.entity.TrainEntity
-import backend.team.ahachul_backend.api.train.domain.model.TrainArrivalCode
-import backend.team.ahachul_backend.api.train.domain.model.UpDownType
 import backend.team.ahachul_backend.common.client.SeoulTrainClient
 import backend.team.ahachul_backend.common.client.TrainCongestionClient
 import backend.team.ahachul_backend.common.client.dto.TrainCongestionDto
-import backend.team.ahachul_backend.common.dto.TrainRealTimeDto
+import backend.team.ahachul_backend.common.dto.RealtimeArrivalListDTO
 import backend.team.ahachul_backend.common.exception.AdapterException
 import backend.team.ahachul_backend.common.exception.BusinessException
 import backend.team.ahachul_backend.common.logging.Logger
@@ -74,58 +72,59 @@ class TrainService(
         trainRealTimeMap.forEach {
             trainCacheUtils.setCache(it.key.toLong(), stationId, it.value)
         }
+
         return trainRealTimeMap.getOrElse(subwayLineIdentity.toString()) { emptyList() }
     }
 
-    private fun requestTrainRealTimesAndSorting(stationName: String): Map<String, List<GetTrainRealTimesDto.TrainRealTime>> {
+    private fun requestTrainRealTimesAndSorting(
+        stationName: String
+    ): Map<String, List<GetTrainRealTimesDto.TrainRealTime>> {
         var startIndex = 1
         var endIndex = 5
         var totalSize = startIndex
-        val trainRealTimes = mutableListOf<GetTrainRealTimesDto.TrainRealTime>()
+        val totalTrainRealTimes = mutableListOf<RealtimeArrivalListDTO>()
 
         while (startIndex <= totalSize) {
             val trainRealTimesPublicData = seoulTrainClient.getTrainRealTimes(stationName, startIndex, endIndex)
             totalSize = trainRealTimesPublicData.errorMessage?.total ?: break
+            trainRealTimesPublicData.realtimeArrivalList?.let { totalTrainRealTimes.addAll(it) }
             startIndex = endIndex + 1
             endIndex = startIndex + 4
-            trainRealTimes.addAll(generateTrainRealTimeList(trainRealTimesPublicData))
         }
 
-        if (trainRealTimes.size == 0) {
+        if (totalTrainRealTimes.isEmpty()) {
             throw BusinessException(ResponseCode.NOT_EXIST_ARRIVAL_TRAIN)
         }
 
-        return trainRealTimes
-            .groupBy { it.subwayId!! }
-            .mapValues {
-                trainCacheUtils.getSortedData( it.value )
-            }
+        return totalTrainRealTimes
+            .groupBy { it.subwayId }
+            .mapValues { generateTrainRealTimeByUpDnType(it.value) }
     }
 
-    private fun generateTrainRealTimeList(trainRealTime: TrainRealTimeDto): List<GetTrainRealTimesDto.TrainRealTime> {
-        return trainRealTime.realtimeArrivalList
-            ?.map {
-                val trainDirection = it.trainLineNm.split("-")
-                GetTrainRealTimesDto.TrainRealTime(
-                    subwayId = it.subwayId,
-                    stationOrder = extractStationOrder(it.arvlMsg2),
-                    upDownType = UpDownType.from(it.updnLine),
-                    nextStationDirection = trainDirection[1].trim(),
-                    destinationStationDirection = trainDirection[0].trim(),
-                    trainNum = it.btrainNo,
-                    currentLocation = it.arvlMsg2.replace("\\d+초 후".toRegex(), "").trim(),
-                    currentTrainArrivalCode = TrainArrivalCode.from(it.arvlCd)
-                )
+    private fun generateTrainRealTimeByUpDnType(trainRealTime: List<RealtimeArrivalListDTO>?): List<GetTrainRealTimesDto.TrainRealTime> {
+        val total = mutableListOf<GetTrainRealTimesDto.TrainRealTime>()
+        trainRealTime
+            ?.groupBy { it.updnLine }
+            ?.entries?.forEach { map ->
+                val lis = map.value.map { dto ->
+                    GetTrainRealTimesDto.TrainRealTime.of(dto, extractStationOrder(dto.arvlMsg2)) }
+                    .sortedWith( compareBy(
+                            { it.currentTrainArrivalCode.priority },
+                            { it.stationOrder }
+                    )).subList(0, 2)
+                total.addAll(lis)
             }
-            ?: emptyList()
+        return total
     }
 
+    /**
+     * 도착 우선순위 추출
+     */
     private fun extractStationOrder(destinationMessage: String): Int {
         return if (destinationMessage.startsWith("[")) {
-            pattern.find(destinationMessage)?.groupValues
-                ?.getOrNull(1)
-                ?.toInt()
-                ?: Int.MAX_VALUE
+            pattern.find(destinationMessage)!!.value.toInt().times(2)
+        } else if (destinationMessage.contains("분")) {
+            pattern.find(destinationMessage)!!.value.toInt()
         } else {
             Int.MAX_VALUE
         }
@@ -176,6 +175,6 @@ class TrainService(
 
     companion object {
         const val DELIMITER = "|"
-        val pattern = "\\[(\\d+)]".toRegex()
+        val pattern = "\\d+".toRegex()
     }
 }
