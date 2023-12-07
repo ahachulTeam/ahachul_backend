@@ -61,7 +61,7 @@ class LostPostEntity(
 
     var pageUrl: String? = null,
 
-    var receivedDate: LocalDateTime? = LocalDateTime.now(),
+    var receivedDate: LocalDateTime = LocalDateTime.now(),
 
     var externalSourceFileUrl: String? = null
 
