@@ -4,8 +4,6 @@ on:
   push:
     branches:
       - develop
-      - feature/200
-
       
 env:
   ECR_REGISTRY: ${{ secrets.AWS_ECR_REGISTRY }}
