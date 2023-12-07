@@ -70,7 +70,7 @@ class CustomLostPostRepository(
                 lostTypeEq(command.lostType),
                 titleAndContentLike(command.keyword),
             )
-            .orderBy(lostPostEntity.id.desc())
+            .orderBy(lostPostEntity.receivedDate.desc())
             .limit((command.pageSize + 1).toLong())
             .fetch()
 
