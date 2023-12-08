@@ -16,6 +16,7 @@ import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
 @Entity
+@Table(indexes = [Index(name = "received_date_idx", columnList = "received_date")])
 class LostPostEntity(
 
     @Id
@@ -60,7 +61,7 @@ class LostPostEntity(
 
     var pageUrl: String? = null,
 
-    var receivedDate: LocalDateTime? = null,
+    var receivedDate: LocalDateTime = LocalDateTime.now(),
 
     var externalSourceFileUrl: String? = null
 
