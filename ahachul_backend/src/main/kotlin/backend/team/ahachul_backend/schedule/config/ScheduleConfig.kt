@@ -1,29 +1,54 @@
 package backend.team.ahachul_backend.schedule.config
 
-import backend.team.ahachul_backend.schedule.job.UpdateLostDataJob
+import backend.team.ahachul_backend.common.logging.Logger
 import backend.team.ahachul_backend.schedule.listener.JobFailureHandlingListener
 import jakarta.annotation.PostConstruct
 import org.quartz.*
+import org.reflections.Reflections
+import org.reflections.scanners.Scanners
+import org.reflections.util.ConfigurationBuilder
 import org.springframework.context.annotation.Configuration
 import org.springframework.context.annotation.Profile
 import java.util.concurrent.TimeUnit
 
 
 @Configuration
-@Profile("dev")
+@Profile("local")
 class ScheduleConfig(
     private val scheduler: Scheduler
 ){
 
+    val logger = Logger(javaClass)
+    val jobMap: MutableMap<JobDetail, Set<Trigger>> = mutableMapOf()
+
     @PostConstruct
     fun init() {
         try {
+            setJobTriggerMap()
             setTriggerListener()
-            scheduler.scheduleJob(getJobDetail(), getTrigger())
+            scheduler.scheduleJobs(jobMap, true)
         } catch (e: SchedulerException) {
             TimeUnit.MINUTES.sleep(1)
             throw JobExecutionException(true)
         }
+    }
+
+    /**
+     * JobConfig 을 구현하고 있는 자식 클래스들을 가져온다.
+     */
+    private fun setJobTriggerMap() {
+        val reflections = Reflections(
+                ConfigurationBuilder()
+                    .addScanners(Scanners.SubTypes.filterResultsBy { true })
+                    .forPackage("backend.team.ahachul_backend.schedule.config")
+        )
+
+        reflections.getSubTypesOf(AbstractJobConfig::class.java).forEach {
+            val ob = it.getDeclaredConstructor().newInstance()
+            val pair = ob.getJobTriggerPair()
+            jobMap[pair.first] = pair.second
+        }
+        println(jobMap)
     }
 
     private fun setTriggerListener() {
@@ -31,30 +56,4 @@ class ScheduleConfig(
         listenerManager.addTriggerListener(JobFailureHandlingListener())
     }
 
-    private fun getJobDetail(): JobDetail {
-        return JobBuilder.newJob()
-            .ofType(UpdateLostDataJob::class.java)
-            .usingJobData(getJobDataMap())
-            .withIdentity(JobKey("UPDATE_LOST_DATA_JOB", "LOST"))
-            .build()
-    }
-
-    private fun getJobDataMap(): JobDataMap {
-        val jobDataMap = JobDataMap()
-        jobDataMap.put("EXECUTION_COUNT", 0)
-        jobDataMap.put("MAX_RETRY_COUNT", 3)
-        jobDataMap.put("FILE_READ_PATH", "/home/all.json")
-        return jobDataMap
-    }
-
-    private fun getTrigger(): Trigger {
-        return TriggerBuilder.newTrigger()
-            .withIdentity(TriggerKey("UPDATE_LOST_DATA_TRIGGER ", "LOST"))
-            .startNow()
-            .withSchedule(
-                CronScheduleBuilder.cronSchedule("0 0 16 * * ?")    // 매일 밤 새벽 한시(UTC)
-                    .withMisfireHandlingInstructionFireAndProceed()
-            )
-            .build()
-    }
 }
