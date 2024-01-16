@@ -90,4 +90,3 @@ class RankHashTagJob(
         const val HASHTAG_PATTERN = "(?<timestamp>.*) \\[(?<thread>.*)\\] \\[(?<logger>.*)\\] userId = (?<userId>.*) hashtag = (?<name>.*)"
     }
 }
-
