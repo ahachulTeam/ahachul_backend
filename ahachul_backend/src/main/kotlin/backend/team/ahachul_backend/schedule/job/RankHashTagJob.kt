@@ -1,16 +1,17 @@
 package backend.team.ahachul_backend.schedule.job
 
+import backend.team.ahachul_backend.common.constant.CommonConstant.Companion.HASHTAG_LOG_DATETIME_FORMATTER
+import backend.team.ahachul_backend.common.constant.CommonConstant.Companion.HASHTAG_REDIS_KEY
 import backend.team.ahachul_backend.common.client.RedisClient
 import backend.team.ahachul_backend.common.logging.Logger
-import com.google.gson.Gson
 import org.quartz.JobExecutionContext
 import org.springframework.scheduling.quartz.QuartzJobBean
 import org.springframework.stereotype.Component
-import java.io.IOException
+import java.io.FileNotFoundException
 import java.io.RandomAccessFile
 import java.time.LocalDateTime
-import java.time.format.DateTimeFormatter
 import java.util.concurrent.TimeUnit
+import java.util.regex.Pattern
 
 @Component
 class RankHashTagJob(
@@ -30,46 +31,60 @@ class RankHashTagJob(
      * 배치성 메서드
      * 일정 주기마다 파일에서 정보를 가져와서 순위를 매긴다.
      */
-    fun readHashTagLogFile(baseDir: String): Map<String, Int> {
+    fun readHashTagLogFile(fileUrl: String): Map<String, Int> {
         val endTime = LocalDateTime.now()
         val startTime = endTime.minusMinutes(1)
-        val hashtagFileUrl = baseDir + "${endTime.year}_${endTime.month}_hashtag_log"
         val map = mutableMapOf<String, Int>()
-        val gson = Gson()
 
         try {
-            RandomAccessFile(hashtagFileUrl, "r").use {
+            RandomAccessFile(fileUrl, "r").use {
                 val fileLength = it.length()
                 var pointer = fileLength - 2
 
-                while (pointer >= START_OF_FILE) {
+                while (pointer > START_OF_FILE) {
                     // 각 줄 앞으로 포인터 이동
-                    while (it.read().toChar() != NEW_LINE) {
+                    while (it.read().toChar() != NEW_LINE && pointer != START_OF_FILE) {
                         it.seek(pointer)
                         pointer -= 1
                     }
 
-                    val jsonStr = String(it.readLine().toByteArray(Charsets.ISO_8859_1), Charsets.UTF_8)
-                    val data = gson.fromJson(jsonStr, HashTag::class.java)
-                    val date = LocalDateTime.parse(data.timestamp, DateTimeFormatter.ofPattern("yyyyMMdd_HHmmss"))
+                    if (pointer != START_OF_FILE) pointer += 2
+                    it.seek(pointer)
+
+                    val logStr = String(it.readLine().toByteArray(Charsets.ISO_8859_1), Charsets.UTF_8)
+                    val (timestamp, name) = formatHashTagLogStr(logStr)
+                    val date = LocalDateTime.parse(timestamp, HASHTAG_LOG_DATETIME_FORMATTER)
 
                     if (date.isBefore(endTime) && date.isAfter(startTime)) {
-                        logger.info("read data between $startTime ~ $endTime : ${data.timestamp}")
-                        if (!map.containsKey(data.name)) {
-                            map[data.name] = 1
+                        logger.debug("read data between $startTime ~ $endTime : $timestamp")
+                        if (!map.containsKey(name)) {
+                            map[name] = 1
                         } else {
-                            map[data.name] = map[data.name]!! + 1
+                            map[name] = map[name]!! + 1
                         }
                     } else if (date.isBefore(startTime)) {
-                        logger.info("terminate extracting data between $startTime ~ $endTime : ${data.timestamp}")
+                        logger.debug("terminate extracting data between $startTime ~ $endTime : $timestamp")
                         break
                     }
+                    pointer -= 3
                 }
             }
-        } catch (ex: IOException) {
-            logger.error("failed to read file : $hashtagFileUrl")
+        } catch (ex: FileNotFoundException) {
+            logger.error("invalid file to read : $fileUrl")
         }
         return map
+    }
+
+    private fun formatHashTagLogStr(log: String): List<String> {
+        val logArgs = mutableListOf<String>()
+        val matcher = HASHTAG_PATTERN.matcher(log)
+        if (matcher.matches()) {
+            logArgs.add(matcher.group("timestamp").toString())
+            logArgs.add(matcher.group("name"))
+        } else {
+            logger.error("failed to match log pattern : log = $log")
+        }
+        return logArgs
     }
 
     private fun sortAndSetCache(map: Map<String, Int>) {
@@ -77,18 +92,13 @@ class RankHashTagJob(
                 .sortedByDescending { it.second }  // O(NlogN)
                 .map { it.first }
 
-        redisClient.set("hashtag_rank", sortedResult, 5, TimeUnit.MINUTES)
+        redisClient.set(HASHTAG_REDIS_KEY, sortedResult, 5, TimeUnit.MINUTES)
     }
-
-    data class HashTag(
-        val timestamp: String,
-        val name: String,
-        val userId: Long
-    )
 
     companion object {
         const val NEW_LINE = '\n'
-        const val START_OF_FILE = 0
+        const val START_OF_FILE = 0L
+        val HASHTAG_PATTERN: Pattern = Pattern.compile("(?<timestamp>.*) \\[(?<thread>.*)\\] \\[(?<logger>.*)\\] userId = (?<userId>.*) hashtag = (?<name>.*)")
     }
 }
 

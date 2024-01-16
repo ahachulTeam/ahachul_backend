@@ -12,7 +12,11 @@
     <property name="ERROR_LOG_FILE_NAME" value="${log.config.error.filename}"/>
     <property name="ERROR_LOG_ARCHIVE_PATH" value="${log.config.error.archive.path}"/>
 
+    <property name="HASHTAG_LOG_PATH" value="${log.config.hashtag.path}"/>
+    <property name="HASHTAG_LOG_FILE_NAME" value="${log.config.hashtag.filename}"/>
+
     <property name="LOG_PATTERN" value="%-5level %d{yy-MM-dd HH:mm:ss}[%thread] [%logger{0}:%line] - %msg%n"/>
+    <property name="HASHTAG_LOG_PATTERN" value="%d{yy-MM-dd HH:mm:ss} [%thread] [%logger{0}:%line] %msg%n"/>
 
     <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
         <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
@@ -58,9 +62,31 @@
         </filter>
     </appender>
 
+    <appender name="HASHTAG_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${HASHTAG_LOG_PATH}/${HASHTAG_LOG_FILE_NAME}.log</file>
+
+        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+            <pattern>${HASHTAG_LOG_PATTERN}</pattern>
+        </encoder>
+
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${HASHTAG_LOG_PATH}/${HASHTAG_LOG_FILE_NAME}.%d{yyyy-MM-dd}.%i.log</fileNamePattern>
+            <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+                <maxFileSize>10MB</maxFileSize>
+            </timeBasedFileNamingAndTriggeringPolicy>
+            <maxHistory>90</maxHistory>
+        </rollingPolicy>
+
+    </appender>
+
     <root level="{LOG_LEVEL}">
         <appender-ref ref="CONSOLE"/>
         <appender-ref ref="FILE"/>
         <appender-ref ref="ERROR_FILE"/>
     </root>
+
+    <logger name="HASHTAG_LOGGER" LEVEL="INFO">
+        <appender-ref ref="HASHTAG_FILE"/>
+    </logger>
+
 </configuration>

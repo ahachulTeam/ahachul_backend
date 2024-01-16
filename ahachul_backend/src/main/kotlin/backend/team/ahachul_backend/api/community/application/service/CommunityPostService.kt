@@ -52,8 +52,7 @@ class CommunityPostService(
         if (isHashTagSearchCond(command.hashTag, command.content)) {
             val searchEvent = HashTagSearchEvent(
                     hashTagName = command.hashTag!!,
-                    userId = memberId,
-                    timestamp = LocalDateTime.now()
+                    userId = memberId
             )
             publisher.publishEvent(searchEvent)
         }

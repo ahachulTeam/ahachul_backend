@@ -19,7 +19,7 @@ class RankHashTagJobConfig: AbstractJobConfig() {
         val jobDataMap = JobDataMap()
         jobDataMap.put("EXECUTION_COUNT", 0)
         jobDataMap.put("MAX_RETRY_COUNT", 3)
-        jobDataMap.put("FILE_READ_PATH", "/Users/kangsemi/Desktop/git/ahachul_backend/ahachul_backend/src/main/resources/")
+        jobDataMap.put("FILE_READ_PATH", "${System.getProperty("user.dir")}/logs/archive/hashtag/hashtag_log.log")
         return jobDataMap
     }
 
@@ -29,7 +29,7 @@ class RankHashTagJobConfig: AbstractJobConfig() {
                         .withIdentity(TriggerKey("RANK_HASH_TAG_TRIGGER", "RANK"))
                         .startNow()
                         .withSchedule(
-                                CronScheduleBuilder.cronSchedule("0 0/1 * * * ?")    // 5분 마다 수행
+                                CronScheduleBuilder.cronSchedule("0 0/5 * * * ?")    // 5분 마다 수행
                                         .withMisfireHandlingInstructionFireAndProceed()
                         )
                         .build()

@@ -13,7 +13,7 @@ import java.util.concurrent.TimeUnit
 
 
 @Configuration
-@Profile("local")
+@Profile("dev")
 class ScheduleConfig(
     private val scheduler: Scheduler
 ){
