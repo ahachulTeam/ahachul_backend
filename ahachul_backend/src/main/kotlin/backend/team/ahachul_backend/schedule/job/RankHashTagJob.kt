@@ -1,8 +1,8 @@
 package backend.team.ahachul_backend.schedule.job
 
+import backend.team.ahachul_backend.common.client.RedisClient
 import backend.team.ahachul_backend.common.constant.CommonConstant.Companion.HASHTAG_LOG_DATETIME_FORMATTER
 import backend.team.ahachul_backend.common.constant.CommonConstant.Companion.HASHTAG_REDIS_KEY
-import backend.team.ahachul_backend.common.client.RedisClient
 import backend.team.ahachul_backend.common.logging.Logger
 import backend.team.ahachul_backend.common.utils.LogAnalyzeUtils
 import org.quartz.JobExecutionContext
@@ -12,7 +12,6 @@ import java.io.FileNotFoundException
 import java.io.RandomAccessFile
 import java.time.LocalDateTime
 import java.util.concurrent.TimeUnit
-import java.util.regex.Pattern
 
 @Component
 class RankHashTagJob(
@@ -34,7 +33,7 @@ class RankHashTagJob(
      */
     fun readHashTagLogFile(fileUrl: String): Map<String, Int> {
         val endTime = LocalDateTime.now()
-        val startTime = endTime.minusMinutes(1)
+        val startTime = endTime.minusMinutes(5)
         val map = mutableMapOf<String, Int>()
 
         try {
