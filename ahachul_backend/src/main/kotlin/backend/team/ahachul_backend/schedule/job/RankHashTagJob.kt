@@ -4,6 +4,7 @@ import backend.team.ahachul_backend.common.constant.CommonConstant.Companion.HAS
 import backend.team.ahachul_backend.common.constant.CommonConstant.Companion.HASHTAG_REDIS_KEY
 import backend.team.ahachul_backend.common.client.RedisClient
 import backend.team.ahachul_backend.common.logging.Logger
+import backend.team.ahachul_backend.common.utils.LogAnalyzeUtils
 import org.quartz.JobExecutionContext
 import org.springframework.scheduling.quartz.QuartzJobBean
 import org.springframework.stereotype.Component
@@ -52,7 +53,7 @@ class RankHashTagJob(
                     it.seek(pointer)
 
                     val logStr = String(it.readLine().toByteArray(Charsets.ISO_8859_1), Charsets.UTF_8)
-                    val (timestamp, name) = formatHashTagLogStr(logStr)
+                    val (timestamp, name) = LogAnalyzeUtils.extractArgsFromLogStr(logStr, HASHTAG_PATTERN, listOf("timestamp, name"))
                     val date = LocalDateTime.parse(timestamp, HASHTAG_LOG_DATETIME_FORMATTER)
 
                     if (date.isBefore(endTime) && date.isAfter(startTime)) {
@@ -75,18 +76,6 @@ class RankHashTagJob(
         return map
     }
 
-    private fun formatHashTagLogStr(log: String): List<String> {
-        val logArgs = mutableListOf<String>()
-        val matcher = HASHTAG_PATTERN.matcher(log)
-        if (matcher.matches()) {
-            logArgs.add(matcher.group("timestamp").toString())
-            logArgs.add(matcher.group("name"))
-        } else {
-            logger.error("failed to match log pattern : log = $log")
-        }
-        return logArgs
-    }
-
     private fun sortAndSetCache(map: Map<String, Int>) {
         val sortedResult = map.toList()
                 .sortedByDescending { it.second }  // O(NlogN)
@@ -98,7 +87,7 @@ class RankHashTagJob(
     companion object {
         const val NEW_LINE = '\n'
         const val START_OF_FILE = 0L
-        val HASHTAG_PATTERN: Pattern = Pattern.compile("(?<timestamp>.*) \\[(?<thread>.*)\\] \\[(?<logger>.*)\\] userId = (?<userId>.*) hashtag = (?<name>.*)")
+        const val HASHTAG_PATTERN = "(?<timestamp>.*) \\[(?<thread>.*)\\] \\[(?<logger>.*)\\] userId = (?<userId>.*) hashtag = (?<name>.*)"
     }
 }
 
