@@ -16,8 +16,17 @@
 
 - Spring Boot
 - Kotlin
-- Mysql, JPA, Data JPA
-- Docker, Docker-Compose
+- Mysql, JPA, Data JPA, QueryDSL
+- Spring REST Docs, Junit5, Mockito
+
+
+## ERD 
+[ERDCloud 링크](https://www.erdcloud.com/d/6dKc9AeJrWc2ZQRNv)
+
+## 배포 파이프라인 구성
+- Github Action, AWS, Docker
+<img width="777" alt="스크린샷 2024-01-19 오후 2 21 34" src="https://github.com/ahachulTeam/ahachul_backend/assets/71436576/b5337394-21b6-4d01-a89b-3ececbcd6eae">
+
 
 ## 패키지 구조
 
@@ -74,12 +83,4 @@
 ## 코딩 컨벤션
 
 - `save action plugin` 를 사용해서 팀 내 코딩 컨벤션 통합
-
-## 배포 파이프라인 구성
-
-- Github Action, AWS, Docker
-
-## ERD & 클래스 다이어그램
-[ERDCloud 링크](https://www.erdcloud.com/d/6dKc9AeJrWc2ZQRNv)
-
 
