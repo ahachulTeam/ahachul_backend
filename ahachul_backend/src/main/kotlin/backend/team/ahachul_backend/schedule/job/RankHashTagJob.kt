@@ -42,17 +42,18 @@ class RankHashTagJob(
                 var pointer = fileLength - 2
 
                 while (pointer > START_OF_FILE) {
-                    // 각 줄 앞으로 포인터 이동
-                    while (it.read().toChar() != NEW_LINE && pointer != START_OF_FILE) {
-                        it.seek(pointer)
+                    it.seek(pointer)
+                    while ((it.read().toChar() != NEW_LINE)) {        // 각 줄 앞으로 포인터 이동
                         pointer -= 1
+                        if (pointer < START_OF_FILE) {                // 파일의 처음에 도달한 경우 포인터 보정
+                            it.seek(pointer + 1)
+                            break
+                        }
+                        it.seek(pointer)
                     }
 
-                    if (pointer != START_OF_FILE) pointer += 2
-                    it.seek(pointer)
-
                     val logStr = String(it.readLine().toByteArray(Charsets.ISO_8859_1), Charsets.UTF_8)
-                    val (timestamp, name) = LogAnalyzeUtils.extractArgsFromLogStr(logStr, HASHTAG_PATTERN, listOf("timestamp, name"))
+                    val (timestamp, name) = LogAnalyzeUtils.extractArgsFromLogStr(logStr, HASHTAG_PATTERN, listOf("timestamp", "name"))
                     val date = LocalDateTime.parse(timestamp, HASHTAG_LOG_DATETIME_FORMATTER)
 
                     if (date.isBefore(endTime) && date.isAfter(startTime)) {
@@ -66,7 +67,7 @@ class RankHashTagJob(
                         logger.debug("terminate extracting data between $startTime ~ $endTime : $timestamp")
                         break
                     }
-                    pointer -= 3
+                    pointer -= 1
                 }
             }
         } catch (ex: FileNotFoundException) {
