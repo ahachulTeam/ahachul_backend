@@ -19,7 +19,7 @@ class HashTagSearchEventListener(
     fun handle(event: HashTagSearchEvent) {
         logger.info("new hashtag search event handled: ${event.hashTagName}")
         try {
-            hashTagRankService.increaseCount(event.hashTagName)
+            hashTagRankService.saveLog(event.hashTagName, event.userId)
         } catch (e: Exception) {
             logger.error(e.message)
         }

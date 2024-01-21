@@ -1,34 +1,33 @@
 package backend.team.ahachul_backend.api.rank.application.service
 
 import backend.team.ahachul_backend.api.rank.adapter.web.`in`.dto.GetHashTagRankDto
+import backend.team.ahachul_backend.common.constant.CommonConstant.Companion.HASHTAG_REDIS_KEY
 import backend.team.ahachul_backend.common.client.RedisClient
+import backend.team.ahachul_backend.common.logging.NamedLogger
+import com.fasterxml.jackson.core.type.TypeReference
+import com.fasterxml.jackson.databind.ObjectMapper
 import org.springframework.stereotype.Service
+
 
 @Service
 class HashTagRankService(
     val redisClient: RedisClient
 ){
+    val logger = NamedLogger("HASHTAG_LOGGER")
 
-    fun increaseCount(hashTagName: String) {
-        val setOperations = redisClient.getZSetOps()
-        setOperations.incrementScore(KEY, hashTagName, INCREASE_CNT.toDouble())
+    fun saveLog(name: String, userId: String) {
+        logger.info("userId = $userId hashtag = $name")
     }
 
     fun getRank(): GetHashTagRankDto.Response {
-        val setOperations = redisClient.getZSetOps()
-        val responseSet = setOperations.reverseRange(KEY, 0, LIMIT)
-        val response = responseSet?.toList() ?: listOf()
-        return GetHashTagRankDto.Response(response)
-    }
+        val mapper = ObjectMapper()
 
-    fun get(hashTagName: String): Double? {
-        val setOperations = redisClient.getZSetOps()
-        return setOperations.score(KEY, hashTagName)
-    }
+        if (redisClient.hasKey(HASHTAG_REDIS_KEY)) {
+            val typeRef = object : TypeReference<List<String>>() {}
+            val cachedRank = redisClient.get(HASHTAG_REDIS_KEY)
+            return GetHashTagRankDto.Response(mapper.readValue(cachedRank, typeRef))
+        }
 
-    companion object {
-        const val KEY = "hashtags"
-        const val INCREASE_CNT = 1
-        const val LIMIT = 10L
+        return GetHashTagRankDto.Response(emptyList())
     }
 }

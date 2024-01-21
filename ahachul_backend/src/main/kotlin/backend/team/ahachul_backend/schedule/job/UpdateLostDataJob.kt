@@ -19,6 +19,7 @@ import org.springframework.transaction.PlatformTransactionManager
 import org.springframework.transaction.support.DefaultTransactionDefinition
 import java.io.BufferedReader
 import java.io.FileReader
+import java.io.IOException
 
 
 @Component
@@ -85,7 +86,9 @@ class UpdateLostDataJob(
                 }
             }
         } catch (e: MismatchedInputException) {
-            logger.info("no data to read from file : $readPath")
+            logger.error("no data to read from file : $readPath")
+        } catch (e: IOException) {
+            logger.error("no data to read from file : $readPath")
         }
     }
 

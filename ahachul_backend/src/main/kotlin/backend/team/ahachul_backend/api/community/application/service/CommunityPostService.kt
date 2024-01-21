@@ -15,6 +15,7 @@ import backend.team.ahachul_backend.common.utils.RequestUtils
 import org.springframework.context.ApplicationEventPublisher
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import java.time.LocalDateTime
 
 @Service
 @Transactional(readOnly = true)
@@ -35,6 +36,7 @@ class CommunityPostService(
 ): CommunityPostUseCase {
 
     override fun searchCommunityPosts(command: SearchCommunityPostCommand): SearchCommunityPostDto.Response {
+        val memberId = RequestUtils.getAttribute("memberId")!!
         val searchCommunityPosts = communityPostReader.searchCommunityPosts(command)
         val posts = searchCommunityPosts
             .map {
@@ -48,7 +50,10 @@ class CommunityPostService(
             }.toList()
 
         if (isHashTagSearchCond(command.hashTag, command.content)) {
-            val searchEvent = HashTagSearchEvent(hashTagName = command.hashTag!!)
+            val searchEvent = HashTagSearchEvent(
+                    hashTagName = command.hashTag!!,
+                    userId = memberId
+            )
             publisher.publishEvent(searchEvent)
         }
 

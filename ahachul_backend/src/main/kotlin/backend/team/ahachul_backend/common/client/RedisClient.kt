@@ -42,7 +42,7 @@ class RedisClient(
         redisTemplate.delete(key)
     }
 
-    fun getZSetOps(): ZSetOperations<String, String> {
-        return redisTemplate.opsForZSet()
+    fun hasKey(key: String): Boolean {
+        return redisTemplate.hasKey(key)
     }
 }

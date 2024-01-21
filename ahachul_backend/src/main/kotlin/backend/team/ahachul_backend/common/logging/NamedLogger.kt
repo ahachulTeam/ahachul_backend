@@ -3,11 +3,11 @@ package backend.team.ahachul_backend.common.logging
 import backend.team.ahachul_backend.common.response.ResponseCode
 import mu.KotlinLogging
 
-class Logger(
-    private val clazz: Class<*>,
+class NamedLogger(
+        private val name: String
 ) {
 
-    private val logger = KotlinLogging.logger(clazz.name)
+    private val logger = KotlinLogging.logger(name)
 
     fun info(message: String) {
         logger.info { message }
