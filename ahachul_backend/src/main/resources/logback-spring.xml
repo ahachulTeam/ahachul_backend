@@ -16,7 +16,7 @@
     <property name="HASHTAG_LOG_FILE_NAME" value="${log.config.hashtag.filename}"/>
 
     <property name="LOG_PATTERN" value="%-5level %d{yy-MM-dd HH:mm:ss}[%thread] [%logger{0}:%line] - %msg%n"/>
-    <property name="HASHTAG_LOG_PATTERN" value="%d{yy-MM-dd HH:mm:ss} [%thread] [%logger{0}:%line] %msg%n"/>
+    <property name="HASHTAG_LOG_PATTERN" value="%d{yy-MM-dd HH:mm:ss} [%logger{0}:%line] %msg%n"/>
 
     <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
         <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">

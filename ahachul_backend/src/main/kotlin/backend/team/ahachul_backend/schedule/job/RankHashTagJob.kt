@@ -87,6 +87,6 @@ class RankHashTagJob(
     companion object {
         const val NEW_LINE = '\n'
         const val START_OF_FILE = 0L
-        const val HASHTAG_PATTERN = "(?<timestamp>.*) \\[(?<thread>.*)\\] \\[(?<logger>.*)\\] userId = (?<userId>.*) hashtag = (?<name>.*)"
+        const val HASHTAG_PATTERN = "(?<timestamp>.*) \\[(?<logger>.*)\\] userId = (?<userId>.*) hashtag = (?<name>.*)"
     }
 }
