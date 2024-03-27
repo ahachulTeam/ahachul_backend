@@ -17,7 +17,7 @@ class CommunityPostController(
     @GetMapping("/v1/community-posts")
     fun searchCommunityPosts(
         pageable: Pageable,
-        @RequestBody request: SearchCommunityPostDto.Request
+        request: SearchCommunityPostDto.Request
     ): CommonResponse<SearchCommunityPostDto.Response> {
         return CommonResponse.success(communityPostUseCase.searchCommunityPosts(request.toCommand(pageable)))
     }

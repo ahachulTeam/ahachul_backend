@@ -18,16 +18,17 @@ class TrainController(
     fun getTrain(@PathVariable trainNo: String): CommonResponse<GetTrainDto.Response> {
         return CommonResponse.success(trainUseCase.getTrain(trainNo))
     }
-    
+
+    @Authentication
     @GetMapping("/v1/trains/real-times")
-    fun getTrainRealTimes(@RequestBody request: GetTrainRealTimesDto.Request): CommonResponse<GetTrainRealTimesDto.Response> {
+    fun getTrainRealTimes(request: GetTrainRealTimesDto.Request): CommonResponse<GetTrainRealTimesDto.Response> {
         val result = trainUseCase.getTrainRealTimes(request.stationId, request.subwayLineId)
         return CommonResponse.success(GetTrainRealTimesDto.Response(result))
     }
 
-//    @Authentication
+    @Authentication
     @GetMapping("/v1/trains/real-times/congestion")
-    fun getCongestion(@RequestBody request: GetCongestionDto.Request): CommonResponse<GetCongestionDto.Response> {
+    fun getCongestion(request: GetCongestionDto.Request): CommonResponse<GetCongestionDto.Response> {
         val result = trainUseCase.getTrainCongestion(request.toCommand())
         return CommonResponse.success(result)
     }
