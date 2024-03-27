@@ -28,6 +28,7 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.data.domain.PageRequest
 
 
 class LostPostServiceTest(
@@ -87,8 +88,8 @@ class LostPostServiceTest(
             lostPostUseCase.createLostPost(createCommand)
         }
 
-        val searchCommand1 = createSearchLostPostCommand(3, null, subwayLine.id, null)
-        val searchCommand2 = createSearchLostPostCommand(3, 3, subwayLine.id, null)
+        val searchCommand1 = createSearchLostPostCommand(0, subwayLine.id, null)
+        val searchCommand2 = createSearchLostPostCommand(1, subwayLine.id, null)
 
         // when
         val response1 = lostPostUseCase.searchLostPosts(searchCommand1)
@@ -125,7 +126,7 @@ class LostPostServiceTest(
             lostPostUseCase.createLostPost(createCommand2)
         }
 
-        val searchCommand = createSearchLostPostCommand(3, null, subwayLine1.id, null)
+        val searchCommand = createSearchLostPostCommand(0, subwayLine1.id, null)
 
         // when
         val response = lostPostUseCase.searchLostPosts(searchCommand)
@@ -304,7 +305,7 @@ class LostPostServiceTest(
         val createCommand2 = createLostPostCommand(subwayLine.id, "2호선에서 분실물 주웠는데 찾아가세요", "휴대폰")
         val entity1 = lostPostUseCase.createLostPost(createCommand1)
         val entity2 = lostPostUseCase.createLostPost(createCommand2)
-        val searchCommand = createSearchLostPostCommand(3, null, subwayLine.id, "지갑")
+        val searchCommand = createSearchLostPostCommand(0, subwayLine.id, "지갑")
 
         // when
         val response = lostPostUseCase.searchLostPosts(searchCommand)
@@ -342,14 +343,13 @@ class LostPostServiceTest(
         )
     }
 
-    private fun createSearchLostPostCommand(pageSize: Int, lostPostId: Long?, subwayLineId:Long, keyword:String?): SearchLostPostCommand {
+    private fun createSearchLostPostCommand(pageSize: Int, subwayLineId:Long, keyword:String?): SearchLostPostCommand {
         return SearchLostPostCommand(
             lostType = LostType.ACQUIRE,
             subwayLineId = subwayLineId,
             lostOrigin = null,
             keyword = keyword,
-            lostPostId = lostPostId,
-            pageSize = pageSize
+            pageable = PageRequest.of(pageSize, 3)
         )
     }
 }

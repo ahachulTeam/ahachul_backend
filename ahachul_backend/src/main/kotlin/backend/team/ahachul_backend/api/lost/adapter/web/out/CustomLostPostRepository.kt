@@ -61,20 +61,27 @@ class CustomLostPostRepository(
     }
 
     fun searchLostPosts(command: GetSliceLostPostsCommand): Slice<LostPostEntity> {
-        val pageable = PageRequest.of(0, command.pageSize)
+        val pageable = command.pageable
         val response = queryFactory.selectFrom(lostPostEntity)
             .where(
-                ltPostId(command.lostPostId),
                 lostOriginEq(command.lostOrigin),
                 subwayLineEq(command.subwayLine),
                 lostTypeEq(command.lostType),
                 titleAndContentLike(command.keyword),
             )
             .orderBy(lostPostEntity.receivedDate.desc())
-            .limit((command.pageSize + 1).toLong())
+            .offset(getOffset(pageable).toLong())
+            .limit((pageable.pageSize + 1).toLong())
             .fetch()
 
-        return SliceImpl(response, pageable, hasNext(response, command.pageSize))
+        return SliceImpl(response, pageable, hasNext(response, pageable.pageSize))
+    }
+
+    private fun getOffset(pageable: Pageable): Int {
+        return when {
+            pageable.pageNumber != 0 -> pageable.pageNumber * pageable.pageSize
+            else -> pageable.pageNumber
+        }
     }
 
     private fun hasNext(response: MutableList<LostPostEntity>, pageSize: Int): Boolean {
@@ -110,9 +117,6 @@ class CustomLostPostRepository(
             .limit(command.size)
             .fetch()
     }
-
-    private fun ltPostId(postId: Long?) =
-        postId?.let { lostPostEntity.id.lt(postId) }
 
     private fun lostOriginEq(lostOrigin: LostOrigin?) =
         lostOrigin?.let { lostPostEntity.origin.eq(lostOrigin) }
