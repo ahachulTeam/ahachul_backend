@@ -6,23 +6,18 @@ import backend.team.ahachul_backend.api.community.application.port.`in`.Communit
 import backend.team.ahachul_backend.common.annotation.Authentication
 import backend.team.ahachul_backend.common.response.CommonResponse
 import org.springframework.data.domain.Pageable
-import org.springframework.web.bind.annotation.DeleteMapping
-import org.springframework.web.bind.annotation.GetMapping
-import org.springframework.web.bind.annotation.PatchMapping
-import org.springframework.web.bind.annotation.PathVariable
-import org.springframework.web.bind.annotation.PostMapping
-import org.springframework.web.bind.annotation.RequestBody
-import org.springframework.web.bind.annotation.RestController
+import org.springframework.web.bind.annotation.*
 
 @RestController
 class CommunityPostController(
     private val communityPostUseCase: CommunityPostUseCase
 ) {
 
+    @Authentication
     @GetMapping("/v1/community-posts")
     fun searchCommunityPosts(
         pageable: Pageable,
-        request: SearchCommunityPostDto.Request
+        @RequestBody request: SearchCommunityPostDto.Request
     ): CommonResponse<SearchCommunityPostDto.Response> {
         return CommonResponse.success(communityPostUseCase.searchCommunityPosts(request.toCommand(pageable)))
     }
