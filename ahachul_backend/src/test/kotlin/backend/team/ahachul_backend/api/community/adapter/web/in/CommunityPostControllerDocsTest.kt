@@ -71,6 +71,7 @@ class CommunityPostControllerDocsTest : CommonDocsTestConfig() {
                 .param("page", "1")
                 .param("size", "10")
                 .param("sort", "createdAt,desc")
+                .header("Authorization", "Bearer <Access Token>")
                 .accept(MediaType.APPLICATION_JSON)
         )
 

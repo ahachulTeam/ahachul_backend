@@ -1,5 +1,6 @@
 package backend.team.ahachul_backend.schedule.config
 
+import backend.team.ahachul_backend.common.constant.CommonConstant
 import backend.team.ahachul_backend.schedule.job.UpdateLostDataJob
 import org.quartz.*
 import org.springframework.stereotype.Component
@@ -19,7 +20,7 @@ class UpdateLostDataJobConfig: AbstractJobConfig() {
         val jobDataMap = JobDataMap()
         jobDataMap.put("EXECUTION_COUNT", 0)
         jobDataMap.put("MAX_RETRY_COUNT", 3)
-        jobDataMap.put("FILE_READ_PATH", "/home/all.json")
+        jobDataMap.put("FILE_READ_PATH", CommonConstant.LOST_FILE_URL)
         return jobDataMap
     }
 

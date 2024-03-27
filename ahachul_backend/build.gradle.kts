@@ -86,6 +86,11 @@ dependencies {
     implementation("org.jetbrains.kotlin:kotlin-reflect")
     runtimeOnly("com.mysql:mysql-connector-j")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
+
+    // https://mvnrepository.com/artifact/io.github.resilience4j/resilience4j-spring-boot3
+    implementation("io.github.resilience4j:resilience4j-spring-boot3:2.0.2")
+    implementation("org.springframework.boot:spring-boot-starter-actuator")
+    implementation("org.springframework.boot:spring-boot-starter-aop")
 }
 
 tasks.withType<KotlinCompile> {

@@ -4,7 +4,6 @@ import backend.team.ahachul_backend.api.lost.application.service.command.`in`.Se
 import backend.team.ahachul_backend.api.lost.domain.model.LostOrigin
 import backend.team.ahachul_backend.api.lost.domain.model.LostStatus
 import backend.team.ahachul_backend.api.lost.domain.model.LostType
-import backend.team.ahachul_backend.common.dto.ImageDto
 import org.springframework.data.domain.Pageable
 
 class SearchLostPostsDto {
@@ -17,14 +16,13 @@ class SearchLostPostsDto {
         val lostPostId: Long,
         val pageSize: Int,
     ) {
-        fun toCommand(): SearchLostPostCommand {
+        fun toCommand(pageable: Pageable): SearchLostPostCommand {
             return SearchLostPostCommand(
                 lostType = lostType,
                 subwayLineId = subwayLineId,
                 lostOrigin = origin,
                 keyword = keyword,
-                lostPostId = lostPostId,
-                pageSize = pageSize
+                pageable = pageable
             )
         }
     }

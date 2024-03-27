@@ -36,6 +36,7 @@ class JobFailureHandlingListener: TriggerListener {
         val executeCount = jobDataMap.getInt("EXECUTION_COUNT")
 
         logger.info("${ context.jobDetail.key } Job triggered.. checking retry count: ($executeCount / $maxRetryCount)")
+
         return when {
             executeCount <= maxRetryCount -> false
             else -> {

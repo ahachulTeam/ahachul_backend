@@ -2,20 +2,20 @@ package backend.team.ahachul_backend.api.community.application.service
 
 import backend.team.ahachul_backend.api.community.adapter.web.`in`.dto.post.*
 import backend.team.ahachul_backend.api.community.application.port.`in`.CommunityPostUseCase
-import backend.team.ahachul_backend.api.community.application.port.out.*
+import backend.team.ahachul_backend.api.community.application.port.out.CommunityPostFileReader
+import backend.team.ahachul_backend.api.community.application.port.out.CommunityPostHashTagReader
+import backend.team.ahachul_backend.api.community.application.port.out.CommunityPostReader
+import backend.team.ahachul_backend.api.community.application.port.out.CommunityPostWriter
 import backend.team.ahachul_backend.api.community.domain.entity.CommunityPostEntity
 import backend.team.ahachul_backend.api.community.domain.entity.CommunityPostFileEntity
 import backend.team.ahachul_backend.api.member.application.port.out.MemberReader
-import backend.team.ahachul_backend.api.rank.application.service.HashTagRankService
-import backend.team.ahachul_backend.api.rank.event.HashTagSearchEvent
 import backend.team.ahachul_backend.common.dto.ImageDto
+import backend.team.ahachul_backend.common.logging.NamedLogger
 import backend.team.ahachul_backend.common.persistence.SubwayLineReader
 import backend.team.ahachul_backend.common.support.ViewsSupport
 import backend.team.ahachul_backend.common.utils.RequestUtils
-import org.springframework.context.ApplicationEventPublisher
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
-import java.time.LocalDateTime
 
 @Service
 @Transactional(readOnly = true)
@@ -31,12 +31,13 @@ class CommunityPostService(
     private val communityPostHashTagService: CommunityPostHashTagService,
     private val communityPostFileService: CommunityPostFileService,
 
-    private val viewsSupport: ViewsSupport,
-    private val publisher: ApplicationEventPublisher
+    private val viewsSupport: ViewsSupport
 ): CommunityPostUseCase {
 
+    private val logger = NamedLogger("HASHTAG_LOGGER")
+
     override fun searchCommunityPosts(command: SearchCommunityPostCommand): SearchCommunityPostDto.Response {
-        val memberId = RequestUtils.getAttribute("memberId")!!
+        val userId = RequestUtils.getAttribute("memberId")!!
         val searchCommunityPosts = communityPostReader.searchCommunityPosts(command)
         val posts = searchCommunityPosts
             .map {
@@ -50,11 +51,7 @@ class CommunityPostService(
             }.toList()
 
         if (isHashTagSearchCond(command.hashTag, command.content)) {
-            val searchEvent = HashTagSearchEvent(
-                    hashTagName = command.hashTag!!,
-                    userId = memberId
-            )
-            publisher.publishEvent(searchEvent)
+            logger.info("userId = $userId hashtag = ${command.hashTag}")
         }
 
         return SearchCommunityPostDto.Response.of(
