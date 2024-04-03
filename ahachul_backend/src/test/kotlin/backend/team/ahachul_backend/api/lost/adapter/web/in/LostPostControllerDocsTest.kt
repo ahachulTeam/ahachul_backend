@@ -136,8 +136,8 @@ class LostPostControllerDocsTest: CommonDocsTestConfig() {
                 .queryParam("subwayLineId", "1")
                 .queryParam("origin", LostOrigin.LOST112.name)
                 .queryParam("keyword", "검색 키워드")
-                .queryParam("lostPostId", "100")
-                .queryParam("pageSize", "10" )
+                .queryParam("page", "0")
+                .queryParam("size", "10" )
                 .accept(MediaType.APPLICATION_JSON)
         )
 
@@ -151,8 +151,8 @@ class LostPostControllerDocsTest: CommonDocsTestConfig() {
                     parameterWithName("subwayLineId").description("유실물 호선").optional(),
                     parameterWithName("origin").description("유실물 출처").attributes(getFormatAttribute( "LOST112 / APP")).optional(),
                     parameterWithName("keyword").description("검색 키워드 명칭").optional(),
-                    parameterWithName("lostPostId").description("마지막으로 조회한 유실물 데이터의 ID"),
-                    parameterWithName("pageSize").description("한번에 가져올 데이터 개수")
+                    parameterWithName("page").description("현재 페이지"),
+                    parameterWithName("size").description("페이지 노출 데이터 수. index 0부터 시작"),
                 ),
                 responseFields(
                     *commonResponseFields(),
