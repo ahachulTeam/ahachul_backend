@@ -23,15 +23,15 @@ class RankHashTagJob(
     override fun executeInternal(context: JobExecutionContext) {
         val jobDataMap = context.jobDetail.jobDataMap
         val fileReadPath = jobDataMap.getString("FILE_READ_PATH")
-        val hashtagCountMap = readHashTagLogFile(fileReadPath)
-        sortAndSetCache(hashtagCountMap)
+        val sortedHashtagCountMap = readHashTagLogFile(fileReadPath)
+        setCache(sortedHashtagCountMap)
     }
 
     /**
      * 배치성 메서드
      * 일정 주기마다 파일에서 정보를 가져와서 순위를 매긴다.
      */
-    fun readHashTagLogFile(fileUrl: String): Map<String, Int> {
+    fun readHashTagLogFile(fileUrl: String): List<String> {
         val endTime = LocalDateTime.now()
         val startTime = endTime.minusMinutes(5)
         val map = mutableMapOf<String, Int>()
@@ -73,14 +73,17 @@ class RankHashTagJob(
         } catch (ex: FileNotFoundException) {
             logger.error("invalid file to read : $fileUrl")
         }
-        return map
+
+        return sortByTop(map)
     }
 
-    private fun sortAndSetCache(map: Map<String, Int>) {
-        val sortedResult = map.toList()
-                .sortedByDescending { it.second }  // O(NlogN)
-                .map { it.first }
+    private fun sortByTop(hashtagCountMap: Map<String, Int>): List<String> {
+        return hashtagCountMap.toList()
+            .sortedByDescending { it.second }
+            .map { it.first }
+    }
 
+    private fun setCache(sortedResult: List<String>) {
         redisClient.set(HASHTAG_REDIS_KEY, sortedResult, 5, TimeUnit.MINUTES)
     }
 

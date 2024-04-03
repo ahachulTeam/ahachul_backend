@@ -34,6 +34,7 @@ class ScheduleConfig(
     }
 
     /**
+     * Init 메서드
      * JobConfig 을 구현하고 있는 자식 클래스들을 가져온다.
      */
     private fun setJobTriggerMap() {
