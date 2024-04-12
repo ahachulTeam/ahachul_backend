@@ -1,6 +1,6 @@
 package backend.team.ahachul_backend.api.complaint.domain.entity
 
-import backend.team.ahachul_backend.api.complaint.domain.model.ComplaintMessageType
+import backend.team.ahachul_backend.api.complaint.domain.model.ComplaintMessageStatusType
 import backend.team.ahachul_backend.api.complaint.domain.model.ComplaintType
 import backend.team.ahachul_backend.api.complaint.domain.model.ShortContentType
 import backend.team.ahachul_backend.api.member.domain.entity.MemberEntity
@@ -30,7 +30,7 @@ class ComplaintMessageHistoryEntity(
     val location: Int,
 
     @Enumerated(EnumType.STRING)
-    val complaintMessageType: ComplaintMessageType = ComplaintMessageType.CREATED,
+    val complaintMessageStatusType: ComplaintMessageStatusType = ComplaintMessageStatusType.CREATED,
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "sent_member_id")
