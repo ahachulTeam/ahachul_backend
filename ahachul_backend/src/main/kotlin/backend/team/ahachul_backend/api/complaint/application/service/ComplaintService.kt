@@ -34,7 +34,7 @@ class ComplaintService(
                 subwayLineId = it.subwayLine.id,
                 createdAt = it.createdAt,
                 createdBy = it.createdBy,
-                writer = it.member.nickname!!
+                writer = it.member!!.nickname!!
             ) }
 
         return SearchComplaintMessagesDto.Response.of(
@@ -46,10 +46,12 @@ class ComplaintService(
 
     @Transactional
     override fun sendComplaintMessage(command: SendComplaintMessageCommand) {
-        val memberId = RequestUtils.getAttribute("memberId")!!
+        val memberId = RequestUtils.getAttribute("memberId")
+        val member = memberId?.let { memberReader.getMember(it.toLong()) }
+
         complaintWriter.save(
             command.toEntity(
-                memberReader.getMember(memberId.toLong()),
+                member,
                 subwayLineReader.getById(command.subwayLineId))
         )
     }

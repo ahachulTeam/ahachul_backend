@@ -9,3 +9,6 @@ ALTER TABLE tb_complaint_message_history
 
 ALTER TABLE tb_complaint_message_history
     ADD COLUMN location INT NOT NULL;
+
+ALTER TABLE tb_complaint_message_history
+    MODIFY sent_member_id BIGINT NULL;
