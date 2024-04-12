@@ -20,7 +20,7 @@ class ComplaintController(
         return CommonResponse.success(complaintUseCase.searchComplaintMessages(pageable))
     }
 
-    @Authentication
+    @Authentication(required = false)
     @PostMapping("/v1/complaints/messages")
     fun sendComplaintMessage(@RequestBody request: SendComplaintMessageDto.Request): CommonResponse<Unit> {
         complaintUseCase.sendComplaintMessage(request.toCommand())

@@ -34,7 +34,7 @@ class ComplaintMessageHistoryEntity(
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "sent_member_id")
-    val member: MemberEntity,
+    val member: MemberEntity? = null,
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "sent_subway_line_id")

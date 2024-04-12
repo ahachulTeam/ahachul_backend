@@ -16,7 +16,7 @@ class SendComplaintMessageCommand(
     val subwayLineId: Long,
 ) {
 
-    fun toEntity(member: MemberEntity, subwayLine: SubwayLineEntity): ComplaintMessageHistoryEntity {
+    fun toEntity(member: MemberEntity?, subwayLine: SubwayLineEntity): ComplaintMessageHistoryEntity {
         return ComplaintMessageHistoryEntity(
             sentContent = content,
             complaintType = complainType,
