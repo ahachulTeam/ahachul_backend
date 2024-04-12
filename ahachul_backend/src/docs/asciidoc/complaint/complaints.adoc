@@ -11,9 +11,20 @@ include::{snippets}/send-complaint-message/request-fields.adoc[]
 .Response
 include::{snippets}/send-complaint-message/http-response.adoc[]
 
+==== 민원 메시지 조회
+
+.Request
+include::{snippets}/search-complaint-messages/http-request.adoc[]
+.Query Parameters
+include::{snippets}/search-complaint-messages/query-parameters.adoc[]
+.Response
+include::{snippets}/search-complaint-messages/http-response.adoc[]
+.Response Fields
+include::{snippets}/search-complaint-messages/response-fields.adoc[]
+
 ==== Model
 
-===== ComplaintMessageType
+===== ComplaintMessageStatusType
 
 CREATED
 IN_PROGRESS
