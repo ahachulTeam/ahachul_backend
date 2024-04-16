@@ -2,7 +2,7 @@ package backend.team.ahachul_backend.api.complaint.application.port.out
 
 import backend.team.ahachul_backend.api.complaint.domain.entity.ComplaintMessageHistoryFileEntity
 
-interface ComplaintFileReader {
+interface ComplaintMessageFileWriter {
 
-    fun findAllByComplaintId(complaintId: Long): List<ComplaintMessageHistoryFileEntity>
+    fun save(complaintMessageHistory: ComplaintMessageHistoryFileEntity): ComplaintMessageHistoryFileEntity
 }

@@ -6,5 +6,5 @@ import org.springframework.web.multipart.MultipartFile
 
 interface ComplaintFileUseCase {
 
-    fun createComplaintFiles(complaint: ComplaintMessageHistoryEntity, files: List<MultipartFile>): List<ImageDto>
+    fun createComplaintMessageFiles(complaint: ComplaintMessageHistoryEntity, files: List<MultipartFile>): List<ImageDto>
 }

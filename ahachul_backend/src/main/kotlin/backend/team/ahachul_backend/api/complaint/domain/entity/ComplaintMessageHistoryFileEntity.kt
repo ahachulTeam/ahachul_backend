@@ -21,9 +21,9 @@ class ComplaintMessageHistoryFileEntity(
 ): BaseEntity() {
 
     companion object {
-        fun of(complaint: ComplaintMessageHistoryEntity, file: FileEntity): ComplaintMessageHistoryFileEntity {
+        fun of(complaintMessage: ComplaintMessageHistoryEntity, file: FileEntity): ComplaintMessageHistoryFileEntity {
             return ComplaintMessageHistoryFileEntity(
-                complaintMessageHistory = complaint,
+                complaintMessageHistory = complaintMessage,
                 file = file
             )
         }

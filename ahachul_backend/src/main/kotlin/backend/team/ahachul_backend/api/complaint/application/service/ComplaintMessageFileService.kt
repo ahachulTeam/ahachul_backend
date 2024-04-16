@@ -1,7 +1,7 @@
 package backend.team.ahachul_backend.api.complaint.application.service
 
 import backend.team.ahachul_backend.api.complaint.application.port.`in`.ComplaintFileUseCase
-import backend.team.ahachul_backend.api.complaint.application.port.out.ComplaintFileWriter
+import backend.team.ahachul_backend.api.complaint.application.port.out.ComplaintMessageFileWriter
 import backend.team.ahachul_backend.api.complaint.domain.entity.ComplaintMessageHistoryEntity
 import backend.team.ahachul_backend.api.complaint.domain.entity.ComplaintMessageHistoryFileEntity
 import backend.team.ahachul_backend.common.client.AwsS3Client
@@ -13,8 +13,8 @@ import org.springframework.stereotype.Service
 import org.springframework.web.multipart.MultipartFile
 
 @Service
-class ComplaintFileService(
-    private val complaintFileWriter: ComplaintFileWriter,
+class ComplaintMessageFileService(
+    private val complaintMessageFileWriter: ComplaintMessageFileWriter,
 
     private val fileWriter: FileWriter,
 
@@ -22,7 +22,7 @@ class ComplaintFileService(
     private val s3Utils: AwsS3Utils,
 ): ComplaintFileUseCase {
 
-    override fun createComplaintFiles(complaint: ComplaintMessageHistoryEntity, files: List<MultipartFile>): List<ImageDto> {
+    override fun createComplaintMessageFiles(complaint: ComplaintMessageHistoryEntity, files: List<MultipartFile>): List<ImageDto> {
         return files.map {
             val uuid = s3Client.upload(it)
             val s3FileUrl = s3Utils.getUrl(uuid)
@@ -32,9 +32,9 @@ class ComplaintFileService(
                     filePath = s3FileUrl
                 )
             )
-            complaintFileWriter.save(
+            complaintMessageFileWriter.save(
                 ComplaintMessageHistoryFileEntity.of(
-                    complaint = complaint,
+                    complaintMessage = complaint,
                     file = file
                 )
             )
