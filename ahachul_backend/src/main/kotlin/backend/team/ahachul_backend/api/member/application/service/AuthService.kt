@@ -41,19 +41,22 @@ class AuthService(
 
     @Transactional
     override fun login(command: LoginMemberCommand): LoginMemberDto.Response {
+        var isDuplicatedNickname = false
         val member = when (command.providerType) {
             ProviderType.KAKAO -> {
                 val userInfo = getKakaoMemberInfo(command.providerCode)
                 val member = memberReader.findMember(userInfo.id)
+                userInfo.kakaoAccount.profile?.let { profile -> isDuplicatedNickname = memberReader.existMember(profile.nickname) }
                 member ?: memberWriter.save(MemberEntity.ofKakao(command, userInfo))
             }
             ProviderType.GOOGLE -> {
                 val userInfo = getGoogleMemberInfo(command.providerCode)
                 val member = memberReader.findMember(userInfo.id)
+                isDuplicatedNickname = memberReader.existMember(userInfo.name)
                 member ?: memberWriter.save(MemberEntity.ofGoogle(command, userInfo))
             }
         }
-        return makeLoginResponse(member.id.toString(), member.isNeedAdditionalUserInfo())
+        return makeLoginResponse(member.id.toString(), member.isNeedAdditionalUserInfo() || isDuplicatedNickname)
     }
 
     private fun getKakaoMemberInfo(provideCode: String): KakaoMemberInfoDto {
