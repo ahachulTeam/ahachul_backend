@@ -8,7 +8,6 @@ import org.springframework.data.domain.Pageable
 
 class GetSliceLostPostsCommand(
     val lostType: LostType,
-    val lostOrigin: LostOrigin?,
     val subwayLine: SubwayLineEntity?,
     val keyword: String?,
     val pageable: Pageable
@@ -17,7 +16,6 @@ class GetSliceLostPostsCommand(
         fun from(command: SearchLostPostCommand, subwayLine: SubwayLineEntity?): GetSliceLostPostsCommand {
             return GetSliceLostPostsCommand(
                 lostType = command.lostType,
-                lostOrigin = command.lostOrigin,
                 subwayLine = subwayLine,
                 keyword = command.keyword,
                 pageable = command.pageable

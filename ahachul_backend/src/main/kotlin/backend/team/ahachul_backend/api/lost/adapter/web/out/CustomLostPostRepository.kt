@@ -64,7 +64,6 @@ class CustomLostPostRepository(
         val pageable = command.pageable
         val response = queryFactory.selectFrom(lostPostEntity)
             .where(
-                lostOriginEq(command.lostOrigin),
                 subwayLineEq(command.subwayLine),
                 lostTypeEq(command.lostType),
                 titleAndContentLike(command.keyword),
@@ -117,9 +116,6 @@ class CustomLostPostRepository(
             .limit(command.size)
             .fetch()
     }
-
-    private fun lostOriginEq(lostOrigin: LostOrigin?) =
-        lostOrigin?.let { lostPostEntity.origin.eq(lostOrigin) }
 
     private fun subwayLineEq(subwayLine: SubwayLineEntity?) =
         subwayLine?.let { lostPostEntity.subwayLine.eq(subwayLine) }

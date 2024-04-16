@@ -347,7 +347,6 @@ class LostPostServiceTest(
         return SearchLostPostCommand(
             lostType = LostType.ACQUIRE,
             subwayLineId = subwayLineId,
-            lostOrigin = null,
             keyword = keyword,
             pageable = PageRequest.of(pageSize, 3)
         )
