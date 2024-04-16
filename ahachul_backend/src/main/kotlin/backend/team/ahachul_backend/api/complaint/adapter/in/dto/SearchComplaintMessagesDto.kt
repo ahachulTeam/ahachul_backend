@@ -3,6 +3,7 @@ package backend.team.ahachul_backend.api.complaint.adapter.`in`.dto
 import backend.team.ahachul_backend.api.complaint.domain.model.ComplaintMessageStatusType
 import backend.team.ahachul_backend.api.complaint.domain.model.ComplaintType
 import backend.team.ahachul_backend.api.complaint.domain.model.ShortContentType
+import backend.team.ahachul_backend.common.dto.ImageDto
 import java.time.LocalDateTime
 
 class SearchComplaintMessagesDto {
@@ -35,5 +36,6 @@ class SearchComplaintMessagesDto {
         val createdAt: LocalDateTime,
         val createdBy: String,
         val writer: String,
+        val images: List<ImageDto>,
     )
 }

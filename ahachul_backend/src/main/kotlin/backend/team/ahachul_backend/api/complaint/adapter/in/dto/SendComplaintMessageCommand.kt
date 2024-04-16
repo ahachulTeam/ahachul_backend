@@ -5,6 +5,7 @@ import backend.team.ahachul_backend.api.complaint.domain.model.ComplaintType
 import backend.team.ahachul_backend.api.complaint.domain.model.ShortContentType
 import backend.team.ahachul_backend.api.member.domain.entity.MemberEntity
 import backend.team.ahachul_backend.common.domain.entity.SubwayLineEntity
+import org.springframework.web.multipart.MultipartFile
 
 class SendComplaintMessageCommand(
     val content: String,
@@ -14,6 +15,7 @@ class SendComplaintMessageCommand(
     val trainNo: String,
     val location: Int,
     val subwayLineId: Long,
+    val imageFiles: List<MultipartFile> = listOf()
 ) {
 
     fun toEntity(member: MemberEntity?, subwayLine: SubwayLineEntity): ComplaintMessageHistoryEntity {

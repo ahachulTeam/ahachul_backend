@@ -121,7 +121,7 @@ class CommunityPostService(
     private fun convertToImageDto(communityPostFiles: List<CommunityPostFileEntity>): List<ImageDto> {
         return communityPostFiles.map {
             ImageDto.of(
-                imageId = it.id,
+                imageId = it.file.id,
                 imageUrl = it.file.filePath
             )
         }
