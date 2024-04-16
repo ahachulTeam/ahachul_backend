@@ -1,4 +1,4 @@
-CREATE TABLE tb_community_post_file
+CREATE TABLE tb_complaint_message_history_file
 (
     complaint_message_history_file_id BIGINT auto_increment NOT NULL,
     complaint_message_history_id      BIGINT NOT NULL,
