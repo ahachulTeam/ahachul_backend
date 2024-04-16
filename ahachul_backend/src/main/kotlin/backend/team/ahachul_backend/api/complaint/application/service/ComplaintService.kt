@@ -53,8 +53,8 @@ class ComplaintService(
 
     @Transactional
     override fun sendComplaintMessage(command: SendComplaintMessageCommand) {
-        val memberId = RequestUtils.getAttribute("memberId")
-        val member = memberId?.let { memberReader.getMember(it.toLong()) }
+        val memberId = RequestUtils.getAttribute("memberId")!!.toLong()
+        val member = memberReader.getMember(memberId)
 
         val complaintMessage = complaintMessageWriter.save(
             command.toEntity(

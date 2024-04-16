@@ -7,10 +7,10 @@ import org.springframework.web.multipart.MultipartFile
 class SendComplaintMessageDto {
 
     data class Request(
-        val content: String,
+        val content: String?,
         val complainType: ComplaintType,
         val shortContentType: ShortContentType? = null,
-        val phoneNumber: String,
+        val phoneNumber: String?,
         val trainNo: String,
         val location: Int,
         val subwayLineId: Long,

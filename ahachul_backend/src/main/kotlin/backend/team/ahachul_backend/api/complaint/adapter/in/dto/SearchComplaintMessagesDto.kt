@@ -25,11 +25,11 @@ class SearchComplaintMessagesDto {
     }
 
     data class ComplaintMessage(
-        val content: String,
+        val content: String?,
         val complainType: ComplaintType,
         val shortContentType: ShortContentType? = null,
         val complaintMessageStatusType: ComplaintMessageStatusType,
-        val phoneNumber: String,
+        val phoneNumber: String?,
         val trainNo: String,
         val location: Int,
         val subwayLineId: Long,

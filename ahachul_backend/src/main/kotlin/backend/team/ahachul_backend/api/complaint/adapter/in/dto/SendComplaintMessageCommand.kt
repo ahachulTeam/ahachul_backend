@@ -8,10 +8,10 @@ import backend.team.ahachul_backend.common.domain.entity.SubwayLineEntity
 import org.springframework.web.multipart.MultipartFile
 
 class SendComplaintMessageCommand(
-    val content: String,
+    val content: String?,
     val complainType: ComplaintType,
     val shortContentType: ShortContentType? = null,
-    val phoneNumber: String,
+    val phoneNumber: String?,
     val trainNo: String,
     val location: Int,
     val subwayLineId: Long,

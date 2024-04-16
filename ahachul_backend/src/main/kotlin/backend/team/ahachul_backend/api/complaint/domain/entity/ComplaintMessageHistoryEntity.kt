@@ -21,9 +21,9 @@ class ComplaintMessageHistoryEntity(
     @Enumerated(EnumType.STRING)
     val shortContentType: ShortContentType?,
 
-    val sentContent: String,
+    val sentContent: String?,
 
-    val sentPhoneNumber: String,
+    val sentPhoneNumber: String?,
 
     val sentTrainNo: String,
 
