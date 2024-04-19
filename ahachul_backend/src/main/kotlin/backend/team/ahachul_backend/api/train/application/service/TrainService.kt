@@ -8,6 +8,7 @@ import backend.team.ahachul_backend.api.train.application.port.`in`.TrainUseCase
 import backend.team.ahachul_backend.api.train.application.port.`in`.command.GetCongestionCommand
 import backend.team.ahachul_backend.api.train.application.port.out.TrainReader
 import backend.team.ahachul_backend.api.train.domain.entity.TrainEntity
+import backend.team.ahachul_backend.api.train.domain.model.UpDownType
 import backend.team.ahachul_backend.common.client.SeoulTrainClient
 import backend.team.ahachul_backend.common.client.TrainCongestionClient
 import backend.team.ahachul_backend.common.client.dto.TrainCongestionDto
@@ -70,7 +71,7 @@ class TrainService(
      * 외부 열차 조회 API 호출
      */
     @CircuitBreaker(name = CUSTOM_CIRCUIT_BREAKER, fallbackMethod = "fallbackOnExternalTrainApiGet")
-    override fun getTrainRealTimes(stationId: Long, subwayLineId: Long): List<GetTrainRealTimesDto.TrainRealTime> {
+    override fun getTrainRealTimes(stationId: Long, subwayLineId: Long, upDownType: UpDownType?): List<GetTrainRealTimesDto.TrainRealTime> {
         val station = stationLineReader.getById(stationId)
         val subwayLine = subwayLineReader.getById(subwayLineId)
         val subwayLineIdentity = subwayLine.identity
@@ -82,7 +83,11 @@ class TrainService(
             trainCacheUtils.setCache(it.key.toLong(), stationId, it.value)
         }
 
-        return trainRealTimeMap.getOrElse(subwayLineIdentity.toString()) { emptyList() }
+        val trainRealTimes = trainRealTimeMap.getOrElse(subwayLineIdentity.toString()) { emptyList() }
+
+        return upDownType?.let { type ->
+            trainRealTimes.filter { it.upDownType == type }.take(4)
+        } ?: trainRealTimes
     }
 
     /**

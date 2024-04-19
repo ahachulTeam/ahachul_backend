@@ -136,7 +136,7 @@ class TrainControllerDocsTest : CommonDocsTestConfig() {
             GetTrainRealTimesDto.TrainRealTime(
                 subwayId = "",
                 stationOrder = 1,
-                upDownType = UpDownType.DOWN,
+                upDownType = UpDownType.UP,
                 nextStationDirection = "신대방방면",
                 destinationStationDirection = "성수행",
                 trainNum = "2234",
@@ -155,7 +155,7 @@ class TrainControllerDocsTest : CommonDocsTestConfig() {
             )
         )
 
-        given(trainUseCase.getTrainRealTimes(anyLong(), anyLong()))
+        given(trainUseCase.getTrainRealTimes(anyLong(), anyLong(), any()))
             .willReturn(trainRealTimes)
 
         // when
@@ -163,6 +163,7 @@ class TrainControllerDocsTest : CommonDocsTestConfig() {
             get("/v1/trains/real-times")
                 .queryParam("stationId", "1")
                 .queryParam("subwayLineId", "1")
+                .queryParam("upDownType", "UP")
                 .header("Authorization", "Bearer <Access Token>")
                 .accept(MediaType.APPLICATION_JSON)
         )
@@ -179,7 +180,8 @@ class TrainControllerDocsTest : CommonDocsTestConfig() {
                     ),
                     queryParameters(
                         parameterWithName("stationId").description("정류장 ID"),
-                        parameterWithName("subwayLineId").description("지하철 노선 ID")
+                        parameterWithName("subwayLineId").description("지하철 노선 ID"),
+                        parameterWithName("upDownType").description("상행(UP), 하행(DOWN)").optional()
                     ),
                     responseFields(
                         *commonResponseFields(),

@@ -9,7 +9,8 @@ class GetTrainRealTimesDto {
 
     data class Request(
         val stationId: Long,
-        val subwayLineId: Long
+        val subwayLineId: Long,
+        val upDownType: UpDownType?
     ) {
     }
 
