@@ -3,6 +3,7 @@ package backend.team.ahachul_backend.api.complaint.adapter.`in`.dto
 import backend.team.ahachul_backend.api.complaint.domain.model.ComplaintMessageStatusType
 import backend.team.ahachul_backend.api.complaint.domain.model.ComplaintType
 import backend.team.ahachul_backend.api.complaint.domain.model.ShortContentType
+import backend.team.ahachul_backend.common.dto.ImageDto
 import java.time.LocalDateTime
 
 class SearchComplaintMessagesDto {
@@ -24,16 +25,17 @@ class SearchComplaintMessagesDto {
     }
 
     data class ComplaintMessage(
-        val content: String,
+        val content: String?,
         val complainType: ComplaintType,
         val shortContentType: ShortContentType? = null,
         val complaintMessageStatusType: ComplaintMessageStatusType,
-        val phoneNumber: String,
+        val phoneNumber: String?,
         val trainNo: String,
         val location: Int,
         val subwayLineId: Long,
         val createdAt: LocalDateTime,
         val createdBy: String,
         val writer: String,
+        val images: List<ImageDto>,
     )
 }

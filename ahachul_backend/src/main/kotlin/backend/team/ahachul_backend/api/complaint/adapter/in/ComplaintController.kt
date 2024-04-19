@@ -8,7 +8,6 @@ import backend.team.ahachul_backend.common.response.CommonResponse
 import org.springframework.data.domain.Pageable
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PostMapping
-import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RestController
 
 @RestController
@@ -20,9 +19,9 @@ class ComplaintController(
         return CommonResponse.success(complaintUseCase.searchComplaintMessages(pageable))
     }
 
-    @Authentication(required = false)
+    @Authentication
     @PostMapping("/v1/complaints/messages")
-    fun sendComplaintMessage(@RequestBody request: SendComplaintMessageDto.Request): CommonResponse<Unit> {
+    fun sendComplaintMessage(request: SendComplaintMessageDto.Request): CommonResponse<Unit> {
         complaintUseCase.sendComplaintMessage(request.toCommand())
         return CommonResponse.success()
     }
