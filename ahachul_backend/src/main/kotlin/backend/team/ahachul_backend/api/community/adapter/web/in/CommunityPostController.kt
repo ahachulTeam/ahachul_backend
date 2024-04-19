@@ -13,7 +13,7 @@ class CommunityPostController(
     private val communityPostUseCase: CommunityPostUseCase
 ) {
 
-    @Authentication
+    @Authentication(required = false)
     @GetMapping("/v1/community-posts")
     fun searchCommunityPosts(
         pageable: Pageable,

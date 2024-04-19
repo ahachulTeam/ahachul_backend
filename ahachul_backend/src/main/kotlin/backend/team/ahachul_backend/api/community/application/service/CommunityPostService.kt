@@ -37,7 +37,7 @@ class CommunityPostService(
     private val logger = NamedLogger("HASHTAG_LOGGER")
 
     override fun searchCommunityPosts(command: SearchCommunityPostCommand): SearchCommunityPostDto.Response {
-        val userId = RequestUtils.getAttribute("memberId")!!
+        val userId: String? = RequestUtils.getAttribute("memberId")
         val searchCommunityPosts = communityPostReader.searchCommunityPosts(command)
         val posts = searchCommunityPosts
             .map {
@@ -66,7 +66,8 @@ class CommunityPostService(
     }
 
     override fun getCommunityPost(command: GetCommunityPostCommand): GetCommunityPostDto.Response {
-        val communityPost = communityPostReader.getByCustom(command.id, RequestUtils.getAttribute("memberId"))
+        val userId: String? = RequestUtils.getAttribute("memberId")
+        val communityPost = communityPostReader.getByCustom(command.id, userId)
         val views = viewsSupport.increase(command.id)
         val hashTags = communityPostHashTagReader.findAllByPostId(communityPost.id).map { it.hashTag.name }
         val communityPostFiles = communityPostFileReader.findAllByPostId(communityPost.id)
