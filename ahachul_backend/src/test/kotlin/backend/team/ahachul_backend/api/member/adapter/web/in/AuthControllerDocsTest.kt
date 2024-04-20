@@ -5,10 +5,14 @@ import backend.team.ahachul_backend.api.member.adapter.web.`in`.dto.GetTokenDto
 import backend.team.ahachul_backend.api.member.adapter.web.`in`.dto.LoginMemberDto
 import backend.team.ahachul_backend.api.member.application.port.`in`.AuthUseCase
 import backend.team.ahachul_backend.api.member.domain.model.ProviderType
+import backend.team.ahachul_backend.common.properties.OAuthProperties
 import backend.team.ahachul_backend.config.controller.CommonDocsTestConfig
+import io.jsonwebtoken.lang.Maps
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
 import org.mockito.BDDMockito.given
+import org.mockito.BDDMockito.willDoNothing
+import org.mockito.Mock
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest
 import org.springframework.boot.test.mock.mockito.MockBean
 import org.springframework.http.MediaType
@@ -26,6 +30,9 @@ class AuthControllerDocsTest : CommonDocsTestConfig() {
 
     @MockBean
     lateinit var authUseCase: AuthUseCase
+
+    @MockBean
+    lateinit var oAuthProperties: OAuthProperties
 
     @Test
     fun getRedirectUrlTest() {
@@ -76,6 +83,11 @@ class AuthControllerDocsTest : CommonDocsTestConfig() {
 
         given(authUseCase.login(any()))
             .willReturn(response)
+
+        // TODO 개발용 코드. 추후 삭제
+        given(oAuthProperties.client).willReturn(
+            mapOf("kakao" to OAuthProperties.Client("", "", "", "", "", ""))
+        )
 
         val request = LoginMemberDto.Request(
             providerType = ProviderType.KAKAO,

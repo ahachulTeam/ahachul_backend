@@ -7,21 +7,20 @@ import backend.team.ahachul_backend.api.member.application.port.`in`.AuthUseCase
 import backend.team.ahachul_backend.api.member.application.port.`in`.command.GetRedirectUrlCommand
 import backend.team.ahachul_backend.api.member.domain.model.ProviderType
 import backend.team.ahachul_backend.common.exception.CommonException
+import backend.team.ahachul_backend.common.properties.OAuthProperties
 import backend.team.ahachul_backend.common.response.CommonResponse
 import backend.team.ahachul_backend.common.response.ResponseCode
 import io.jsonwebtoken.ExpiredJwtException
 import io.jsonwebtoken.MalformedJwtException
 import io.jsonwebtoken.UnsupportedJwtException
 import io.jsonwebtoken.security.SignatureException
-import org.springframework.web.bind.annotation.GetMapping
-import org.springframework.web.bind.annotation.PostMapping
-import org.springframework.web.bind.annotation.RequestBody
-import org.springframework.web.bind.annotation.RequestParam
-import org.springframework.web.bind.annotation.RestController
+import org.springframework.web.bind.annotation.*
 
 @RestController
 class AuthController(
         private val authUseCase: AuthUseCase,
+
+        private val oAuthProperties: OAuthProperties,
 ) {
 
     @GetMapping("/v1/auth/redirect-url")
@@ -30,7 +29,9 @@ class AuthController(
     }
 
     @PostMapping("/v1/auth/login")
-    fun login(@RequestBody request: LoginMemberDto.Request): CommonResponse<LoginMemberDto.Response> {
+    fun login(@RequestHeader(value="Origin") origin: String?, @RequestBody request: LoginMemberDto.Request): CommonResponse<LoginMemberDto.Response> {
+        // TODO 개발용 코드. 추후 삭제
+        oAuthProperties.client[request.providerType.toString().lowercase()]!!.redirectUri = "$origin/onboarding/redirect?type=${request.providerType}"
         return CommonResponse.success(authUseCase.login(request.toCommand()))
     }
 
