@@ -15,6 +15,37 @@ jobs:
           token: ${{ secrets.TOKEN_GITHUB }}
           submodules: true
 
+      - name: Set up JDK 17
+        uses: actions/setup-java@v1
+        with:
+          java-version: 17
+
+      - name: Grant execute permission for gradlew
+        run: chmod +x ./ahachul_backend/gradlew
+        shell: bash
+
+      - name: Build with Gradle
+        run: cd ./ahachul_backend && SPRING_PROFILES_ACTIVE=test ./gradlew clean copyDocument jar build
+        shell: bash
+
+      - name: Upload build artifact (JAR and Dockerfile)
+        uses: actions/upload-artifact@v3
+        with:
+          name: app-artifacts
+          path: |
+            ./ahachul_backend/build/libs/*.jar
+            ./ahachul_backend/Dockerfile
+
+  dockerize:
+    runs-on: ubuntu-latest
+    needs: build
+
+    steps:
+      - name: Download build artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: app-artifacts
+      
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v2
         with:
@@ -26,8 +57,9 @@ jobs:
         run: |
           aws ecr-public get-login-password --region us-east-1 | docker login --username AWS --password-stdin ${{ secrets.ECR_REPOSITORY_URI }}
 
-      - name: Build, tag, and push Docker image to Amazon ECR
-        run: |
-          docker build -t ${{ secrets.ECR_REPOSITORY_URI }}:latest ./ahachul_backend
-          docker push ${{ secrets.ECR_REPOSITORY_URI }}:latest
-          echo "Successfully pushed to ECR: ${{ secrets.ECR_REPOSITORY_URI }}:latest"
+      - name: Build Docker image
+        run: docker build -t ${{ secrets.ECR_REPOSITORY_URI }}:latest .
+
+      - name: Push Docker image to Amazon ECR
+        run: docker push ${{ secrets.ECR_REPOSITORY_URI }}:latest
+      
