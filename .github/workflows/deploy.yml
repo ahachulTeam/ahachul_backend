@@ -3,7 +3,7 @@ name: CI/CD Pipeline for Spring Boot
 on:
   push:
     branches:
-      - feature/223
+      - develop
 
 jobs:
   build:

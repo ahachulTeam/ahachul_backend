@@ -20,7 +20,7 @@ class InterceptorConfig(
     override fun addCorsMappings(registry: CorsRegistry) {
         registry.addMapping("/**")
             // TODO 환경 분리
-            .allowedOrigins("http://https://app-dev.ahhachul.com")
+            .allowedOrigins("https://app-dev.ahhachul.com", "https://dev.ahhachul.com")
             .allowedMethods("GET", "POST", "PUT", "PATCH", "OPTIONS", "DELETE")
             .allowedHeaders("*")
             .allowCredentials(true)
