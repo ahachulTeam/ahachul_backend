@@ -19,8 +19,8 @@ class InterceptorConfig(
 
     override fun addCorsMappings(registry: CorsRegistry) {
         registry.addMapping("/**")
-            .allowedOrigins("http://localhost:3000", "https://ahhachul-com.vercel.app",
-                "https://ahhachul.com", "https://app.ahhachul.com", "https://next-ahhachul-com.vercel.app")
+            // TODO 환경 분리
+            .allowedOriginPatterns("https://app-dev.ahhachul.com", "https://dev.ahhachul.com", "http://localhost:3000", "http://localhost")
             .allowedMethods("GET", "POST", "PUT", "PATCH", "OPTIONS", "DELETE")
             .allowedHeaders("*")
             .allowCredentials(true)

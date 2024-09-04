@@ -1,22 +1,16 @@
-name: deploy
+name: CI/CD Pipeline for Spring Boot
 
 on:
   push:
     branches:
       - develop
-      
-env:
-  ECR_REGISTRY: ${{ secrets.AWS_ECR_REGISTRY }}
-  ECR_REPOSITORY: ahachul
-  AWS_REGION: ap-northeast-2
-
 
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
-        uses: actions/checkout@v2
+      - name: Checkout source code
+        uses: actions/checkout@v3
         with:
           token: ${{ secrets.TOKEN_GITHUB }}
           submodules: true
@@ -27,56 +21,45 @@ jobs:
           java-version: 17
 
       - name: Grant execute permission for gradlew
-        run: chmod +x ahachul_backend/gradlew
+        run: chmod +x ./ahachul_backend/gradlew
         shell: bash
 
       - name: Build with Gradle
         run: cd ./ahachul_backend && SPRING_PROFILES_ACTIVE=test ./gradlew clean copyDocument jar build
         shell: bash
 
-      - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v1
+      - name: Upload build artifact (JAR and Dockerfile)
+        uses: actions/upload-artifact@v3
         with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: ${{ env.AWS_REGION }}
+          name: app-artifacts
+          path: |
+            ./ahachul_backend/build/libs/*.jar
+            ./ahachul_backend/Dockerfile
 
-      - name: Login to Amazon ECR
-        id: login-ecr
-        uses: aws-actions/amazon-ecr-login@v1
-
-      - name: Build, tag, and push image to Amazon ECR
-        id: build-image
-        run: |
-          docker build -t ${{ env.ECR_REGISTRY }}/${{ env.ECR_REPOSITORY }}:latest .
-          docker push ${{ env.ECR_REGISTRY }}/${{ env.ECR_REPOSITORY }}:latest
-          echo "success push to ecr: name=image::${{ env.ECR_REGISTRY }}/${{ env.ECR_REPOSITORY }}:latest"
-
-  deploy:
+  dockerize:
+    runs-on: ubuntu-latest
     needs: build
-    runs-on: self-hosted
+
     steps:
+      - name: Download build artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: app-artifacts
+      
       - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v1
+        uses: aws-actions/configure-aws-credentials@v2
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: ${{ env.AWS_REGION }}
+          aws-region: ${{ secrets.AWS_REGION }}
 
-      - name: Login to Amazon ECR
-        id: login-ecr
-        uses: aws-actions/amazon-ecr-login@v1
-
-      - name: Pull Image and docker run
+      - name: Log in to Amazon ECR Public
         run: |
-          docker pull ${{ env.ECR_REGISTRY }}/${{ env.ECR_REPOSITORY }}:latest
-          docker stop ${{ env.ECR_REPOSITORY }} && docker rm ${{ env.ECR_REPOSITORY }} && docker rmi ${{ env.ECR_REGISTRY }}/${{ env.ECR_REPOSITORY }}:latest
-          docker run -v /home/ec2-user/ahachul_data/datas/:/home -d -p 8080:8080 --name ${{ env.ECR_REPOSITORY }} --restart always ${{ env.ECR_REGISTRY }}/${{ env.ECR_REPOSITORY }}:latest
+          aws ecr-public get-login-password --region us-east-1 | docker login --username AWS --password-stdin ${{ secrets.ECR_REPOSITORY_URI }}
 
-  clean:
-    needs: deploy
-    runs-on: self-hosted
-    steps:
-      - name: Remove inactive images
-        run: |
-          sudo docker images | grep "<none>" | awk "{print \$3}" | xargs -r sudo docker rmi
+      - name: Build Docker image
+        run: docker build -t ${{ secrets.ECR_REPOSITORY_URI }}:latest .
+
+      - name: Push Docker image to Amazon ECR
+        run: docker push ${{ secrets.ECR_REPOSITORY_URI }}:latest
+      
