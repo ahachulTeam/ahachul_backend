@@ -4,7 +4,6 @@ on:
   push:
     branches:
       - develop
-
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -31,20 +30,19 @@ jobs:
       - name: Upload build artifact (JAR and Dockerfile)
         uses: actions/upload-artifact@v3
         with:
-          name: app-artifacts
+          name: build-artifacts
           path: |
             ./ahachul_backend/build/libs/*.jar
             ./ahachul_backend/Dockerfile
-
   dockerize:
     runs-on: ubuntu-latest
     needs: build
 
     steps:
-      - name: Download build artifact
+      - name: Download build artifact (JAR and Dockerfile)
         uses: actions/download-artifact@v3
         with:
-          name: app-artifacts
+          name: build-artifacts
       
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v2
@@ -56,17 +54,15 @@ jobs:
       - name: Log in to Amazon ECR Public
         run: |
           aws ecr-public get-login-password --region us-east-1 | docker login --username AWS --password-stdin ${{ secrets.ECR_REPOSITORY_URI }}
-
       - name: Build Docker image
         run: docker build -t ${{ secrets.ECR_REPOSITORY_URI }}:latest .
 
       - name: Push Docker image to Amazon ECR
         run: docker push ${{ secrets.ECR_REPOSITORY_URI }}:latest
-  
-  deploy:
+
+  generate-appspec:
     runs-on: ubuntu-latest
     needs: dockerize
-
     steps:
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v2
@@ -74,7 +70,62 @@ jobs:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ secrets.AWS_REGION }}
-    
-      - name: Deploy Application
-        run: aws ecs update-service --cluster ${{ secrets.ECS_CLUSTER_NAME }} --service ${{ secrets.DEV_ECS_API_SERVICE_NAME }} --force-new-deployment
       
+      - name: Get the latest Task Definition ARN
+        id: task_definition
+        run: |
+          TASK_DEF_ARN=$(aws ecs describe-services \
+            --cluster ${{ secrets.ECS_CLUSTER_NAME }} \
+            --services ${{ secrets.ECS_SERVICE_NAME }} \
+            --query 'services[0].taskDefinition' --output text)
+          echo "TASK_DEF_ARN=$TASK_DEF_ARN" >> $GITHUB_ENV
+
+      - name: Generate appspec.yaml
+        run: |
+          cat <<EOF > ./appspec.yaml
+          version: 0.0
+          Resources:
+            - TargetService:
+                Type: AWS::ECS::Service
+                Properties:
+                  TaskDefinition: "$TASK_DEF_ARN"
+                  LoadBalancerInfo:
+                    ContainerName: "api-container"
+                    ContainerPort: 8080
+                  CapacityProviderStrategy:
+                  - CapacityProvider: "FARGATE_SPOT"
+                    Base: 0
+                    Weight: 1
+          EOF
+
+      - name: Upload appspec.yaml
+        uses: actions/upload-artifact@v3
+        with:
+          name: appspec-artifact
+          path: ./appspec.yaml
+  
+  deploy:
+    runs-on: ubuntu-latest
+    needs: generate-appspec
+
+    steps:
+      - name: Download appspec artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: appspec-artifact
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v2
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_REGION }}
+    
+      - name: Create Codedeploy deployment
+        run: |
+          APPSPEC_CONTENT=$(cat appspec.yaml | jq -sR .)
+          aws deploy create-deployment \
+            --application-name ${{ secrets.CODEDEPLOY_APP_NAME }} \
+            --deployment-group-name ${{ secrets.CODEDEPLOY_DEPLOYMENT_GROUP }} \
+            --deployment-config-name CodeDeployDefault.ECSAllAtOnce \
+            --revision "{\"revisionType\":\"AppSpecContent\",\"appSpecContent\":{\"content\":$APPSPEC_CONTENT}}"
