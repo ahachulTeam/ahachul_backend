@@ -3,15 +3,22 @@ name: CI/CD Pipeline for Spring Boot
 on:
   push:
     branches:
-      - develop
+      - feature/223
+
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
+      - name: Parse combined secrets
+        id: parse_secrets
+        run: |
+          echo "Extracting secrets..."
+          echo '${{ secrets.META_DATA }}' | jq -r 'to_entries | .[] | "echo \(.key)=\(.value) >> $GITHUB_ENV"' | bash
+
       - name: Checkout source code
         uses: actions/checkout@v3
         with:
-          token: ${{ secrets.TOKEN_GITHUB }}
+          token: ${{ env.TOKEN_GITHUB }}
           submodules: true
 
       - name: Set up JDK 17
@@ -34,11 +41,18 @@ jobs:
           path: |
             ./ahachul_backend/build/libs/*.jar
             ./ahachul_backend/Dockerfile
+
   dockerize:
     runs-on: ubuntu-latest
     needs: build
 
     steps:
+      - name: Parse combined secrets
+        id: parse_secrets
+        run: |
+          echo "Extracting secrets..."
+          echo '${{ secrets.META_DATA }}' | jq -r 'to_entries | .[] | "echo \(.key)=\(.value) >> $GITHUB_ENV"' | bash
+
       - name: Download build artifact (JAR and Dockerfile)
         uses: actions/download-artifact@v3
         with:
@@ -47,36 +61,43 @@ jobs:
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v2
         with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: ${{ secrets.AWS_REGION }}
+          aws-access-key-id: ${{ env.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ env.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ env.AWS_REGION }}
 
       - name: Log in to Amazon ECR Public
         run: |
-          aws ecr-public get-login-password --region us-east-1 | docker login --username AWS --password-stdin ${{ secrets.ECR_REPOSITORY_URI }}
+          aws ecr-public get-login-password --region us-east-1 | docker login --username AWS --password-stdin ${{ env.ECR_REPOSITORY_URI }}
+
       - name: Build Docker image
-        run: docker build -t ${{ secrets.ECR_REPOSITORY_URI }}:latest .
+        run: docker build -t ${{ env.ECR_REPOSITORY_URI }}:latest .
 
       - name: Push Docker image to Amazon ECR
-        run: docker push ${{ secrets.ECR_REPOSITORY_URI }}:latest
+        run: docker push ${{ env.ECR_REPOSITORY_URI }}:latest
 
   generate-appspec:
     runs-on: ubuntu-latest
     needs: dockerize
     steps:
+      - name: Parse combined secrets
+        id: parse_secrets
+        run: |
+          echo "Extracting secrets..."
+          echo '${{ secrets.META_DATA }}' | jq -r 'to_entries | .[] | "echo \(.key)=\(.value) >> $GITHUB_ENV"' | bash
+
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v2
         with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: ${{ secrets.AWS_REGION }}
+          aws-access-key-id: ${{ env.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ env.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ env.AWS_REGION }}
       
       - name: Get the latest Task Definition ARN
         id: task_definition
         run: |
           TASK_DEF_ARN=$(aws ecs describe-services \
-            --cluster ${{ secrets.ECS_CLUSTER_NAME }} \
-            --services ${{ secrets.ECS_SERVICE_NAME }} \
+            --cluster ${{ env.ECS_CLUSTER_NAME }} \
+            --services ${{ env.ECS_SERVICE_NAME }} \
             --query 'services[0].taskDefinition' --output text)
           echo "TASK_DEF_ARN=$TASK_DEF_ARN" >> $GITHUB_ENV
 
@@ -90,8 +111,8 @@ jobs:
                 Properties:
                   TaskDefinition: "$TASK_DEF_ARN"
                   LoadBalancerInfo:
-                    ContainerName: "api-container"
-                    ContainerPort: 8080
+                    ContainerName: ${{ env.CONTAINER_NAME }}
+                    ContainerPort: ${{ env.CONTAINER_PORT }}
                   CapacityProviderStrategy:
                   - CapacityProvider: "FARGATE_SPOT"
                     Base: 0
@@ -109,6 +130,12 @@ jobs:
     needs: generate-appspec
 
     steps:
+      - name: Parse combined secrets
+        id: parse_secrets
+        run: |
+          echo "Extracting secrets..."
+          echo '${{ secrets.META_DATA }}' | jq -r 'to_entries | .[] | "echo \(.key)=\(.value) >> $GITHUB_ENV"' | bash
+
       - name: Download appspec artifact
         uses: actions/download-artifact@v3
         with:
@@ -117,15 +144,15 @@ jobs:
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v2
         with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: ${{ secrets.AWS_REGION }}
+          aws-access-key-id: ${{ env.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ env.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ env.AWS_REGION }}
     
       - name: Create Codedeploy deployment
         run: |
           APPSPEC_CONTENT=$(cat appspec.yaml | jq -sR .)
           aws deploy create-deployment \
-            --application-name ${{ secrets.CODEDEPLOY_APP_NAME }} \
-            --deployment-group-name ${{ secrets.CODEDEPLOY_DEPLOYMENT_GROUP }} \
+            --application-name ${{ env.CODEDEPLOY_APP_NAME }} \
+            --deployment-group-name ${{ env.CODEDEPLOY_DEPLOYMENT_GROUP }} \
             --deployment-config-name CodeDeployDefault.ECSAllAtOnce \
             --revision "{\"revisionType\":\"AppSpecContent\",\"appSpecContent\":{\"content\":$APPSPEC_CONTENT}}"
