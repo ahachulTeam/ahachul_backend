@@ -16,7 +16,10 @@ import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
 @Entity
-@Table(indexes = [Index(name = "received_date_idx", columnList = "receivedDate")])
+@Table(indexes = [
+    Index(name = "received_date_idx", columnList = "receivedDate"),
+    Index(name = "received_date_desc_idx", columnList = "receivedDate")
+])
 class LostPostEntity(
 
     @Id
@@ -128,7 +131,7 @@ class LostPostEntity(
 
     val date: LocalDateTime
         get() = when (origin) {
-            LostOrigin.LOST112 -> receivedDate!!
+            LostOrigin.LOST112 -> receivedDate
             else -> createdAt
         }
 }

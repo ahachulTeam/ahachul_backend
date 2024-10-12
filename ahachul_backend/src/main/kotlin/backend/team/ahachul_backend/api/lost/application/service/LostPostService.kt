@@ -18,6 +18,7 @@ import backend.team.ahachul_backend.api.lost.domain.model.LostOrigin
 import backend.team.ahachul_backend.api.member.application.port.out.MemberReader
 import backend.team.ahachul_backend.common.domain.entity.SubwayLineEntity
 import backend.team.ahachul_backend.common.dto.ImageDto
+import backend.team.ahachul_backend.common.dto.PageInfoDto
 import backend.team.ahachul_backend.common.exception.BusinessException
 import backend.team.ahachul_backend.common.persistence.SubwayLineReader
 import backend.team.ahachul_backend.common.response.ResponseCode
@@ -98,25 +99,37 @@ class LostPostService(
         }
     }
 
-    override fun searchLostPosts(command: SearchLostPostCommand): SearchLostPostsDto.Response {
+    override fun searchLostPosts(command: SearchLostPostCommand): PageInfoDto<SearchLostPostsDto.Response> {
         val subwayLine = command.subwayLineId?.let { subwayLineReader.getById(it) }
-        val sliceObject = lostPostReader.getLostPosts(GetSliceLostPostsCommand.from(command, subwayLine))
+        val category = command.category?.let { categoryReader.getCategoryByName(it) }
 
-        val lostPosts = sliceObject.content.map {
-            SearchLostPostsDto.SearchLost(
+        val lostPostList = lostPostReader.getLostPosts(
+            GetSliceLostPostsCommand.from(
+                command=command, subwayLine=subwayLine, category=category
+            )
+        )
+
+        val searchLostPostsDtoList = lostPostList.map {
+            SearchLostPostsDto.Response(
                 id = it.id,
                 title = it.title,
                 content = it.content,
                 writer = it.member?.nickname,
                 createdBy = it.createdBy,
-                date = it.date.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")),
-                subwayLine = it.subwayLine?.id,
+                createdAt = it.date.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS")),
+                subwayLineId = it.subwayLine?.id,
                 status = it.status,
-                imageUrl = getFileSource(it),
+                image = getFileSource(it),
                 categoryName = it.category?.name
             )
         }
-        return SearchLostPostsDto.Response(hasNext = sliceObject.hasNext(), posts = lostPosts)
+
+        return PageInfoDto.of(
+            data=searchLostPostsDtoList,
+            pageSize=command.pageSize,
+            firstPageTokenFunction=SearchLostPostsDto.Response::createdAt,
+            secondPageTokenFunction=SearchLostPostsDto.Response::id
+        )
     }
 
     private fun getFileSource(lostPost: LostPostEntity): String? {

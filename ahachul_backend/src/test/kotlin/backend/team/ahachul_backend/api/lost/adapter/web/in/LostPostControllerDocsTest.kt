@@ -6,6 +6,7 @@ import backend.team.ahachul_backend.api.lost.domain.model.LostOrigin
 import backend.team.ahachul_backend.api.lost.domain.model.LostStatus
 import backend.team.ahachul_backend.api.lost.domain.model.LostType
 import backend.team.ahachul_backend.common.dto.ImageDto
+import backend.team.ahachul_backend.common.dto.PageInfoDto
 import backend.team.ahachul_backend.config.controller.CommonDocsTestConfig
 import com.fasterxml.jackson.databind.ObjectMapper
 import org.junit.jupiter.api.Test
@@ -107,25 +108,25 @@ class LostPostControllerDocsTest: CommonDocsTestConfig() {
     @Test
     fun searchLostPosts() {
         // given
-        val response = SearchLostPostsDto.Response(
-            hasNext = true,
-            listOf(
-                SearchLostPostsDto.SearchLost(
-                    id = 1,
-                    title = "title",
-                    content = "content",
-                    writer = "writer",
-                    createdBy = "1",
-                    date = "2023/01/23",
-                    subwayLine = 1,
-                    chats = 1,
-                    status = LostStatus.PROGRESS,
-                    imageUrl = "https://img.png",
-                    categoryName = "휴대폰"
-                )
-            )
+        val response = PageInfoDto.of(
+            data=listOf(
+                SearchLostPostsDto.Response(
+                id = 1,
+                title = "title",
+                content = "content",
+                writer = "writer",
+                createdBy = "1",
+                createdAt = "2023/01/23",
+                subwayLineId = 1,
+                chatCnt = 1,
+                status = LostStatus.PROGRESS,
+                image = "https://img.png",
+                categoryName = "휴대폰"
+            )),
+            pageSize=1,
+            firstPageTokenFunction=SearchLostPostsDto.Response::createdAt,
+            secondPageTokenFunction=SearchLostPostsDto.Response::id
         )
-
         given(lostPostUseCase.searchLostPosts(any()))
             .willReturn(response)
 
@@ -133,11 +134,12 @@ class LostPostControllerDocsTest: CommonDocsTestConfig() {
         val result = mockMvc.perform(
             get("/v1/lost-posts")
                 .queryParam("lostType", LostType.LOST.name)
+                .queryParam("lostOrigin", LostOrigin.LOST112.name)
                 .queryParam("subwayLineId", "1")
-                .queryParam("origin", LostOrigin.LOST112.name)
-                .queryParam("keyword", "검색 키워드")
-                .queryParam("page", "0")
-                .queryParam("size", "10" )
+                .queryParam("category", "검색 카테고리 이름")
+                .queryParam("keyword", "검색 키워드 이름")
+                .queryParam("pageToken", "MTIzMTI5MTU6MTI=")
+                .queryParam("pageSize", "10" )
                 .accept(MediaType.APPLICATION_JSON)
         )
 
@@ -148,26 +150,28 @@ class LostPostControllerDocsTest: CommonDocsTestConfig() {
                 getDocsResponse(),
                 queryParameters(
                     parameterWithName("lostType").description("유실물 카테고리").attributes(getFormatAttribute("LOST(유실물) / ACQUIRE(습득물 + Lost112)")),
+                    parameterWithName("lostOrigin").description("플랫폼").attributes(getFormatAttribute("AHACHUL / LOST112")),
                     parameterWithName("subwayLineId").description("유실물 호선").optional(),
-                    parameterWithName("origin").description("유실물 출처").attributes(getFormatAttribute( "LOST112 / APP")).optional(),
                     parameterWithName("keyword").description("검색 키워드 명칭").optional(),
-                    parameterWithName("page").description("현재 페이지"),
-                    parameterWithName("size").description("페이지 노출 데이터 수. index 0부터 시작"),
+                    parameterWithName("category").description("검색 카테고리 명칭").optional(),
+                    parameterWithName("pageToken").description("base64로 인코딩 된 페이지 토큰 문자열").optional(),
+                    parameterWithName("pageSize").description("페이지 노출 데이터 수. index 0부터 시작"),
                 ),
                 responseFields(
                     *commonResponseFields(),
                     fieldWithPath("result.hasNext").type(JsonFieldType.BOOLEAN).description("다음 유실물 포스트 존재 여부"),
-                    fieldWithPath("result.posts[].id").type(JsonFieldType.NUMBER).description("유실물 아이디"),
-                    fieldWithPath("result.posts[].title").type(JsonFieldType.STRING).description("유실물 제목"),
-                    fieldWithPath("result.posts[].content").type(JsonFieldType.STRING).description("유실물 내용"),
-                    fieldWithPath("result.posts[].writer").type(JsonFieldType.STRING).description("유실물 작성자 닉네임"),
-                    fieldWithPath("result.posts[].createdBy").type(JsonFieldType.STRING).description("작성자 ID"),
-                    fieldWithPath("result.posts[].date").type(JsonFieldType.STRING).description("유실물 작성 날짜"),
-                    fieldWithPath("result.posts[].subwayLine").type(JsonFieldType.NUMBER).description("유실 호선 ID"),
-                    fieldWithPath("result.posts[].chats").type(JsonFieldType.NUMBER).description("유실물 쪽지 개수"),
-                    fieldWithPath("result.posts[].status").type(JsonFieldType.STRING).description("유실물 찾기 완료 여부").attributes(getFormatAttribute( "PROGRESS / COMPLETE")),
-                    fieldWithPath("result.posts[].categoryName" ).type(JsonFieldType.STRING).description("카테고리 이름").optional(),
-                    fieldWithPath("result.posts[].imageUrl").type(JsonFieldType.STRING).description("등록된 첫 번째 이미지 URI"),
+                    fieldWithPath("result.pageToken").type(JsonFieldType.STRING).description("다음 유실물을 가져오기 위한 base64로 인코딩 된 페이지 토큰 문자열").optional(),
+                    fieldWithPath("result.data[].id").type(JsonFieldType.NUMBER).description("유실물 아이디"),
+                    fieldWithPath("result.data[].title").type(JsonFieldType.STRING).description("유실물 제목"),
+                    fieldWithPath("result.data[].content").type(JsonFieldType.STRING).description("유실물 내용"),
+                    fieldWithPath("result.data[].writer").type(JsonFieldType.STRING).description("유실물 작성자 닉네임"),
+                    fieldWithPath("result.data[].createdBy").type(JsonFieldType.STRING).description("작성자 ID"),
+                    fieldWithPath("result.data[].createdAt").type(JsonFieldType.STRING).description("유실물 작성 날짜"),
+                    fieldWithPath("result.data[].subwayLineId").type(JsonFieldType.NUMBER).description("유실 호선 ID"),
+                    fieldWithPath("result.data[].chatCnt").type(JsonFieldType.NUMBER).description("유실물 쪽지 개수"),
+                    fieldWithPath("result.data[].status").type(JsonFieldType.STRING).description("유실물 찾기 완료 여부").attributes(getFormatAttribute( "PROGRESS / COMPLETE")),
+                    fieldWithPath("result.data[].categoryName" ).type(JsonFieldType.STRING).description("카테고리 이름").optional(),
+                    fieldWithPath("result.data[].image").type(JsonFieldType.STRING).description("등록된 첫 번째 이미지 URI"),
                 )
             ))
     }

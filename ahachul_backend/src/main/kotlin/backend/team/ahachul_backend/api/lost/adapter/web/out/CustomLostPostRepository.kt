@@ -10,9 +10,9 @@ import backend.team.ahachul_backend.api.lost.domain.model.LostPostType
 import backend.team.ahachul_backend.api.lost.domain.model.LostStatus
 import backend.team.ahachul_backend.api.lost.domain.model.LostType
 import backend.team.ahachul_backend.common.domain.entity.SubwayLineEntity
+import com.querydsl.core.types.ExpressionUtils.orderBy
 import com.querydsl.core.types.dsl.Expressions
 import com.querydsl.jpa.impl.JPAQueryFactory
-import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Pageable
 import org.springframework.data.domain.Slice
 import org.springframework.data.domain.SliceImpl
@@ -39,58 +39,52 @@ class CustomLostPostRepository(
                 "values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);"
 
         jdbcTemplate.batchUpdate(sql, lostPosts, lostPosts.size) { ps, lostPost ->
-                lostPost.member?.let { ps.setLong(1, it.id) } ?: ps.setNull(1, Types.BIGINT)
-                lostPost.subwayLine?.let { ps.setLong(2, it.id) } ?: ps.setNull(2, Types.BIGINT)
-                ps.setString(3, lostPost.title)
-                ps.setString(4, lostPost.content)
-                ps.setString(5, LostStatus.PROGRESS.name)
-                ps.setString(6, LostOrigin.LOST112.name)
-                ps.setString(7, LostPostType.CREATED.name)
-                ps.setString(8, LostType.ACQUIRE.name)
-                ps.setString(9, lostPost.storage)
-                ps.setString(10, lostPost.storageNumber)
-                ps.setTimestamp(11, currentTime)
-                ps.setString(12, "SYSTEM")
-                ps.setTimestamp(13, currentTime)
-                ps.setString(14, "SYSTEM")
-                ps.setString(15, lostPost.pageUrl)
-                lostPost.receivedDate?.let { ps.setTimestamp(16, Timestamp.valueOf(it)) } ?: ps.setNull(16, Types.VARCHAR)
-                lostPost.category?.let { ps.setLong(17, it.id) } ?: ps.setNull(17, Types.BIGINT)
-                lostPost.externalSourceFileUrl?.let { ps.setString(18, it) } ?: ps.setNull(18, Types.VARCHAR)
+            lostPost.member?.let { ps.setLong(1, it.id) } ?: ps.setNull(1, Types.BIGINT)
+            lostPost.subwayLine?.let { ps.setLong(2, it.id) } ?: ps.setNull(2, Types.BIGINT)
+            ps.setString(3, lostPost.title)
+            ps.setString(4, lostPost.content)
+            ps.setString(5, LostStatus.PROGRESS.name)
+            ps.setString(6, LostOrigin.LOST112.name)
+            ps.setString(7, LostPostType.CREATED.name)
+            ps.setString(8, LostType.ACQUIRE.name)
+            ps.setString(9, lostPost.storage)
+            ps.setString(10, lostPost.storageNumber)
+            ps.setTimestamp(11, currentTime)
+            ps.setString(12, "SYSTEM")
+            ps.setTimestamp(13, currentTime)
+            ps.setString(14, "SYSTEM")
+            ps.setString(15, lostPost.pageUrl)
+            lostPost.receivedDate.let { ps.setTimestamp(16, Timestamp.valueOf(it)) } ?: ps.setNull(16, Types.VARCHAR)
+            lostPost.category?.let { ps.setLong(17, it.id) } ?: ps.setNull(17, Types.BIGINT)
+            lostPost.externalSourceFileUrl?.let { ps.setString(18, it) } ?: ps.setNull(18, Types.VARCHAR)
         }
     }
 
-    fun searchLostPosts(command: GetSliceLostPostsCommand): Slice<LostPostEntity> {
-        val pageable = command.pageable
-        val response = queryFactory.selectFrom(lostPostEntity)
+    fun searchLostPosts(command: GetSliceLostPostsCommand): List<LostPostEntity> {
+        val orderSpecifier = if (command.lostOrigin == LostOrigin.LOST112) {
+            listOf(lostPostEntity.receivedDate.desc(), lostPostEntity.id.asc())
+        } else {
+            listOf(lostPostEntity.createdAt.desc(), lostPostEntity.id.asc())
+        }
+
+        val all = queryFactory.selectFrom(lostPostEntity).fetch()
+
+        return queryFactory.selectFrom(lostPostEntity)
             .where(
                 subwayLineEq(command.subwayLine),
                 lostTypeEq(command.lostType),
+                lostOriginEq(command.lostOrigin),
+                categoryEq(command.category),
                 titleAndContentLike(command.keyword),
+                createdAtBeforeOrEqual(
+                    command.lostOrigin,
+                    command.date,
+                    command.lostPostId
+                )
             )
-            .orderBy(lostPostEntity.receivedDate.desc())
-            .offset(getOffset(pageable).toLong())
-            .limit((pageable.pageSize + 1).toLong())
+            .orderBy(*orderSpecifier.toTypedArray())
+            .limit((command.pageSize + 1).toLong())
             .fetch()
-
-        return SliceImpl(response, pageable, hasNext(response, pageable.pageSize))
-    }
-
-    private fun getOffset(pageable: Pageable): Int {
-        return when {
-            pageable.pageNumber != 0 -> pageable.pageNumber * pageable.pageSize
-            else -> pageable.pageNumber
-        }
-    }
-
-    private fun hasNext(response: MutableList<LostPostEntity>, pageSize: Int): Boolean {
-        return when {
-            response.size > pageSize -> {
-                response.removeAt(response.size - 1)
-                true
-            }
-            else -> false
-        }
     }
 
     fun searchRecommendPost(command: GetRecommendLostPostsCommand): List<LostPostEntity> {
@@ -123,6 +117,9 @@ class CustomLostPostRepository(
     private fun lostTypeEq(lostType: LostType?) =
         lostType?.let { lostPostEntity.lostType.eq(lostType) }
 
+    private fun lostOriginEq(lostOrigin: LostOrigin?) =
+        lostOrigin?.let { lostPostEntity.origin.eq(lostOrigin) }
+
     private fun categoryEq(category: CategoryEntity?) =
         category?.let { lostPostEntity.category.eq(category) }
 
@@ -133,5 +130,24 @@ class CustomLostPostRepository(
         keyword?.let {
             lostPostEntity.title.contains(keyword)
                 .or(lostPostEntity.content.contains(keyword))
+        }
+
+    private fun createdAtBeforeOrEqual(lostOrigin: LostOrigin, localDateTime: LocalDateTime?, id: Long?) =
+        if (lostOrigin == LostOrigin.LOST112) {
+            localDateTime?.let { date ->
+                id?.let { lostPostId ->
+                    lostPostEntity.receivedDate.lt(date).or(
+                        lostPostEntity.receivedDate.eq(date).and(lostPostEntity.id.gt(lostPostId))
+                    )
+                }
+            }
+        } else {
+            localDateTime?.let { date ->
+                id?.let { lostPostId ->
+                    lostPostEntity.createdAt.lt(date).or(
+                        lostPostEntity.createdAt.eq(date).and(lostPostEntity.id.gt(lostPostId))
+                    )
+                }
+            }
         }
 }

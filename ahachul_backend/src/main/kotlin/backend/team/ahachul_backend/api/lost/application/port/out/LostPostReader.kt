@@ -9,7 +9,7 @@ interface LostPostReader {
 
     fun getLostPost(id: Long): LostPostEntity
 
-    fun getLostPosts(command: GetSliceLostPostsCommand): Slice<LostPostEntity>
+    fun getLostPosts(command: GetSliceLostPostsCommand): List<LostPostEntity>
 
     fun getRecommendLostPosts(command: GetRecommendLostPostsCommand): List<LostPostEntity>
 
