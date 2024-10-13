@@ -54,7 +54,7 @@ class LostPostService(
 
     private fun getRecommendPosts(subwayLine: SubwayLineEntity?, category:CategoryEntity?): List<LostPostEntity> {
         if (subwayLine === null || category === null) {
-            throw BusinessException(ResponseCode.IMPOSSIBLE_RECOMMEND_LOST_POST)
+            return listOf()
         }
 
         val command = GetRecommendLostPostsCommand.from(DEFAULT_RECOMMEND_SIZE, subwayLine, category)
