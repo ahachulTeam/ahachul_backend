@@ -17,8 +17,8 @@ import java.time.format.DateTimeFormatter
 
 @Entity
 @Table(indexes = [
-    Index(name = "received_date_idx", columnList = "receivedDate"),
-    Index(name = "received_date_desc_idx", columnList = "receivedDate")
+    Index(name = "received_date_desc_idx", columnList = "receivedDate"),
+    Index(name = "created_date_desc_idx", columnList = "createdDate")
 ])
 class LostPostEntity(
 
