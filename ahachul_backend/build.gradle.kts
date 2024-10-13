@@ -91,7 +91,6 @@ dependencies {
     implementation("io.github.resilience4j:resilience4j-spring-boot3:2.0.2")
     implementation("org.springframework.boot:spring-boot-starter-actuator")
     implementation("org.springframework.boot:spring-boot-starter-aop")
-    implementation(kotlin("stdlib-jdk8"))
 }
 
 tasks.withType<KotlinCompile> {
@@ -146,12 +145,4 @@ tasks.register<Copy>("copyTestSecret") {
 tasks.named("compileJava") {
     dependsOn("copySecret")
     dependsOn("copyTestSecret")
-}
-val compileKotlin: KotlinCompile by tasks
-compileKotlin.kotlinOptions {
-    jvmTarget = "17"
-}
-val compileTestKotlin: KotlinCompile by tasks
-compileTestKotlin.kotlinOptions {
-    jvmTarget = "17"
 }
