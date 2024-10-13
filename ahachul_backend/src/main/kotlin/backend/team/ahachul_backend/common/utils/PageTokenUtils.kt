@@ -1,10 +1,10 @@
 package backend.team.ahachul_backend.common.utils
 
+import backend.team.ahachul_backend.common.constant.CommonConstant.Companion.CURSOR_PAGING_DATETIME_FORMATTER
 import org.apache.commons.codec.binary.Base64
 import org.slf4j.helpers.MessageFormatter
 import java.nio.charset.StandardCharsets
 import java.time.LocalDateTime
-import java.time.format.DateTimeFormatter
 
 object PageTokenUtils {
 
@@ -29,10 +29,7 @@ object PageTokenUtils {
             Int::class.java -> data.toInt() as T
             Long::class.java -> data.toLong() as T
             Boolean::class.java -> data.toBoolean() as T
-            LocalDateTime::class.java -> LocalDateTime.parse(
-                data,
-                DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS")
-            ) as T
+            LocalDateTime::class.java -> LocalDateTime.parse(data, CURSOR_PAGING_DATETIME_FORMATTER) as T
             else -> throw IllegalArgumentException("unsupported type - type: $clazz")
         }
     }
