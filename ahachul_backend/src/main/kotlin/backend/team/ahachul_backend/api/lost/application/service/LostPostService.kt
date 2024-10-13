@@ -127,8 +127,7 @@ class LostPostService(
         return PageInfoDto.of(
             data=searchLostPostsDtoList,
             pageSize=command.pageSize,
-            firstPageTokenFunction=SearchLostPostsDto.Response::createdAt,
-            secondPageTokenFunction=SearchLostPostsDto.Response::id
+            arrayOf(SearchLostPostsDto.Response::createdAt, SearchLostPostsDto.Response::id)
         )
     }
 

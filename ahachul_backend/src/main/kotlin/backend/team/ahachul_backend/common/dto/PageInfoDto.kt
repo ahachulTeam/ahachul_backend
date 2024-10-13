@@ -11,20 +11,15 @@ data class PageInfoDto<T>(
         fun <T> of(
             data: List<T>,
             pageSize: Int,
-            firstPageTokenFunction: (T) -> Any,
-            secondPageTokenFunction: (T) -> Any
+            tokenFunctions: Array<(T) -> Any>
         ): PageInfoDto<T> {
             if (data.size <= pageSize) {
                 return PageInfoDto(null, data, false)
             }
 
             val lastValue = data[pageSize - 1]
-            val pageToken = PageTokenUtils.encodePageToken(
-                Pair(
-                    firstPageTokenFunction(lastValue),
-                    secondPageTokenFunction(lastValue)
-                )
-            )
+            val pageTokenValues = tokenFunctions.map { it(lastValue) }
+            val pageToken = PageTokenUtils.encodePageToken(*pageTokenValues.toTypedArray())
 
             return PageInfoDto(pageToken, data.subList(0, pageSize), true)
         }

@@ -23,7 +23,7 @@ class GetSliceLostPostsCommand(
             command: SearchLostPostCommand, subwayLine: SubwayLineEntity?, category: CategoryEntity?
         ): GetSliceLostPostsCommand {
             val pageToken = command.pageToken?.let {
-                PageTokenUtils.decodePageToken(it, LocalDateTime::class.java, Long::class.java)
+                PageTokenUtils.decodePageToken(it, listOf(LocalDateTime::class.java, Long::class.java))
             }
 
             return GetSliceLostPostsCommand(
@@ -32,8 +32,8 @@ class GetSliceLostPostsCommand(
                 subwayLine = subwayLine,
                 category = category,
                 keyword = command.keyword,
-                date = pageToken?.first,
-                lostPostId = pageToken?.second,
+                date = pageToken?.get(0) as LocalDateTime?,
+                lostPostId = pageToken?.get(1) as Long?,
                 pageSize = command.pageSize,
             )
         }

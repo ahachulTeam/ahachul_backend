@@ -124,8 +124,7 @@ class LostPostControllerDocsTest: CommonDocsTestConfig() {
                 categoryName = "휴대폰"
             )),
             pageSize=1,
-            firstPageTokenFunction=SearchLostPostsDto.Response::createdAt,
-            secondPageTokenFunction=SearchLostPostsDto.Response::id
+            arrayOf(SearchLostPostsDto.Response::createdAt, SearchLostPostsDto.Response::id)
         )
         given(lostPostUseCase.searchLostPosts(any()))
             .willReturn(response)
