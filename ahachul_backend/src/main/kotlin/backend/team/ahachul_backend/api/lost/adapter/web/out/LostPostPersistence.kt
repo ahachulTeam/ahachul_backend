@@ -29,7 +29,7 @@ class LostPostPersistence(
             .orElseThrow { throw AdapterException(ResponseCode.INVALID_DOMAIN) }
     }
 
-    override fun getLostPosts(command: GetSliceLostPostsCommand): Slice<LostPostEntity> {
+    override fun getLostPosts(command: GetSliceLostPostsCommand): List<LostPostEntity> {
         return customLostPostRepository.searchLostPosts(command)
     }
 

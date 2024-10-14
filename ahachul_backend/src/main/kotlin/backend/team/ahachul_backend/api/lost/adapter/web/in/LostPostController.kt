@@ -3,8 +3,8 @@ package backend.team.ahachul_backend.api.lost.adapter.web.`in`
 import backend.team.ahachul_backend.api.lost.adapter.web.`in`.dto.*
 import backend.team.ahachul_backend.api.lost.application.port.`in`.LostPostUseCase
 import backend.team.ahachul_backend.common.annotation.Authentication
+import backend.team.ahachul_backend.common.dto.PageInfoDto
 import backend.team.ahachul_backend.common.response.CommonResponse
-import org.springframework.data.domain.Pageable
 import org.springframework.web.bind.annotation.*
 import org.springframework.web.multipart.MultipartFile
 
@@ -21,10 +21,11 @@ class LostPostController(
 
     @GetMapping("/v1/lost-posts")
     fun searchLostPosts(
-        pageable: Pageable,
+        @RequestParam(required = false) pageToken: String?,
+        @RequestParam pageSize: Int,
         request: SearchLostPostsDto.Request
-    ): CommonResponse<SearchLostPostsDto.Response> {
-        return CommonResponse.success(lostPostService.searchLostPosts(request.toCommand(pageable)))
+    ): CommonResponse<PageInfoDto<SearchLostPostsDto.Response>> {
+        return CommonResponse.success(lostPostService.searchLostPosts(request.toCommand(pageToken, pageSize)))
     }
 
     @Authentication

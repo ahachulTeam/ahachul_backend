@@ -7,6 +7,7 @@ import backend.team.ahachul_backend.api.lost.application.service.command.`in`.Cr
 import backend.team.ahachul_backend.api.lost.application.service.command.`in`.SearchLostPostCommand
 import backend.team.ahachul_backend.api.lost.application.service.command.`in`.UpdateLostPostCommand
 import backend.team.ahachul_backend.api.lost.domain.entity.CategoryEntity
+import backend.team.ahachul_backend.api.lost.domain.model.LostOrigin
 import backend.team.ahachul_backend.api.lost.domain.model.LostPostType
 import backend.team.ahachul_backend.api.lost.domain.model.LostStatus
 import backend.team.ahachul_backend.api.lost.domain.model.LostType
@@ -28,7 +29,6 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.data.domain.PageRequest
 
 
 class LostPostServiceTest(
@@ -88,24 +88,24 @@ class LostPostServiceTest(
             lostPostUseCase.createLostPost(createCommand)
         }
 
-        val searchCommand1 = createSearchLostPostCommand(0, subwayLine.id, null)
-        val searchCommand2 = createSearchLostPostCommand(1, subwayLine.id, null)
-
         // when
+        val searchCommand1 = createSearchLostPostCommand(null, subwayLine.id, null)
         val response1 = lostPostUseCase.searchLostPosts(searchCommand1)
+
+        val searchCommand2 = createSearchLostPostCommand(response1.pageToken, subwayLine.id, null)
         val response2 = lostPostUseCase.searchLostPosts(searchCommand2)
 
         // then
         assertThat(response1.hasNext).isEqualTo(true)
-        assertThat(response1.posts.size).isEqualTo(3)
-        assertThat(response1.posts)
+        assertThat(response1.data.size).isEqualTo(3)
+        assertThat(response1.data)
             .extracting("content")
             .usingRecursiveComparison()
             .isEqualTo((5 downTo 3).map { "유실물$it" })
 
         assertThat(response2.hasNext).isEqualTo(false)
-        assertThat(response2.posts.size).isEqualTo(2)
-        assertThat(response2.posts)
+        assertThat(response2.data.size).isEqualTo(2)
+        assertThat(response2.data)
             .extracting("content")
             .usingRecursiveComparison()
             .isEqualTo((2 downTo 1).map { "유실물$it" })
@@ -126,15 +126,15 @@ class LostPostServiceTest(
             lostPostUseCase.createLostPost(createCommand2)
         }
 
-        val searchCommand = createSearchLostPostCommand(0, subwayLine1.id, null)
+        val searchCommand = createSearchLostPostCommand(null, subwayLine1.id, null)
 
         // when
         val response = lostPostUseCase.searchLostPosts(searchCommand)
 
         // then
-        assertThat(response.posts.size).isEqualTo(3)
-        assertThat(response.posts)
-            .extracting("subwayLine")
+        assertThat(response.data.size).isEqualTo(3)
+        assertThat(response.data)
+            .extracting("subwayLineId")
             .usingRecursiveComparison()
             .isEqualTo((1.. 3).map {subwayLine1.id}.toList())
     }
@@ -301,19 +301,21 @@ class LostPostServiceTest(
     @DisplayName("제목이나 내용에 검색 키워드가 포함된 유실물을 반환한다.")
     fun searchLostPostByKeyword() {
         // given
-        val createCommand1 = createLostPostCommand(subwayLine.id, "오늘 1호선에서 지갑을 주웠어요", "휴대폰")
-        val createCommand2 = createLostPostCommand(subwayLine.id, "2호선에서 분실물 주웠는데 찾아가세요", "휴대폰")
+        val categoryName = "휴대폰"
+        val createCommand1 = createLostPostCommand(subwayLine.id, "오늘 1호선에서 지갑을 주웠어요", categoryName)
+        val createCommand2 = createLostPostCommand(subwayLine.id, "2호선에서 분실물 주웠는데 찾아가세요", categoryName)
+
         val entity1 = lostPostUseCase.createLostPost(createCommand1)
         val entity2 = lostPostUseCase.createLostPost(createCommand2)
-        val searchCommand = createSearchLostPostCommand(0, subwayLine.id, "지갑")
+        val searchCommand = createSearchLostPostCommand(null, subwayLine.id, "지갑")
 
         // when
         val response = lostPostUseCase.searchLostPosts(searchCommand)
 
         // then
-        assertThat(response.posts.size).isEqualTo(2)
-        assertThat(response.posts[0].id).isEqualTo(entity2.id)
-        assertThat(response.posts[1].id).isEqualTo(entity1.id)
+        assertThat(response.data.size).isEqualTo(2)
+        assertThat(response.data[0].id).isEqualTo(entity2.id)
+        assertThat(response.data[1].id).isEqualTo(entity1.id)
     }
     
     private fun createLostPostCommand(subwayLineId: Long, content: String, categoryName: String): CreateLostPostCommand {
@@ -322,7 +324,7 @@ class LostPostServiceTest(
             content = content,
             subwayLine = subwayLineId,
             lostType = LostType.ACQUIRE,
-            categoryName = categoryName
+            categoryName = categoryName,
         )
     }
 
@@ -343,13 +345,15 @@ class LostPostServiceTest(
         )
     }
 
-    private fun createSearchLostPostCommand(pageSize: Int, subwayLineId:Long, keyword:String?): SearchLostPostCommand {
+    private fun createSearchLostPostCommand(pageToken: String?, subwayLineId:Long, keyword:String?): SearchLostPostCommand {
         return SearchLostPostCommand(
             lostType = LostType.ACQUIRE,
+            lostOrigin = LostOrigin.AHACHUL,
             subwayLineId = subwayLineId,
-            lostOrigin = null,
             keyword = keyword,
-            pageable = PageRequest.of(pageSize, 3)
+            category = "휴대폰",
+            pageToken = pageToken,
+            pageSize = 3
         )
     }
 }
