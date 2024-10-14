@@ -19,7 +19,6 @@ class TrainController(
         return CommonResponse.success(trainUseCase.getTrain(trainNo))
     }
 
-    @Authentication
     @GetMapping("/v1/trains/real-times")
     fun getTrainRealTimes(request: GetTrainRealTimesDto.Request): CommonResponse<GetTrainRealTimesDto.Response> {
         val result = trainUseCase.getTrainRealTimes(request.stationId, request.subwayLineId, request.upDownType)
